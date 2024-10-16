@@ -1,6 +1,6 @@
 package com.rs.shopdiapi.repository;
 
-import com.rs.shopdiapi.entity.User;
+import com.rs.shopdiapi.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

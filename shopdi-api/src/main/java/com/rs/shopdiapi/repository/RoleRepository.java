@@ -1,6 +1,6 @@
 package com.rs.shopdiapi.repository;
 
-import com.rs.shopdiapi.entity.Role;
+import com.rs.shopdiapi.domain.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

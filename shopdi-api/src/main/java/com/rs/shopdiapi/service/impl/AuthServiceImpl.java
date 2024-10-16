@@ -1,19 +1,18 @@
 package com.rs.shopdiapi.service.impl;
 
-import com.rs.shopdiapi.dto.request.AuthRequest;
-import com.rs.shopdiapi.dto.request.IntrospectRequest;
-import com.rs.shopdiapi.dto.request.LogoutRequest;
-import com.rs.shopdiapi.dto.request.RefreshRequest;
-import com.rs.shopdiapi.dto.response.AuthResponse;
-import com.rs.shopdiapi.dto.response.IntrospectResponse;
-import com.rs.shopdiapi.entity.InvalidatedToken;
-import com.rs.shopdiapi.enums.ErrorCode;
+import com.rs.shopdiapi.domain.dto.request.AuthRequest;
+import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
+import com.rs.shopdiapi.domain.dto.request.TokenRequest;
+import com.rs.shopdiapi.domain.dto.response.AuthResponse;
+import com.rs.shopdiapi.domain.dto.response.IntrospectResponse;
+import com.rs.shopdiapi.domain.entity.InvalidatedToken;
+import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.repository.InvalidatedTokenRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.AuthService;
 import com.rs.shopdiapi.jwt.JwtUtil;
-import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.SignatureException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,13 +35,13 @@ public class AuthServiceImpl implements AuthService {
     JwtUtil jwtUtil;
 
     @Override
-    public IntrospectResponse introspect(IntrospectRequest request) {
+    public IntrospectResponse introspect(TokenRequest request) {
         var token = request.getToken();
         boolean isValid = true;
 
         try {
             jwtUtil.verifyToken(token, false);
-        } catch (Exception e) {
+        } catch (AppException | SignatureException e) {
             isValid = false;
         }
         return IntrospectResponse.builder().valid(isValid).build();
@@ -50,41 +49,104 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse authenticate(AuthRequest request) {
-        var user = userRepository.findByUsername(request.getUsername())
-                .or(() -> userRepository.findByEmail(request.getEmail()))
+        var user = userRepository.findByUsername(request.getUsernameOrEmail())
+                .or(() -> userRepository.findByEmail(request.getUsernameOrEmail()))
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getUsername());
 
         String token = jwtUtil.generateToken(userDetails);
 
         return AuthResponse.builder()
-                .jwt(token)
+                .token(token)
                 .expiryTime(jwtUtil.extractExpiration(token))
                 .build();
     }
 
-    @Override
-    public void logout(LogoutRequest logoutRequest) {
+    public void logout(TokenRequest request) {
         try {
-            Claims token = jwtUtil.verifyToken(logoutRequest.getToken(), true);
-            String jti = token.getId();
-            Date expiryTime = token.getExpiration();
+            var claims = jwtUtil.verifyToken(request.getToken(), true);
+
+            String jit = claims.getId();
+            Date expiryTime = claims.getExpiration();
 
             InvalidatedToken invalidatedToken =
-                    InvalidatedToken.builder().id(Long.valueOf(jti)).expiryTime(expiryTime).build();
+                    InvalidatedToken.builder().dateCreated(new Date()).id(jit).expiryTime(expiryTime).build();
+
             invalidatedTokenRepository.save(invalidatedToken);
-        } catch (AppException e) {
+        } catch (AppException exception) {
             log.info("Token already expired");
         }
     }
 
     @Override
-    public AuthResponse refreshToken(RefreshRequest refreshToken) {
-        return jwtUtil.refreshToken(refreshToken);
+    public AuthResponse refreshToken(TokenRequest request) {
+        var claims = jwtUtil.verifyToken(request.getToken(), true);
+
+        String jit = claims.getId();
+        Date expiryTime = claims.getExpiration();
+
+        InvalidatedToken invalidatedToken =
+                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        String username = claims.getSubject();
+
+        var user = customUserDetailsService.loadUserByUsername(username);
+
+        var token = jwtUtil.generateToken(user);
+
+        return AuthResponse.builder()
+                .token(token)
+                .expiryTime(jwtUtil.extractExpiration(token))
+                .build();
+    }
+
+    @Override
+    public String forgotPassword(String email) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        String resetToken = jwtUtil.generateResetToken(user);
+
+        String confirmLink =String.format("curl --location 'http://localhost:80/auth/reset-password' \\\n" +
+                "--header 'accept: */*' \\\n" +
+                "--header 'Content-Type: application/json' \\\n" +
+                "--data '%s'", resetToken);
+        log.info("--> confirmLink: {}", confirmLink);
+
+        return resetToken;
+    }
+
+    @Override
+    public String changePassword(ResetPasswordRequest request) {
+        if(!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+
+        var username = jwtUtil.extractUsername(request.getSecretToken());
+
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        return "";
+    }
+
+    @Override
+    public String resetPassword(String secretKey) {
+        var claims = jwtUtil.verifyToken(secretKey, false);
+
+        String username = claims.getSubject();
+
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return "Reset";
     }
 }

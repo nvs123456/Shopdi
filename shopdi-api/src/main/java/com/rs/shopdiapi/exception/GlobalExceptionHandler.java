@@ -1,7 +1,7 @@
 package com.rs.shopdiapi.exception;
 
-import com.rs.shopdiapi.dto.response.ApiResponse;
-import com.rs.shopdiapi.enums.ErrorCode;
+import com.rs.shopdiapi.domain.dto.response.ApiResponse;
+import com.rs.shopdiapi.domain.enums.ErrorCode;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.rs.shopdiapi.exception;
 
-import com.rs.shopdiapi.enums.ErrorCode;
+import com.rs.shopdiapi.domain.enums.ErrorCode;
 import lombok.Getter;
 import lombok.Setter;
 

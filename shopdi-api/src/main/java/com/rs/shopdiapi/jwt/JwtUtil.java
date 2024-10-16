@@ -1,40 +1,44 @@
 package com.rs.shopdiapi.jwt;
 
-import com.rs.shopdiapi.dto.request.RefreshRequest;
-import com.rs.shopdiapi.dto.response.AuthResponse;
-import com.rs.shopdiapi.entity.InvalidatedToken;
-import com.rs.shopdiapi.entity.User;
+import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.ErrorCode;
+import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.repository.InvalidatedTokenRepository;
+import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.impl.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.persistence.GeneratedValue;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
 
-import java.security.SignatureException;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class JwtUtil {
     @NonFinal
-    @Value("${jwt.secret}")
-    protected String SECRET_KEY;
+    @Value("${jwt.accessKey}")
+    protected String ACCESS_KEY;
+
+    @NonFinal
+    @Value("${jwt.refreshKey}")
+    protected String REFRESH_KEY;
+
+    @NonFinal
+    @Value("${jwt.resetKey}")
+    protected String RESET_KEY;
 
     @NonFinal
     @Value("${jwt.expiration}")
@@ -46,12 +50,14 @@ public class JwtUtil {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final InvalidatedTokenRepository invalidatedTokenRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public JwtUtil(
-            CustomUserDetailsService customUserDetailsService, InvalidatedTokenRepository invalidatedTokenRepository) {
+            CustomUserDetailsService customUserDetailsService, InvalidatedTokenRepository invalidatedTokenRepository, UserRepository userRepository) {
         this.customUserDetailsService = customUserDetailsService;
         this.invalidatedTokenRepository = invalidatedTokenRepository;
+        this.userRepository = userRepository;
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -63,17 +69,10 @@ public class JwtUtil {
         claims.put("roles", roles);
 
         return createToken(claims, userDetails.getUsername());
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setHeaderParam("typ", "JWT")
-//                .setId(UUID.randomUUID().toString())
-//                .setSubject(userDetails.getUsername())
-//                .setIssuer("Bui Do Khoi Nguyen")
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-//                .claim("scope", buildScope(customUserDetailsService.convertToUser(userDetails)))
-//                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-//                .compact();
+    }
+
+    public String generateResetToken(UserDetails user) {
+        return createResetToken(new HashMap<>(), user);
     }
 
     public List<String> extractRoles(String token) {
@@ -86,10 +85,21 @@ public class JwtUtil {
         return Jwts.builder()
                 .setClaims(claims)
                 .setHeaderParam("typ", "JWT")
+                .setId(UUID.randomUUID().toString())
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, ACCESS_KEY)
+                .compact();
+    }
+
+    private String createResetToken(Map<String, Object> claims, UserDetails userDetails) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .signWith(SignatureAlgorithm.HS256, RESET_KEY)
                 .compact();
     }
 
@@ -103,7 +113,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(ACCESS_KEY).parseClaimsJws(token).getBody();
     }
 
     public boolean isTokenExpired(String token) {
@@ -119,66 +129,22 @@ public class JwtUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public AuthResponse refreshToken(RefreshRequest request) {
-        Claims claims = verifyToken(request.getToken(), true);
-
-        String jti = claims.getId();
-        Date expiryTime = claims.getExpiration();
-
-        InvalidatedToken invalidatedToken =
-                InvalidatedToken.builder().id(Long.valueOf(jti)).expiryTime(expiryTime).build();
-
-        invalidatedTokenRepository.save(invalidatedToken);
-        String username = claims.getSubject();
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-        String token = generateToken(userDetails);
-
-        return AuthResponse.builder()
-                .jwt(token)
-                .expiryTime(extractExpiration(token))
-                .build();
-    }
-
     public Claims verifyToken(String token, boolean isRefresh) {
-        try {
-            Claims claims = extractAllClaims(token);
-            Date expiration = claims.getExpiration();
-            Date issueDate = claims.getIssuedAt();
-            Date now = new Date();
+        Claims claims = extractAllClaims(token);
 
-            if (isRefresh) {
-                Date refreshExpiration = new Date(issueDate.getTime() + REFRESH_EXPIRATION);
-                if (now.after(refreshExpiration)) {
-                    throw new JwtException("Token refresh period has expired");
-                }
-            } else {
-                if (now.after(expiration)) {
-                    throw new JwtException("Token has expired");
-                }
-            }
+        Date expiryTime = isRefresh
+                ? Date.from(new Date().toInstant().plus(REFRESH_EXPIRATION, ChronoUnit.MILLIS))
+                : claims.getExpiration();
 
-            String jti = claims.getId();
-            if (invalidatedTokenRepository.existsById(jti)) {
-                throw new JwtException("Token is invalidated");
-            }
+        if (expiryTime.before(new Date())) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
-            return claims;
-        } catch (ExpiredJwtException e) {
-            throw new JwtException("Invalid JWT token", e);
-        }
+        if (invalidatedTokenRepository.existsById(claims.getId())) throw new AppException(ErrorCode.UNAUTHENTICATED);
+
+        return claims;
     }
 
-    private String buildScope(User user) {
-        StringJoiner joiner = new StringJoiner(" ");
-
-        if (user.getRoles() != null) {
-            user.getRoles().forEach(role -> {
-                joiner.add("ROLE_" + role.getName());
-                if (role.getPermissions() != null) {
-                    role.getPermissions().forEach(permission -> joiner.add(permission.getName()));
-                }
-            });
-        }
-        return joiner.toString();
+    public boolean isTokenInvalidated(String token) {
+        Claims claims = extractAllClaims(token);
+        return invalidatedTokenRepository.existsById(claims.getId());
     }
 }

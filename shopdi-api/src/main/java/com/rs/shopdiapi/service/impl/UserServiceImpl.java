@@ -1,12 +1,12 @@
 package com.rs.shopdiapi.service.impl;
 
-import com.rs.shopdiapi.dto.request.UserCreationRequest;
-import com.rs.shopdiapi.dto.request.UserUpdateRequest;
-import com.rs.shopdiapi.dto.response.UserResponse;
-import com.rs.shopdiapi.entity.Role;
-import com.rs.shopdiapi.entity.User;
-import com.rs.shopdiapi.enums.ErrorCode;
-import com.rs.shopdiapi.enums.RoleEnum;
+import com.rs.shopdiapi.domain.dto.request.CreateUserRequest;
+import com.rs.shopdiapi.domain.dto.request.UpdateUserRequest;
+import com.rs.shopdiapi.domain.dto.response.UserResponse;
+import com.rs.shopdiapi.domain.entity.Role;
+import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.ErrorCode;
+import com.rs.shopdiapi.domain.enums.RoleEnum;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.mapper.UserMapper;
 import com.rs.shopdiapi.repository.RoleRepository;
@@ -15,7 +15,6 @@ import com.rs.shopdiapi.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse createUser(UserCreationRequest request) {
+    public UserResponse createUser(CreateUserRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
@@ -67,8 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserResponse updateUser(Long userId, UserUpdateRequest request) {
+    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
@@ -82,21 +80,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse getUser(Long userId) {
         return userMapper.toUserResponse(
                 userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+    }
+
+    @Override
+    public UserResponse getUserByEmail(String email) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    public void createPasswordResetTokenForUser(User user, String token) {
+
     }
 }

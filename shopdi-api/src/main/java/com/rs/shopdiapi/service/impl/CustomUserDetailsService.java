@@ -1,8 +1,8 @@
 package com.rs.shopdiapi.service.impl;
 
-import com.rs.shopdiapi.entity.Permission;
-import com.rs.shopdiapi.entity.Role;
-import com.rs.shopdiapi.entity.User;
+import com.rs.shopdiapi.domain.entity.Permission;
+import com.rs.shopdiapi.domain.entity.Role;
+import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional

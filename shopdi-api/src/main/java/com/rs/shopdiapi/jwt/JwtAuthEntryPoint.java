@@ -1,8 +1,8 @@
 package com.rs.shopdiapi.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rs.shopdiapi.dto.response.ApiResponse;
-import com.rs.shopdiapi.enums.ErrorCode;
+import com.rs.shopdiapi.domain.dto.response.ApiResponse;
+import com.rs.shopdiapi.domain.enums.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

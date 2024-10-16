@@ -1,8 +1,8 @@
 package com.rs.shopdiapi.config;
 
-import com.rs.shopdiapi.entity.Role;
-import com.rs.shopdiapi.entity.User;
-import com.rs.shopdiapi.enums.RoleEnum;
+import com.rs.shopdiapi.domain.entity.Role;
+import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.RoleEnum;
 import com.rs.shopdiapi.repository.RoleRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
