@@ -42,11 +42,7 @@ const LoginForm = () => {
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                     Password
                                 </label>
-                                <div className="text-sm">
-                                    <a href="#" tabIndex={4} className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Forgot password?
-                                    </a>
-                                </div>
+                                
                             </div>
                             <div className="mt-2">
                                 <input
@@ -78,6 +74,11 @@ const LoginForm = () => {
                             Create an account
                         </a>
                     </p>
+                    <div className="text-sm">
+                                    <a href="#" tabIndex={4} className="font-semibold text-indigo-600 hover:text-indigo-500">
+                                        Forgot password?
+                                    </a>
+                                </div>
                 </div>
             </div>
         </>
