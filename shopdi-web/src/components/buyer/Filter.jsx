@@ -1,217 +1,105 @@
 import React, { useState } from "react";
 import ProductList from "./ProductList";
+import CATEGORIES from '@/data/categories_data';
 export default function Filter({ category, products }) {
     const [isSortOpen, setSortOpen] = useState(false);
+    
+    // console.log(sub_category);
+    
+
     return (
-        <div class="bg-white">
-
-            <div>
-                <main class="mx-auto max-width-20 px-4 sm:px-6 lg:px-8">
-                    <div class="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-12">
-                        <h1 class="text-4xl font-bold tracking-tight text-gray-900">{category}</h1>
-
-                        <div class="flex items-center">
-                            <div class="relative inline-block text-left">
-
-                                <div>
-                                    <button type="button" onClick={() => setSortOpen(!isSortOpen)} class="hs-dropdown-toggle group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" id="menu-button" aria-expanded="false" aria-haspopup="menu" aria-label="Dropdown">
-                                        Sort<svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div id="sort-menu" role="menu" class={`absolute ${isSortOpen ? 'block' : 'hidden'} right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none`} aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                                    <div class="py-1" >
-                                        <a href="#" class="block px-4 py-2 text-sm font-medium text-gray-900" role="menuitem" tabindex="-1" id="menu-item-0">Most Popular</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabindex="-1" id="menu-item-1">Best Rating</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabindex="-1" id="menu-item-2">Newest</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabindex="-1" id="menu-item-3">Price: Low to High</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabindex="-1" id="menu-item-4">Price: High to Low</a>
-                                    </div>
+        <div className="bg-white">
+            <main className="mx-auto max-width-20 px-4 sm:px-6 lg:px-8">
+                <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-12">
+                    <h1 className="text-4xl font-bold tracking-tight text-gray-900">{category.name}</h1>
+                    <div className="flex items-center">
+                        <div className=" inline-block text-left">
+                            <div>
+                                <button type="button" onClick={() => setSortOpen(!isSortOpen)} className="hs-dropdown-toggle group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" id="menu-button" aria-expanded="false" aria-haspopup="menu" aria-label="Dropdown">
+                                    Sort<svg className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                                        <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div id="sort-menu" role="menu" className={`absolute ${isSortOpen ? 'block' : 'hidden'} right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none`} aria-orientation="vertical" aria-labelledby="menu-button" tabIndex="-1">
+                                <div className="py-1" >
+                                    <a href="#" className="block px-4 py-2 text-sm font-medium text-gray-900" role="menuitem" tabIndex="-1" id="menu-item-0">Most Popular</a>
+                                    <a href="#" className="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabIndex="-1" id="menu-item-1">Best Rating</a>
+                                    <a href="#" className="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabIndex="-1" id="menu-item-2">Newest</a>
+                                    <a href="#" className="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabIndex="-1" id="menu-item-3">Price: Low to High</a>
+                                    <a href="#" className="block px-4 py-2 text-sm text-gray-500" role="menuitem" tabIndex="-1" id="menu-item-4">Price: High to Low</a>
                                 </div>
                             </div>
-                            {/* <button type="button" class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden">
-                                <span class="">Filters</span>
-                                <svg class="h-5 w-5" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" data-slot="icon">
-                                    <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z" clip-rule="evenodd" />
-                                </svg>
-                            </button> */}
+                        </div>
+
+                    </div>
+                </div>
+
+                {/* cac loai bo loc */}
+
+                <section aria-labelledby="products-heading" className="pb-24 pt-6">
+                    <h2 id="products-heading" className="sr-only">Products</h2>
+
+                    <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+                        {/* <!-- Filters --> */}
+                        <form className="hidden lg:block">
+                            <h3 className="sr-only">Categories</h3>
+                            <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                                {category.sub_categories.map(item => <li key={item}><a href="#">{item}</a></li>)}
+                            </ul>
+                            <FilterSection type="Price" values={["100", "200", "300", "400", "500"]} />
+                        </form>
+
+                        {/* <!-- Product grid --> */}
+                        <div className="lg:col-span-3">
+                            <ProductList products={products} />
                         </div>
                     </div>
+                </section>
+            </main>
 
-                    <section aria-labelledby="products-heading" class="pb-24 pt-6">
-                        <h2 id="products-heading" class="sr-only">Products</h2>
-
-                        <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-                            {/* <!-- Filters --> */}
-                            <form class="hidden lg:block">
-                                <h3 class="sr-only">Categories</h3>
-                                <ul role="list" class="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                                    <li>
-                                        <a href="#">Totes</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Backpacks</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Travel Bags</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Hip Bags</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Laptop Sleeves</a>
-                                    </li>
-                                </ul>
-
-                                <div class="border-b border-gray-200 py-6">
-                                    <h3 class="-my-3 flow-root">
-                                        {/* <!-- Expand/collapse section button --> */}
-                                        <button type="button" class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-0" aria-expanded="false">
-                                            <span class="font-medium text-gray-900">Color</span>
-                                            <span class="ml-6 flex items-center">
-                                                {/* <!-- Expand icon, show/hide based on section open state. --> */}
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                                </svg>
-                                                {/* <!-- Collapse icon, show/hide based on section open state. --> */}
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                                    <path fill-rule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" />
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </h3>
-                                    {/* <!-- Filter section, show/hide based on section state. --> */}
-                                    <div class="pt-6" id="filter-section-0">
-                                        <div class="space-y-4">
-                                            <div class="flex items-center">
-                                                <input id="filter-color-0" name="color[]" value="white" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-color-0" class="ml-3 text-sm text-gray-600">White</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-color-1" name="color[]" value="beige" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-color-1" class="ml-3 text-sm text-gray-600">Beige</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-color-2" name="color[]" value="blue" type="checkbox" checked class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-color-2" class="ml-3 text-sm text-gray-600">Blue</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-color-3" name="color[]" value="brown" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-color-3" class="ml-3 text-sm text-gray-600">Brown</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-color-4" name="color[]" value="green" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-color-4" class="ml-3 text-sm text-gray-600">Green</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-color-5" name="color[]" value="purple" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-color-5" class="ml-3 text-sm text-gray-600">Purple</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="border-b border-gray-200 py-6">
-                                    <h3 class="-my-3 flow-root">
-                                        {/* <!-- Expand/collapse section button --> */}
-                                        <button type="button" class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-1" aria-expanded="false">
-                                            <span class="font-medium text-gray-900">Category</span>
-                                            <span class="ml-6 flex items-center">
-                                                {/* <!-- Expand icon, show/hide based on section open state. --> */}
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                                </svg>
-                                                {/* <!-- Collapse icon, show/hide based on section open state. --> */}
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                                    <path fill-rule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" />
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </h3>
-                                    {/* <!-- Filter section, show/hide based on section state. --> */}
-                                    <div class="pt-6" id="filter-section-1">
-                                        <div class="space-y-4">
-                                            <div class="flex items-center">
-                                                <input id="filter-category-0" name="category[]" value="new-arrivals" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-category-0" class="ml-3 text-sm text-gray-600">New Arrivals</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-category-1" name="category[]" value="sale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-category-1" class="ml-3 text-sm text-gray-600">Sale</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-category-2" name="category[]" value="travel" type="checkbox" checked class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-category-2" class="ml-3 text-sm text-gray-600">Travel</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-category-3" name="category[]" value="organization" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-category-3" class="ml-3 text-sm text-gray-600">Organization</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-category-4" name="category[]" value="accessories" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-category-4" class="ml-3 text-sm text-gray-600">Accessories</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="border-b border-gray-200 py-6">
-                                    <h3 class="-my-3 flow-root">
-                                        {/* <!-- Expand/collapse section button --> */}
-                                        <button type="button" class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-2" aria-expanded="false">
-                                            <span class="font-medium text-gray-900">Size</span>
-                                            <span class="ml-6 flex items-center">
-                                                {/* <!-- Expand icon, show/hide based on section open state. --> */}
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                                </svg>
-                                                {/* <!-- Collapse icon, show/hide based on section open state. --> */}
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                                    <path fill-rule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" />
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </h3>
-                                    {/* <!-- Filter section, show/hide based on section state. --> */}
-                                    <div class="pt-6" id="filter-section-2">
-                                        <div class="space-y-4">
-                                            <div class="flex items-center">
-                                                <input id="filter-size-0" name="size[]" value="2l" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-size-0" class="ml-3 text-sm text-gray-600">2L</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-size-1" name="size[]" value="6l" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-size-1" class="ml-3 text-sm text-gray-600">6L</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-size-2" name="size[]" value="12l" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-size-2" class="ml-3 text-sm text-gray-600">12L</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-size-3" name="size[]" value="18l" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-size-3" class="ml-3 text-sm text-gray-600">18L</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-size-4" name="size[]" value="20l" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-size-4" class="ml-3 text-sm text-gray-600">20L</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input id="filter-size-5" name="size[]" value="40l" type="checkbox" checked class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                <label for="filter-size-5" class="ml-3 text-sm text-gray-600">40L</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-
-                            {/* <!-- Product grid --> */}
-                            <div class="lg:col-span-3">
-                                <ProductList products={products} />
-                            </div>
-                        </div>
-                    </section>
-                </main>
-            </div>
         </div>
 
+    )
+}
+function FilterSection({ type, values }) {
+    let [isOpen, setIsOpen] = useState(false);
+    const set = (value) => {
+        setIsOpen(!isOpen);
+        console.log(isOpen)
+
+    }
+
+    return (
+        <div className="border-b border-gray-200 py-6">
+            <h3 className="-my-3 flow-root">
+                {/* <!-- Expand/collapse section button --> */}
+                <button onClick={set} type="button" className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-0" aria-expanded="false">
+                    <span className="font-medium text-gray-900">{type}</span>
+                    <span className="ml-6 flex items-center">
+                        {isOpen ?
+                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                                <path fillRule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clipRule="evenodd" />
+                            </svg>) :
+                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                                <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                            </svg>)}
+                    </span>
+                </button>
+            </h3>
+            {/* <!-- Filter section, show/hide based on section state. --> */}
+            {isOpen &&
+                (<div className="pt-6" id="filter-section-0">
+                    <div className="space-y-4">
+                        {values.map((item, index) =>
+                            <div key={item} className="flex items-center">
+                                <input id={`${index}`} name={item} value="white" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                <label htmlFor={`${index}`} className="ml-3 text-sm text-gray-600">{item}</label>
+                            </div>
+                        )}
+                    </div>
+                </div>)
+            }
+        </div>
     )
 }

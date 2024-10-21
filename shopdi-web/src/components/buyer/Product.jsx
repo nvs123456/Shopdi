@@ -1,6 +1,7 @@
 import React from "react";
 import StarIcon from '@mui/icons-material/Star';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import {Link} from 'react-router-dom';
 export default function Product({product}) {
     let stars = [];
     for(let i = 0; i < Math.round(product.rating); i++) {
@@ -10,7 +11,8 @@ export default function Product({product}) {
         stars.push(<StarIcon key={5-i} style={{color: "white",fontSize: "15px"}}/>)
     }
     return (
-        <div className="bg-productBg p-2 w-60 h-96 rounded-md ">
+        <Link to={`/product/${product.id}`}>
+        <div className="bg-cloudBlue p-2 w-60 h-96 rounded-md ">
             <div className="h-full rounded-md flex flex-col space-y-2">
             <div className=" bg-white min-w-full grow ">
                 <img src={product.image} alt={product.name} />
@@ -27,5 +29,6 @@ export default function Product({product}) {
             </div>
             </div>
         </div>
+        </Link>
     )
 }

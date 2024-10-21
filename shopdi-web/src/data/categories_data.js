@@ -3,7 +3,7 @@ export default {
     [
         {
             "name": "Thời Trang Nam",
-            "sub": [
+            "sub_categories": [
                 "Áo Khoác",
                 "Áo Vest & Blazer",
                 "Áo Hoodie, Áo Len & Áo Nỉ",
@@ -29,7 +29,7 @@ export default {
         },
         {
             "name": "Balo & Túi Ví Nam",
-            "sub": [
+            "sub_categories": [
                 "Ba Lô Nam",
                 "Ba Lô Laptop Nam",
                 "Túi & Cặp Đựng Laptop",
@@ -45,7 +45,7 @@ export default {
         },
         {
             "name": "Chăm Sóc Thú Cưng",
-            "sub": [
+            "sub_categories": [
                 "Thức ăn cho thú cưng",
                 "Phụ kiện cho thú cưng",
                 "Vệ sinh cho thú cưng",
@@ -57,7 +57,7 @@ export default {
         },
         {
             "name": "Dụng cụ & thiết bị tiện ích",
-            "sub": [
+            "sub_categories": [
                 "Dụng cụ cầm tay",
                 "Dụng cụ điện & thiết bị lớn",
                 "Thiết bị mạch điện",
@@ -67,7 +67,7 @@ export default {
         },
         {
             "name": "Giày Dép Nam",
-            "sub": [
+            "sub_categories": [
                 "Bốt",
                 "Giày Thể Thao/ Sneakers",
                 "Giày Sục",
@@ -80,7 +80,7 @@ export default {
         },
         {
             "name": "Giày Dép Nữ",
-            "sub": [
+            "sub_categories": [
                 "Bốt",
                 "Giày Thể Thao/ Sneaker",
                 "Giày Đế Bằng",
@@ -93,7 +93,7 @@ export default {
         },
         {
             "name": "Giặt Giũ & Chăm Sóc Nhà Cửa",
-            "sub": [
+            "sub_categories": [
                 "Giặt giũ & Chăm sóc nhà cửa",
                 "Giấy vệ sinh, khăn giấy",
                 "Vệ sinh nhà cửa",
@@ -107,7 +107,7 @@ export default {
         },
         {
             "name": "Máy Tính & Laptop",
-            "sub": [
+            "sub_categories": [
                 "Máy Tính Bàn",
                 "Màn Hình",
                 "Linh Kiện Máy Tính",
@@ -122,7 +122,7 @@ export default {
         },
         {
             "name": "Máy Ảnh & Máy Quay Phim",
-            "sub": [
+            "sub_categories": [
                 "Máy ảnh - Máy quay phim",
                 "Camera giám sát & Camera hệ thống",
                 "Thẻ nhớ",
@@ -133,7 +133,7 @@ export default {
         },
         {
             "name": "Mẹ & Bé",
-            "sub": [
+            "sub_categories": [
                 "Đồ dùng du lịch cho bé",
                 "Đồ dùng ăn dặm cho bé",
                 "Phụ kiện cho mẹ",
@@ -153,7 +153,7 @@ export default {
         },
         {
             "name": "Nhà Cửa & Đời Sống",
-            "sub": [
+            "sub_categories": [
                 "Chăn, Ga, Gối & Nệm",
                 "Đồ nội thất",
                 "Trang trí nhà cửa",
@@ -173,7 +173,7 @@ export default {
         },
         {
             "name": "Nhà Sách Online",
-            "sub": [
+            "sub_categories": [
                 "Sách Tiếng Việt",
                 "Sách ngoại văn",
                 "Gói Quà",
@@ -187,7 +187,7 @@ export default {
         },
         {
             "name": "Phụ Kiện & Trang Sức Nữ",
-            "sub": [
+            "sub_categories": [
                 "Nhẫn",
                 "Bông tai",
                 "Khăn choàng",
@@ -210,7 +210,7 @@ export default {
         },
         {
             "name": "Sắc Đẹp",
-            "sub": [
+            "sub_categories": [
                 "Chăm sóc da mặt",
                 "Tắm & chăm sóc cơ thể",
                 "Trang điểm",
@@ -226,7 +226,7 @@ export default {
         },
         {
             "name": "Sức Khỏe",
-            "sub": [
+            "sub_categories": [
                 "Vật tư y tế",
                 "Chống muỗi & xua đuổi côn trùng",
                 "Thực phẩm chức năng",
@@ -239,7 +239,7 @@ export default {
         },
         {
             "name": "Thiết Bị Điện Gia Dụng",
-            "sub": [
+            "sub_categories": [
                 "Đồ gia dụng nhà bếp",
                 "Đồ gia dụng lớn",
                 "Máy hút bụi & Thiết bị làm sạch",
@@ -252,7 +252,7 @@ export default {
         },
         {
             "name": "Thiết Bị Điện Tử",
-            "sub": [
+            "sub_categories": [
                 "Thiết bị đeo thông minh",
                 "Phụ kiện tivi",
                 "Máy Game Console",
@@ -268,7 +268,7 @@ export default {
         },
         {
             "name": "Thể Thao & Du Lịch",
-            "sub": [
+            "sub_categories": [
                 "Vali",
                 "Túi du lịch",
                 "Phụ kiện du lịch",
@@ -281,7 +281,7 @@ export default {
         },
         {
             "name": "Thời Trang Nữ",
-            "sub": [
+            "sub_categories": [
                 "Quần",
                 "Quần đùi",
                 "Chân váy",
@@ -307,7 +307,7 @@ export default {
         },
         {
             "name": "Thời Trang Trẻ Em",
-            "sub": [
+            "sub_categories": [
                 "Trang phục bé trai",
                 "Trang phục bé gái",
                 "Giày dép bé trai",
@@ -320,7 +320,7 @@ export default {
         },
         {
             "name": "Túi Ví Nữ",
-            "sub": [
+            "sub_categories": [
                 "Ba Lô Nữ",
                 "Cặp Laptop",
                 "Ví Dự Tiệc & Ví Cầm Tay",
@@ -335,7 +335,7 @@ export default {
         },
         {
             "name": "Voucher & Dịch Vụ",
-            "sub": [
+            "sub_categories": [
                 "Nhà hàng & Ăn uống",
                 "Sự kiện & Giải trí",
                 "Nạp tiền tài khoản",
@@ -351,7 +351,7 @@ export default {
         },
         {
             "name": "Ô Tô & Xe Máy & Xe Đạp",
-            "sub": [
+            "sub_categories": [
                 "Xe đạp, xe điện",
                 "Mô tô, xe máy",
                 "Xe Ô tô",
@@ -369,7 +369,7 @@ export default {
         },
         {
             "name": "Điện Thoại & Phụ Kiện",
-            "sub": [
+            "sub_categories": [
                 "Điện thoại",
                 "Máy tính bảng",
                 "Pin Dự Phòng",
@@ -385,7 +385,7 @@ export default {
         },
         {
             "name": "Đồ Chơi",
-            "sub": [
+            "sub_categories": [
                 "Sở thích & Sưu tầm",
                 "Đồ chơi giải trí",
                 "Đồ chơi giáo dục",
@@ -396,7 +396,7 @@ export default {
         },
         {
             "name": "Đồng Hồ",
-            "sub": [
+            "sub_categories": [
                 "Đồng Hồ Nam",
                 "Đồng Hồ Nữ",
                 "Bộ Đồng Hồ & Đồng Hồ Cặp",

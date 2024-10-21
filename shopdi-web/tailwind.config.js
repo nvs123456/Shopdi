@@ -36,7 +36,6 @@ module.exports = {
         // Other Colors
         green: '#00FF00',
         red: '#d0342c',
-        productBg: '#ebf5ff',
       }
     },
   },
