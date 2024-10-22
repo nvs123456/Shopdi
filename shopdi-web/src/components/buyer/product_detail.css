@@ -1,0 +1,8 @@
+input[type="radio"]:checked + label {
+    border-color: #FF731D;
+    color: #FF731D;
+}
+input[type="radio"]:hover + label {
+    border-color: #FF731D;
+    color: #FF731D;
+}
