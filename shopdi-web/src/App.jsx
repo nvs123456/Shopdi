@@ -1,7 +1,7 @@
-import Footer from './components/Footer/Footer'
+import Footer from './Buyer/components/Footer/Footer'
 import AppRouter from './routes/AppRouter'
-import Navigation from './components/Navigation/Navigation'
-import NavBar from './components/NavBar/NavBar'
+import Navigation from './Buyer/components/Navigation/Navigation'
+import NavBar from './Buyer/components/NavBar/NavBar'
 
 function App() {
 
