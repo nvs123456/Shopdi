@@ -1,4 +1,4 @@
-import shopdiLogo from '@/assets/images/shopdi_logo.jpeg';
+import shopdiLogo from './assets/images/shopdi_logo.jpeg';
 import Filter from './Filter.jsx';
 
 export default function ShopPage() {

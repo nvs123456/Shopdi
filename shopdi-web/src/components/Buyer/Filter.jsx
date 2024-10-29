@@ -3,9 +3,9 @@ import ProductList from "./ProductList.jsx";
 
 export default function Filter({ category, products }) {
     const [isSortOpen, setSortOpen] = useState(false);
-    
+
     // console.log(sub_category);
-    
+
 
     return (
         <div className="bg-white">
@@ -47,7 +47,9 @@ export default function Filter({ category, products }) {
                             <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                                 {category.sub_categories.map(item => <li key={item}><a href="#">{item}</a></li>)}
                             </ul>
-                            <FilterSection type="Price" values={["100", "200", "300", "400", "500"]} />
+                            <FilterSection type="Brand" values={["Apple", "Samsung", "Google", "Sony"]} />
+                            <PriceFilter />
+                            <FilterSection type="Rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} />
                         </form>
 
                         {/* <!-- Product grid --> */}
@@ -60,6 +62,44 @@ export default function Filter({ category, products }) {
 
         </div>
 
+    )
+}
+function PriceFilter() {
+    let [isOpen, setIsOpen] = useState(false);
+    const set = (value) => {
+        setIsOpen(!isOpen);
+        console.log(isOpen)
+    }
+    return (
+        <div className="border-b border-gray-200 py-6">
+            <h3 className="-my-3 flow-root">
+                {/* <!-- Expand/collapse section button --> */}
+                <button onClick={set} type="button" className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-0" aria-expanded="false">
+                    <span className="font-medium text-gray-900">Price</span>
+                    <span className="ml-6 flex items-center">
+                        {isOpen ?
+                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                                <path fillRule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clipRule="evenodd" />
+                            </svg>) :
+                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                                <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                            </svg>)}
+                    </span>
+                </button>
+            </h3>
+            {isOpen &&
+                (<div className="pt-6" id="filter-section-1">
+                    <div className="text-center">
+                    <input onKeyDown={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} className="w-24 border-red border-2" />
+                    <span> to </span>
+                    <input onKeyDown={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} className="w-24 border-red border-2" />
+                    </div>
+                    <div className="text-center mt-4">
+                        <button className="border-red border-2 rounded-md w-24">Apply</button>
+                    </div>
+                </div>)
+            }
+        </div>
     )
 }
 function FilterSection({ type, values }) {

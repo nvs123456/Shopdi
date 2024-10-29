@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
-import StarIcon from '@mui/icons-material/Star';
-import './product_detail.css'
-import shopdiLogo from '@/assets/images/shopdi_logo.jpeg';
+import Quantity from "../../components/Buyer/Quantity.jsx";
+import Variant from "../../components/Buyer/Variant.jsx";
+import StarIcon from "@mui/icons-material/Star";
+import {useState} from "react";
+import shopdiLogo from "./assets/images/shopdi_logo.jpeg";
 
 export default function ProductDetail() {
     const product = {
@@ -32,7 +33,7 @@ export default function ProductDetail() {
         sold: 100,
         price: 199000,
         inStock: 100,
-        categoty: ["Thoi trang nam", 'Quan'],
+        category: ["Thoi trang nam", 'Quan'],
         phan_loai:
             [
                 {
@@ -98,26 +99,28 @@ export default function ProductDetail() {
             value: null
         }
     })
-    const [amount, setAmount] = useState(1);
-    const [attributeProduct, setAttributeProduct] = useState(phan_loai);
+    const [quantity, setQuantity] = useState(1);
+    const [variant, setVariant] = useState(phan_loai);
     const [isBuyNowWithoutAttribute, setIsBuyNowWithoutAttribute] = useState(false);
-    const onChangeAttribute = (type, value) => {
-        let tmp = [...attributeProduct]
+    const onChangeVariant = (type, value) => {
+        let tmp = [...variant]
         tmp.find((i) => i.type === type).value = value
-        setAttributeProduct(tmp)
+        setVariant(tmp)
     }
     const handleAddToCart = () => {
         console.log("add to cart")
+
     }
     const handleBuyNow = () => {
-        for (let i = 0; i < attributeProduct.length; i++) {
-            if (attributeProduct[i].value === null) {
+        for (let i = 0; i < variant.length; i++) {
+            if (variant[i].value === null) {
                 setIsBuyNowWithoutAttribute(true)
                 return
             }
         }
         setIsBuyNowWithoutAttribute(false)
         console.log("buy now")
+        console.log(variant)
     }
     const product_subImages = ["link-main-image", "link-image-1", "link-image-2", "link-image-3", "link-image-4", "link-image-5", "link-image-6", "link-image-7", "link-image-8", "link-image-9", "link-image-10"]
     const [subImages, setSubImages] = useState([0, 1, 2, 3, 4])
@@ -132,12 +135,12 @@ export default function ProductDetail() {
                         </div>
                         <div className="sub-image w-full min-h-12 bg-white flex flex-row gap-x-2 mt-2">
                             <button onClick={() => {
-                                if(subImages[0] === 0) return
-                                let tmp = subImages.map((i) => i-1)
+                                if (subImages[0] === 0) return
+                                let tmp = subImages.map((i) => i - 1)
                                 setSubImages(tmp)
                             }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
-                            </svg>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
+                                </svg>
                             </button>
                             {subImages.map((i) => <div className="w-16 h-16 stretch bg-green" key={i} onClick={() => setCurImage(i)}><img src="#" alt={`image ${i}`} /></div>)}
                             <button onClick={() => {
@@ -168,24 +171,11 @@ export default function ProductDetail() {
                         <div>
                             <span className='text-4xl'>&#8363; {product.price}</span>
                         </div>
-                        {product.phan_loai.map((item) => (
-                            <div key={item.type} className='flex flex-row'>
-                                <div className='text-base align-middle text-gray-600 min-w-20 text-left'>{item.type}</div>
-                                <div className='flex flex-row gap-x-2 gap-y-2 flex-wrap'>
-                                    {item.value.map((i) =>
-                                    (<div key={i}>
-                                        <input type="radio" name={`${item.type}`} id={`${i}`} className="opacity-0 w-0" value={i} onChange={(e) => { onChangeAttribute(item.type, e.target.value) }} />
-                                        < label htmlFor={`${i}`} className=' inline-block text-center min-w-20 border-2 pt-1 pb-1 border-gray-300 cursor-pointer' >{i}</label>
-                                    </div>))}
-                                </div>
-                            </div>
-                        ))}
+                        <Variant product={product} onChangeVariant={onChangeVariant} />
                         <div className='flex flex-row'>
                             <div className='text-base align-middle text-gray-600 min-w-20 text-left'>So luong</div>
                             <div className='flex flex-row flex-wrap'>
-                                <button className='bg-white  border-gray-300  px-2 border-x-2 border-y-2' onClick={() => { amount > 1 ? setAmount(amount - 1) : setAmount(amount) }}>-</button>
-                                <div className='min-w-16 text-center border-gray-300 border-y-2'><span >{amount}</span></div>
-                                <button className='bg-white  border-gray-300  px-2 border-x-2 border-y-2' onClick={() => setAmount(amount + 1)}>+</button>
+                                <Quantity quantity={quantity} setQuantity={setQuantity} />
                                 <div className='ml-4'> Con lai {product.inStock} san pham </div>
                             </div>
                         </div>
@@ -196,21 +186,7 @@ export default function ProductDetail() {
                         </div>
                     </div>
                 </div>
-                <div className="shop-info bg-white border-2 rounded-md p-4">
-                    <div className=" flex flex-row gap-x-4 items-center">
-                        <div>
-                            <img src={shopdiLogo} alt="Logo" className="h-14 w-auto rounded-full" />
-                        </div>
-                        <div>
-                            <div className="text-2xl">{shop_info.name}</div>
-                            <div className='max-w-40 border-2 border-gray-300 bg-white font-publicSans p-2 text-sm'><a href="#"> Xem shop</a></div>
-                        </div>
-                        <div>Danh gia:   <span className='text-pumpkin'>{shop_info.review}</span></div>
-                        <div>San pham:   <span className='text-pumpkin'>{shop_info.san_pham}</span></div>
-                        <div>Tham gia:   <span className='text-pumpkin'>{shop_info.tham_gia}</span></div>
-
-                    </div>
-                </div>
+                <ShopBar shop_info={shop_info} />
                 <div className="description bg-white flex flex-col gap-x-8 border-2 rounded-md p-4">
                     <div className="text-2xl">
                         <pre>Chi tiet san pham</pre>
@@ -234,3 +210,5 @@ export default function ProductDetail() {
         </div >
     )
 }
+
+

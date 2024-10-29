@@ -6,7 +6,7 @@ import MITLogo from '/src/assets/images/MITLogo.png'
 const Footer = () => {
     return (
         <div>
-            <Grid className='bg-cosmicLatte text-yaleBlue text-center py-2'
+            <Grid className='bg-cosmicLatte text-yaleBlue text-center'
                 container
                 justifyContent='space-evenly'
                 alignItems='center'

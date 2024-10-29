@@ -1,10 +1,9 @@
-import React, {useState} from 'react'
-import ProductList from '../components/Buyer/ProductList'
-import Navigation from '../components/Navigation/Navigation'
-import shopdiLogo from '../assets/images/shopdi_logo.jpeg';
-import Filter from '../components/Buyer/Filter';
-import ProductDetail from '../components/Buyer/ProductDetail';
-import {Route, Routes} from 'react-router-dom';
+import {useState} from "react";
+import Navigation from "../../components/Navigation/Navigation.jsx";
+import {Route, Routes} from "react-router-dom";
+import ProductList from "../../components/Buyer/ProductList.jsx";
+import Filter from "../../components/Buyer/Filter.jsx";
+import ProductDetail from "../../components/Buyer/ProductDetail.jsx";
 
 const HomePage = () => {
   let product = {

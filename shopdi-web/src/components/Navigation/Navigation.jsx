@@ -18,7 +18,7 @@ export default function Navigation(props) {
 
               {/* Logo */}
               <div className="mr-11 flex lg:ml-0">
-                <a href="#" onClick={() => {
+                <a href="/" onClick={() => {
                   props.setCurrentCategory({name:"",sub_categories:[]});
                   props.setIsFiltered(false);
                 }}>
@@ -104,7 +104,7 @@ export default function Navigation(props) {
                 {/* <ModeSelect />*/}
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a href="#" className="group -m-2 flex items-center p-2">
+                  <a href="/cart" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
