@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import './product_detail.css'
 import shopdiLogo from '@/assets/images/shopdi_logo.jpeg';
+
 export default function ProductDetail() {
     const product = {
         id: 0,

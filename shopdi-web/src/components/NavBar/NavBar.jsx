@@ -1,5 +1,5 @@
-import { Disclosure, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {Disclosure, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems} from '@headlessui/react'
+import {Bars3Icon, BellIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import shopdiLogo from '/src/assets/images/Shopdi.png';
 
 const navigation = [

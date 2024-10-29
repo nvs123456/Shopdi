@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 const StarRating = () => {
     const [rating, setRating] = useState(0); // Lưu số ngôi sao được đánh giá
