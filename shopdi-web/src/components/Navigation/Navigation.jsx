@@ -59,8 +59,8 @@ export default function Navigation(props) {
                                 <Link to={`/${section.name}`}>
                                 <div key={section.name}>
                                   <p id={`${section.name}-heading`} onClick={() => {
-                                    props.setCurrentCategory({name:section.name,sub_categories:section.sub_categories});
-                                    props.setIsFiltered(true)
+                                    // props.setCurrentCategory({name:section.name,sub_categories:section.sub_categories});
+                                    // props.setIsFiltered(true)
                                   }} className="font-medium hover:text-gray-800">
                                     {section.name}
                                   </p>

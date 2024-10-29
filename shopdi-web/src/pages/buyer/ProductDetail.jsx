@@ -4,7 +4,6 @@ import StarIcon from "@mui/icons-material/Star";
 import {useState} from "react";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import ShopBar from "../../components/Buyer/ShopBar.jsx";
-
 export default function ProductDetail() {
     const product = {
         id: 0,

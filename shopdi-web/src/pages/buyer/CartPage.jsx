@@ -6,7 +6,6 @@ export default function CartPage({ CartId }) {
     const [total, setTotal] = useState(0);
     return (
         <>
-        <Navigation/>
         <div className="mt-8 ml-20 mr-20 flex flex-row">
             <div className="w-2/3"><Cart CartId={CartId} setTotal={setTotal} total={total}/></div>
             

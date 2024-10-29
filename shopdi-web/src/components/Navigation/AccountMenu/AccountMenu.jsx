@@ -10,7 +10,8 @@ import Tooltip from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import { Link } from 'react-router-dom';
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -84,10 +85,12 @@ export default function AccountMenu() {
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
+          <Link to = "/orderlist">
           <ListItemIcon>
-            <PersonAdd fontSize="small" />
+            <ChecklistIcon fontSize="small" />
           </ListItemIcon>
-          Add another account
+          My Order
+          </Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <ListItemIcon>

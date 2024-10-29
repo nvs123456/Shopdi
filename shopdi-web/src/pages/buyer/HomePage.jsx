@@ -1,6 +1,6 @@
-import {useState} from "react";
+import { useState } from "react";
 import Navigation from "../../components/Navigation/Navigation.jsx";
-import {Route, Routes} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ProductList from "../../components/Buyer/ProductList.jsx";
 import Filter from "../../components/Buyer/Filter.jsx";
 import ProductDetail from "./ProductDetail.jsx";
@@ -27,17 +27,20 @@ const HomePage = () => {
   }
   const [isFiltered, setIsFiltered] = useState(false);
   const [currentCategory, setCurrentCategory] = useState({ name: "", sub_categories: [] });
-
+  
   return (
     <div>
-      <Navigation setIsFiltered={setIsFiltered} setCurrentCategory={setCurrentCategory} />
+      {/* <Navigation setIsFiltered={setIsFiltered} setCurrentCategory={setCurrentCategory} /> */}
       <Routes>
         <Route path="/" element={<div className='flex flex-col justify-center'>
           <ProductList products={product_tmp} />
         </div>} />
-        <Route path="/:category" element={<div>
-          <Filter category={currentCategory} products={product_tmp} />
-        </div>} />
+        <Route path="/:category" element={
+          <div>
+            <Filter>
+              <ProductList products={product_tmp} />
+            </Filter>
+          </div>} />
         <Route path="/product/:id" element={<ProductDetail />} />
       </Routes>
 
