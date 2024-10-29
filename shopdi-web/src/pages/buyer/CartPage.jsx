@@ -1,7 +1,7 @@
 import React from "react";
-import Cart from "@/components/buyer/Cart";
 import { useState } from "react";
-import Navigation from "@/components/Navigation/Navigation";
+import Navigation from "../../components/Navigation/Navigation.jsx";
+import Cart from "../../components/Buyer/Cart.jsx";
 export default function CartPage({ CartId }) {
     const [total, setTotal] = useState(0);
     return (

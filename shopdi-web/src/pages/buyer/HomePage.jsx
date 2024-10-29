@@ -3,7 +3,8 @@ import Navigation from "../../components/Navigation/Navigation.jsx";
 import {Route, Routes} from "react-router-dom";
 import ProductList from "../../components/Buyer/ProductList.jsx";
 import Filter from "../../components/Buyer/Filter.jsx";
-import ProductDetail from "../../components/Buyer/ProductDetail.jsx";
+import ProductDetail from "./ProductDetail.jsx";
+import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 
 const HomePage = () => {
   let product = {

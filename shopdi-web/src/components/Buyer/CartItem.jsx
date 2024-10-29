@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import shopdiLogo from '@/assets/images/shopdi_logo.jpeg';
-import Variant from '@/components/buyer/Variant';
+
 import Quantity from './Quantity';
+import Variant from "./Variant.jsx";
+import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 export default function CartItem({ cart_item_id, setTotal ,total}) {
 
     const item = {
