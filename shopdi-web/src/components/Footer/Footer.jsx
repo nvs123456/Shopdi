@@ -1,12 +1,12 @@
-import { Button, Grid, Typography } from '@mui/material'
+import {Grid, Typography} from '@mui/material'
 import React from 'react'
-import UETLogo from '../../assets/images/UETLogo.png'
-import MITLogo from '../../assets/images/MITLogo.png'
+import UETLogo from '/src/assets/images/UETLogo.png'
+import MITLogo from '/src/assets/images/MITLogo.png'
 
 const Footer = () => {
     return (
         <div>
-            <Grid className='bg-cosmicLatte text-yaleBlue text-center mt-10 py-2'
+            <Grid className='bg-cosmicLatte text-yaleBlue text-center'
                 container
                 justifyContent='space-evenly'
                 alignItems='center'

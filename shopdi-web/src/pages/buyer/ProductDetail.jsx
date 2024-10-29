@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import StarIcon from '@mui/icons-material/Star';
-import '@/css/product_detail.css'
-import shopdiLogo from '@/assets/images/shopdi_logo.jpeg';
-import ShopBar from '@/components/buyer/ShopBar';
-import Quantity from '@/components/buyer/Quantity';
-import Variant from '@/components/buyer/Variant';
+import Quantity from "../../components/Buyer/Quantity.jsx";
+import Variant from "../../components/Buyer/Variant.jsx";
+import StarIcon from "@mui/icons-material/Star";
+import {useState} from "react";
+import shopdiLogo from "./assets/images/shopdi_logo.jpeg";
+
 export default function ProductDetail() {
     const product = {
         id: 0,
@@ -34,7 +33,7 @@ export default function ProductDetail() {
         sold: 100,
         price: 199000,
         inStock: 100,
-        categoty: ["Thoi trang nam", 'Quan'],
+        category: ["Thoi trang nam", 'Quan'],
         phan_loai:
             [
                 {

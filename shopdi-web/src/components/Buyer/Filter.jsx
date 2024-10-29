@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import ProductList from "./ProductList";
-import CATEGORIES from '@/data/categories_data';
+import React, {useState} from "react";
+import ProductList from "./ProductList.jsx";
+
 export default function Filter({ category, products }) {
     const [isSortOpen, setSortOpen] = useState(false);
 

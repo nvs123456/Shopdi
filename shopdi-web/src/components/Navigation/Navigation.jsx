@@ -1,14 +1,10 @@
-import {
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
-} from '@headlessui/react'
-import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
+import {Popover, PopoverButton, PopoverGroup, PopoverPanel,} from '@headlessui/react'
+import {MagnifyingGlassIcon, ShoppingBagIcon} from '@heroicons/react/24/outline'
 import shopdiLogo from '@/assets/images/Shopdi2.jpg';
-import AccountMenu from './AccountMenu/AccountMenu';
+import AccountMenu from './AccountMenu/AccountMenu.jsx';
 import CATEGORIES from '@/data/categories_data';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
+
 const categories = CATEGORIES.CATEGORIES
 
 export default function Navigation(props) {

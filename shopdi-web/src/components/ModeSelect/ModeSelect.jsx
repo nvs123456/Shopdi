@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { useColorScheme } from '@mui/material/styles';
+import {useColorScheme} from '@mui/material/styles';
 
 
 const ModeSelect = () => {

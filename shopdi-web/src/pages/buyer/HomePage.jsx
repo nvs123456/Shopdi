@@ -1,12 +1,10 @@
-import React from 'react'
-import ProductList from '@/components/buyer/ProductList'
-import Navigation from '@/components/Navigation/Navigation'
-import shopdiLogo from '@/assets/images/shopdi_logo.jpeg';
-import Filter from '@/components/buyer/Filter';
-import { useState } from 'react';
-import ProductDetail from '@/pages/buyer/ProductDetail';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ShopView from '@/pages/buyer/ShopView';
+import {useState} from "react";
+import Navigation from "../../components/Navigation/Navigation.jsx";
+import {Route, Routes} from "react-router-dom";
+import ProductList from "../../components/Buyer/ProductList.jsx";
+import Filter from "../../components/Buyer/Filter.jsx";
+import ProductDetail from "../../components/Buyer/ProductDetail.jsx";
+
 const HomePage = () => {
   let product = {
     id: 0,
@@ -40,7 +38,6 @@ const HomePage = () => {
           <Filter category={currentCategory} products={product_tmp} />
         </div>} />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/shop-view/:name" element={<ShopView />} />
       </Routes>
 
 
