@@ -8,6 +8,7 @@ import OrderDetails from "../components/Buyer/OrderDetails.jsx";
 import OrderItemList from "../components/Buyer/Order/OrderItemList.jsx";
 import orderItemList from '../data/orderData.json';
 import SignUpForm from "../pages/buyer/SignUp.jsx";
+import Forget from "../pages/buyer/Forget.jsx";
 
 const AppRouter = () => {
     return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
                 <Route path="/login" exact element={<LoginForm/>}/>
                 <Route path="/cart" exact element={<CartPage/>}/>
                 <Route path="/buyer/signup" exact element={<SignUpForm/>}/>
+                <Route path="/buyer/forget" exact element={<Forget/>}/>
 
             </Routes>
         </div>
