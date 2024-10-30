@@ -7,6 +7,7 @@ import Review from "../components/Buyer/Review/Review.jsx";
 import OrderDetails from "../components/Buyer/OrderDetails.jsx";
 import OrderItemList from "../components/Buyer/Order/OrderItemList.jsx";
 import orderItemList from '../data/orderData.json';
+import SignUpForm from "../pages/buyer/SignUp.jsx";
 
 const AppRouter = () => {
     return (
@@ -18,6 +19,8 @@ const AppRouter = () => {
                 <Route path="/orderdetail" exact element={<OrderDetails/>}/>
                 <Route path="/login" exact element={<LoginForm/>}/>
                 <Route path="/cart" exact element={<CartPage/>}/>
+                <Route path="/buyer/signup" exact element={<SignUpForm/>}/>
+
             </Routes>
         </div>
     );
