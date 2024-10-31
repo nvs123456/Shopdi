@@ -5,6 +5,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,5 +34,7 @@ public class Rating extends BaseEntity<Long> {
     @JsonIgnore
     Product product;
 
+    @Min(1)
+    @Max(5)
     double rating;
 }

@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.domain.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,8 +34,8 @@ public class Cart extends BaseEntity<Long> {
     @Column(name = "cart_items")
     Set<CartItem> cartItems = new HashSet<>();
 
-    double totalPrice;
-    int totalItem;
-    int totalDiscountedPrice;
-    int discount;
+    Double totalPrice;
+    Double totalItem;
+    Double totalDiscountedPrice;
+    Double discount;
 }

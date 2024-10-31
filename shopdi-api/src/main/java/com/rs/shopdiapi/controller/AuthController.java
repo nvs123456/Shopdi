@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.controller;
 
 import com.rs.shopdiapi.domain.dto.request.AuthRequest;
+import com.rs.shopdiapi.domain.dto.request.ChangePasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.TokenRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
@@ -26,10 +27,6 @@ import java.text.ParseException;
 public class AuthController {
     @Autowired
     private AuthService authenticationService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtUtil jwtUtil;
 
     @PostMapping("/login")
     ApiResponse<AuthResponse> authenticate(@RequestBody AuthRequest request) {
@@ -75,9 +72,11 @@ public class AuthController {
 
 
     @PostMapping("change-password")
-    public ApiResponse<String> changePassword(@RequestBody @Valid ResetPasswordRequest request) {
+    public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
         return ApiResponse.<String>builder()
                 .message(authenticationService.changePassword(request))
                 .build();
     }
+
+
 }

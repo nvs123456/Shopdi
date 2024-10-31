@@ -26,20 +26,22 @@ import java.time.LocalDateTime;
 public class OrderItem extends BaseEntity<Long> {
     @JsonIgnore
     @ManyToOne
-    private Order order;
+    Order order;
 
     @ManyToOne
-    private Product product;
+    Product product;
 
-    private String size;
+    String variant;
 
-    private Integer quantity;
+    Integer quantity;
 
-    private Integer price;
+    Integer price;
 
-    private Integer discountedPrice;
+    Integer discountedPrice;
 
-    private Long userId;
+    Integer discountPercent;
 
-    private LocalDateTime deliveryDate;
+    Long userId;
+
+    LocalDateTime deliveryDate;
 }

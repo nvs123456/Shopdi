@@ -43,9 +43,20 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
-                .authorizeHttpRequests(request -> request.requestMatchers(
-                                HttpMethod.POST, "/auth/login", "/users/signup", "/auth/logout", "/auth/introspect", "/auth/refresh")
-                        .permitAll()
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "auth/login",
+                                "users/signup",
+                                "auth/logout",
+                                "auth/introspect",
+                                "auth/refresh"
+                        ).permitAll()
+                        .requestMatchers(
+                                "v3/api-docs/**",
+                                "swagger-ui/**",
+                                "swagger-ui.html"
+                        ).permitAll()
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -65,7 +76,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(false)

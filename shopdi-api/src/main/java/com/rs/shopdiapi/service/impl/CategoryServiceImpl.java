@@ -1,6 +1,12 @@
 package com.rs.shopdiapi.service.impl;
 
+import com.rs.shopdiapi.domain.dto.request.CreateCategoryRequest;
+import com.rs.shopdiapi.domain.dto.response.CategoryResponse;
+import com.rs.shopdiapi.domain.dto.response.ChildCategoryResponse;
 import com.rs.shopdiapi.domain.entity.Category;
+import com.rs.shopdiapi.domain.enums.ErrorCode;
+import com.rs.shopdiapi.exception.AppException;
+import com.rs.shopdiapi.mapper.CategoryMapper;
 import com.rs.shopdiapi.repository.CategoryRepository;
 import com.rs.shopdiapi.service.CategoryService;
 import jakarta.transaction.Transactional;
@@ -20,67 +26,109 @@ import java.util.Optional;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
+    CategoryMapper categoryMapper;
 
-    @PreAuthorize("hasRole('USER')")
     @Transactional
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryResponse> getAllCategories() {
+        List<Category> categories = categoryRepository.findAllByParentCategoryIsNull();
+
+        return categories.stream()
+                .map(category -> CategoryResponse.builder()
+                        .id(category.getId())
+                        .name(category.getName())
+                        .parentId(Optional.ofNullable(category.getParentCategory()).map(Category::getId).orElse(null))
+                        .parentName(Optional.ofNullable(category.getParentCategory()).map(Category::getName).orElse(null))
+                        .childCategories(category.getChildCategories().stream()
+                                .map(childCategory -> ChildCategoryResponse.builder()
+                                        .id(childCategory.getId())
+                                        .name(childCategory.getName())
+                                        .build())
+                                .toList())
+                        .build())
+                .toList();
     }
 
-    @PreAuthorize("hasRole('USER')")
     @Transactional
     @Override
-    public Optional<Category> getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId);
+    public Category getCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
-    public Category createCategory(String name) {
-        return categoryRepository.save(
-                Category.builder()
-                .name(name)
-                .build());
+    public CategoryResponse createCategory(CreateCategoryRequest categoryRequest) {
+        if (categoryRepository.existsByName(categoryRequest.getName())) {
+            throw new AppException(ErrorCode.CATEGORY_ALREADY_EXISTS);
+        }
+
+        Category category = Category.builder()
+                .name(categoryRequest.getName())
+                .build();
+
+        if (categoryRequest.getParentName() != null) {
+            Category parentCategory = categoryRepository.findByName(categoryRequest.getParentName())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+            category.setParentCategory(parentCategory);
+        }
+
+        Category savedCategory = categoryRepository.save(category);
+
+        List<ChildCategoryResponse> childCategories = savedCategory.getChildCategories() != null
+                ? savedCategory.getChildCategories().stream()
+                .map(child -> ChildCategoryResponse.builder()
+                        .id(child.getId())
+                        .name(child.getName())
+                        .build())
+                .toList()
+                : List.of();
+
+        return CategoryResponse.builder()
+                .id(savedCategory.getId())
+                .name(savedCategory.getName())
+                .parentId(Optional.ofNullable(savedCategory.getParentCategory()).map(Category::getId).orElse(null))
+                .parentName(Optional.ofNullable(savedCategory.getParentCategory()).map(Category::getName).orElse(null))
+                .childCategories(childCategories)
+                .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @Transactional
     @Override
-    public void updateCategory(Category category, String name) {
-        category.setName(name);
-        categoryRepository.save(category);
+    public Category updateCategory(Category category, Long categoryId) {
+        var categoryToUpdate = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        categoryToUpdate.setName(category.getName());
+        categoryToUpdate.setParentCategory(category.getParentCategory());
+
+
+        return categoryRepository.save(category);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
-    public void deleteCategory(Category category) {
-        categoryRepository.delete(category);
+    public String deleteCategory(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
+        return "Category deleted successfully";
     }
 
 
-    @PreAuthorize("hasRole('USER')")
     @Transactional
     @Override
     public boolean isChildCategory(Category parent, Category category) {
-        return category.getParent().equals(parent);
+        return category.getParentCategory().equals(parent);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
     public void addChildCategory(Category parent, Category child) {
-        child.setParent(parent);
+        child.setParentCategory(parent);
         categoryRepository.save(child);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
     public void removeChildCategory(Category parent, Category child) {
-        child.setParent(null);
+        child.setParentCategory(null);
         categoryRepository.save(child);
     }
 }

@@ -1,9 +1,12 @@
 package com.rs.shopdiapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rs.shopdiapi.domain.enums.UserStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
@@ -47,9 +51,10 @@ public class User extends BaseEntity<Long> implements UserDetails {
     String username;
     String firstName;
     String lastName;
+    String profileImage;
 
     @Column(unique = true)
-    @Pattern(regexp = "[6789]{1}[0-9]{9}", message = "Enter valid 10 digit mobile number")
+    @Pattern(regexp = "(^0[3|5|7|8|9][0-9]{8}$)", message = "Enter valid 10 digit mobile number")
     String mobileNo;
 
 
@@ -64,8 +69,13 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     Seller seller;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    List<Address> addresses;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "billing_address_id")
+    Address billingAddress;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shipping_address_id")
+    Address shippingAddress;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -75,9 +85,14 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @JsonIgnore
     List<Rating> ratings;
 
+    @Enumerated(EnumType.STRING)
+    UserStatusEnum status;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .toList();
     }
 
     @Override

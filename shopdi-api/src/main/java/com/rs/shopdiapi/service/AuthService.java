@@ -1,6 +1,8 @@
 package com.rs.shopdiapi.service;
 
 import com.rs.shopdiapi.domain.dto.request.AuthRequest;
+import com.rs.shopdiapi.domain.dto.request.ChangePasswordRequest;
+import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
 import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.TokenRequest;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
@@ -21,5 +23,6 @@ public interface AuthService {
 
     String forgotPassword(String email);
 
-    String changePassword(ResetPasswordRequest request);
+    String changePassword(ChangePasswordRequest request);
+
 }

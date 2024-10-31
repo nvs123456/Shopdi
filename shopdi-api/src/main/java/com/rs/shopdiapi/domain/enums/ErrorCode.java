@@ -29,6 +29,22 @@ public enum ErrorCode {
     INVALID_DOB("INVALID_DOB", "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
 
     PASSWORD_NOT_MATCH("PASSWORD_NOT_MATCH", "Password not match", HttpStatus.BAD_REQUEST),
+
+    PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND", "Product not found", HttpStatus.NOT_FOUND),
+
+    CATEGORY_NOT_FOUND("CATEGORY_NOT_FOUND", "Category not found", HttpStatus.NOT_FOUND),
+
+    CATEGORY_ALREADY_EXISTS("CATEGORY_ALREADY_EXISTS", "Category already exists", HttpStatus.BAD_REQUEST),
+
+    SELLER_NOT_EXIST("SELLER_NOT_EXIST", "Seller not exist", HttpStatus.NOT_FOUND),
+
+    SELLER_ALREADY_REGISTERED("SELLER_ALREADY_REGISTERED", "Seller already registered", HttpStatus.BAD_REQUEST),
+
+    ORDER_NOT_FOUND("ORDER_NOT_FOUND", "Order not found", HttpStatus.NOT_FOUND),
+
+    TAG_ALREADY_EXISTS("TAG_ALREADY_EXISTS", "Tag already exists", HttpStatus.BAD_REQUEST),
+
+    TAG_NOT_FOUND("TAG_NOT_FOUND", "Tag not found", HttpStatus.NOT_FOUND)
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {

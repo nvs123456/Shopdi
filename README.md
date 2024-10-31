@@ -11,4 +11,6 @@
 Frontend: Sử dụng VS Code để phát triển.<br>
 Backend: Sử dụng IntelliJ IDEA để phát triển
 
+Tài liệu backend: http://localhost:8080/swagger-ui/index.html#/
+
 Link figma: https://www.figma.com/design/76JBbAYX0ZiV9BFPiBkWBM/ONDC---INcart-website-(Seller-and-Buyer)-(Community)?node-id=157-731&t=J1nrKyoMvBZHO67J-1

@@ -27,10 +27,10 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
 
     @Column(name = "created_at")
     @CreationTimestamp
-    private Date createdAt;
+    Date createdAt;
 
     @Column(name = "updated" +
             "_at")
     @UpdateTimestamp
-    private Date updatedAt;
+    Date updatedAt;
 }
