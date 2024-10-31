@@ -2,6 +2,7 @@ package com.rs.shopdiapi.repository;
 
 import com.rs.shopdiapi.domain.entity.Rating;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RatingRepository extends JpaRepository<Rating, Long> {
+public interface RatingRepository extends JpaRepository<Rating, Long>, JpaSpecificationExecutor<Rating> {
     @Query("SELECT r FROM Rating r WHERE r.product.id = :productId")
     public List<Rating> getAllProductsRating(@Param("productId")Long productId);
 }

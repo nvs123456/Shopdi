@@ -1,5 +1,7 @@
 package com.rs.shopdiapi.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +19,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -27,17 +32,17 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Category extends BaseEntity<Long> {
-
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false, unique = true)
     String name;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    Category parent;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @JsonIgnore
+    Category parentCategory;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories")
-    Set<Product> products;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Product> products = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parent")
-    Set<Category> childCategories;
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<Category> childCategories = new HashSet<>();
 }

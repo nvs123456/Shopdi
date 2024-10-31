@@ -4,8 +4,10 @@ import com.rs.shopdiapi.domain.dto.request.CreateUserRequest;
 import com.rs.shopdiapi.domain.dto.request.UpdateUserRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.UserResponse;
+import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -43,9 +46,12 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<List<UserResponse>> getAllUsers() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .result(userService.getAllUsers())
+    public ApiResponse<?> getAllUsers(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                      @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                      @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
+                                      @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
+        return ApiResponse.builder()
+                .result(userService.getAllUsers(pageNo, pageSize, sortBy, sortOrder))
                 .build();
     }
 

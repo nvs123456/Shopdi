@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.domain.entity;
 
+import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,33 +34,22 @@ import java.util.List;
 public class Order extends BaseEntity<Long> {
 
     @Column(name = "order_id")
-    private String orderId;
-
+    String orderId;
     @ManyToOne
-    private User user;
+    User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems = new ArrayList<>();
-
-    private LocalDateTime orderDate;
-
-    private LocalDateTime deliveryDate;
+    List<OrderItem> orderItems = new ArrayList<>();
+    Integer totalItem;
 
     @OneToOne
-    private Address shippingAddress;
-
+    Address shippingAddress;
 //    @Embedded
-//    private PaymentDetails paymentDetails = new PaymentDetails();
+//    PaymentDetails paymentDetails = new PaymentDetails();
+    Double totalPrice;
+    Integer totalDiscountedPrice;
+    Integer discount;
+    OrderStatusEnum orderStatus;
+    LocalDateTime deliveryDate;
 
-    private double totalPrice;
-
-    private Integer totalDiscountedPrice;
-
-    private Integer discount;
-
-    private String orderStatus;
-
-    private int totalItem;
-
-    private LocalDateTime createAt;
 }

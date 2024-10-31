@@ -1,20 +1,22 @@
 package com.rs.shopdiapi.service;
 
+import com.rs.shopdiapi.domain.dto.request.CreateCategoryRequest;
+import com.rs.shopdiapi.domain.dto.response.CategoryResponse;
 import com.rs.shopdiapi.domain.entity.Category;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CategoryService {
-    List<Category> getAllCategories();
+    List<CategoryResponse> getAllCategories();
 
-    Optional<Category> getCategoryById(Long categoryId);
+    Category getCategoryById(Long categoryId);
 
-    Category createCategory(String name);
+    CategoryResponse createCategory(CreateCategoryRequest category);
 
-    void updateCategory(Category category, String name);
+    Category updateCategory(Category category, Long categoryId);
 
-    void deleteCategory(Category category);
+    String deleteCategory(Long categoryId);
 
     boolean isChildCategory(Category parent, Category category);
 

@@ -2,6 +2,7 @@ package com.rs.shopdiapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,14 +24,17 @@ public class CartItem extends BaseEntity<Long> {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "cart_id")
     Cart cart;
 
     @ManyToOne
+    @JoinColumn(name = "product_id")
     Product product;
 
-    String size;
-    int quantity;
+    String variant;
+    Integer quantity;
     Integer price;
+    Integer discountPercent;
     Integer discountedPrice;
 
 }

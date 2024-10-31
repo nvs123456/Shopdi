@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.AuthRequest;
+import com.rs.shopdiapi.domain.dto.request.ChangePasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.TokenRequest;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
@@ -124,19 +125,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String changePassword(ResetPasswordRequest request) {
-        if(!request.getPassword().equals(request.getConfirmPassword())) {
+    public String changePassword(ChangePasswordRequest request) {
+        if(!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
-        var username = jwtUtil.extractUsername(request.getSecretToken());
+        var username = jwtUtil.extractUsername(request.getToken());
 
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        return "";
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        return "Changed password";
     }
+
 
     @Override
     public String resetPassword(String secretKey) {

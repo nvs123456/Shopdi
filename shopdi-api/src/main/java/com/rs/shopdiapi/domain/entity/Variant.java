@@ -1,6 +1,6 @@
 package com.rs.shopdiapi.domain.entity;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,14 +9,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Embeddable
-public class Size {
-    String name;
-    int quantity;
+@Entity
+public class Variant extends BaseEntity<Long> {
+    String variantDetail;
+
+    @Column(nullable = false, columnDefinition = "int default 0")
+    Integer quantity = 0;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    Product product;
 }
