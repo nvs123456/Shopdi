@@ -9,16 +9,21 @@ export default function Cart({ CartId ,setTotal,total}) {
         })
     }
     const [items, setItems] = useState(tmp);
+    const onDelete = (id) => {
+        let l = items.filter((item) => item.id !== id);
+        setItems(l);
+    }
     return (
-        <div className="flex flex-col ">
+        <div className="flex flex-col w-full">
             <div className="header flex flex-row w-full">
                 <input type="checkbox"></input>
-                <span className="w-full pl-12">Ten san pham</span>
-                <span className="w-1/6">Gia</span>
-                <span className="w-1/6">So luong</span>
-                <span className="w-1/6">Thanh tien</span>
+                <span className="grow pl-12">Ten san pham</span>
+                <span className="w-40 text-center">Gia</span>
+                <span className="w-40 text-center">So luong</span>
+                <span className="w-40 text-center">Thanh tien</span>
+                <span className="w-40 text-center">Thao tac</span>
             </div>
-            {items.map((item) => <div className="border-b-2 border-gray-200 py-4"><CartItem  key={item.id} cart_item_id={item.id} setTotal={setTotal} total={total}/></div>)}
+            {items.map((item) => <div className="border-b-2 border-gray-200 py-4"><CartItem onDelete={onDelete} key={item.id} cart_item_id={item.id} setTotal={setTotal} total={total}/></div>)}
         </div>
     )
 }

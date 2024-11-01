@@ -9,12 +9,14 @@ import OrderItemList from "../components/Buyer/Order/OrderItemList.jsx";
 import orderItemList from '../data/orderData.json';
 import SignUpForm from "../pages/buyer/SignUp.jsx";
 import Forget from "../pages/buyer/Forget.jsx";
-
+import Checkout from "../pages/buyer/Checkout.jsx";
 const AppRouter = () => {
     return (
         <div>
             <Routes>
-                <Route path="/*" element={<HomePage/>}/>
+                <Route path="/*" element={<Checkout/>}/>
+                {/* <Route path="/*" element={<HomePage/>}/> */}
+
                 <Route path="/review" exact element={<Review/>}/>
                 <Route path="/orderlist" exact element={<OrderItemList List={orderItemList}/>}/>
                 <Route path="/orderdetail" exact element={<OrderDetails/>}/>
