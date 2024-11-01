@@ -54,12 +54,7 @@ public class ProductController {
 
 //    @GetMapping("/filter")
 //
-//    @PostMapping("/{productId}/ratings")
-//    public ApiResponse<?> addRating(@PathVariable Long productId, @RequestParam Double rating) {
-//        return ApiResponse.builder()
-//                .result(productService.addRating(productId, rating))
-//                .build();
-//    }
+
 //
 //    @GetMapping("{productId}/ratings")
 //    public ApiResponse<?> getRatings(@PathVariable Long productId) {
