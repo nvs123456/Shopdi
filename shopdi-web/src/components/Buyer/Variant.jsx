@@ -26,7 +26,6 @@ export default function Variant({ product_id, onChangeVariant, currentVariant })
                 ]
             }
         ]
-    console.log(currentVariant)
     return (
         <>
             {variant.map((item) => (
