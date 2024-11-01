@@ -29,7 +29,7 @@ export default function Payment() {
                 <label className="text-xl" htmlFor="card_number">card number</label>
                 <input className="w-full h-10 rounded border-2 border-gray-400 outline-none" type="number" id="card_number"></input>
             </div>
-            <div className="flex flex-row gap-4"> 
+            <div className="flex flex-row gap-4">
                 <div className="flex flex-col w-1/2">
                     <label htmlFor="exp_month">Expire date</label>
                     <input className=" h-10 rounded border-2 border-gray-400 outline-none" type="text" id="exp_month" />
@@ -39,8 +39,10 @@ export default function Payment() {
                     <input className="h-10 rounded border-2 border-gray-400 outline-none" type="text" id="cvc" />
                 </div>
             </div>
-            <input name="chrome-autofill-dummy1" style={{display:'none'}} disabled/>
-            <input name="chrome-autofill-dummy2" style={{display:'none'}} disabled/>
+            <input name="chrome-autofill-dummy1" style={{ display: 'none' }} disabled />
+            <input name="chrome-autofill-dummy2" style={{ display: 'none' }} disabled />
+            <input name="chrome-autofill-dummy2" style={{ display: 'none' }} disabled />
+
         </div>
     )
 }
