@@ -1,9 +1,9 @@
-import {Popover, PopoverButton, PopoverGroup, PopoverPanel,} from '@headlessui/react'
-import {MagnifyingGlassIcon, ShoppingBagIcon} from '@heroicons/react/24/outline'
+import { Popover, PopoverButton, PopoverGroup, PopoverPanel, } from '@headlessui/react'
+import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import shopdiLogo from '@/assets/images/Shopdi2.jpg';
 import AccountMenu from './AccountMenu/AccountMenu.jsx';
 import CATEGORIES from '@/data/categories_data';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const categories = CATEGORIES.CATEGORIES
 
@@ -18,10 +18,11 @@ export default function Navigation(props) {
 
               {/* Logo */}
               <div className="mr-11 flex lg:ml-0">
-                <a href="/" onClick={() => {
-                  props.setCurrentCategory({name:"",sub_categories:[]});
+                {/* <a href="/" onClick={() => {
+                  props.setCurrentCategory({ name: "", sub_categories: [] });
                   props.setIsFiltered(false);
-                }}>
+                }}> */}
+                <a href='/'>
                   <span className="sr-only">Your Company</span>
                   <img
                     alt="Logo"
@@ -56,15 +57,12 @@ export default function Navigation(props) {
 
                             <div className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                               {categories.map((section) => (
-                                <Link to={`/${section.name}`}>
-                                <div key={section.name}>
-                                  <p id={`${section.name}-heading`} onClick={() => {
-                                    // props.setCurrentCategory({name:section.name,sub_categories:section.sub_categories});
-                                    // props.setIsFiltered(true)
-                                  }} className="font-medium hover:text-gray-800">
-                                    {section.name}
-                                  </p>
-                                </div>
+                                <Link to={`/${section.name}`} state={{name: section.name, sub_categories: section.sub_categories}}>
+                                  <div key={section.name}>
+                                    <p id={`${section.name}-heading`} className="font-medium hover:text-gray-800">
+                                      {section.name}
+                                    </p>
+                                  </div>
                                 </Link>
                               ))}
                             </div>
