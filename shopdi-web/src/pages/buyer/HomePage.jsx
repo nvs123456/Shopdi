@@ -5,7 +5,7 @@ import ProductList from "../../components/Buyer/ProductList.jsx";
 import Filter from "../../components/Buyer/Filter.jsx";
 import ProductDetail from "./ProductDetail.jsx";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
-
+import Cart from "../../components/Buyer/Cart.jsx";
 const HomePage = () => {
   let product = {
     id: 0,
@@ -25,12 +25,9 @@ const HomePage = () => {
     tmp.price = Math.floor(Math.random() * 1000000);
     product_tmp.push(tmp);
   }
-  const [isFiltered, setIsFiltered] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState({ name: "", sub_categories: [] });
-  
+
   return (
     <div>
-      {/* <Navigation setIsFiltered={setIsFiltered} setCurrentCategory={setCurrentCategory} /> */}
       <Routes>
         <Route path="/" element={<div className='flex flex-col justify-center'>
           <ProductList products={product_tmp} />
@@ -39,6 +36,7 @@ const HomePage = () => {
           <div>
             <Filter>
               <ProductList products={product_tmp} />
+
             </Filter>
           </div>} />
         <Route path="/product/:id" element={<ProductDetail />} />

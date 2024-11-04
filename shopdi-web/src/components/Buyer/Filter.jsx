@@ -18,6 +18,7 @@ export default function Filter({children, products }) {
     }
     if (isValidCategory(currentCategory)) {
         const category = categories.find((category) => category.name === currentCategory);
+        let sub_categories = location.state.sub_categories;
         return (
             <div className="bg-white">
                 <main className="mx-auto max-width-20 px-4 sm:px-6 lg:px-8">
@@ -54,10 +55,11 @@ export default function Filter({children, products }) {
                         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                             {/* <!-- Filters --> */}
                             <form className="hidden lg:block">
-                                <h3 className="sr-only">Categories</h3>
+                                {/* <h3 className="sr-only">Categories</h3>
                                 <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                                     {category.sub_categories.map(item => <li key={item}><a href="#">{item}</a></li>)}
-                                </ul>
+                                </ul> */}
+                                <FilterSection type={currentCategory} values={sub_categories} />
                                 <FilterSection type="Brand" values={["Apple", "Samsung", "Google", "Sony"]} />
                                 <PriceFilter />
                                 <FilterSection type="Rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} />
