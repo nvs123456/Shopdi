@@ -14,9 +14,11 @@ export default function Product({item }) {
             <span className="w-32 text-center ">{item.order}</span>
             <span className="w-32 text-center">{item.publish_date}</span>
             <div className='w-8 '>
+                <Link to="edit-product">
                 <button className='mr-4 w-auto'>
                     <EditIcon />
                 </button>
+                </Link>
             </div>
             <div className='w-8 '>
                 <button>

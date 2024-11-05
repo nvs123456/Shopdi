@@ -110,7 +110,7 @@ export default function ProductDetail() {
     const [subImages, setSubImages] = useState([0, 1, 2, 3, 4])
     const [curImage, setCurImage] = useState(0)
     return (
-        <div className="pr-40 pl-40 bg-cloudBlue">
+        <div className="pr-10 pl-10 bg-cloudBlue grow">
             <div className="pt-10 flex flex-col gap-y-2">
                 <div className="product-info bg-white flex flex-row gap-x-8 border-2 rounded-md">
                     <div className="product-image w-2/5 p-2">
