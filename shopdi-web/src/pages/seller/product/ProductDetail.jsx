@@ -2,7 +2,7 @@ import Quantity from "@/components/Buyer/Quantity.jsx";
 import Variant from "@/components/Buyer/Variant.jsx";
 import StarIcon from "@mui/icons-material/Star";
 import {useState} from "react";
-import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";x
+import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 export default function ProductDetail() {
     const product = {
         id: 0,
