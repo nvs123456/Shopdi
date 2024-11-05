@@ -3,19 +3,11 @@ import CATEGORIES from '@/data/categories_data';
 import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-function combine(list1, list2) {
-    let tmp = []
-    for (let i = 0; i < list1.length; i++) {
-        for (let j = 0; j < list2.length; j++) {
-            tmp.push([...list1[i], list2[j][0]])
-        }
-    }
-    return tmp
-}
 export default function AddProduct() {
     const categories = CATEGORIES.CATEGORIES;
     const [currentCategory, setCurrentCategory] = useState(categories[0]);
-    const [variants, setVariants] = useState([{ id: 0, type: '', values: [{ id: 0, value: '' }] }]);
+    const [variants, setVariants] = useState([]);
+
     const [listVariants, setListVariants] = useState([]);
     const [openPopup, setOpenPopup] = useState(false);
     return (
@@ -26,25 +18,10 @@ export default function AddProduct() {
             <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
 
                 <div>
-                    <span className='text-celticBlue text-xl' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
+                    <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
                     <span className="inline-block font-bold text-xl ml-4 p-2">Add Product</span>
                     <span onClick={() => {
-                        let tmp = []
-                        for (let i = 0; i < variants.length; i++) {
-                            let l = []
-                            for (let j = 0; j < variants[i].values.length; j++) {
-                                if (variants[i].values[j].value !== '')
-                                    l.push([{ type: variants[i].type, value: variants[i].values[j].value }])
-                            }
-                            tmp.push(l)
-                        }
-                        let list = [...tmp[0]]
-                        for (let i = 1; i < tmp.length; i++) {
-                            list = combine(list, tmp[i])
-                        }
-                        setListVariants(list)
-                        setOpenPopup(true)
-                        console.log(list)
+                        onAddVariant(variants, setListVariants, setOpenPopup)
                     }}
                         className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
                 </div>
@@ -126,80 +103,7 @@ export default function AddProduct() {
                             <span className='font-bold text-xl'>Variant</span>
                         </div>
                         <div>
-                            <div>
-                                {
-                                    variants.map((variant, index) => {
-                                        return (
-                                            <div key={`variant-${variant.id}`}>
-                                                <CloseIcon onClick={() => {
-                                                    let tmp = [...variants];
-                                                    tmp.splice(index, 1);
-                                                    setVariants(tmp);
-                                                }} />
-                                                <div className="flex flex-row gap-4">
-                                                    <div>
-                                                        <label>Varient type</label>
-                                                        <div>
-                                                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' onChange={(e) => {
-                                                                let tmp = [...variants];
-                                                                tmp[index].type = e.target.value;
-                                                                setVariants(tmp);
-                                                            }}></input>
-                                                        </div>
-                                                    </div>
-                                                    <div className=' flex flex-col'>
-                                                        <label>Values</label>
-                                                        <div className=' flex flex-row gap-4 items-center flex-wrap'>
-                                                            {
-                                                                variant.values.map((item, index_2) => {
-                                                                    return (
-                                                                        <div key={`${item.id}`} className='border-2 border-gray-400 rounded'>
-                                                                            <input type="text" className='outline-none w-20 border-none h-8 rounded' defaultValue={item.value} onChange={(e) => {
-                                                                                e.preventDefault();
-                                                                                let tmp = [...variants];
-                                                                                tmp[index].values[index_2].value = e.target.value;
-                                                                                setVariants(tmp);
-                                                                            }}></input>
-                                                                            <CloseIcon onClick={() => {
-                                                                                console.log(variants);
-                                                                                let tmp = [...variants];
-                                                                                tmp[index].values.splice(index_2, 1);
-                                                                                setVariants(tmp);
-                                                                            }} className='cursor-pointer' />
-                                                                        </div>
-                                                                    )
-                                                                })
-                                                            }
-                                                            <label onClick={() => {
-                                                                let tmp = [...variants];
-                                                                let last = tmp[index].values[tmp[index].values.length - 1];
-                                                                let id = last ? last.id + 1 : 1
-                                                                tmp[index].values.push({ id: id, value: "" });
-                                                                setVariants(tmp)
-                                                            }}
-                                                                className='inline-block cursor-pointer bg-white border-dashed border-2 text-white rounded w-10 h-10 text-center content-center hover:bg-gray-200'>
-                                                                <AddIcon className='text-black ' />
-
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                }
-                                <label onClick={() => {
-                                    console.log(variants);
-                                    let tmp = [...variants];
-                                    if (tmp.length === 0) tmp.push({ id: 0, type: "", values: [{ id: 0, value: "" }] });
-                                    else tmp.push({ id: tmp[tmp.length - 1].id + 1, type: "", values: [{ id: 0, value: "" }] });
-                                    setVariants(tmp)
-                                }}
-                                    className='inline-block mt-4 cursor-pointer bg-white border-dashed border-2 text-white rounded p-2 w-fit text-center content-center hover:bg-gray-200'>
-                                    <span className='text-black '>Add variant</span>
-                                </label>
-
-                            </div>
+                            <VariantsForm variants={variants} setVariants={setVariants} />
                         </div>
                     </div>
                 </div>
@@ -218,7 +122,7 @@ const UploadAndDisplayImage = () => {
     return (
         <div className='flex flex-col gap-4'>
             <div className='flex flex-row gap-4 flex-wrap p-4 w-full min-h-[100px] border-2 border-gray-200 rounded'>
-                <label htmlFor="myImage" className='inline-block mt-4 cursor-pointer bg-white border-dashed border-2 text-white rounded p-2 w-20 text-center content-center hover:bg-gray-200'>
+                <label htmlFor="myImage" className='inline-block mt-[12px] ml-[12px] cursor-pointer bg-white border-dashed border-2 text-white rounded w-24 h-24 text-center content-center hover:bg-gray-200'>
                     <AddIcon className='text-black ' />
                 </label>
                 <input
@@ -230,28 +134,38 @@ const UploadAndDisplayImage = () => {
                     onChange={(event) => {
                         let tmp = [...selectedImage]
                         for (let i = 0; i < event.target.files.length; i++) {
-                            tmp.push(event.target.files[i])
+                            tmp.push({ path: event.target.files[i], isChoosed: true })
                         }
                         setSelectedImage(tmp);
                     }}
                 />
                 {selectedImage.length > 0 && (
                     selectedImage.map((item, index) => {
-                        return (<div key={index}>
-                            <img
-                                alt="not found"
-                                style={{ aspectRatio: "1/1", width: "80px", height: "80px" }}
-                                src={URL.createObjectURL(item)}
-                            />
-                            {/* Button to remove the selected image */}
-                        </div>)
+                        if (item.isChoosed === false) return null
+                        return (
+                            <div className='relative p-[12px] rounded'>
+                                <div key={index} className='w-24 h-24 flex items-center bg-white rounded'>
+                                    <img
+                                        alt="not found"
+                                        src={URL.createObjectURL(item.path)}
+                                    />
+                                </div>
+                                <label className='absolute top-0 right-0 bg-gray-600 rounded-full' onClick={() => {
+                                    let tmp = [...selectedImage];
+                                    tmp[index].isChoosed = false
+                                    setSelectedImage(tmp);
+                                }} >
+                                    <CloseIcon o />
+                                </label>
+                            </div>
+                        )
                     })
 
                 )}
 
             </div>
 
-        </div>
+        </div >
     );
 };
 function QuantityOfVariants({ variants, setOpenPopup }) {
@@ -262,6 +176,25 @@ function QuantityOfVariants({ variants, setOpenPopup }) {
                     <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
                 </div>
             </div>
+        )
+    }
+    function d(item) {
+        return (
+            <span>
+                <span className='text-xl'>
+                    {item.type}
+                </span>
+                <span className='font-bold text-pumpkin'>: {item.value}, </span>
+            </span>
+        )
+    }
+    function e(item) {
+        return (
+            <span>
+                {item.map((item) => {
+                    return d(item)
+                })}
+            </span>
         )
     }
     return (
@@ -275,8 +208,10 @@ function QuantityOfVariants({ variants, setOpenPopup }) {
                 {variants.map((item, index) => {
                     return (
                         <div key={index} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
-                            <span className='border-r-2 border-gray-200 grow place-content-center'>{[...item].reduce((a, b) => a + b.type + ":" + b.value + ", ", "")}</span>
-                            <input type="number" placeholder='type number only' className='outline-none w-1/6 h-10'></input>
+                            <span className='border-r-2 border-gray-200 grow place-content-center'>{e(item)}</span>
+                            <input type="number" placeholder='type number' className='outline-none w-1/6 h-10' onInput={(e) => {
+                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
+                            }}></input>
                         </div>
 
                     )
@@ -290,4 +225,134 @@ function QuantityOfVariants({ variants, setOpenPopup }) {
 
         </div>
     )
+}
+function combine(list1, list2) {
+    let tmp = []
+    for (let i = 0; i < list1.length; i++) {
+        for (let j = 0; j < list2.length; j++) {
+            tmp.push([...list1[i], list2[j][0]])
+        }
+    }
+    return tmp
+}
+function onAddVariant(variants, setListVariants, setOpenPopup) {
+    console.log(variants)
+    let tmp = []
+    for (let i = 0; i < variants.length; i++) {
+        if(variants[i].isDeleted) continue
+        let l = []
+        for (let j = 0; j < variants[i].values.length; j++) {
+            if (variants[i].values[j].isDeleted) continue
+            l.push([{ type: variants[i].type, value: variants[i].values[j].value }])
+        }
+        tmp.push(l)
+    }
+    let list = [...tmp[0]]
+    for (let i = 1; i < tmp.length; i++) {
+        list = combine(list, tmp[i])
+    }
+    setListVariants(list)
+    setOpenPopup(true)
+    console.log(list)
+}
+
+// const v = [
+
+//     {
+//         type: 'color',
+//         values: [
+//             { value: 'red', isDeleted: false },
+//             { value: 'green',isDeleted: false },
+//             { value: 'blue',isDeleted: false },
+//             { value: 'yellow',isDeleted: true },
+//         ],
+//         isDeleted: false
+//     }
+// ]
+function VariantsForm({ variants, setVariants }) {
+    return (
+        <div>
+            {
+                variants.map((variant, index) => {
+                    if (!variant.isDeleted)
+                        return (
+                            <VariantType variants={variants} setVariants={setVariants} index={index} />
+                        )
+                })
+            }
+            <label onClick={() => {
+                let tmp = [...variants];
+                tmp.push({ type: '', values: [], isDeleted: false });
+                setVariants(tmp);
+            }}
+                className='inline-block mt-4 cursor-pointer bg-white border-dashed border-2 text-white rounded p-2 w-fit text-center content-center hover:bg-gray-200'>
+                <span className='text-black '>Add variant</span>
+            </label>
+        </div>
+    );
+}
+function VariantType({ variants, setVariants, index }) {
+    return (
+        <div className='flex flex-row gap-4'>
+            <div className=''>
+                <label onClick={() => {
+                    let tmp = [...variants];
+                    tmp[index].isDeleted = true;
+                    setVariants(tmp);
+                }}
+                    className='inline-block mt-[22px] cursor-pointer bg-white border-dashed border-2 text-white rounded p-2 w-fit text-center content-center hover:bg-gray-200'>
+                    <span className='text-black '>Delete</span>
+                </label>
+            </div>
+            <div className='flex flex-col'>
+                <label>Type</label>
+                <input className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={variants[index].type} onChange={(e) => {
+                    let tmp = [...variants];
+                    tmp[index].type = e.target.value;
+                    setVariants(tmp);
+                }} />
+            </div>
+            <div className='flex flex-col'>
+                <label>Values</label>
+                <div className='flex flex-row gap-4 items-center flex-wrap'>
+                    {
+                        variants[index].values.map((item, sub_index) => {
+                            if (!item.isDeleted)
+                                return (
+                                    <VAriantValue variants={variants} setVariants={setVariants} index={index} sub_index={sub_index} />
+                                );
+                        })
+                    }
+
+                    <label onClick={() => {
+                        let tmp = [...variants];
+                        tmp[index].values.push({ value: "", isDeleted: false });
+
+                        setVariants(tmp)
+                    }}
+                        className='inline-block cursor-pointer bg-white border-dashed border-2 text-white rounded w-10 h-10 text-center content-center hover:bg-gray-200'>
+                        <AddIcon className='text-black ' />
+
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    );
+}
+function VAriantValue({ variants, setVariants, index, sub_index }) {
+    return (
+        <div className='border-2 border-gray-400 rounded h-10'>
+            <input className='outline-none w-20 h-full rounded' defaultValue={variants[index].values[sub_index].value} onChange={(e) => {
+                let tmp = [...variants];
+                tmp[index].values[sub_index].value = e.target.value;
+                setVariants(tmp);
+            }} />
+            <CloseIcon onClick={() => {
+                let tmp = [...variants];
+                tmp[index].values[sub_index].isDeleted = true;
+                setVariants(tmp);
+            }} />
+        </div>
+    );
 }

@@ -1,20 +1,25 @@
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 export default function Payment() {
     return (
-        <div className="flex flex-col gap-4 p-8 border-2 border-gray-600 mr-40 ml-40 mb-8">
+        <div className="flex flex-col gap-4 p-8 border-2 border-gray-600 mr-10 ml-10 mb-8">
             <div>
                 <label className="text-xl">Payment</label>
                 <div className="flex flex-row justify-center">
                     <div className="flex flex-row">
-                        <div className="flex flex-col contents-center border-r-2 border-gray-400">
+                        <div className="flex flex-col border-r-2 border-gray-400 items-center">
+                            <label className="text-pumpkin w-fit"><CreditCardIcon /></label>
                             <label className="p-2" htmlFor="the">Thanh toan bang the</label>
                             <input type="radio" name="payment" id="the"></input>
 
                         </div>
-                        <div className="flex flex-col contents-center border-r-2 border-gray-400">
+                        <div className="flex flex-col items-center border-r-2 border-gray-400">
+                            <label className="text-pumpkin"><AttachMoneyIcon/></label>
                             <label className="p-2" htmlFor="cod">Thanh toan khi nhan hang</label>
                             <input type="radio" name="payment" id="cod"></input>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center">
+                            <label><img className=" h-[24px]" src='https://stcd02206177151.cloud.edgevnpay.vn/assets/images/logo-icon/logo-primary.svg'/></label>
                             <label className="p-2" htmlFor="vnpay">Thanh toan bang vnpay</label>
                             <input type="radio" name="payment" id="vnpay"></input>
                         </div>
