@@ -21,6 +21,7 @@ const AppRouter = () => {
                 <Route path="/buyer/checkout" element={<Checkout />} />
                 <Route path="/buyer/signup" exact element={<SignUpForm />} />
                 <Route path="/*" element={<HomePage />} />
+
             </Routes>
         </div>
     );

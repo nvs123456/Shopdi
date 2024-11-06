@@ -4,7 +4,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import CategoryIcon from '@mui/icons-material/Category';
 export default function SideBar() {
     return (
-        <div className="w-1/6 min-w-44 h-full-screen bg-yaleBlue gap-4 flex flex-col">
+        <div className="w-[10%] h-full-screen bg-yaleBlue gap-4 flex flex-col">
 
 
             <div className="">
