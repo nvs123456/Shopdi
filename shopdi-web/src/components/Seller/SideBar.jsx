@@ -2,24 +2,38 @@ import { Link } from "react-router-dom";
 import shopdiLogo from "@/assets/images/Shopdi.png";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CategoryIcon from '@mui/icons-material/Category';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 export default function SideBar() {
     return (
-        <div className="w-[10%] h-full-screen bg-yaleBlue gap-4 flex flex-col">
+        <div className="w-[15%] h-full-screen bg-yaleBlue gap-4 font-sans flex flex-col">
 
 
             <div className="">
                 <img src={shopdiLogo} alt="" />
             </div>
             <Link to="">
-                <div className="text-gray-400 hover:text-white text-sm font-bold ml-2 ">
-                    <DashboardIcon className="mr-2" />
-                    Trang chu
+                <div className="text-gray-400 hover:text-white text-sm ml-1">
+                    <DashboardIcon className="mr-1" />
+                    Trang chủ
                 </div>
             </Link>
             <Link to="products">
-                <div className="text-gray-400 hover:text-white  text-sm font-bold ml-2">
-                    <CategoryIcon className="mr-2" />
-                    Quan ly san pham
+                <div className="text-gray-400 hover:text-white  text-sm ml-1">
+                    <CategoryIcon className="mr-1" />
+                    Quản lý sản phẩm
+                </div>
+            </Link>
+            <Link to="orders">
+                <div className="text-gray-400 hover:text-white  text-sm ml-1">
+                    <LocalMallIcon className="mr-1" />
+                    Orders
+                </div>
+            </Link>
+            <Link to="profile">
+                <div className="text-gray-400 hover:text-white text-sm ml-1">
+                    <AccountCircleIcon className="mr-1" />
+                    Profile
                 </div>
             </Link>
 
