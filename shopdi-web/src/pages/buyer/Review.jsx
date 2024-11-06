@@ -1,6 +1,6 @@
 import React from 'react';
 import {Textarea} from "@headlessui/react";
-import FiveStar from './FiveStar.jsx'
+import FiveStar from '../../components/Buyer/Review/FiveStar.jsx'
 
 function Review() {
     return (
