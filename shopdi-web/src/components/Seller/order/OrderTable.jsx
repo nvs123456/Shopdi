@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {useNavigate} from "react-router-dom";
 
 const ordersData = [{
-    id: '#617GF',
+    id: '1',
     customer: 'Jonathan A',
     product: 'Adidas Mens Restound M Running Shoe',
     price: 1699,
@@ -12,7 +13,7 @@ const ordersData = [{
     status: 'Pending'
 },
     {
-        id: '#617GF',
+        id: '2',
         customer: 'Jonathan A',
         product: 'Bdidas Mens Restound M Running Shoe',
         price: 16949,
@@ -20,7 +21,7 @@ const ordersData = [{
         paymentMethod: 'Paytm',
         status: 'Pending'
     }, {
-        id: '#617GF',
+        id: '3',
         customer: 'Jonathan B',
         product: 'Bdidas Mens Restound M Running Shoe',
         price: 1699,
@@ -28,7 +29,7 @@ const ordersData = [{
         paymentMethod: 'Paytm',
         status: 'Processing'
     }, {
-        id: '#617GF',
+        id: '4',
         customer: 'Jonathan C',
         product: 'Cdidas Mens Restound M Running Shoe',
         price: 1699,
@@ -36,7 +37,7 @@ const ordersData = [{
         paymentMethod: 'Paytm',
         status: 'Cancelled'
     }, {
-        id: '#617GF',
+        id: '5',
         customer: 'Jonathan D',
         product: 'Ddidas Mens Restound M Running Shoe',
         price: 1699,
@@ -88,6 +89,12 @@ function OrderTable({type}) {
 
         setOrders(sortedOrders);
     };
+    const navigate = useNavigate();
+
+    const handleRowClick = (id) => {
+        // Navigate to the order details page for the clicked order
+        navigate(`/seller/orders/${id}`);
+    };
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
@@ -115,7 +122,7 @@ function OrderTable({type}) {
                 {(filter === 'All products' ? orders :
                     orders.filter(order => order.status === filter))
                     .map((order, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-100">
+                        <tr key={index} className="border-b hover:bg-gray-100" onClick={() => handleRowClick(order.id)}>
                             <td className="px-2 py-1">{order.id}</td>
                             <td className="px-2 py-1">{order.customer}</td>
                             <td className="px-2 py-1">{order.product}</td>
