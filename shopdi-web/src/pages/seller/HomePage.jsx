@@ -6,6 +6,7 @@ import ProductDetail from "@/pages/seller/product/ProductDetail";
 import DashBoard from "@/pages/seller/dashboard/DashBoard";
 import OrderList from "./order/OrderList.jsx";
 import SellerProfile from "./profile/SellerProfile.jsx";
+import OrderDetails from "./order/OrderDetails.jsx";
 
 export default function HomePage() {
     return (
@@ -17,6 +18,7 @@ export default function HomePage() {
                 <Route path="/products/product-detail" exact element={<ProductDetail/>}/>
                 <Route path="/orders" exact element={<OrderList/>}/>
                 <Route path="/profile" exact element={<SellerProfile/>}/>
+                <Route path='/orders/:id' element={<OrderDetails/>}/>
 
             </Routes>
         </div>
