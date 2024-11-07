@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
 
         return ProductResponse.builder()
-                .id(savedProduct.getId())
+                .productId(savedProduct.getId())
                 .productName(savedProduct.getProductName())
                 .description(savedProduct.getDescription())
                 .price(savedProduct.getPrice())

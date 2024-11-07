@@ -1,6 +1,5 @@
 package com.rs.shopdiapi.domain.dto.response;
 
-import com.rs.shopdiapi.domain.entity.Rating;
 import com.rs.shopdiapi.domain.enums.ProductStatusEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductResponse {
-    Long id;
+    Long productId;
     String productName;
     String description;
     Double price;

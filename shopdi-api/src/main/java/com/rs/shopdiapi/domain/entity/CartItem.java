@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -20,8 +22,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class CartItem extends BaseEntity<Long> {
-    Long userId;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "cart_id")
@@ -33,8 +33,8 @@ public class CartItem extends BaseEntity<Long> {
 
     String variant;
     Integer quantity;
-    Integer price;
-    Integer discountPercent;
-    Integer discountedPrice;
+    BigDecimal price;
+    BigDecimal discountPercent;
+    BigDecimal discountedPrice;
 
 }

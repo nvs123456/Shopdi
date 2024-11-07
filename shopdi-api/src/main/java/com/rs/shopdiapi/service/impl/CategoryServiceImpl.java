@@ -35,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         return categories.stream()
                 .map(category -> CategoryResponse.builder()
-                        .id(category.getId())
+                        .categoryId(category.getId())
                         .name(category.getName())
                         .parentId(Optional.ofNullable(category.getParentCategory()).map(Category::getId).orElse(null))
                         .parentName(Optional.ofNullable(category.getParentCategory()).map(Category::getName).orElse(null))
@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
                 : List.of();
 
         return CategoryResponse.builder()
-                .id(savedCategory.getId())
+                .categoryId(savedCategory.getId())
                 .name(savedCategory.getName())
                 .parentId(Optional.ofNullable(savedCategory.getParentCategory()).map(Category::getId).orElse(null))
                 .parentName(Optional.ofNullable(savedCategory.getParentCategory()).map(Category::getName).orElse(null))

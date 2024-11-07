@@ -1,6 +1,5 @@
 package com.rs.shopdiapi.domain.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,8 +34,8 @@ public class Cart extends BaseEntity<Long> {
     @Column(name = "cart_items")
     Set<CartItem> cartItems = new HashSet<>();
 
-    Double totalPrice;
-    Double totalItem;
-    Double totalDiscountedPrice;
-    Double discount;
+    BigDecimal totalPrice;
+    Integer totalItems;
+    BigDecimal totalDiscountedPrice;
+    BigDecimal discountPercent;
 }

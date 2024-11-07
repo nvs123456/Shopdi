@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         roleRepository.findByName(RoleEnum.USER.getName()).ifPresent(roles::add);
         user.setRoles(roles);
         userRepository.save(user);
-        cartService.createCart(user);
+        cartService.createCart(user.getId());
         return userMapper.toUserResponse(user);
     }
 

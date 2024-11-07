@@ -1,34 +1,30 @@
 package com.rs.shopdiapi.service;
 
+import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
+import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderService {
 
-    Order createOrder(User user, Address shippingAddress);
+    Order createOrder(Long userId, CreateOrderRequest request);
 
-    void deleteOrder(Long orderId);
+    OrderResponse updateOrderStatus(Long orderId, String orderStatus);
 
-    Order updateOrder(Order order, Long orderId);
+    OrderResponse confirmOrder(Long orderId, Long orderItemId, Long sellerId);
 
-    Order findOrderById(Long orderId);
-
-    Order placedOrder(Long orderId);
-
-    Order confirmedOrder(Long orderId);
-
-    Order shippedOrder(Long orderId);
-
-    Order deliveredOrder(Long orderId);
+    OrderResponse findOrderById(Long orderId);
 
     Order cancelOrder(Long orderId);
 
-    List<Order> getAllOrders();
+    PageResponse<?> getAllOrders(int pageNo, int pageSize);
 
+    PageResponse<?> getAllOrdersForSeller(Long sellerId, int pageNo, int pageSize);
 
-    PageResponse<?> orderHistory(Long userId, int page, int size);
+    PageResponse<?> orderHistory(Long userId, int pageNo, int pageSize);
 }

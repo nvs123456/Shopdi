@@ -8,19 +8,20 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartResponse {
-    Long sellerId;
-    String sellerName;
-
-    List<CartItemResponse> cartItems;
-    Integer totalItems;
-    BigDecimal totalPrice;
+public class CartItemResponse {
+    Long cartItemId;
+    Long productId;
+    String productName;
+    String productImage;
+    String variant;
+    Integer quantity;
+    BigDecimal price;
+    BigDecimal discountPercent;
     BigDecimal totalDiscountedPrice;
 }
