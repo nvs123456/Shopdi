@@ -3,9 +3,12 @@ package com.rs.shopdiapi.controller;
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
 import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
+import com.rs.shopdiapi.domain.dto.response.OrderResponse;
+import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.PageConstants;
+import com.rs.shopdiapi.service.OrderService;
 import com.rs.shopdiapi.service.ProductService;
 import com.rs.shopdiapi.service.SellerService;
 import com.rs.shopdiapi.service.UserService;
@@ -14,6 +17,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +38,7 @@ public class SellerController {
     SellerService sellerService;
     ProductService productService;
     UserService userService;
+    OrderService orderService;
 
     @PreAuthorize("hasRole('SELLER')")
     @PostMapping("/add-product")
@@ -73,17 +78,27 @@ public class SellerController {
                 .build();
     }
 
-//    @PreAuthorize("hasRole('SELLER')")
-//    @GetMapping("/orders")
-//    public ApiResponse<?> getOrders(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-//                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize,
-//                                   @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
-//                                   @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
-//        Long sellerId = sellerService.getCurrentSeller().getId();
-//        return ApiResponse.builder()
-//                .result(sellerService.getOrders(pageNo, pageSize, sortBy, sortOrder, sellerId))
-//                .build();
-//    }
+    @PreAuthorize("hasRole('SELLER')")
+    @GetMapping("/orders")
+    public ApiResponse<?> getOrders(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
+                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize,
+                                   @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
+                                   @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
+        Long sellerId = sellerService.getCurrentSeller().getId();
+        return ApiResponse.builder()
+                .result(orderService.getAllOrdersForSeller(sellerId, pageNo, pageSize))
+                .build();
+    }
+
+    @PutMapping("/{orderId}/status")
+    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId,
+                                                           @RequestParam String orderStatus) {
+        OrderResponse updatedOrder = orderService.updateOrderStatus(orderId, orderStatus);
+        return ApiResponse.builder()
+                .result(updatedOrder)
+                .build();
+    }
+
 
     @PostMapping("/register")
     public ApiResponse<?> registerSeller(@RequestBody @Valid RegisterSellerRequest request) {

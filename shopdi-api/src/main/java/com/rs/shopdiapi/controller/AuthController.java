@@ -23,7 +23,6 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
     @Autowired
     private AuthService authenticationService;

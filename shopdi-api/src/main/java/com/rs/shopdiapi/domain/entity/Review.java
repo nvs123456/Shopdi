@@ -2,8 +2,11 @@ package com.rs.shopdiapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,13 +26,19 @@ import lombok.experimental.FieldDefaults;
 public class Review extends BaseEntity<Long> {
     String review;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @Min(1)
+    @Max(5)
+    Double ratingScore;
+
+    String reply;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     @JsonIgnore
     Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
 }

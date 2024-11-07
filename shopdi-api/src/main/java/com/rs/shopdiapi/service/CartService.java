@@ -1,23 +1,20 @@
 package com.rs.shopdiapi.service;
 
-import com.rs.shopdiapi.domain.dto.request.AddCartItemRequest;
+import com.rs.shopdiapi.domain.dto.response.CartResponse;
 import com.rs.shopdiapi.domain.entity.Cart;
-import com.rs.shopdiapi.domain.entity.CartItem;
-import com.rs.shopdiapi.domain.entity.User;
+
+import java.math.BigDecimal;
 
 public interface CartService {
+    Cart createCart(Long userId);
 
-    Cart createCart(User user);
+    CartResponse findUserCart(Long userId);
 
-    String addCartItem(Long userId, AddCartItemRequest req);
+    BigDecimal calculateTotalPrice(Long cartId);
 
-    Cart findUserCart(Long userId);
+    BigDecimal calculateTotalDiscountedPrice(Long cartId);
 
-    Cart updateCartItem(Long userId, Long cartItemId, CartItem cartItem);
+    Cart updateCartSummary(Long cartId);
 
-
-
-    Cart deleteCartItem(Long userId, Long cartItemId);
-
-
+    void applyDiscount(Long cartId, BigDecimal discountPercent);
 }

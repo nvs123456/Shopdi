@@ -44,7 +44,21 @@ public enum ErrorCode {
 
     TAG_ALREADY_EXISTS("TAG_ALREADY_EXISTS", "Tag already exists", HttpStatus.BAD_REQUEST),
 
-    TAG_NOT_FOUND("TAG_NOT_FOUND", "Tag not found", HttpStatus.NOT_FOUND)
+    TAG_NOT_FOUND("TAG_NOT_FOUND", "Tag not found", HttpStatus.NOT_FOUND),
+
+    INVALID_ORDER_STATUS("INVALID_ORDER_STATUS", "Invalid order status", HttpStatus.BAD_REQUEST),
+
+    CART_NOT_FOUND("CART_NOT_FOUND", "Cart not found", HttpStatus.NOT_FOUND),
+
+    CART_EMPTY("CART_EMPTY", "Cart is empty", HttpStatus.BAD_REQUEST),
+
+    ORDER_CANNOT_BE_CANCELLED("ORDER_CANNOT_BE_CANCELLED", "Order cannot be cancelled", HttpStatus.BAD_REQUEST),
+
+    NO_ITEMS_SELECTED("NO_ITEMS_SELECTED", "No items selected", HttpStatus.BAD_REQUEST),
+
+    ADDRESS_NOT_FOUND("ADDRESS_NOT_FOUND", "Address not found", HttpStatus.NOT_FOUND),
+
+    CART_ITEM_NOT_FOUND("CART_ITEM_NOT_FOUND", "Cart item not found", HttpStatus.NOT_FOUND)
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {

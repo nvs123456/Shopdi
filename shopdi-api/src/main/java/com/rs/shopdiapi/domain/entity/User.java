@@ -81,10 +81,6 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @JsonIgnore
     List<Review> reviews;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    List<Rating> ratings;
-
     @Enumerated(EnumType.STRING)
     UserStatusEnum status;
 

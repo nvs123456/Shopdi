@@ -7,16 +7,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddCartItemRequest {
+public class CartItemRequest {
     Long productId;
     String variant;
     Integer quantity;
-    Integer price;
-    Integer discountPercent;
-    Integer discountedPrice;
+    BigDecimal price;
+    BigDecimal discountPercent;
+    BigDecimal discountedPrice;
 }
