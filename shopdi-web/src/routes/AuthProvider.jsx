@@ -1,34 +1,33 @@
 import { useState,useContext, createContext } from "react";
 const AuthContext = createContext();
 import { useNavigate } from "react-router-dom";
+import {useCookies} from 'react-cookie'
 import GET from "../api/GET";
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem("site") || "");
+    const [token, setToken] = useState("");
+    const [cookies, setCookie, removeCookie] = useCookies(['Authorization']);
     const navigate = useNavigate();
     const loginAction = async (data) => {
-        console.log(data);
         try {
             const response = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify(data),
             });
             const res = await response.json();
             if (res.result) {
-                setUser(data.username);
+                // console.log("res : ",res)
+                setCookie('Authorization', `Bearer ${res.result.token}`, { path: '/' });
                 setToken(res.result.token);
-                localStorage.setItem("site", res.result.token);
-                // console.log(GET("users/my-info"));
-                localStorage.setItem("role", 'BUYER');
-                if(localStorage.getItem("role") === "BUYER"){
-                    console.log('role :',res.role);
-                    navigate("/");
-                }else if(localStorage.getItem("role") === "SELLER"){
-                    navigate("/seller/");
-                }
+                // console.log(token)
+                // console.log(cookies.Authorization)
+                let tmp = await GET(`users/my-info`,`Bearer ${res.result.token}`)
+                setUser(tmp.result?.username);
+                navigate("/");
                 return;
             }
             throw new Error(res.message);
@@ -40,8 +39,7 @@ const AuthProvider = ({ children }) => {
         console.log("logout");
         setUser(null);
         setToken("");
-        localStorage.removeItem("site");
-        localStorage.removeItem("role");
+        removeCookie('Authorization', { path: '/' });
         navigate("/login");
     };
     return <AuthContext.Provider value={{ user, token, loginAction, logOut }}>{children}</AuthContext.Provider>;

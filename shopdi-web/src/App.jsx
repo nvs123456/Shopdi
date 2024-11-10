@@ -12,38 +12,38 @@ import AuthProvider from './routes/AuthProvider.jsx'
 import PrivateRoute from './routes/PrivateRoute.jsx'
 import SignUpForm from './pages/buyer/SignUp.jsx'
 import SellerSignUp from './pages/seller/SignUp.jsx'
+import { CookiesProvider } from 'react-cookie'
 function App() {
 
     return (
         <div>
-            <AuthProvider>
-                <Routes>
-                    <Route path="/login" exact element={<LoginForm />} />
-                    <Route path="/forget" exact element={<ForgetPassword />} />
-                    <Route path='buyer/signup' exact element={< SignUpForm />} />
-                    <Route path='seller/signup' exact element={< SellerSignUp />} />
-                    <Route element={<PrivateRoute />}>
-                        {localStorage.getItem("role") === "BUYER" && <Route path="/*" element={
-                            <div className='flex flex-col min-h-screen'>
-                                <div>
-                                    <AppRouter />
+            <CookiesProvider>
+                <AuthProvider>
+                    <Routes>
+                        <Route path="/login" exact element={<LoginForm />} />
+                        <Route path="/forget" exact element={<ForgetPassword />} />
+                        <Route path='buyer/signup' exact element={< SignUpForm />} />
+                        <Route element={<PrivateRoute />}>
+                            <Route path="/*" element={
+                                <div className='flex flex-col min-h-screen'>
+                                    <div>
+                                        <AppRouter />
+                                    </div>
                                 </div>
-                            </div>
-                        } />}
-                        {localStorage.getItem("role") === "SELLER" && <Route path="seller/*" element={
-                            <div className="flex min-h-screen min-w-screen">
-                                <SideBar />
-                                <div className={'w-full'}>
-                                    <SellerHome />
-                                    <SellerFooter />
+                            } />
+                            <Route path="seller/*" element={
+                                <div className="flex min-h-screen min-w-screen">
+                                    <SideBar />
+                                    <div className={'w-full'}>
+                                        <SellerHome />
+                                        <SellerFooter />
+                                    </div>
                                 </div>
-                            </div>
-                        } />}
-
-
-                    </Route>
-                </Routes>
-            </AuthProvider>
+                            } />
+                        </Route>
+                    </Routes>
+                </AuthProvider>
+            </CookiesProvider>
         </div>
 
     )

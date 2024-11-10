@@ -22,14 +22,14 @@ export default function Navigation(props) {
                   props.setCurrentCategory({ name: "", sub_categories: [] });
                   props.setIsFiltered(false);
                 }}> */}
-                <a href='/'>
+                <Link to="/">
                   <span className="sr-only">Your Company</span>
                   <img
                     alt="Logo"
                     src={shopdiLogo}
                     className="h-14 w-auto"
                   />
-                </a>
+                </Link>
               </div>
 
               {/* Flyout menus */}
@@ -57,7 +57,7 @@ export default function Navigation(props) {
 
                             <div className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                               {categories.map((section) => (
-                                <Link to={`/${section.name}`} state={{name: section.name, sub_categories: section.sub_categories}}>
+                                <Link to={`/${section.name}`} state={{ name: section.name, sub_categories: section.sub_categories }}>
                                   <div key={section.name}>
                                     <p id={`${section.name}-heading`} className="font-medium hover:text-gray-800">
                                       {section.name}
@@ -74,6 +74,7 @@ export default function Navigation(props) {
 
 
                   <button
+                    onClick={() => window.open('http://localhost:5173/seller', '_blank')}
                     className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
                   >
                     Become a Seller
@@ -102,14 +103,14 @@ export default function Navigation(props) {
                 {/* <ModeSelect />*/}
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a href="/cart" className="group -m-2 flex items-center p-2">
+                  <Link to="cart" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
                     <span className="sr-only">items in cart, view bag</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -12,7 +12,6 @@ const LoginForm = () => {
         e.preventDefault();
         if (input.username !== "" && input.password !== "") {
             auth.loginAction(input);
-            console.log(input);
             return;
         }
         alert("pleae provide a valid input");
@@ -69,7 +68,7 @@ const LoginForm = () => {
 
                         <div>
                             <button
-                            onClick={handleSubmitEvent}
+                                onClick={handleSubmitEvent}
                                 tabIndex={3}
                                 className="flex w-full justify-center rounded-md bg-yaleBlue px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
@@ -84,11 +83,6 @@ const LoginForm = () => {
                             Create an account
                         </a>
                     </p>
-                    <div className="text-sm">
-                        <a href="/seller/signup" tabIndex={4} className="font-semibold text-indigo-600 hover:text-indigo-500">
-                            Sign Up as a Seller
-                        </a>
-                    </div>
                     <div className="text-sm">
                         <a href="/forget" tabIndex={4} className="font-semibold text-indigo-600 hover:text-indigo-500">
                             Forgot password?

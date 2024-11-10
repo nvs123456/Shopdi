@@ -8,10 +8,16 @@ const SignUpForm = () => {
         email: "",
         password: ""
     })
+    const [message, setMessage] = useState("");
     const handleSubmitEvent = (e) => {
         e.preventDefault();
         signup(input).then((res) => {
             console.log(res);
+            if (res.code === "OK") {
+                setMessage("Created account successfully");
+            } else {
+                setMessage(res.message);
+            }
         })
     }
     return (
@@ -82,7 +88,9 @@ const SignUpForm = () => {
                             Create account
                         </button>
                     </div>
-
+                    <p className={`mt-4 mb-4 text-left text-sm text-red ${message === "" ? "hidden" : ""}`}>
+                        {message}
+                    </p>
                     <p className="mt-10 mb-20 text-left text-sm text-gray-500">
                         Already have an account?{' '}
                         <a href="/login" className="font-semibold leading-6 text-orange-600 hover:text-orange-400">
