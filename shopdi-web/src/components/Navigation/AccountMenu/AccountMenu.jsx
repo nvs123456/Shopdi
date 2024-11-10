@@ -12,7 +12,11 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import { Link } from 'react-router-dom';
+import { useAuth  } from '@/routes/AuthProvider';
 export default function AccountMenu() {
+  const useauth = useAuth();
+  // console.log("useauth :",useauth);
+  // console.log(useauth.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -22,12 +26,13 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
   const handleLogout = () => {
-    window.location.href = '/login'
+    // console.log("logout");
+    useauth.logOut();
   }
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Tooltip title="Account settings">
+        <Tooltip title={useauth.user}>
           <IconButton
             onClick={handleClick}
             size="small"
