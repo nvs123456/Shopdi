@@ -1,9 +1,35 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CATEGORIES from '@/data/categories_data';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import { POST } from '../../../api/GET';
+
 export default function AddProduct() {
+    const [productForm, setProductForm] = useState({
+        productName: '',
+        description: '',
+
+        // Media
+        imageUrls: [],
+
+        // Pricing
+        price: 0,
+        discountPercent: 0,
+
+        Brand: '',
+
+        // Variant
+        variantDetails: [],
+
+        // Category and Tags
+        categoryName: 'quan',
+        tagNames: ["tagname1", "tagname2"],
+
+        // Status
+        productStatus: 'PUBLISHED',
+    })
     const categories = CATEGORIES.CATEGORIES;
     const [currentCategory, setCurrentCategory] = useState(categories[0]);
     const [variants, setVariants] = useState([]);
@@ -12,7 +38,7 @@ export default function AddProduct() {
     const [openPopup, setOpenPopup] = useState(false);
     return (
         <div className='w-full flex flex-row'>
-            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}><QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup} /></div>
+            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}><QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup} productForm={productForm} setProductForm={setProductForm} /></div>
             <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
 
             <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
@@ -21,7 +47,7 @@ export default function AddProduct() {
                     <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
                     <span className="inline-block font-bold text-xl ml-4 p-2">Add Product</span>
                     <span onClick={() => {
-                        onAddVariant(variants, setListVariants, setOpenPopup)
+                        onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm)
                     }}
                         className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
                 </div>
@@ -32,18 +58,24 @@ export default function AddProduct() {
                         </div>
                         <div>
                             <label> Product name</label>
-                            <input type="text" className='outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
+                            <input onChange={(e) => {
+                                setProductForm({ ...productForm, productName: e.target.value })
+                            }}
+                                type="text" className='outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
                         </div>
                         <div>
                             <label> Product description</label>
-                            <textarea className='outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product name'></textarea>
+                            <textarea onChange={(e) => {
+                                setProductForm({ ...productForm, description: e.target.value })
+                            }}
+                                className='outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product name'></textarea>
 
                         </div>
                     </div>
                     <div className='media border-2 border-gray-200 p-4'>
                         <div>
                             <span className='font-bold text-xl'>Media</span>
-                            <UploadAndDisplayImage />
+                            <UploadAndDisplayImage productForm={productForm} setProductForm={setProductForm} />
                         </div>
                     </div>
                     <div className='category border-2 border-gray-200 p-4'>
@@ -83,19 +115,35 @@ export default function AddProduct() {
                         </div>
                         <div>
                             <label className='block'>Price</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                            <input onChange={(e) => {
+                                setProductForm({ ...productForm, price: e.target.value })
+                            }}
+                                type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
                         <div>
                             <label className='block'>Discount</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                            <input onChange={(e) => {
+                                setProductForm({ ...productForm, discountPercent: e.target.value })
+                            }}
+                                type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
                         <div>
                             <label className='block'>Brand</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                            <input onChange={(e) => {
+                                setProductForm({ ...productForm, Brand: e.target.value })
+                            }}
+                                type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
                         <div>
-                            <label className='block'>Quantity</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                            <label className='block'>Status</label>
+                            <select className='border-2 border-gray-400 w-60 h-10 rounded' onChange={(e) => {
+                                setProductForm({ ...productForm, productStatus: e.target.value })
+                            }}>
+                                <option value={"PUBLISHED"}>PUBLISHED</option>
+                                <option value={"DRAFT"}>DRAFT</option>
+                                <option value={"DELETED"}>DELETED</option>
+
+                            </select>
                         </div>
                     </div>
                     <div className="variant">
@@ -114,7 +162,7 @@ export default function AddProduct() {
     )
 }
 
-const UploadAndDisplayImage = () => {
+const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
     // Define a state variable to store the selected image
     const [selectedImage, setSelectedImage] = useState([]);
 
@@ -137,13 +185,15 @@ const UploadAndDisplayImage = () => {
                             tmp.push({ path: event.target.files[i], isChoosed: true })
                         }
                         setSelectedImage(tmp);
+                        console.log("files : ",URL.createObjectURL(event.target.files[0]))
+                        setProductForm({ ...productForm, images: event.target.files })
                     }}
                 />
                 {selectedImage.length > 0 && (
                     selectedImage.map((item, index) => {
                         if (item.isChoosed === false) return null
                         return (
-                            <div className='relative p-[12px] rounded'>
+                            <div key={`image-${index}`} className='relative p-[12px] rounded'>
                                 <div key={index} className='w-24 h-24 flex items-center bg-white rounded'>
                                     <img
                                         alt="not found"
@@ -155,7 +205,7 @@ const UploadAndDisplayImage = () => {
                                     tmp[index].isChoosed = false
                                     setSelectedImage(tmp);
                                 }} >
-                                    <CloseIcon o />
+                                    <CloseIcon />
                                 </label>
                             </div>
                         )
@@ -168,7 +218,24 @@ const UploadAndDisplayImage = () => {
         </div >
     );
 };
-function QuantityOfVariants({ variants, setOpenPopup }) {
+function QuantityOfVariants({ variants, setOpenPopup, productForm }) {
+    if (variants.length === 0) {
+        return (
+            <div className='bg-white p-4'>
+                <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
+                    <span className='font-bold text-xl'>Are you sure to save with no variant???</span>
+                    <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Cancel</button>
+                    <button onClick={() => {
+                        POST("seller/add-product", productForm).then((res) => {
+                            console.log(res)
+                            setOpenPopup(false);
+                        })
+                    }} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
+                </div>
+            </div>
+        )
+    }
+    const navigate = useNavigate();
     if (variants.length === 0) {
         return (
             <div className='bg-white p-4'>
@@ -178,6 +245,7 @@ function QuantityOfVariants({ variants, setOpenPopup }) {
             </div>
         )
     }
+
     function d(item) {
         return (
             <span>
@@ -207,7 +275,7 @@ function QuantityOfVariants({ variants, setOpenPopup }) {
             <div className='flex flex-col w-[600px] border-2 border-gray-200 overflow-y-scroll no-scrollbar max-h-[300px]'>
                 {variants.map((item, index) => {
                     return (
-                        <div key={index} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
+                        <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
                             <span className='border-r-2 border-gray-200 grow place-content-center'>{e(item)}</span>
                             <input type="number" placeholder='type number' className='outline-none w-1/6 h-10' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
@@ -220,7 +288,22 @@ function QuantityOfVariants({ variants, setOpenPopup }) {
             <div className='flex flex-row gap-4'>
                 <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2 w-1/2 rounded text-black'>Cancel</button>
 
-                <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
+                <button onClick={() => {
+                    POST("seller/add-product", productForm
+                    ).then((res) => {
+                        if (res.code === "OK") {
+                            console.log(res);
+                            console.log("created");
+                            navigate("/seller/dashboard");
+                            setOpenPopup(false)
+                        } else {
+                            alert(res.message)
+                        }
+                    })
+
+                }
+
+                } className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
             </div>
 
         </div>
@@ -235,11 +318,10 @@ function combine(list1, list2) {
     }
     return tmp
 }
-function onAddVariant(variants, setListVariants, setOpenPopup) {
-    console.log(variants)
+function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm) {
     let tmp = []
     for (let i = 0; i < variants.length; i++) {
-        if(variants[i].isDeleted) continue
+        if (variants[i].isDeleted) continue
         let l = []
         for (let j = 0; j < variants[i].values.length; j++) {
             if (variants[i].values[j].isDeleted) continue
@@ -247,13 +329,28 @@ function onAddVariant(variants, setListVariants, setOpenPopup) {
         }
         tmp.push(l)
     }
+    if (tmp.length === 0) {
+        setOpenPopup(true)
+        return
+    }
     let list = [...tmp[0]]
     for (let i = 1; i < tmp.length; i++) {
         list = combine(list, tmp[i])
     }
     setListVariants(list)
+    const quantity = []
+    for (let i = 0; i < list.length; i++) {
+        let tmp = ''
+        for (let j = 0; j < list[i].length; j++) {
+            tmp = tmp + list[i][j].type + ":" + list[i][j].value + ","
+        }
+        quantity.push({
+            variantDetail: tmp,
+            quantity: 0
+        })
+    }
+    setProductForm({ ...productForm, variantDetails: quantity })
     setOpenPopup(true)
-    console.log(list)
 }
 
 // const v = [
@@ -276,7 +373,7 @@ function VariantsForm({ variants, setVariants }) {
                 variants.map((variant, index) => {
                     if (!variant.isDeleted)
                         return (
-                            <VariantType variants={variants} setVariants={setVariants} index={index} />
+                            <VariantType key={index} variants={variants} setVariants={setVariants} index={index} />
                         )
                 })
             }
@@ -319,7 +416,7 @@ function VariantType({ variants, setVariants, index }) {
                         variants[index].values.map((item, sub_index) => {
                             if (!item.isDeleted)
                                 return (
-                                    <VAriantValue variants={variants} setVariants={setVariants} index={index} sub_index={sub_index} />
+                                    <VAriantValue key={`${index}-${sub_index}`} variants={variants} setVariants={setVariants} index={index} sub_index={sub_index} />
                                 );
                         })
                     }

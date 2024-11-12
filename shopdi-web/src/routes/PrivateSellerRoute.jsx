@@ -4,7 +4,6 @@ import { useCookies } from 'react-cookie';
 const PrivateSellerRoute = () => {
   if ( localStorage.getItem("Authorization") === null) return <Navigate to="/login" />;
   let roles = JSON.parse(localStorage.getItem("roles"));
-  console.log("roles : ",roles)
   if(!roles.find(role => role.name === "SELLER")){
     return <Navigate to="seller/signup" />;
   }
