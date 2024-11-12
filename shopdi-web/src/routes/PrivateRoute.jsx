@@ -1,13 +1,37 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@/routes/AuthProvider";
-import { useCookies } from 'react-cookie';
+import { GET, POST } from "../api/GET";
+import { useState, useEffect } from "react";
+import { useAuth } from "./AuthProvider";
 const PrivateRoute = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(['Authorization']);
-  // const user = useAuth();
-  // console.log(user);
-  if ( !cookies.Authorization) return <Navigate to="/login" />;
-  return <Outlet />;
+  const auth = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    console.log("useEffect is called");
+    POST(`auth/introspect`,{
+      token: localStorage.getItem("Authorization")}).then((res) => {
+        console.log(res);
+        if(res.code === "OK"){
+          auth.setIsAuthenticated(true)
+          setIsLoading(false)
+        }else {
+          auth.setIsAuthenticated(false)
+          setIsLoading(false)
+        }
+      })
+  },[])
+  console.log(auth.isAuthenticated)
+  if(isLoading){
+    return <div className="text-center">Loading...</div>
+  }
+  else {
+    if(auth.isAuthenticated){
+      return <Outlet />;
+    } else {
+      return <Navigate to="/login" />;
+    }
+  }
+  
 };
 
 export default PrivateRoute;

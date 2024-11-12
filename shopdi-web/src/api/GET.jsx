@@ -1,13 +1,12 @@
 
 const baseUrl = "http://localhost:8080/";
-const GET = async (url,token) => {
+export const GET = async (url) => {
     
-    console.log('token : ',token);
     const response = await fetch(baseUrl+url, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `${token}`,
+            Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
             "Access-Control-Allow-Origin": "http://localhost:5173",
 
         },
@@ -16,4 +15,16 @@ const GET = async (url,token) => {
     return data;
 }
 
-export default GET
+export const POST = async (url, data) => {
+    const response = await fetch(baseUrl+url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+            "Access-Control-Allow-Origin": "http://localhost:5173",
+        },
+        body: JSON.stringify(data),
+    });
+    const data1 = await response.json();
+    return data1;
+}

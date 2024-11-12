@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { useAuth } from '@/routes/AuthProvider'
 const LoginForm = () => {
+    const [message, setMessage] = useState("");
     const [input, setInput] = useState({
         usernameOrEmail: "",
         password: "",
@@ -11,8 +12,12 @@ const LoginForm = () => {
     const handleSubmitEvent = (e) => {
         e.preventDefault();
         if (input.username !== "" && input.password !== "") {
-            auth.loginAction(input);
-            return;
+            auth.loginAction(input).then((res) => {
+                if(!res){
+                    setMessage("User not exist !");
+                }
+            })
+            return
         }
         alert("pleae provide a valid input");
     };
@@ -74,6 +79,9 @@ const LoginForm = () => {
                             >
                                 Sign in
                             </button>
+                        </div>
+                        <div>
+                            <p className="text-red ">{message}</p>
                         </div>
                     </div>
 

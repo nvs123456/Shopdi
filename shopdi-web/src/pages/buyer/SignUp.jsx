@@ -1,9 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
-import { useAuth } from '../../routes/AuthProvider'
-import { signup } from '../../api/buyer_api'
+import { POST } from '../../api/GET'
 const SignUpForm = () => {
-    const useauth = useAuth();
     const [input, setInput] = useState({
         email: "",
         password: ""
@@ -11,13 +9,19 @@ const SignUpForm = () => {
     const [message, setMessage] = useState("");
     const handleSubmitEvent = (e) => {
         e.preventDefault();
-        signup(input).then((res) => {
-            console.log(res);
-            if (res.code === "OK") {
-                setMessage("Created account successfully");
+        fetch(`http://localhost:8080/users/signup`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(input)
+        }).then(res => res.json()).then((res) => {
+            if (res.code === 'OK') {
+                setMessage("Create account successfully !");
             } else {
                 setMessage(res.message);
             }
+
         })
     }
     return (
