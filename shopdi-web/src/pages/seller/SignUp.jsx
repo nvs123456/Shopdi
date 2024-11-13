@@ -1,8 +1,10 @@
 import React from 'react'
 import { useState } from 'react'
 import { GET, POST } from '../../api/GET'
+import { useNavigate } from 'react-router-dom'
 const SellerSignUp = () => {
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
     const [form, setForm] = useState({
 
         "shopName": "string",
@@ -20,8 +22,10 @@ const SellerSignUp = () => {
             if (res.code === 'OK') {
                 console.log(res);
                 console.log("created");
-                let infor = GET(`users/my-info`);
-                localStorage.setItem("roles", JSON.stringify(infor.result.roles));
+                let infor = GET(`users/my-info`).then((res) => {
+                    localStorage.setItem("roles", JSON.stringify(res.result.roles));
+                    navigate("/seller/dashboard");
+                });
             }
         })
     }

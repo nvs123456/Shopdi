@@ -20,7 +20,7 @@ export const POST = async (url, data) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            // Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+            Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
             "Access-Control-Allow-Origin": "http://localhost:5173",
         },
         body: JSON.stringify(data),

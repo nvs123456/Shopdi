@@ -7,10 +7,8 @@ const PrivateRoute = () => {
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    console.log("useEffect is called");
     POST(`auth/introspect`,{
       token: localStorage.getItem("Authorization")}).then((res) => {
-        console.log(res);
         if(res.code === "OK"){
           auth.setIsAuthenticated(true)
           setIsLoading(false)
@@ -20,7 +18,6 @@ const PrivateRoute = () => {
         }
       })
   },[])
-  console.log(auth.isAuthenticated)
   if(isLoading){
     return <div className="text-center">Loading...</div>
   }
