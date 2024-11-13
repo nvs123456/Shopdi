@@ -27,8 +27,8 @@ export default function ProductList({ products }) {
                 <span className="w-16 text-center">Thao tac</span>
             </div>
 
-            {products && products.map((item) => <div key={item.id} className="border-b-2 border-gray-200 py-4">
-                <Product item={item} />
+            {products && products.map((product) => <div key={product.productId} className="border-b-2 border-gray-200 py-4">
+                <Product product={product} />
             </div>)}
             <div className="mt-4 flex justify-center">
                 <PaginationButton />

@@ -22,6 +22,7 @@ export default function AddProduct() {
 
         // Variant
         variantDetails: [],
+        quantity: 0,
 
         // Category and Tags
         categoryName: 'quan',
@@ -60,8 +61,9 @@ export default function AddProduct() {
                             <label> Product name</label>
                             <input onChange={(e) => {
                                 setProductForm({ ...productForm, productName: e.target.value })
+
                             }}
-                                type="text" className='outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
+                                type="text" required className='outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
                         </div>
                         <div>
                             <label> Product description</label>
@@ -185,7 +187,7 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
                             tmp.push({ path: event.target.files[i], isChoosed: true })
                         }
                         setSelectedImage(tmp);
-                        console.log("files : ",URL.createObjectURL(event.target.files[0]))
+
                         setProductForm({ ...productForm, images: event.target.files })
                     }}
                 />
@@ -218,18 +220,19 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
         </div >
     );
 };
-function QuantityOfVariants({ variants, setOpenPopup, productForm,setProductForm }) {
+function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductForm }) {
     const navigate = useNavigate();
     if (variants.length === 0) {
         return (
             <div className='bg-white p-4'>
                 <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
-                    <span className='font-bold text-xl'>Are you sure to save with no variant???</span>
+                    <span className='font-bold text-xl'>Enter quantity</span>
+                    <input onChange={(e) => {
+                        setProductForm({ ...productForm, quantity: e.target.value })
+                    }} />
                     <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Cancel</button>
                     <button onClick={() => {
-                        console.log(productForm)
                         POST("seller/add-product", productForm).then((res) => {
-                            console.log(res)
                             setOpenPopup(false);
                             navigate("/seller/products");
                         })
@@ -238,23 +241,8 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm,setProductForm
             </div>
         )
     }
-    
-    if (variants.length === 0) {
-        return (
-            <div className='bg-white p-4'>
-                <div className='w-[600px] rounded p-4 border-2 border-gray-200'>
-                    <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
-                </div>
-            </div>
-        )
-    }
-    const toString = (arr) => {
-        let ans = ""
-        arr.forEach(element => {
-            ans = ans + element.type + ":"+ element.value+","
-        });
-        return ans
-    }
+
+
     return (
         <div className='bg-white p-4 rounded'>
             <div><span>*Please type quantity of each variant ( 0 if not available)</span></div>
@@ -266,7 +254,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm,setProductForm
                 {productForm.variantDetails.map((item, index) => {
                     return (
                         <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
-                            <span className='border-r-2 border-gray-200 grow place-content-center'>{toString(item.variantDetail)}</span>
+                            <span className='border-r-2 border-gray-200 grow place-content-center'>{item.variantDetail}</span>
                             <input type="number" placeholder='type number' className='outline-none w-1/6 h-10' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
                                 let tmp = [...productForm.variantDetails];
@@ -282,18 +270,15 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm,setProductForm
                 <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2 w-1/2 rounded text-black'>Cancel</button>
 
                 <button onClick={() => {
-                    console.log(productForm)
-                    let tmp = productForm.variantDetails.map((item)=>{
-                        item.variantDetail = toString(item.variantDetail)
-                        return item
-                    })
-                    setProductForm({...productForm,variantDetails:tmp})
-                    POST("seller/add-product", productForm
+                    let tmp = 0
+                    for (let i = 0; i < productForm.variantDetails.length; i++) {
+                        console.log(productForm.variantDetails[i].quantity)
+                        tmp += parseInt(productForm.variantDetails[i].quantity)
+                    }
+                    
+                    POST("seller/add-product", {...productForm, quantity: tmp}
                     ).then((res) => {
                         if (res.code === "OK") {
-
-                            console.log(res);
-                            console.log("created");
                             navigate("/seller/products");
                             setOpenPopup(false)
                         } else {
@@ -319,6 +304,13 @@ function combine(list1, list2) {
     return tmp
 }
 function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm) {
+    const toString = (arr) => {
+        let ans = ""
+        arr.forEach(element => {
+            ans = ans + element.type + ":" + element.value + ","
+        });
+        return ans.substring(0, ans.length - 1)
+    }
     let tmp = []
     for (let i = 0; i < variants.length; i++) {
         if (variants[i].isDeleted) continue
@@ -345,7 +337,7 @@ function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setP
             tmp.push({ type: list[i][j].type, value: list[i][j].value })
         }
         quantity.push({
-            variantDetail: tmp,
+            variantDetail: toString(tmp),
             quantity: 0
         })
     }

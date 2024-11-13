@@ -28,3 +28,15 @@ export const POST = async (url, data) => {
     const data1 = await response.json();
     return data1;
 }
+export const DELETE = async (url) => {
+    const response = await fetch(baseUrl+url, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+            "Access-Control-Allow-Origin": "http://localhost:5173",
+        },
+    });
+    const data = await response.json();
+    return data;
+}

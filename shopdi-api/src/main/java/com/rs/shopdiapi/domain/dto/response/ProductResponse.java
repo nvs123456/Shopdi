@@ -35,7 +35,7 @@ public class ProductResponse {
     // Seller Information
     Long sellerId;
     String shopName;
-
+    int quantity;
     // Variants
     List<VariantResponse> variants;
 

@@ -18,8 +18,6 @@ export default function ProductManagement() {
   useEffect(() => {
     GET("seller/my-products"+pageUrl).then((data) => {
       setProducts(data.result?.items)
-      console.log(products)
-      console.log(data)
       setIsLoading(false)
     })
   }, [])

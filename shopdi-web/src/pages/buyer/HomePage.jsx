@@ -37,10 +37,8 @@ const HomePage = () => {
   const [product_tmp, setProduct_tmp] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    console.log(pageUrl)
     GET("products"+pageUrl).then((data) => {
       setProduct_tmp(data.result?.items)
-      console.log(data)
       setIsLoading(false)
     })
     

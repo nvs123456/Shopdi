@@ -17,7 +17,7 @@ export default function HomePage() {
                 <Route path="/" exact element={<DashBoard/>}/>
                 <Route path="/products/" exact element={<ProductManagement/>}/>
                 <Route path="products/add-product" exact element={<AddProduct/>}/>
-                <Route path="/products/product-detail" exact element={<ProductDetail/>}/>
+                <Route path="/products/product-detail/:id" exact element={<ProductDetail/>}/>
                 <Route path="/orders" exact element={<OrderList/>}/>
                 <Route path="/profile" exact element={<SellerProfile/>}/>
                 <Route path='/orders/:id' element={<OrderDetails/>}/>

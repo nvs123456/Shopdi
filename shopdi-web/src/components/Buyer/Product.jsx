@@ -12,7 +12,7 @@ export default function Product({product}) {
         stars.push(<StarIcon key={5 - i} style={{color: "white", fontSize: "15px"}}/>)
     }
     return (
-        <Link to={`/product/${product.id}`}>
+        <Link to={`/product/${product.productId}`}>
             <div className="bg-cloudBlue p-2 w-60 h-96 rounded-md ">
                 <div className="h-full rounded-md flex flex-col space-y-2">
                     <div className=" bg-white min-w-full h-[224px] ">

@@ -83,121 +83,124 @@ const product = {
     ]
 
 }
-export default function EditProduct({ }) {
-    console.log('EditProduct component rendered');
-    console.log('Product:', product);
+// export default function EditProduct({ }) {
+//     console.log('EditProduct component rendered');
+//     console.log('Product:', product);
 
-    const categories = CATEGORIES.CATEGORIES;
-    const [currentCategory, setCurrentCategory] = useState(categories[0]);
-    const [variants, setVariants] = useState(product.variants || []);
-    const [listVariants, setListVariants] = useState([]);
-    const [openPopup, setOpenPopup] = useState(false);
+//     const categories = CATEGORIES.CATEGORIES;
+//     const [currentCategory, setCurrentCategory] = useState(categories[0]);
+//     const [variants, setVariants] = useState(product.variants || []);
+//     const [listVariants, setListVariants] = useState([]);
+//     const [openPopup, setOpenPopup] = useState(false);
 
-    useEffect(() => {
-        if (product.category) {
-            const category = categories.find(cat => cat.name === product.category[0]);
-            setCurrentCategory(category);
-        }
-    }, [product, categories]);
+//     useEffect(() => {
+//         if (product.category) {
+//             const category = categories.find(cat => cat.name === product.category[0]);
+//             setCurrentCategory(category);
+//         }
+//     }, [product, categories]);
 
-    return (
-        <div className='w-full flex flex-row'>
-            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}>
-                {/*<QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup} />*/}
-            </div>
-            <div className={`edit-product p-8 w-1/6 bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
+//     return (
+//         <div className='w-full flex flex-row'>
+//             <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}>
+//                 {/*<QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup} />*/}
+//             </div>
+//             <div className={`edit-product p-8 w-1/6 bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
 
-            <div className={`edit-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
-                <div>
-                    <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}>
-                        <ArrowBackIcon style={{ fontSize: '40px' }} />
-                    </span>
-                    <span className="inline-block font-bold text-xl ml-4 p-2">Edit Product</span>
-                    <span onClick={() => {
-                        onAddVariant(variants, setListVariants, setOpenPopup)
-                    }}
-                          className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
-                </div>
-                <div className='flex flex-col gap-4'>
-                    <div className='general-infor border-2 border-gray-200 p-4'>
-                        <div>
-                            <span className='font-bold text-xl'>General information</span>
-                        </div>
-                        <div>
-                            <label> Product name</label>
-                            <input type="text" className='outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name' defaultValue={product.name}></input>
-                        </div>
-                        <div>
-                            <label> Product description</label>
-                            <textarea className='outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product description' defaultValue={product.description}></textarea>
-                        </div>
-                    </div>
-                    <div className='media border-2 border-gray-200 p-4'>
-                        <div>
-                            <span className='font-bold text-xl'>Media</span>
-                            {/*<UploadAndDisplayImage initialImages={product.images} />*/}
-                        </div>
-                    </div>
-                    <div className='category border-2 border-gray-200 p-4'>
-                        <div>
-                            <span className='font-bold text-xl'>Category</span>
-                        </div>
-                        <div className="flex flex-row gap-4">
-                            <div className=' flex flex-col'>
-                                <label> Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory} onChange={(e) => {
-                                    const tmp = categories.find((i) => i.name === e.target.value)
-                                    setCurrentCategory(tmp)
-                                }}>
-                                    {categories.map((item, index) => {
-                                        return (
-                                            <option key={index} value={item.name}>{item.name}</option>
-                                        )
-                                    })}
-                                </select>
-                            </div>
-                            <div className=' flex flex-col'>
-                                <label>Sub Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded' >
-                                    {currentCategory.sub_categories.map((item, index) => {
-                                        return <option key={index} value={item}>{item}</option>
-                                    })}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="pricing border-2 border-gray-200 p-4 flex flex-col gap-2">
-                        <div>
-                            <span className='font-bold text-xl'>Pricing</span>
-                        </div>
-                        <div>
-                            <label className='block'>Price</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.price}></input>
-                        </div>
-                        <div>
-                            <label className='block'>Discount</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.discount}></input>
-                        </div>
-                        <div>
-                            <label className='block'>Brand</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.brand}></input>
-                        </div>
-                        <div>
-                            <label className='block'>Quantity</label>
-                            <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.quantity}></input>
-                        </div>
-                    </div>
-                    <div className="variant">
-                        <div>
-                            <span className='font-bold text-xl'>Variant</span>
-                        </div>
-                        <div>
-                            {/*<VariantsForm variants={variants} setVariants={setVariants} />*/}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className={`edit-product p-8 w-1/6 bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
-        </div>
-    )
+//             <div className={`edit-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
+//                 <div>
+//                     <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}>
+//                         <ArrowBackIcon style={{ fontSize: '40px' }} />
+//                     </span>
+//                     <span className="inline-block font-bold text-xl ml-4 p-2">Edit Product</span>
+//                     <span onClick={() => {
+//                         onAddVariant(variants, setListVariants, setOpenPopup)
+//                     }}
+//                           className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
+//                 </div>
+//                 <div className='flex flex-col gap-4'>
+//                     <div className='general-infor border-2 border-gray-200 p-4'>
+//                         <div>
+//                             <span className='font-bold text-xl'>General information</span>
+//                         </div>
+//                         <div>
+//                             <label> Product name</label>
+//                             <input type="text" className='outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name' defaultValue={product.name}></input>
+//                         </div>
+//                         <div>
+//                             <label> Product description</label>
+//                             <textarea className='outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product description' defaultValue={product.description}></textarea>
+//                         </div>
+//                     </div>
+//                     <div className='media border-2 border-gray-200 p-4'>
+//                         <div>
+//                             <span className='font-bold text-xl'>Media</span>
+//                             {/*<UploadAndDisplayImage initialImages={product.images} />*/}
+//                         </div>
+//                     </div>
+//                     <div className='category border-2 border-gray-200 p-4'>
+//                         <div>
+//                             <span className='font-bold text-xl'>Category</span>
+//                         </div>
+//                         <div className="flex flex-row gap-4">
+//                             <div className=' flex flex-col'>
+//                                 <label> Category</label>
+//                                 <select className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory} onChange={(e) => {
+//                                     const tmp = categories.find((i) => i.name === e.target.value)
+//                                     setCurrentCategory(tmp)
+//                                 }}>
+//                                     {categories.map((item, index) => {
+//                                         return (
+//                                             <option key={index} value={item.name}>{item.name}</option>
+//                                         )
+//                                     })}
+//                                 </select>
+//                             </div>
+//                             <div className=' flex flex-col'>
+//                                 <label>Sub Category</label>
+//                                 <select className='border-2 border-gray-400 w-60 h-10 rounded' >
+//                                     {currentCategory.sub_categories.map((item, index) => {
+//                                         return <option key={index} value={item}>{item}</option>
+//                                     })}
+//                                 </select>
+//                             </div>
+//                         </div>
+//                     </div>
+//                     <div className="pricing border-2 border-gray-200 p-4 flex flex-col gap-2">
+//                         <div>
+//                             <span className='font-bold text-xl'>Pricing</span>
+//                         </div>
+//                         <div>
+//                             <label className='block'>Price</label>
+//                             <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.price}></input>
+//                         </div>
+//                         <div>
+//                             <label className='block'>Discount</label>
+//                             <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.discount}></input>
+//                         </div>
+//                         <div>
+//                             <label className='block'>Brand</label>
+//                             <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.brand}></input>
+//                         </div>
+//                         <div>
+//                             <label className='block'>Quantity</label>
+//                             <input type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={product.quantity}></input>
+//                         </div>
+//                     </div>
+//                     <div className="variant">
+//                         <div>
+//                             <span className='font-bold text-xl'>Variant</span>
+//                         </div>
+//                         <div>
+//                             {/*<VariantsForm variants={variants} setVariants={setVariants} />*/}
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//             <div className={`edit-product p-8 w-1/6 bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
+//         </div>
+//     )
+// }
+export default function EditProduct(){
+    return <div></div>;
 }

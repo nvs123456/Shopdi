@@ -43,9 +43,9 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
                     </div>
                 </button>
 
-                <div className={`variants absolute ${isOpen ? 'block' : 'hidden'} p-4 border border-gray-200 right-0 top-4 z-10 mt-2 w-96 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none`}>
-                    <Variant product_id={item.id} onChangeVariant={onChangeVariant} currentVariant={variant.variant} />
-                </div>
+                {/* <div className={`variants absolute ${isOpen ? 'block' : 'hidden'} p-4 border border-gray-200 right-0 top-4 z-10 mt-2 w-96 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none`}>
+                    <Variant  onChangeVariant={onChangeVariant} currentVariant={variant.variant} />
+                </div> */}
             </div>
             <span className="w-40 text-center">{item.price}</span>
 

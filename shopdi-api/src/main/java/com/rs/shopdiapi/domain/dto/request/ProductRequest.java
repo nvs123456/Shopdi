@@ -6,6 +6,9 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +22,7 @@ public class ProductRequest {
     String description;
 
     // Media
+    
     List<String> imageUrls;
 
     // Pricing

@@ -62,13 +62,10 @@ public class ProductServiceImpl implements ProductService {
                 .category(category)
                 .seller(seller)
                 .tags(tags)
+                .quantity(request.getQuantity())
                 .status(ProductStatusEnum.valueOf(request.getProductStatus()))
                 .build();
-        // int quantity = 0;
-        // for(VariantDetail v : request.getVariantDetails()){
-        //         quantity+= v.getQuantity();
-        // }
-        // product.setQuantity(quantity);
+        
         Set<Variant> variants = request.getVariantDetails().stream()
                 .map(detail -> {
                     Variant variant = new Variant();
@@ -95,6 +92,7 @@ public class ProductServiceImpl implements ProductService {
                 .tagNames(savedProduct.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
                 .sellerId(savedProduct.getSeller().getId())
                 .shopName(savedProduct.getSeller().getShopName())
+                .quantity(savedProduct.getQuantity())
                 .variants(savedProduct.getVariants().stream()
                         .map(variant -> ProductResponse.VariantResponse.builder()
                                 .variantDetail(variant.getVariantDetail())
