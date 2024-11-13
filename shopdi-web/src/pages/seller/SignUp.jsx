@@ -19,14 +19,12 @@ const SellerSignUp = () => {
     const signUp = (e) => {
         e.preventDefault();
         POST(`seller/register`, form).then((res) => {
+            console.log(res)
             if (res.code === 'OK') {
-                console.log(res);
-                console.log("created");
+                localStorage.clear()
+                navigate("/login")
+            }else {
                 setMessage(res.message)
-                let infor = GET(`users/my-info`).then((res) => {
-                    localStorage.setItem("roles", JSON.stringify(res.result.roles));
-                    navigate("/seller");
-                });
             }
         })
     }

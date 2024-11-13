@@ -16,9 +16,9 @@ export default function ProductManagement() {
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    console.log(pageUrl)
     GET("seller/my-products"+pageUrl).then((data) => {
       setProducts(data.result?.items)
+      console.log(products)
       console.log(data)
       setIsLoading(false)
     })

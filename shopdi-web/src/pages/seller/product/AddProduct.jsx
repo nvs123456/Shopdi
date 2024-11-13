@@ -219,6 +219,7 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
     );
 };
 function QuantityOfVariants({ variants, setOpenPopup, productForm,setProductForm }) {
+    const navigate = useNavigate();
     if (variants.length === 0) {
         return (
             <div className='bg-white p-4'>
@@ -237,7 +238,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm,setProductForm
             </div>
         )
     }
-    const navigate = useNavigate();
+    
     if (variants.length === 0) {
         return (
             <div className='bg-white p-4'>
