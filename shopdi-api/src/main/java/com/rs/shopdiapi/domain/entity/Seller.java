@@ -40,7 +40,7 @@ public class Seller extends BaseEntity<Long> {
     String location;
 
     @Column(unique = true)
-    @Pattern(regexp = "[6789]{1}[0-9]{9}", message = "Enter valid 10 digit mobile number")
+    @Pattern(regexp = "(^0[3|5|7|8|9][0-9]{8}$)", message = "Enter valid 10 digit mobile number")
     String contactNumber;
 
     String about;

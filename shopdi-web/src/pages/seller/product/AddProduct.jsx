@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { POST } from '../../../api/GET';
+import { POST } from '@/api/GET';
 
 export default function AddProduct() {
     const [productForm, setProductForm] = useState({
@@ -18,7 +18,7 @@ export default function AddProduct() {
         price: 0,
         discountPercent: 0,
 
-        Brand: '',
+        brand: '',
 
         // Variant
         variantDetails: [],
@@ -130,7 +130,7 @@ export default function AddProduct() {
                         <div>
                             <label className='block'>Brand</label>
                             <input onChange={(e) => {
-                                setProductForm({ ...productForm, Brand: e.target.value })
+                                setProductForm({ ...productForm, brand: e.target.value })
                             }}
                                 type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
@@ -218,7 +218,7 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
         </div >
     );
 };
-function QuantityOfVariants({ variants, setOpenPopup, productForm }) {
+function QuantityOfVariants({ variants, setOpenPopup, productForm,setProductForm }) {
     if (variants.length === 0) {
         return (
             <div className='bg-white p-4'>
@@ -226,9 +226,11 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm }) {
                     <span className='font-bold text-xl'>Are you sure to save with no variant???</span>
                     <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Cancel</button>
                     <button onClick={() => {
+                        console.log(productForm)
                         POST("seller/add-product", productForm).then((res) => {
                             console.log(res)
                             setOpenPopup(false);
+                            navigate("/seller/products");
                         })
                     }} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
                 </div>
@@ -245,25 +247,12 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm }) {
             </div>
         )
     }
-
-    function d(item) {
-        return (
-            <span>
-                <span className='text-xl'>
-                    {item.type}
-                </span>
-                <span className='font-bold text-pumpkin'>: {item.value}, </span>
-            </span>
-        )
-    }
-    function e(item) {
-        return (
-            <span>
-                {item.map((item) => {
-                    return d(item)
-                })}
-            </span>
-        )
+    const toString = (arr) => {
+        let ans = ""
+        arr.forEach(element => {
+            ans = ans + element.type + ":"+ element.value+","
+        });
+        return ans
     }
     return (
         <div className='bg-white p-4 rounded'>
@@ -273,12 +262,15 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm }) {
                 <span className='float-right'>Quantity</span>
             </div>
             <div className='flex flex-col w-[600px] border-2 border-gray-200 overflow-y-scroll no-scrollbar max-h-[300px]'>
-                {variants.map((item, index) => {
+                {productForm.variantDetails.map((item, index) => {
                     return (
                         <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
-                            <span className='border-r-2 border-gray-200 grow place-content-center'>{e(item)}</span>
+                            <span className='border-r-2 border-gray-200 grow place-content-center'>{toString(item.variantDetail)}</span>
                             <input type="number" placeholder='type number' className='outline-none w-1/6 h-10' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
+                                let tmp = [...productForm.variantDetails];
+                                tmp[index].quantity = e.target.value
+                                setProductForm({ ...productForm, variantDetails: tmp })
                             }}></input>
                         </div>
 
@@ -289,12 +281,19 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm }) {
                 <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2 w-1/2 rounded text-black'>Cancel</button>
 
                 <button onClick={() => {
+                    console.log(productForm)
+                    let tmp = productForm.variantDetails.map((item)=>{
+                        item.variantDetail = toString(item.variantDetail)
+                        return item
+                    })
+                    setProductForm({...productForm,variantDetails:tmp})
                     POST("seller/add-product", productForm
                     ).then((res) => {
                         if (res.code === "OK") {
+
                             console.log(res);
                             console.log("created");
-                            navigate("/seller/dashboard");
+                            navigate("/seller/products");
                             setOpenPopup(false)
                         } else {
                             alert(res.message)
@@ -340,9 +339,9 @@ function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setP
     setListVariants(list)
     const quantity = []
     for (let i = 0; i < list.length; i++) {
-        let tmp = ''
+        let tmp = []
         for (let j = 0; j < list[i].length; j++) {
-            tmp = tmp + list[i][j].type + ":" + list[i][j].value + ","
+            tmp.push({ type: list[i][j].type, value: list[i][j].value })
         }
         quantity.push({
             variantDetail: tmp,

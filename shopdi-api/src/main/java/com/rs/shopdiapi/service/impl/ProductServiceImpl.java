@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
+import com.rs.shopdiapi.domain.dto.request.ProductRequest.VariantDetail;
 import com.rs.shopdiapi.domain.dto.request.ProductFilterRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductResponse;
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public ProductResponse createProduct(ProductRequest request, Long sellerId) {
+        System.out.println(request.getCategoryName()+" "+categoryRepository.findByName(request.getCategoryName()));
         Category category = categoryRepository.findByName(request.getCategoryName())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
@@ -62,7 +64,11 @@ public class ProductServiceImpl implements ProductService {
                 .tags(tags)
                 .status(ProductStatusEnum.valueOf(request.getProductStatus()))
                 .build();
-
+        // int quantity = 0;
+        // for(VariantDetail v : request.getVariantDetails()){
+        //         quantity+= v.getQuantity();
+        // }
+        // product.setQuantity(quantity);
         Set<Variant> variants = request.getVariantDetails().stream()
                 .map(detail -> {
                     Variant variant = new Variant();

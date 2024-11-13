@@ -2,7 +2,7 @@ import React from "react";
 import StarIcon from '@mui/icons-material/Star';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import {Link} from 'react-router-dom';
-
+import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 export default function Product({product}) {
     let stars = [];
     for (let i = 0; i < Math.round(product.rating); i++) {
@@ -15,15 +15,14 @@ export default function Product({product}) {
         <Link to={`/product/${product.id}`}>
             <div className="bg-cloudBlue p-2 w-60 h-96 rounded-md ">
                 <div className="h-full rounded-md flex flex-col space-y-2">
-                    <div className=" bg-white min-w-full grow ">
-                        <img src={product.image} alt={product.name}/>
+                    <div className=" bg-white min-w-full h-[224px] ">
+                        <img src={shopdiLogo} width={224}  alt={product.name}/>
                     </div>
-                    <div>
-                        <p>{product.name}</p>
+                    <div className="text-lg grow p-2">
+                        <p>{product.productName}</p>
                     </div>
                     <div>
                         {stars}
-                        <p className="inline">({product.sold} sold)</p>
                     </div>
                     <div>
                         <p><AttachMoneyIcon style={{fontSize: "15px"}}/>{product.price}</p>

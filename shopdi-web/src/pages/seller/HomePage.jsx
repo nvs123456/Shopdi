@@ -1,6 +1,6 @@
 import {Routes, Route} from "react-router-dom";
 import React from "react";
-import ProductManagement from "./product/ProductManagement";
+import ProductManagement from "./product/ProductManagement.jsx";
 import AddProduct from "@/pages/seller/product/AddProduct";
 import ProductDetail from "@/pages/seller/product/ProductDetail";
 import DashBoard from "@/pages/seller/dashboard/DashBoard";

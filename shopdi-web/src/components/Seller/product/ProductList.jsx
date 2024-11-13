@@ -2,6 +2,7 @@ import React from "react";
 import Product from "./Product.jsx";
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
+import PaginationButton from "@/components/Navigation/Pagination.jsx";
 export default function ProductList({ products }) {
 
     return (
@@ -28,6 +29,9 @@ export default function ProductList({ products }) {
             {products.map((item) => <div key={item.id} className="border-b-2 border-gray-200 py-4">
                 <Product item={item} />
             </div>)}
+            <div className="mt-4 flex justify-center">
+                <PaginationButton />
+            </div>
         </div>
     )
 }

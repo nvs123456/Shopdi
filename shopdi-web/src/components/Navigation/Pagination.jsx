@@ -16,8 +16,8 @@ function PaginationButton() {
             count={10}
             renderItem={(item) => (
                 <PaginationItem
-                    component={Link}
-                    to={`/inbox${item.page === 1 ? '' : `?page=${item.page}`}`}
+                    component={"a"}
+                    href={`${item.page === 1 ? '' : `?page=${item.page}`}`}
                     {...item}
                     sx={{
                         color: 'black', // Màu của văn bản

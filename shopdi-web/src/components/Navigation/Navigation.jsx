@@ -57,7 +57,7 @@ export default function Navigation(props) {
 
                             <div className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                               {categories.map((section) => (
-                                <Link to={`/${section.name}`} state={{ name: section.name, sub_categories: section.sub_categories }}>
+                                <Link key={section.name} to={`/${section.name}`} state={{ name: section.name, sub_categories: section.sub_categories }}>
                                   <div key={section.name}>
                                     <p id={`${section.name}-heading`} className="font-medium hover:text-gray-800">
                                       {section.name}
