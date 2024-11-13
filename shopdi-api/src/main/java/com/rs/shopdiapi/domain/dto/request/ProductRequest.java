@@ -36,7 +36,7 @@ public class ProductRequest {
 
     // Status
     String productStatus;
-
+    int quantity;
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

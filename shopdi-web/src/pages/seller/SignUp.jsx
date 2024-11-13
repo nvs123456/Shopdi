@@ -22,9 +22,10 @@ const SellerSignUp = () => {
             if (res.code === 'OK') {
                 console.log(res);
                 console.log("created");
+                setMessage(res.message)
                 let infor = GET(`users/my-info`).then((res) => {
                     localStorage.setItem("roles", JSON.stringify(res.result.roles));
-                    navigate("/seller/dashboard");
+                    navigate("/seller");
                 });
             }
         })

@@ -60,7 +60,7 @@ public class Product extends BaseEntity<Long> {
 
     @Column(name = "num_ratings")
     int numRatings;
-
+    int quantity;
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
