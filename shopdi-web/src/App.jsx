@@ -23,8 +23,8 @@ function App() {
                         <Route path='buyer/signup' exact element={< SignUpForm />} />
                         <Route element={<PrivateRoute />}>
                             <Route path="/*" element={
-                                <div className='flex flex-col min-h-screen'>
-                                    <div>
+                                <div className='flex flex-col min-h-screen w-full'>
+                                    <div className='flex flex-col min-h-screen w-full'>
                                         <AppRouter />
                                     </div>
                                 </div>
