@@ -1,11 +1,13 @@
 import React from 'react';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PropTypes from "prop-types";
+import {useNavigate} from "react-router-dom";
 
 function OrderItem({orderId, status, orderDate, orderTotal}) {
+    const navigate = useNavigate();
     return (
-        <div className="w-full max-w-4xl font-sans mx-auto p-2">
-            <div className="grid grid-cols-11 text-left text-[16px] sm:text-[10px] md:text-[16px] lg:text-[18px]">
+        <div className="w-full max-w-4xl font-sans mx-auto p-2 hover:bg-gray-100">
+            <div className="grid grid-cols-11 text-left text-[10px] md:text-[12px] lg:text-[16px] ">
                 <div className=' col-span-1 pl-0 sm:pl-7'>{orderId}</div>
                 <div className='m-0 col-span-3 pl-0 sm:pl-14'>
                     {status === 'Completed' ? <div className='text-[#2DB224]'>COMPLETED</div> :
@@ -20,9 +22,9 @@ function OrderItem({orderId, status, orderDate, orderTotal}) {
                     {orderTotal}
 
                 </div>
-                <div className='text-[#2DA5F3] col-span-3 pl-0 sm:pl-20 cursor-pointer'>
+                <div className='text-[#2DA5F3] col-span-3 pl-4 lg:pl-16 xl:pl-20 cursor-pointer' onClick={() => {navigate("/orderdetail")}}>
                      <button className='pr-1'>View details</button>
-                     <ArrowForwardIcon/>
+                     <ArrowForwardIcon fontSize={'inherit'}/>
 
                 </div>
 
