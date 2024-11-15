@@ -36,7 +36,7 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
             <span className="h-fit grow">{item.name}</span>
             <div className="flex flex-row w-1/6 relative" >
                 <button className="variant-btn h-fit " onClick={() => { setIsOpen(!isOpen) }}>
-                    <div className="flex flex-row">Phan loai
+                    <div className="flex flex-row">{item.variant}
                         <svg className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                             <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
                         </svg>
@@ -51,7 +51,7 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
 
             <div className="w-40 flex flex-row justify-center"><Quantity quantity={quantity} setQuantity={setQuantity} /></div>
             <span className="w-40 text-center ">{item.price * quantity}</span>
-            <div className='w-40 text-center'><button onClick={() => { onDelete(item.id); isSelected(item) && setTotal(total - item.price * quantity) }} className="text-center color-black hover:text-red">Xoa</button></div>
+            <div className='w-40 text-center'><button onClick={() => { onDelete(item.cartItemId); isSelected(item) && setTotal(total - item.price * quantity) }} className="text-center color-black hover:text-red">Xoa</button></div>
         </div>
     )
 }

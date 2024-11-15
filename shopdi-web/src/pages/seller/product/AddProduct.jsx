@@ -48,6 +48,13 @@ export default function AddProduct() {
                     <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
                     <span className="inline-block font-bold text-xl ml-4 p-2">Add Product</span>
                     <span onClick={() => {
+                        const allInput = document.querySelectorAll('.required-field');
+                        for (let i = 0; i < allInput.length; i++) {
+                            if (allInput[i].value === '') {
+                                alert('Vui long nhap day du thong tin')
+                                return
+                            }
+                        }
                         onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm)
                     }}
                         className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
@@ -63,14 +70,14 @@ export default function AddProduct() {
                                 setProductForm({ ...productForm, productName: e.target.value })
 
                             }}
-                                type="text" required className='outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
+                                type="text" required className='required-field outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
                         </div>
                         <div>
                             <label> Product description</label>
                             <textarea onChange={(e) => {
                                 setProductForm({ ...productForm, description: e.target.value })
                             }}
-                                className='outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product name'></textarea>
+                                className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product name'></textarea>
 
                         </div>
                     </div>
@@ -120,14 +127,14 @@ export default function AddProduct() {
                             <input onChange={(e) => {
                                 setProductForm({ ...productForm, price: e.target.value })
                             }}
-                                type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                                type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
                         <div>
                             <label className='block'>Discount</label>
                             <input onChange={(e) => {
                                 setProductForm({ ...productForm, discountPercent: e.target.value })
                             }}
-                                type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                                type="number" className='required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' placeholder='0 if not available'></input>
                         </div>
                         <div>
                             <label className='block'>Brand</label>
@@ -150,7 +157,7 @@ export default function AddProduct() {
                     </div>
                     <div className="variant">
                         <div>
-                            <span className='font-bold text-xl'>Variant</span>
+                            <span className='font-bold text-xl'>Variant<span className='text-gray-400'>  (Ex: Type: Color, Values: green, red,..)</span></span>
                         </div>
                         <div>
                             <VariantsForm variants={variants} setVariants={setVariants} />
@@ -227,11 +234,15 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
             <div className='bg-white p-4'>
                 <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
                     <span className='font-bold text-xl'>Enter quantity</span>
-                    <input onChange={(e) => {
+                    <input id="quantity" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' type='number' onChange={(e) => {
                         setProductForm({ ...productForm, quantity: e.target.value })
                     }} />
                     <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Cancel</button>
                     <button onClick={() => {
+                        if (document.getElementById("quantity").value === "") {
+                            alert("Please enter quantity");
+                            return
+                        }
                         POST("seller/add-product", productForm).then((res) => {
                             setOpenPopup(false);
                             navigate("/seller/products");
@@ -255,7 +266,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                     return (
                         <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
                             <span className='border-r-2 border-gray-200 grow place-content-center'>{item.variantDetail}</span>
-                            <input type="number" placeholder='type number' className='outline-none w-1/6 h-10' onInput={(e) => {
+                            <input type="number" placeholder='type number' className='list-quantity outline-none w-1/6 h-10' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
                                 let tmp = [...productForm.variantDetails];
                                 tmp[index].quantity = e.target.value
@@ -275,8 +286,14 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                         console.log(productForm.variantDetails[i].quantity)
                         tmp += parseInt(productForm.variantDetails[i].quantity)
                     }
-                    
-                    POST("seller/add-product", {...productForm, quantity: tmp}
+                    const listQuantity = document.getElementsByClassName("list-quantity")
+                    for (let i = 0; i < listQuantity.length; i++) {
+                        if(listQuantity[i].value === ""){
+                            alert("Please enter quantity")
+                            return
+                        }
+                    }
+                    POST("seller/add-product", { ...productForm, quantity: tmp }
                     ).then((res) => {
                         if (res.code === "OK") {
                             navigate("/seller/products");
@@ -322,6 +339,8 @@ function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setP
         tmp.push(l)
     }
     if (tmp.length === 0) {
+        setProductForm({ ...productForm, variantDetails: [] })
+        setListVariants([])
         setOpenPopup(true)
         return
     }
@@ -337,7 +356,7 @@ function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setP
             tmp.push({ type: list[i][j].type, value: list[i][j].value })
         }
         quantity.push({
-            variantDetail: toString(tmp),
+            variantDetail: JSON.stringify(tmp),
             quantity: 0
         })
     }
@@ -350,12 +369,12 @@ function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setP
 //     {
 //         type: 'color',
 //         values: [
-//             { value: 'red', isDeleted: false },
-//             { value: 'green',isDeleted: false },
-//             { value: 'blue',isDeleted: false },
-//             { value: 'yellow',isDeleted: true },
+//             { value: 'red', id: 1 },
+//             { value: 'green',id: 2 },
+//             { value: 'blue',id: 3 },
+//             { value: 'yellow',id: 4 },
 //         ],
-//         isDeleted: false
+//         id 5
 //     }
 // ]
 function VariantsForm({ variants, setVariants }) {
@@ -395,7 +414,7 @@ function VariantType({ variants, setVariants, index }) {
             </div>
             <div className='flex flex-col'>
                 <label>Type</label>
-                <input className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={variants[index].type} onChange={(e) => {
+                <input className='required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={variants[index].type} onChange={(e) => {
                     let tmp = [...variants];
                     tmp[index].type = e.target.value;
                     setVariants(tmp);
@@ -408,7 +427,7 @@ function VariantType({ variants, setVariants, index }) {
                         variants[index].values.map((item, sub_index) => {
                             if (!item.isDeleted)
                                 return (
-                                    <VAriantValue key={`${index}-${sub_index}`} variants={variants} setVariants={setVariants} index={index} sub_index={sub_index} />
+                                    <VariantValue key={`${index}-${sub_index}`} variants={variants} setVariants={setVariants} index={index} sub_index={sub_index} />
                                 );
                         })
                     }
@@ -429,10 +448,10 @@ function VariantType({ variants, setVariants, index }) {
         </div>
     );
 }
-function VAriantValue({ variants, setVariants, index, sub_index }) {
+function VariantValue({ variants, setVariants, index, sub_index }) {
     return (
         <div className='border-2 border-gray-400 rounded h-10'>
-            <input className='outline-none w-20 h-full rounded' defaultValue={variants[index].values[sub_index].value} onChange={(e) => {
+            <input className='required-field outline-none w-20 h-full rounded' defaultValue={variants[index].values[sub_index].value} onChange={(e) => {
                 let tmp = [...variants];
                 tmp[index].values[sub_index].value = e.target.value;
                 setVariants(tmp);

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import ShopBar from "../../components/Buyer/ShopBar.jsx";
-import { GET } from "@/api/GET";
+import { GET, POST } from "@/api/GET";
 export default function ProductDetail() {
     const location = useLocation();
     let t = location.pathname.split("/")
@@ -14,9 +14,20 @@ export default function ProductDetail() {
     const [product, setProduct] = useState({})
     useEffect(() => {
         GET(`products/${id}`).then((data) => {
-            setIsLoading(false)
+            for (let i = 0; i < data.result.variants.length; i++) {
+                data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
+            }
             setProduct(data.result)
-            console.log(data.result)
+            for (let i = 0; i < data.result.variants.length; i++) {
+                if (data.result.variants[i].quantity > 0) {
+                    console.log("data ", data.result.variants[i].variantDetail)
+                    setCurrentSelectedVariant([...data.result.variants[i].variantDetail])
+                    setQuantityInStock(data.result.variants[i].quantity)
+                    break;
+                }
+            }
+            setIsLoading(false)
+
         })
     }, [])
     // const product = {
@@ -115,57 +126,57 @@ export default function ProductDetail() {
     // })
     const [quantity, setQuantity] = useState(1);
     const [currentSelectedVariant, setCurrentSelectedVariant] = useState([]);
+
     const [isBuyNowWithoutAttribute, setIsBuyNowWithoutAttribute] = useState(false);
-    const [quantityInCart, setQuantityInCart] = useState(0)
+    const [quantityInStock, setQuantityInStock] = useState(0)
     const onChangeCurrentSelectedVariant = (type, value) => {
-        if(currentSelectedVariant.find((i) => i.type === type) === undefined){
-            setCurrentSelectedVariant([...currentSelectedVariant, {type: type, value: value}])
-            return
+
+        let tmp = []
+        for (let i = 0; i < currentSelectedVariant.length; i++) {
+            tmp.push({ type: currentSelectedVariant[i].type, value: currentSelectedVariant[i].value })
         }
-        let tmp = [...currentSelectedVariant]
-        tmp.find((i) => i.type === type).value = value
-        setCurrentSelectedVariant(tmp)
-        let num_attribute = product.variants[0].variantDetail.split(",").length
-        if(num_attribute=== currentSelectedVariant.length){
-            for(let i = 0; i < product.variants.length; i++){
-                let t = product.variants[i].variantDetail.split(",")
-                let check = true
-                for(let j = 0; j < t.length; j++){
-                    let k = t[j].split(":")
-                    if(currentSelectedVariant.find((i) => i.type === k[0]) === undefined){
-                        check = false
-                        break
+        for (let i = 0; i < tmp.length; i++) {
+            if (tmp[i].type === type) {
+                tmp[i].value = value
+                setCurrentSelectedVariant(tmp)
+                for (let j = 0; j < product.variants.length; j++) {
+                    console.log(JSON.stringify(product.variants[j].variantDetail) === JSON.stringify(tmp))
+                    if (JSON.stringify(product.variants[j].variantDetail) === JSON.stringify(tmp)) {
+                        setQuantityInStock(product.variants[j].quantity)
                     }
-                    if(currentSelectedVariant.find((i) => i.type === k[0]).value !== k[1]){
-                        check = false
-                        break
-                    }
-                }
-                if(check){
-                    setQuantityInCart(product.variants[i].quantity)
-                    return
                 }
             }
         }
     }
     const handleAddToCart = () => {
-        console.log("add to cart")
-
+        POST(`cart/add-item`, {
+            productId: product.productId,
+            "variant": JSON.stringify(currentSelectedVariant),
+            "quantity": quantity,
+            "price": product.price,
+            "discountPercent": 0,
+            "discountedPrice": 0
+        }).then((data) => {
+            if (data.code == "OK") {
+                alert("Add to cart successfully")
+            }
+        })
     }
     const handleBuyNow = () => {
-        let num_attribute = product.variants[0].variantDetail.split(",").length
-        if(num_attribute !== currentSelectedVariant.length){
-            setIsBuyNowWithoutAttribute(true)
+        if (product.variants.length === 0 && product.quantity === 0) {
+            alert("Product is out of stock")
             return
-        }else{
-            setIsBuyNowWithoutAttribute(false)
+        } else if (product.variants.length > 0 && currentSelectedVariant.length === 0) {
+            alert("Product is out of stock")
+
+        } else {
+            // console.log(currentSelectedVariant)
         }
     }
     const product_subImages = ["link-main-image", "link-image-1", "link-image-2", "link-image-3", "link-image-4", "link-image-5", "link-image-6", "link-image-7", "link-image-8", "link-image-9", "link-image-10"]
     const [subImages, setSubImages] = useState([0, 1, 2, 3, 4])
     const [curImage, setCurImage] = useState(0)
     if (!isLoading) {
-        console.log(product)
         return (
             <div className="pr-40 pl-40 bg-cloudBlue">
                 <div className="pt-10 flex flex-col gap-y-2">
@@ -212,12 +223,12 @@ export default function ProductDetail() {
                             <div>
                                 <span className='text-4xl'>&#8363; {product.price}</span>
                             </div>
-                            <Variant variantWithQuantity={product.variants} onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant} />
+                            <Variant variantWithQuantity={product.variants} onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant} currenSelectedVariant={currentSelectedVariant} />
                             <div className='flex flex-row'>
                                 <div className='text-base align-middle text-gray-600 min-w-20 text-left'>So luong</div>
                                 <div className='flex flex-row flex-wrap'>
                                     <Quantity quantity={quantity} setQuantity={setQuantity} />
-                                    <div className='ml-4'> Con lai {quantityInCart} san pham </div>
+                                    <div className='ml-4'> Con lai {quantityInStock} san pham </div>
                                 </div>
                             </div>
                             {isBuyNowWithoutAttribute ? <div className='text-red'>Vui long chon phan loai hang !</div> : null}

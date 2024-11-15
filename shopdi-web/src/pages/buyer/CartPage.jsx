@@ -1,24 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Cart from "../../components/Buyer/Cart.jsx";
 import shopdiLogo from "../../assets/images/shopdi_logo.jpeg";
 import { Link }from "react-router-dom";
+import { GET } from "../../api/GET";
 export default function CartPage({ CartId }) {
     let l = [];
-    for (let i = 0; i < 10; i++) {
-        let tmp = {
-            id: i,
-            name: "Product " + (i + 1),
-            quantity: i + 1,
-            image: shopdiLogo,
-            price: 100,
-            variant: "mau xanh, kick thuoc S"
-        }
-        l.push(tmp)
-    }
-    const [productsInCart, setProductsInCart] = useState(l);
+    // for (let i = 0; i < 10; i++) {
+    //     let tmp = {
+    //         id: i,
+    //         name: "Product " + (i + 1),
+    //         quantity: i + 1,
+    //         image: shopdiLogo,
+    //         price: 100,
+    //         variant: "mau xanh, kick thuoc S"
+    //     }
+    //     l.push(tmp)
+    // }
+    useEffect(() => {
+        GET("cart").then((res) => {
+            if (res.code === "OK") {
+                setProductsInCart(res.result.cartItems)
+            }
+        })
+    },[])
+    const [productsInCart, setProductsInCart] = useState([]);
     const onDelete = (id) => {
-        let l = productsInCart.filter((item) => item.id !== id);
+        let l = productsInCart.filter((item) => item.cartItemId !== id);
         setProductsInCart(l);
     }
 

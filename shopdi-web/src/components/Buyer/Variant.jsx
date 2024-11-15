@@ -1,40 +1,16 @@
 import '@/css/product_detail.css'
 
-export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVariant, currenSelectedVariant}) {
-    // const variant =
-
-    //     [
-    //         {
-    //     "variantDetail": "size:L,Color:toi,",
-    //         "quantity": 45
-    // },
-    // {
-    //     "variantDetail": "size:L,Color:sang,",
-    //         "quantity": 34
-    // },
-    // {
-    //     "variantDetail": "size:XL,Color:toi,",
-    //         "quantity": 23
-    // },
-    // {
-    //     "variantDetail": "size:XL,Color:sang,",
-    //         "quantity": 12
-    // }
-    //     ]
-
+export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVariant, currenSelectedVariant }) {
     const v = []
     for (let i = 0; i < variantWithQuantity.length; i++) {
-        let t = variantWithQuantity[i].variantDetail.split(",")
-        for(let j = 0; j < t.length; j++){
-            let k = t[j].split(":")
-            if(v.find((i) => i.type === k[0]) === undefined){
-                v.push({
-                    type: k[0],
-                    value: [k[1]]
-                })
-            }else {
-                if(v.find((i) => i.type === k[0]).value.find((i) => i === k[1]) === undefined){
-                    v.find((i) => i.type === k[0]).value.push(k[1])
+        let t = variantWithQuantity[i].variantDetail
+        for (let j = 0; j < t.length; j++) {
+            if (v.find((item) => item.type === t[j].type) === undefined) {
+                v.push({ type: t[j].type, value: [t[j].value] })
+            } else {
+                if (v.find((item) => item.type === t[j].type).value.find((i) => i === t[j].value) === undefined) {
+                    v.find((item) => item.type === t[j].type).value.push(t[j].value)
+
                 }
             }
         }
@@ -49,7 +25,7 @@ export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVa
                         (<div key={i}>
                             <input type="radio" name={`${item.type}`} id={`${item.type}-${i}`}
                                 className="opacity-0 w-0" value={i}
-                                // checked={i === Array.from(currentVariant || []).find((i) => i.type === item.type)?.value}
+                                defaultChecked={currenSelectedVariant.find((dcm) => dcm.type === item.type)?.value === i}
                                 onChange={(e) => {
                                     onChangeCurrentSelectedVariant(item.type, e.target.value)
                                 }} />
