@@ -149,6 +149,7 @@ export default function ProductDetail() {
         }
     }
     const handleAddToCart = () => {
+
         POST(`cart/add-item`, {
             productId: product.productId,
             "variant": JSON.stringify(currentSelectedVariant),
@@ -227,7 +228,7 @@ export default function ProductDetail() {
                             <div className='flex flex-row'>
                                 <div className='text-base align-middle text-gray-600 min-w-20 text-left'>So luong</div>
                                 <div className='flex flex-row flex-wrap'>
-                                    <Quantity quantity={quantity} setQuantity={setQuantity} />
+                                    <Quantity quantity={quantity} setQuantity={setQuantity} quantityInStock={quantityInStock} />
                                     <div className='ml-4'> Con lai {quantityInStock} san pham </div>
                                 </div>
                             </div>
