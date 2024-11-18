@@ -18,7 +18,7 @@ export default function ProductList({ products }) {
                     </Link>
                 </div>
             </div>
-            <div className="header flex flex-row w-full">
+            <div className="header flex flex-row w-full mb-4">
                 <span className="grow pl-12">Ten san pham</span>
                 <span className="w-32 text-center">Gia</span>
                 <span className="w-32 text-center">Trong kho</span>
@@ -26,8 +26,8 @@ export default function ProductList({ products }) {
                 <span className="w-32 text-center">Ngay dang</span>
                 <span className="w-16 text-center">Thao tac</span>
             </div>
-
-            {products && products.map((product) => <div key={product.productId} className="border-b-2 border-gray-200 py-4">
+            
+            {products && products.map((product) => <div key={product.productId}>
                 <Product product={product} />
             </div>)}
             <div className="mt-4 flex justify-center">

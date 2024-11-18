@@ -3,6 +3,7 @@ import StarIcon from "@mui/icons-material/Star";
 import {useEffect, useState} from "react";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import { GET } from "../../../api/GET";
+import { JSONToData } from "@/utils/todo";
 export default function ProductDetail() {
     const location = useLocation();
     let t = location.pathname.split("/")
@@ -79,7 +80,7 @@ export default function ProductDetail() {
                         {product.variants.map((variant) => (
                             <div key={variant.variantDetail}>
                                 <span>{variant.variantDetail}</span>
-                                <span>{variant.quantity}</span>
+                                <span>{JSONToData(variant.quantity)}</span>
                             </div>
                         ))}
                         

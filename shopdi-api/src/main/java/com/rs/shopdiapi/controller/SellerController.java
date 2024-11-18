@@ -8,6 +8,7 @@ import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.PageConstants;
+import com.rs.shopdiapi.repository.VariantRepository;
 import com.rs.shopdiapi.service.OrderService;
 import com.rs.shopdiapi.service.ProductService;
 import com.rs.shopdiapi.service.SellerService;

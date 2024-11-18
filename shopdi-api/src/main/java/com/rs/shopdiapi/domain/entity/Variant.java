@@ -1,5 +1,7 @@
 package com.rs.shopdiapi.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,7 @@ public class Variant extends BaseEntity<Long> {
 
     @Column(nullable = false, columnDefinition = "int default 0")
     Integer quantity = 0;
-
+    // @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     Product product;
