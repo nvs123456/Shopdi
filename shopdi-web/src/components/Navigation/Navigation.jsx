@@ -1,14 +1,20 @@
-import {Popover, PopoverButton, PopoverGroup, PopoverPanel,} from '@headlessui/react'
-import {MagnifyingGlassIcon, ShoppingBagIcon} from '@heroicons/react/24/outline'
+import { Popover, PopoverButton, PopoverGroup, PopoverPanel, } from '@headlessui/react'
+import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import shopdiLogo from '@/assets/images/Shopdi2.jpg';
 import AccountMenu from './AccountMenu/AccountMenu.jsx';
 import CATEGORIES from '@/data/categories_data';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../routes/AuthProvider.jsx';
+import { useEffect, useState } from 'react';
 
 const categories = CATEGORIES.CATEGORIES
 
 export default function Navigation(props) {
+    const [isAdmin, setIsAdmin] = useState(false);
 
+    useEffect(() => {
+        JSON.parse(localStorage.getItem('roles')).find(role => role.name === 'ADMIN') ? setIsAdmin(true) : setIsAdmin(false);
+    }, []);
     return (
         <div>
             <div className={'bg-yaleBlue text-yaleBlue text-[18px]'}>
@@ -45,8 +51,8 @@ export default function Navigation(props) {
                                                         viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
                                                         data-slot="icon">
                                                         <path fillRule="evenodd"
-                                                              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                                              clipRule="evenodd"/>
+                                                            d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                                            clipRule="evenodd" />
                                                     </svg>
                                                 </PopoverButton>
                                             </div>
@@ -66,13 +72,13 @@ export default function Navigation(props) {
                                                                 className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                                                                 {categories.map((section) => (
                                                                     <Link key={section.name} to={`/${section.name}`}
-                                                                          state={{
-                                                                              name: section.name,
-                                                                              sub_categories: section.sub_categories
-                                                                          }}>
+                                                                        state={{
+                                                                            name: section.name,
+                                                                            sub_categories: section.sub_categories
+                                                                        }}>
                                                                         <div key={section.name}>
                                                                             <p id={`${section.name}-heading`}
-                                                                               className="font-medium hover:text-gray-800">
+                                                                                className="font-medium hover:text-gray-800">
                                                                                 {section.name}
                                                                             </p>
                                                                         </div>
@@ -85,13 +91,19 @@ export default function Navigation(props) {
                                             </PopoverPanel>
                                         </Popover>
 
-
-                                        <button
+                                        {!isAdmin ? (<button
                                             onClick={() => window.open('http://localhost:5173/seller', '_blank')}
                                             className="flex items-center text-[12px] text-sm font-medium text-gray-700 hover:text-gray-800"
                                         >
                                             Become a Seller
-                                        </button>
+                                        </button>) : (
+                                            <button
+                                                onClick={() => window.open('http://localhost:5173/admin', '_blank')}
+                                                className="flex items-center text-[12px] text-sm font-medium text-gray-700 hover:text-gray-800"
+                                            >
+                                                Admin page
+                                            </button>)}
+
                                     </div>
                                 </PopoverGroup>
 
@@ -100,7 +112,7 @@ export default function Navigation(props) {
                                     className="flex ml-0 lg:ml-6 border border-gray-200 rounded-xl w-[50%] md:w-[40%] h-1/2 mx-2 shadow-md">
                                     <a href="#" className=" py-2 pl-1 md:px-1 md:py-[6px] text-gray-400 hover:text-gray-500">
                                         <span className="sr-only">Search</span>
-                                        <MagnifyingGlassIcon aria-hidden="true" className="h-4 w-4 md:h-6 md:w-6"/>
+                                        <MagnifyingGlassIcon aria-hidden="true" className="h-4 w-4 md:h-6 md:w-6" />
                                     </a>
                                     <input
                                         type="text"
@@ -113,7 +125,7 @@ export default function Navigation(props) {
                                     <a href='#' className="hidden md:flex text-sm font-medium text-gray-700 hover:text-gray-800">
                                         Support
                                     </a>
-                                    <AccountMenu/>
+                                    <AccountMenu />
                                     {/* <ModeSelect />*/}
                                     {/* Cart */}
                                     <div className="ml-4 flow-root lg:ml-6">

@@ -18,98 +18,16 @@ export default function ProductDetail() {
                 data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
             }
             setProduct(data.result)
-            for (let i = 0; i < data.result.variants.length; i++) {
-                if (data.result.variants[i].quantity > 0) {
-                    console.log("data ", data.result.variants[i].variantDetail)
-                    setCurrentSelectedVariant([...data.result.variants[i].variantDetail])
-                    setQuantityInStock(data.result.variants[i].quantity)
-                    break;
-                }
+            
+            let v = []
+            for (let i = 0; i < data.result.variants[0].variantDetail.length; i++) {
+                v.push({ type: data.result.variants[0].variantDetail[i].type, value: null })
             }
+            setCurrentSelectedVariant(v)
             setIsLoading(false)
 
         })
     }, [])
-    // const product = {
-    //     id: 0,
-    //     name: "Product name with long long long description",
-    //     image: "",
-    //     rating: 3.5,
-    //     description: `✅Thông tin sản phẩm : Giày Jordan Cổ Thấp, Giày Thể Thao Jordan Paris Cổ Thấp Xám Hàng Chuẩn Trung, Đế đi êm chân, Full Bill Box \n
-
-    //                 - Tăng thêm chiều cao 4cm \n
-
-    //                 - phối đồ mọi phong cách\n
-
-    //                 - Đế khâu 2 lớp chuẩ n hàng Trung\n
-
-    //                 - Size: 36 > 43 dành cho cả nam và nữ\n
-
-    //                 - Mã sản phẩm: Jordan Paris\n
-
-    //                 - Xuất xứ : được sản xuất tại nhà máy Quảng Châu\n
-    //                 James Sneaker cam kết:\n
-
-    //                 ✅CAM KẾT : HOÀN TIỀN 100% NẾU SẢN PHẨM KHÔNG ĐÚNG MÔ TẢ .\n
-    //                 ✅HỖ TRỢ ĐỔI SIZE TRONG 3 NGÀY NẾU KHÔNG ĐI VỪA .\n
-    //                 ✅ĐƯỢC KIỂM TRA HÀNG TRƯỚC KHI THANH TOÁN ( GỌI CHO SHOP THEO HOTLINE NẾU BƯU TA K HỖ TRỢ CHO KIỂM TRA HÀNG )\n
-    //                 ✅SẢN PHẨM TRƯỚC KHI GIAO CHO KHÁCH HÀNG ĐẦY ĐỦ BILL,BOX, TAG...`,
-    //     review: 1000,
-    //     sold: 100,
-    //     price: 199000,
-    //     inStock: 100,
-    //     category: ["Thoi trang nam", 'Quan'],
-    //     phan_loai:
-    //         [
-    //             {
-    //                 type: "mau sac",
-    //                 value: [
-    //                     "xanh",
-    //                     "do",
-    //                     "vang",
-    //                     "tim",
-    //                     "den",
-    //                     "hong",
-    //                     "xam", "nau",
-    //                     "trang"
-    //                 ]
-    //             },
-    //             {
-    //                 type: "kich thuoc",
-    //                 value: [
-    //                     "S",
-    //                     "M",
-    //                     "L"
-    //                 ]
-    //             }
-    //         ],
-    //     chi_tiet: [
-    //         {
-    //             name: "Danh muc",
-    //             value: "Thoi trang nam> Giay"
-    //         },
-    //         {
-    //             name: "Mau sac",
-    //             value: "xanh"
-    //         },
-    //         {
-    //             name: "Brand",
-    //             value: "Jordan"
-    //         },
-    //         {
-    //             name: "khoi luong",
-    //             value: "1kg"
-    //         }, {
-    //             name: "Kich thuoc",
-    //             value: '33.5 x 22.5 x 12.5 cm'
-    //         },
-    //         {
-    //             name: "chat lieu",
-    //             value: "Polyester"
-    //         }
-    //     ]
-
-    // }
     const shop_info = {
         name: "Shopdi",
         link: "https://shopdi.com",
@@ -118,16 +36,11 @@ export default function ProductDetail() {
         "san_pham": "100",
         "tham_gia": " 2 nam truoc"
     }
-    // let phan_loai = product.phan_loai.map((i) => {
-    //     return {
-    //         type: i.type,
-    //         value: null
-    //     }
-    // })
+
     const [quantity, setQuantity] = useState(1);
     const [currentSelectedVariant, setCurrentSelectedVariant] = useState([]);
 
-    const [isBuyNowWithoutAttribute, setIsBuyNowWithoutAttribute] = useState(false);
+    const [isBuyNowWithoutAttribute, setIsBuyNowWithoutAttribute] = useState(true);
     const [quantityInStock, setQuantityInStock] = useState(0)
     const onChangeCurrentSelectedVariant = (type, value) => {
 
@@ -140,16 +53,22 @@ export default function ProductDetail() {
                 tmp[i].value = value
                 setCurrentSelectedVariant(tmp)
                 for (let j = 0; j < product.variants.length; j++) {
-                    console.log(JSON.stringify(product.variants[j].variantDetail) === JSON.stringify(tmp))
                     if (JSON.stringify(product.variants[j].variantDetail) === JSON.stringify(tmp)) {
                         setQuantityInStock(product.variants[j].quantity)
                     }
                 }
             }
         }
+        if (tmp.find((i) => i.value === null) === undefined) {
+            setIsBuyNowWithoutAttribute(false)
+        }
+        console.log(tmp)
     }
     const handleAddToCart = () => {
-
+        if (isBuyNowWithoutAttribute) {
+            document.getElementsByClassName('message')[0].innerHTML = "Please select attributes"
+            return
+        }
         POST(`cart/add-item`, {
             productId: product.productId,
             "variant": JSON.stringify(currentSelectedVariant),
@@ -164,6 +83,11 @@ export default function ProductDetail() {
         })
     }
     const handleBuyNow = () => {
+        console.log(isBuyNowWithoutAttribute)
+        if (isBuyNowWithoutAttribute) {
+            document.getElementsByClassName('message')[0].innerHTML = "Please select attributes"
+            return
+        }
         if (product.variants.length === 0 && product.quantity === 0) {
             alert("Product is out of stock")
             return
@@ -229,10 +153,10 @@ export default function ProductDetail() {
                                 <div className='text-base align-middle text-gray-600 min-w-20 text-left'>So luong</div>
                                 <div className='flex flex-row flex-wrap'>
                                     <Quantity quantity={quantity} setQuantity={setQuantity} quantityInStock={quantityInStock} />
-                                    <div className='ml-4'> Con lai {quantityInStock} san pham </div>
+                                    <div className='ml-4'> Con lai {isBuyNowWithoutAttribute ? product.quantity : quantityInStock} san pham </div>
                                 </div>
                             </div>
-                            {isBuyNowWithoutAttribute ? <div className='text-red'>Vui long chon phan loai hang !</div> : null}
+                            {isBuyNowWithoutAttribute ? <div className='text-red message'></div> : null}
                             <div className='flex flex-row ml-4'>
                                 <button className='bg-pumpkin font-publicSans text-white rounded-sm cursor-pointer border-2 p-2' onClick={handleAddToCart}>Them vao gio hang</button>
                                 <button className='ml-2 bg-white font-publicSans text-pumpkin rounded-sm cursor-pointer  border-pumpkin  p-2 border-2' onClick={handleBuyNow}>Mua ngay</button>

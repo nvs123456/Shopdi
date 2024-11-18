@@ -46,7 +46,7 @@ public class CartItemServiceImpl implements CartItemService {
         if (existingCartItem != null) {
             existingCartItem.setQuantity(existingCartItem.getQuantity() + request.getQuantity());
 
-            BigDecimal updatedPrice = BigDecimal.valueOf(product.getPrice() * existingCartItem.getQuantity());
+            BigDecimal updatedPrice = BigDecimal.valueOf(product.getPrice());
             existingCartItem.setPrice(updatedPrice);
 
             BigDecimal updatedDiscountedPrice = updatedPrice
@@ -57,11 +57,11 @@ public class CartItemServiceImpl implements CartItemService {
             cartService.updateCartSummary(cart.getId());
             return cartItemRepository.save(existingCartItem);
         } else {
-            BigDecimal price = request.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
+            BigDecimal price = request.getPrice();
             BigDecimal discountedPrice = price
                     .multiply(BigDecimal.valueOf(100).subtract(request.getDiscountPercent()))
                     .divide(BigDecimal.valueOf(100));
-
+            System.out.println(product.getPrice());
             CartItem cartItem = CartItem.builder()
                     .cart(cart)
                     .product(product)
@@ -78,7 +78,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    @Transactional
+    // @Transactional
     public String deleteCartItem(Long userId, Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));

@@ -32,200 +32,209 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ProductServiceImpl implements ProductService {
-    ProductRepository productRepository;
-    CategoryRepository categoryRepository;
-    ProductMapper productMapper;
-    SellerRepository sellerRepository;
-    TagRepository tagRepository;
+        ProductRepository productRepository;
+        CategoryRepository categoryRepository;
+        ProductMapper productMapper;
+        SellerRepository sellerRepository;
+        TagRepository tagRepository;
+        VariantRepository variantRepository;
 
-    @Transactional
-    @Override
-    public ProductResponse createProduct(ProductRequest request, Long sellerId) {
-        System.out.println(request.getCategoryName()+" "+categoryRepository.findByName(request.getCategoryName()));
-        Category category = categoryRepository.findByName(request.getCategoryName())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        @Transactional
+        @Override
+        public ProductResponse createProduct(ProductRequest request, Long sellerId) {
+                System.out.println(request.getCategoryName() + " "
+                                + categoryRepository.findByName(request.getCategoryName()));
+                Category category = categoryRepository.findByName(request.getCategoryName())
+                                .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new RuntimeException("Seller not found"));
+                Seller seller = sellerRepository.findById(sellerId)
+                                .orElseThrow(() -> new RuntimeException("Seller not found"));
 
-        Set<Tag> tags = request.getTagNames().stream()
-                .map(tagName -> tagRepository.findByName(tagName)
-                        .orElseGet(() -> new Tag(tagName)))
-                .collect(Collectors.toSet());
+                Set<Tag> tags = request.getTagNames().stream()
+                                .map(tagName -> tagRepository.findByName(tagName)
+                                                .orElseGet(() -> new Tag(tagName)))
+                                .collect(Collectors.toSet());
 
-        Product product = Product.builder()
-                .productName(request.getProductName())
-                .description(request.getDescription())
-                .price(request.getPrice())
-                .discountPercent(request.getDiscountPercent())
-                .brand(request.getBrand())
-                .category(category)
-                .seller(seller)
-                .tags(tags)
-                .quantity(request.getQuantity())
-                .status(ProductStatusEnum.valueOf(request.getProductStatus()))
-                .build();
-        
-        Set<Variant> variants = request.getVariantDetails().stream()
-                .map(detail -> {
-                    Variant variant = new Variant();
-                    variant.setProduct(product);
-                    variant.setVariantDetail(detail.getVariantDetail());
-                    variant.setQuantity(detail.getQuantity());
-                    return variant;
-                }).collect(Collectors.toSet());
-        product.setVariants(variants);
+                Product product = Product.builder()
+                                .productName(request.getProductName())
+                                .description(request.getDescription())
+                                .price(request.getPrice())
+                                .discountPercent(request.getDiscountPercent())
+                                .brand(request.getBrand())
+                                .category(category)
+                                .seller(seller)
+                                .tags(tags)
+                                .quantity(request.getQuantity())
+                                .status(ProductStatusEnum.valueOf(request.getProductStatus()))
+                                .build();
 
-        Product savedProduct = productRepository.save(product);
+                Set<Variant> variants = request.getVariantDetails().stream()
+                                .map(detail -> {
+                                        Variant variant = new Variant();
+                                        variant.setProduct(product);
+                                        variant.setVariantDetail(detail.getVariantDetail());
+                                        variant.setQuantity(detail.getQuantity());
+                                        return variant;
+                                }).collect(Collectors.toSet());
+                product.setVariants(variants);
 
+                Product savedProduct = productRepository.save(product);
 
-        return ProductResponse.builder()
-                .productId(savedProduct.getId())
-                .productName(savedProduct.getProductName())
-                .description(savedProduct.getDescription())
-                .price(savedProduct.getPrice())
-                .discountPercent(savedProduct.getDiscountPercent())
-                .brand(savedProduct.getBrand())
-                .status(savedProduct.getStatus())
-                .imageUrls(savedProduct.getImageUrls())
-                .categoryName(savedProduct.getCategory() != null ? savedProduct.getCategory().getName() : null)
-                .tagNames(savedProduct.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
-                .sellerId(savedProduct.getSeller().getId())
-                .shopName(savedProduct.getSeller().getShopName())
-                .quantity(savedProduct.getQuantity())
-                .variants(savedProduct.getVariants().stream()
-                        .map(variant -> ProductResponse.VariantResponse.builder()
-                                .variantDetail(variant.getVariantDetail())
-                                .quantity(variant.getQuantity())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    @Transactional
-    @Override
-    public String deleteProduct(Long productId, Long sellerId) {
-        var product = productRepository.findById(productId)
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-
-        if (!product.getSeller().getId().equals(sellerId)) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+                return ProductResponse.builder()
+                                .productId(savedProduct.getId())
+                                .productName(savedProduct.getProductName())
+                                .description(savedProduct.getDescription())
+                                .price(savedProduct.getPrice())
+                                .discountPercent(savedProduct.getDiscountPercent())
+                                .brand(savedProduct.getBrand())
+                                .status(savedProduct.getStatus())
+                                .imageUrls(savedProduct.getImageUrls())
+                                .categoryName(savedProduct.getCategory() != null ? savedProduct.getCategory().getName()
+                                                : null)
+                                .tagNames(savedProduct.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
+                                .sellerId(savedProduct.getSeller().getId())
+                                .shopName(savedProduct.getSeller().getShopName())
+                                .quantity(savedProduct.getQuantity())
+                                .variants(savedProduct.getVariants().stream()
+                                                .map(variant -> ProductResponse.VariantResponse.builder()
+                                                                .variantDetail(variant.getVariantDetail())
+                                                                .quantity(variant.getQuantity())
+                                                                .build())
+                                                .collect(Collectors.toList()))
+                                .build();
         }
 
-        productRepository.deleteById(productId);
-        return "Product deleted successfully";
-    }
+        @Transactional
+        @Override
+        public String deleteProduct(Long productId, Long sellerId) {
+                var product = productRepository.findById(productId)
+                                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-    @Transactional
-    @Override
-    public ProductResponse updateProduct(ProductRequest productRequest, Long productId) {
-        var product = productRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                if (!product.getSeller().getId().equals(sellerId)) {
+                        throw new AppException(ErrorCode.UNAUTHORIZED);
+                }
 
-        productMapper.updateProduct(product, productRequest);
+                productRepository.deleteById(productId);
+                return "Product deleted successfully";
+        }
 
-        return productMapper.toProductResponse(productRepository.save(product));
-    }
+        @Transactional
+        @Override
+        public ProductResponse updateProduct(ProductRequest productRequest, Long productId) {
+                Product product = productRepository.findById(productId)
+                                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-    @Override
-    public ProductResponse findProductById(Long productId) {
-        var product = productRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-        return productMapper.toProductResponse(product);
-    }
+                productMapper.updateProduct(product, productRequest);                
+                return productMapper.toProductResponse(productRepository.save(product));
+        }
 
-    @Override
-    public PageResponse<?> searchProduct(String query, int pageNo, int pageSize) {
-        return null;
-    }
+        @Override
+        public ProductResponse findProductById(Long productId) {
+                var product = productRepository.findById(productId)
+                                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                return productMapper.toProductResponse(product);
+        }
 
-    @Override
-    public PageResponse<?> findProductByCategory(String category, int pageNo, int pageSize) {
-        var categoryEntity = categoryRepository.findByName(category).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        @Override
+        public PageResponse<?> searchProduct(String query, int pageNo, int pageSize) {
+                return null;
+        }
 
-        Page<Product> productPage = productRepository.findAllByCategoryId(categoryEntity.getId(), PageRequest.of(pageNo, pageSize));
+        @Override
+        public PageResponse<?> findProductByCategory(String category, int pageNo, int pageSize) {
+                var categoryEntity = categoryRepository.findByName(category)
+                                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+                Page<Product> productPage = productRepository.findAllByCategoryId(categoryEntity.getId(),
+                                PageRequest.of(pageNo, pageSize));
 
-        return PageResponse.builder()
-                .pageNo(pageNo)
-                .pageSize(pageSize)
-                .totalPages(productPage.getTotalPages())
-                .items(products)
-                .build();
-    }
+                List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
 
-    @Override
-    public PageResponse<?> filterProducts(ProductFilterRequest filterRequest, int pageNo, int pageSize) {
-        Specification<Product> specification = Specification
-                .where(ProductSpecification.hasProductName(filterRequest.getProductName()))
-                .and(ProductSpecification.hasCategory(filterRequest.getCategories()))
-                .and(ProductSpecification.hasBrand(filterRequest.getBrands()))
-                .and(ProductSpecification.hasPriceBetween(filterRequest.getMinPrice(), filterRequest.getMaxPrice()))
-                .and(ProductSpecification.hasDiscountBetween(filterRequest.getMinDiscount(), filterRequest.getMaxDiscount()))
-                .and(ProductSpecification.hasRatingBetween(filterRequest.getMinRating(), filterRequest.getMaxRating()));
+                return PageResponse.builder()
+                                .pageNo(pageNo)
+                                .pageSize(pageSize)
+                                .totalPages(productPage.getTotalPages())
+                                .items(products)
+                                .build();
+        }
 
-        Page<Product> productPage = productRepository.findAll(specification, PageRequest.of(pageNo, pageSize));
+        @Override
+        public PageResponse<?> filterProducts(ProductFilterRequest filterRequest, int pageNo, int pageSize) {
+                Specification<Product> specification = Specification
+                                .where(ProductSpecification.hasProductName(filterRequest.getProductName()))
+                                .and(ProductSpecification.hasCategory(filterRequest.getCategories()))
+                                .and(ProductSpecification.hasBrand(filterRequest.getBrands()))
+                                .and(ProductSpecification.hasPriceBetween(filterRequest.getMinPrice(),
+                                                filterRequest.getMaxPrice()))
+                                .and(ProductSpecification.hasDiscountBetween(filterRequest.getMinDiscount(),
+                                                filterRequest.getMaxDiscount()))
+                                .and(ProductSpecification.hasRatingBetween(filterRequest.getMinRating(),
+                                                filterRequest.getMaxRating()));
 
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+                Page<Product> productPage = productRepository.findAll(specification, PageRequest.of(pageNo, pageSize));
 
-        return PageResponse.builder()
-                .pageNo(pageNo)
-                .pageSize(pageSize)
-                .totalPages(productPage.getTotalPages())
-                .items(products)
-                .build();
-    }
+                List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
 
+                return PageResponse.builder()
+                                .pageNo(pageNo)
+                                .pageSize(pageSize)
+                                .totalPages(productPage.getTotalPages())
+                                .items(products)
+                                .build();
+        }
 
-//    @Override
-//    public PageResponse<?> getAllProductByFilter(ProductFilterRequest filterRequest, int pageNo, int pageSize) {
-//        List<Product> products = productRepository.filterProducts(
-//                filterRequest.getCategories(),
-//                filterRequest.getBrands(),
-//                filterRequest.getMinPrice(),
-//                filterRequest.getMaxPrice(),
-//                filterRequest.getMinDiscount(),
-//                filterRequest.getMinRating(),
-//                filterRequest.getSortByDiscount(),
-//                filterRequest.getSortByPrice(),
-//                PageRequest.of(pageNo, pageSize)
-//        );
-//
-//
-//        return PageResponse.builder()
-//                .pageNo(pageNo)
-//                .pageSize(pageSize)
-//                .totalPages(0)
-//                .items(List.of())
-//                .build();
-//    }
+        // @Override
+        // public PageResponse<?> getAllProductByFilter(ProductFilterRequest
+        // filterRequest, int pageNo, int pageSize) {
+        // List<Product> products = productRepository.filterProducts(
+        // filterRequest.getCategories(),
+        // filterRequest.getBrands(),
+        // filterRequest.getMinPrice(),
+        // filterRequest.getMaxPrice(),
+        // filterRequest.getMinDiscount(),
+        // filterRequest.getMinRating(),
+        // filterRequest.getSortByDiscount(),
+        // filterRequest.getSortByPrice(),
+        // PageRequest.of(pageNo, pageSize)
+        // );
+        //
+        //
+        // return PageResponse.builder()
+        // .pageNo(pageNo)
+        // .pageSize(pageSize)
+        // .totalPages(0)
+        // .items(List.of())
+        // .build();
+        // }
 
+        @Override
+        public PageResponse<?> getAllProducts(int pageNo, int pageSize, String sortBy, String sortOrder) {
+                Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
+                                : Sort.by(sortBy).descending();
+                Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNo, pageSize, sortByAndOrder));
 
+                List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+                return PageResponse.builder()
+                                .pageNo(pageNo)
+                                .pageSize(pageSize)
+                                .totalPages(productPage.getTotalPages())
+                                .items(products)
+                                .build();
+        }
 
-    @Override
-    public PageResponse<?> getAllProducts(int pageNo, int pageSize, String sortBy, String sortOrder) {
-        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNo, pageSize, sortByAndOrder));
-
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
-        return PageResponse.builder()
-                .pageNo(pageNo)
-                .pageSize(pageSize)
-                .totalPages(productPage.getTotalPages())
-                .items(products)
-                .build();
-    }
-
-    @Override
-    public PageResponse<?> getMyProducts(int pageNo, int pageSize, String sortBy, String sortOrder, Long sellerId) {
-        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Page<Product> productPage = productRepository.findAllBySellerId(sellerId, PageRequest.of(pageNo, pageSize, sortByAndOrder));
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
-        return PageResponse.builder()
-                .pageNo(pageNo)
-                .pageSize(pageSize)
-                .totalPages(productPage.getTotalPages())
-                .items(products)
-                .build();
-    }
+        @Override
+        public PageResponse<?> getMyProducts(int pageNo, int pageSize, String sortBy, String sortOrder, Long sellerId) {
+                Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
+                                : Sort.by(sortBy).descending();
+                Page<Product> productPage = productRepository.findAllBySellerId(sellerId,
+                                PageRequest.of(pageNo, pageSize, sortByAndOrder));
+                List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+                return PageResponse.builder()
+                                .pageNo(pageNo)
+                                .pageSize(pageSize)
+                                .totalPages(productPage.getTotalPages())
+                                .items(products)
+                                .build();
+        }
 
 }

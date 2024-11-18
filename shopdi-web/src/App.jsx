@@ -11,6 +11,8 @@ import SignUpForm from './pages/buyer/SignUp.jsx'
 import { CookiesProvider } from 'react-cookie'
 import PrivateSellerRoute from './routes/PrivateSellerRoute.jsx'
 import SellerSignUp from './pages/seller/SignUp.jsx'
+import PrivateAdminRoute from './routes/PrivateAdminRoute.jsx';
+import CategoryManagement from './pages/admin/CategoryManagement.jsx';
 function App() {
 
     return (
@@ -41,7 +43,9 @@ function App() {
                                     </div>
                                 } />
                             </Route>
-
+                            <Route element={<PrivateAdminRoute />}>
+                                <Route path="admin/*" element={<CategoryManagement />} />
+                            </Route>
                         </Route>
                     </Routes>
                 </AuthProvider>

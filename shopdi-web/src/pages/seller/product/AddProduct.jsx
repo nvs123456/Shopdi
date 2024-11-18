@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { POST } from '@/api/GET';
-
+import { JSONToData } from '@/utils/todo';
 export default function AddProduct() {
+    const categories = CATEGORIES.CATEGORIES;
+
     const [productForm, setProductForm] = useState({
         productName: '',
         description: '',
@@ -25,13 +27,12 @@ export default function AddProduct() {
         quantity: 0,
 
         // Category and Tags
-        categoryName: 'quan',
+        categoryName: categories[0].sub_categories[0],  
         tagNames: ["tagname1", "tagname2"],
 
         // Status
         productStatus: 'PUBLISHED',
     })
-    const categories = CATEGORIES.CATEGORIES;
     const [currentCategory, setCurrentCategory] = useState(categories[0]);
     const [variants, setVariants] = useState([]);
 
@@ -110,7 +111,7 @@ export default function AddProduct() {
 
                             <div className=' flex flex-col'>
                                 <label>Sub Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded'>
+                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory.sub_categories[0]} onChange={(e)=>{setProductForm({...productForm, categoryName: e.target.value})}}>
                                     {currentCategory.sub_categories.map((item, index) => {
                                         return <option key={index} value={item}>{item}</option>
                                     })}
@@ -265,7 +266,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                 {productForm.variantDetails.map((item, index) => {
                     return (
                         <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
-                            <span className='border-r-2 border-gray-200 grow place-content-center'>{item.variantDetail}</span>
+                            <span className='border-r-2 border-gray-200 grow place-content-center'>{JSONToData(item.variantDetail)}</span>
                             <input type="number" placeholder='type number' className='list-quantity outline-none w-1/6 h-10' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
                                 let tmp = [...productForm.variantDetails];
@@ -321,6 +322,7 @@ function combine(list1, list2) {
     return tmp
 }
 function onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm) {
+    console.log(productForm)
     const toString = (arr) => {
         let ans = ""
         arr.forEach(element => {

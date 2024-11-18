@@ -25,7 +25,7 @@ export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVa
                         (<div key={i}>
                             <input type="radio" name={`${item.type}`} id={`${item.type}-${i}`}
                                 className="opacity-0 w-0" value={i}
-                                defaultChecked={currenSelectedVariant.find((dcm) => dcm.type === item.type)?.value === i}
+                                // defaultChecked={currenSelectedVariant.find((dcm) => dcm.type === item.type)?.value === i}
                                 onChange={(e) => {
                                     onChangeCurrentSelectedVariant(item.type, e.target.value)
                                 }} />

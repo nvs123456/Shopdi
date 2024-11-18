@@ -6,17 +6,6 @@ import { Link } from "react-router-dom";
 import { DELETE, GET } from "../../api/GET";
 export default function CartPage({ CartId }) {
     let l = [];
-    // for (let i = 0; i < 10; i++) {
-    //     let tmp = {
-    //         id: i,
-    //         name: "Product " + (i + 1),
-    //         quantity: i + 1,
-    //         image: shopdiLogo,
-    //         price: 100,
-    //         variant: "mau xanh, kick thuoc S"
-    //     }
-    //     l.push(tmp)
-    // }
     useEffect(() => {
         GET("cart").then((res) => {
             if (res.code === "OK") {

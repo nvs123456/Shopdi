@@ -22,7 +22,7 @@ export default function HomePage() {
                 <Route path="/profile" exact element={<SellerProfile/>}/>
                 <Route path='/orders/:id' element={<OrderDetails/>}/>
                 <Route path="/signup" exact element={<SellerSignUp/>}/>
-                <Route path="/products/edit-product" exact element={<EditProduct/>}/>
+                <Route path="/products/edit-product/:id" exact element={<EditProduct/>}/>
 
             </Routes>
         </div>
