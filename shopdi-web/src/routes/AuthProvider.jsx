@@ -19,6 +19,7 @@ const AuthProvider = ({ children }) => {
             const res = await response.json();
             if (res.result) {
                 localStorage.setItem("Authorization", res.result.token);
+    
                 let info = await GET(`users/my-info`)
                 localStorage.setItem("roles",JSON.stringify(info.result.roles));
                 setUser(info.result?.username);
