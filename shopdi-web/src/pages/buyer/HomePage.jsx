@@ -40,7 +40,7 @@ const HomePage = () => {
     GET("products"+pageUrl).then((data) => {
       setProduct_tmp(data.result?.items)
       setIsLoading(false)
-    })
+    },[])
     
   }, [])
 

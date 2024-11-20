@@ -4,20 +4,21 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 const API_URL = 'http://localhost:8080/orders/history';
 
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', async (_, { getState }) => {
-    const { user } = getState().auth;
     const config = {
         headers: {
-            Authorization: `Bearer ${user.token}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
+            'Access-Control-Allow-Origin': 'http://localhost:5173',
         }
     };
     const response = await axios.get(API_URL, config);
-    return response.data;
+    return response.data.result;
 });
 
 const orderSlice = createSlice({
     name: 'orders',
     initialState: {
-        orders: [],
+        orders: {},
         loading: false,
         error: null,
     },
