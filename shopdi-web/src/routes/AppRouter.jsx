@@ -20,7 +20,7 @@ const AppRouter = () => {
                 <Route path={"/profile"} exact element={<Profile />} />
                 <Route path="review" exact element={<Review />} />
                 <Route path="/orderhistory" exact element={<OrderHistory/>} />
-                <Route path="orderdetail" exact element={<OrderDetails />} />
+                <Route path="orders/:id" exact element={<OrderDetails  />} />
                 <Route path="cart" exact element={<CartPage />} />
                 <Route path="buyer/checkout" exact element={<Checkout />} />
                 <Route path="/*" element={<HomePage />} />

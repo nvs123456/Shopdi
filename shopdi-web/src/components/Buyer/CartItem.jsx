@@ -18,7 +18,7 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
         })
     }, [])
     return (
-        <div className="flex flex-row h-20 items-center">
+        <div className="flex flex-row h-20 items-center font-sans">
             <div className="h-fit"><input className="w-4 h-4" type="checkbox" defaultChecked={isSelected(item)} onChange={(e) => {
                 if (e.target.checked) {
                     setTotal(total + item.price * quantity);
