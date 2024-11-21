@@ -6,7 +6,7 @@ import PaginationButton from "@/components/Navigation/Pagination.jsx";
 export default function ProductList({ products }) {
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col min-h-screen">
             <div className="flex flex-row justify-between pb-4 border-b-2 border-gray-200">
                 <div>
                     <input className="w-full h-10 rounded border-2 border-gray-400 outline-none px-4 font-sm" type="text" placeholder="tim kiem san pham"></input>
@@ -26,11 +26,11 @@ export default function ProductList({ products }) {
                 <span className="w-32 text-center">Ngay dang</span>
                 <span className="w-16 text-center">Thao tac</span>
             </div>
-            
+
             {products && products.map((product) => <div key={product.productId}>
                 <Product product={product} />
             </div>)}
-            <div className="mt-4 flex justify-center">
+            <div className="flex flex-row justify-center absolute bottom-4 left-1/2">
                 <PaginationButton />
             </div>
         </div>

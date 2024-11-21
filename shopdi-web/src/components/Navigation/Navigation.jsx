@@ -5,13 +5,13 @@ import AccountMenu from './AccountMenu/AccountMenu.jsx';
 import CATEGORIES from '@/data/categories_data';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../routes/AuthProvider.jsx';
-import { useEffect, useState } from 'react';
-
+import { useContext, useEffect, useState } from 'react';
+import {CategoryContext} from '../../pages/buyer/CategoryContext';
 const categories = CATEGORIES.CATEGORIES
 
 export default function Navigation(props) {
     const [isAdmin, setIsAdmin] = useState(false);
-
+    const { category, setCategory } = useContext(CategoryContext)
     useEffect(() => {
         JSON.parse(localStorage.getItem('roles')).find(role => role.name === 'ADMIN') ? setIsAdmin(true) : setIsAdmin(false);
     }, []);
@@ -28,14 +28,14 @@ export default function Navigation(props) {
 
                                 {/* Logo */}
                                 <div className=" flex ml-0 mr-2 lg:ml-6">
-                                    <Link to="/">
+                                    <a href="/">
                                         <span className="sr-only">Your Company</span>
                                         <img
                                             alt="Logo"
                                             src={shopdiLogo}
                                             className="h-[50px] w-[50px] md:h-14 md:w-auto"
                                         />
-                                    </Link>
+                                    </a>
                                 </div>
 
                                 {/* Flyout menus */}
@@ -71,18 +71,16 @@ export default function Navigation(props) {
                                                             <div
                                                                 className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                                                                 {categories.map((section) => (
-                                                                    <Link key={section.name} to={`/${section.name}`}
-                                                                        state={{
-                                                                            name: section.name,
-                                                                            sub_categories: section.sub_categories
-                                                                        }}>
+                                                                    <a key={section.name} href={`/${section.name}`}
+                                                                        >
                                                                         <div key={section.name}>
                                                                             <p id={`${section.name}-heading`}
                                                                                 className="font-medium hover:text-gray-800">
                                                                                 {section.name}
+                                                                                
                                                                             </p>
                                                                         </div>
-                                                                    </Link>
+                                                                    </a>
                                                                 ))}
                                                             </div>
                                                         </div>

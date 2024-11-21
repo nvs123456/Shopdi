@@ -18,12 +18,16 @@ export default function ProductDetail() {
                 data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
             }
             setProduct(data.result)
-            
-            let v = []
-            for (let i = 0; i < data.result.variants[0].variantDetail.length; i++) {
-                v.push({ type: data.result.variants[0].variantDetail[i].type, value: null })
+
+            if (data.result.variants.length > 0) {
+                let v = []
+                for (let i = 0; i < data.result.variants[0].variantDetail.length; i++) {
+                    v.push({ type: data.result.variants[0].variantDetail[i].type, value: null })
+                }
+                setCurrentSelectedVariant(v)
+            }else{
+                setIsBuyNowWithoutAttribute(false)
             }
-            setCurrentSelectedVariant(v)
             setIsLoading(false)
 
         })
@@ -146,7 +150,7 @@ export default function ProductDetail() {
                                 </div>
                             </div>
                             <div>
-                                <span className='text-4xl'>&#8363; {product.price}</span>
+                                <span className='text-4xl'>&#8363; {product.price.toLocaleString()}</span>
                             </div>
                             <Variant variantWithQuantity={product.variants} onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant} currenSelectedVariant={currentSelectedVariant} />
                             <div className='flex flex-row'>
