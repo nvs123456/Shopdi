@@ -9,10 +9,13 @@ import Review from "../pages/buyer/Review.jsx";
 import Navigation from '../components/Navigation/Navigation.jsx';
 import Footer from '../components/Footer/Footer.jsx';
 import Profile from "../pages/buyer/Profile.jsx";
+
 import SellerList from "../pages/admin/SellerList.jsx";
 const AppRouter = () => {
+    const [category, setCategory] = React.useState("");
     return (
         <div className={'min-w-full'}>
+
             <div>
                 <Navigation />
             </div>

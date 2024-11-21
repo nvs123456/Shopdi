@@ -79,8 +79,9 @@ export default function ProductDetail() {
                         
                         {product.variants.map((variant) => (
                             <div key={variant.variantDetail}>
-                                <span>{variant.variantDetail}</span>
-                                <span>{JSONToData(variant.quantity)}</span>
+                                <span>{JSONToData(variant.variantDetail)}</span>
+                                <span> : </span>
+                                <span>{variant.quantity}</span>
                             </div>
                         ))}
                         

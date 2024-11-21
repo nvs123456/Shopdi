@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
                 Product product = productRepository.findById(productId)
                                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-                productMapper.updateProduct(product, productRequest);                
+                productMapper.updateProduct(product, productRequest);
                 return productMapper.toProductResponse(productRepository.save(product));
         }
 
@@ -144,8 +144,26 @@ public class ProductServiceImpl implements ProductService {
         public PageResponse<?> findProductByCategory(String category, int pageNo, int pageSize) {
                 var categoryEntity = categoryRepository.findByName(category)
                                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-
+                // if(categoryEntity.getParentCategory() == null) {
+                // return findProductByParentCategory(category, pageNo, pageSize);
+                // }
                 Page<Product> productPage = productRepository.findAllByCategoryId(categoryEntity.getId(),
+                                PageRequest.of(pageNo, pageSize));
+
+                List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+                return PageResponse.builder()
+                                .pageNo(pageNo)
+                                .pageSize(pageSize)
+                                .totalPages(productPage.getTotalPages())
+                                .items(products)
+                                .build();
+        }
+
+        @Override
+        public PageResponse<?> findProductByParentCategory(String category, int pageNo, int pageSize) {
+                var categoryEntity = categoryRepository.findByName(category)
+                                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+                Page<Product> productPage = productRepository.findAllByParentCategoryId(categoryEntity.getId(),
                                 PageRequest.of(pageNo, pageSize));
 
                 List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();

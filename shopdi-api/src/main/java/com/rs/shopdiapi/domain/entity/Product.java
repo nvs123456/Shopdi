@@ -64,6 +64,9 @@ public class Product extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
+    @ManyToOne
+    @JoinColumn(name = "parent_category_id")
+    Category parentCategory;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

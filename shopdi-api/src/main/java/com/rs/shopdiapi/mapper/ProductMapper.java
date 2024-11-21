@@ -1,25 +1,3 @@
-// package com.rs.shopdiapi.mapper;
-
-// import com.rs.shopdiapi.domain.dto.request.ProductRequest;
-// import com.rs.shopdiapi.domain.dto.response.ProductResponse;
-// import com.rs.shopdiapi.domain.entity.Product;
-// import org.mapstruct.Mapper;
-// import org.mapstruct.Mapping;
-// import org.mapstruct.MappingTarget;
-
-// @Mapper(componentModel = "spring")
-// public interface ProductMapper {
-//     @Mapping(target = "productId", source = "id") // Explicit mapping for productId
-//     @Mapping(target = "categoryName", source = "category.name") // Example if you want categoryName in ProductResponse
-//     @Mapping(target = "sellerId", source = "seller.id")
-//     @Mapping(target = "shopName", source = "seller.shopName")
-//     ProductResponse toProductResponse(Product product);
-
-//     Product toProduct(ProductRequest request);
-
-//     void updateProduct(@MappingTarget Product product, ProductRequest productRequest);
-// }
-
 package com.rs.shopdiapi.mapper;
 
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
@@ -51,3 +29,24 @@ public interface ProductMapper {
 
     void updateProduct(@MappingTarget Product product, ProductRequest productRequest);
 }
+// package com.rs.shopdiapi.mapper;
+
+// import com.rs.shopdiapi.domain.dto.request.ProductRequest;
+// import com.rs.shopdiapi.domain.dto.response.ProductResponse;
+// import com.rs.shopdiapi.domain.entity.Product;
+// import org.mapstruct.Mapper;
+// import org.mapstruct.Mapping;
+// import org.mapstruct.MappingTarget;
+
+// @Mapper(componentModel = "spring")
+// public interface ProductMapper {
+//     @Mapping(target = "productId", source = "id") 
+//     @Mapping(target = "categoryName", source = "category.name")
+//     @Mapping(target = "sellerId", source = "seller.id")
+//     @Mapping(target = "shopName", source = "seller.shopName")
+//     ProductResponse toProductResponse(Product product);
+
+//     Product toProduct(ProductRequest request);
+
+//     void updateProduct(@MappingTarget Product product, ProductRequest productRequest);
+// }
