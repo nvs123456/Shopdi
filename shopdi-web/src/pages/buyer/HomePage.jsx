@@ -8,11 +8,9 @@ import ProductDetail from "./ProductDetail.jsx";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import Cart from "../../components/Buyer/Cart.jsx";
 import { GET } from "@/api/GET";
-import { CategoryContext } from "./CategoryContext.js";
 const HomePage = () => {
   const location = useLocation();
   const currentCategory = decodeURIComponent(location.pathname.split("/")[1]);
-  const context = useContext(CategoryContext)
 
   const query = new URLSearchParams(location.search);
   const pageParams = query.get('page');
@@ -36,6 +34,7 @@ const HomePage = () => {
       })
     }
   }, [location])
+
 
   return (
     <div>

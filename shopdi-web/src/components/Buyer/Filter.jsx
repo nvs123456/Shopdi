@@ -10,7 +10,6 @@ const categories = CATEGORIES.CATEGORIES
 export default function Filter({ children, products, setProducts }) {
     const location = useLocation();
     const currentCategory = decodeURIComponent(location.pathname.split("/")[1]);
-    const context = useContext(CategoryContext);
 
     const [loading, setLoading] = useState(true);
     const [sub_categories, setSubCategories] = useState([])
@@ -73,10 +72,10 @@ export default function Filter({ children, products, setProducts }) {
                                 <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                                     {category.sub_categories.map(item => <li key={item}><a href="#">{item}</a></li>)}
                                 </ul> */}
-                                <FilterSection type={currentCategory} values={sub_categories} buildUrl={(value) => { return buildUrl("category", value, true, false) }} />
-                                <FilterSection type="Brand" values={["Apple", "Samsung", "Google", "Sony"]} buildUrl={(value) => { return buildUrl("brand", value, false, false) }} />
+                                <FilterSection location={location} type={currentCategory} values={sub_categories} buildUrl={(value) => { return buildUrl("category", value, true, false) }} />
+                                <FilterSection location={location} type="brand" values={["Apple", "Samsung", "Google", "Sony"]} buildUrl={(value) => { return buildUrl("brand", value, false, false) }} />
                                 <PriceFilter />
-                                <FilterSection type="Rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} buildUrl={(value) => { return buildUrl("rating", value, false, false) }} />
+                                <FilterSection location={location} type="rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} buildUrl={(value) => { return buildUrl("rating", value, false, false) }} />
                             </form>
 
                             {/* <!-- Product grid --> */}
@@ -135,7 +134,10 @@ function PriceFilter() {
         </div>
     )
 }
-function FilterSection({ type, values, buildUrl }) {
+function FilterSection({ type, values, buildUrl,location }) {
+    const cate = decodeURIComponent(location.pathname.split("/")[1])
+    const params = new URLSearchParams(location.search);
+    console.log(cate)
     let [isOpen, setIsOpen] = useState(true);
     const set = (value) => {
         setIsOpen(!isOpen);
@@ -168,7 +170,7 @@ function FilterSection({ type, values, buildUrl }) {
                             <div key={item} className="flex items-center">
                                 <Link to={buildUrl(item)}>
                                     <input id={`${index}`}
-                                        // onClick={() => buildUrl(item)}
+                                        checked={params.get(type) === item || cate === item}
                                         name={type} value={item} type="radio" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                     <label htmlFor={`${index}`} className="ml-3 text-sm text-gray-600">{item}</label>
                                 </Link>

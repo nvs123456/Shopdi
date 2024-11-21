@@ -27,8 +27,10 @@ export default function ProductList({ products }) {
                     </div>
                 </div>
 
+<<<<<<< HEAD
             </div> */}
-            <div className="self-center inline-grid grid-cols-4 gap-x-1 gap-y-1 min-h-screen">
+
+            <div className="self-center inline-grid grid-cols-4 gap-x-1 gap-y-1 font-sans min-h-screen">
                 {products.map(product => <Product key={product.productId + product.productName} product={product} />)}
             </div>
             <Pagination />

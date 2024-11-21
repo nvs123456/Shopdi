@@ -9,31 +9,30 @@ import Review from "../pages/buyer/Review.jsx";
 import Navigation from '../components/Navigation/Navigation.jsx';
 import Footer from '../components/Footer/Footer.jsx';
 import Profile from "../pages/buyer/Profile.jsx";
-import { CategoryContext } from '@/pages/buyer/CategoryContext';
+
+import SellerList from "../pages/admin/SellerList.jsx";
 const AppRouter = () => {
     const [category, setCategory] = React.useState("");
     return (
         <div className={'min-w-full'}>
-            <CategoryContext.Provider value={{ category, setCategory }}>
-                <div>
-                    <Navigation />
-                </div>
-                <Routes basename="/">
-                    <Route path={"/profile"} exact element={<Profile />} />
-                    <Route path="review" exact element={<Review />} />
-                    <Route path="/orderhistory" exact element={<OrderHistory />} />
-                    <Route path="orderdetail" exact element={<OrderDetails />} />
-                    <Route path="cart" exact element={<CartPage />} />
-                    <Route path="buyer/checkout" exact element={<Checkout />} />
-                    <Route path="/*" element={
-                        <HomePage />
-                    } />
-                    {/* <Route path="*"  element={<><h1 className='text-4xl h-screen flex justify-center items-center'>Page not found!!!</h1></>} /> */}
-                </Routes>
-                <div>
-                    <Footer />
-                </div>
-            </CategoryContext.Provider>
+
+            <div>
+                <Navigation />
+            </div>
+            <Routes basename="/">
+                <Route path={"/profile"} exact element={<Profile />} />
+                <Route path="review" exact element={<Review />} />
+                <Route path="/orderhistory" exact element={<OrderHistory/>} />
+                <Route path="orderdetail" exact element={<OrderDetails />} />
+                <Route path="cart" exact element={<CartPage />} />
+                <Route path="buyer/checkout" exact element={<Checkout />} />
+                <Route path="/*" element={<HomePage />} />
+                <Route path={'/sellerlist'} element={<SellerList />} />
+                {/* <Route path="*"  element={<><h1 className='text-4xl h-screen flex justify-center items-center'>Page not found!!!</h1></>} /> */}
+            </Routes>
+            <div>
+                <Footer />
+            </div>
         </div>
     );
 }

@@ -74,7 +74,7 @@ export default function Navigation(props) {
                                                                     <a key={section.name} href={`/${section.name}`}
                                                                         >
                                                                         <div key={section.name}>
-                                                                            <p id={`${section.name}-heading`} onClick={() => setCategory(section.name)}
+                                                                            <p id={`${section.name}-heading`}
                                                                                 className="font-medium hover:text-gray-800">
                                                                                 {section.name}
                                                                                 
@@ -130,7 +130,7 @@ export default function Navigation(props) {
                                         <Link to="cart" className="group -m-2 flex items-center md:p-2">
                                             <ShoppingBagIcon
                                                 aria-hidden="true"
-                                                className="h-3 w-3 md:w-6 md:w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                                className="h-3 w-3 md:w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                                             />
                                             <span
                                                 className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>

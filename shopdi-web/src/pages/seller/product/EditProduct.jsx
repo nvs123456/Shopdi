@@ -3,7 +3,7 @@ import CATEGORIES from '@/data/categories_data';
 import { useState, useEffect } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import {JSONToData} from '@/utils/todo';
+import { JSONToData } from '@/utils/todo';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PUT, GET, POST } from '@/api/GET';
 
@@ -12,7 +12,7 @@ export default function EditProduct() {
     const location = useLocation();
     const path = location.pathname.split('/');
     const productId = path[path.length - 1];
-    const categories = CATEGORIES.CATEGORIES;
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [productForm, setProductForm] = useState({
         productName: '',
@@ -32,31 +32,42 @@ export default function EditProduct() {
         quantity: 0,
 
         // Category and Tags
-        categoryName: categories[0].sub_categories[0],
-        tagNames: ["tagname1", "tagname2"],
+        categoryName: '',
+        tagNames: [],
 
         // Status
         productStatus: 'PUBLISHED',
     })
     useEffect(() => {
-        GET(`products/${productId}`).then((data) => {
-            const child = data.result.categoryName.split('#')[0];
-            const parent = data.result.categoryName.split('#')[1];
-            console.log(categories.find((category) => category.name === parent))
-            setCurrentCategory(categories.find((category) => category.name === parent))
-            setProductForm({ ...data.result, categoryName: child, variantDetails: data.result.variants })
-            setLoading(false)
+        GET('categories').then((data) => {
+            if (data.code === 'OK') {
+                setCategories(data.result)
+                const tmpCategories = data.result
+                console.log(tmpCategories)
+                GET(`products/${productId}`).then((data) => {
+                    if (data.code === 'OK') {
+                        let parent = tmpCategories.find((item) => item.childCategories.find((i) => i.name === data.result.categoryName)!==undefined)
+                        setCurrentCategory({ parent: parent.name, child: data.result.categoryName })
+                        setProductForm({ ...data.result, variantDetails: data.result.variants })
+                        setLoading(false)
+                        console.log({ parent: parent.name, child: data.result.categoryName })
 
-
+                    }
+                })
+            }
         })
+
     }, [])
 
-    const [currentCategory, setCurrentCategory] = useState(null);
+    const [currentCategory, setCurrentCategory] = useState({
+        parent: '',
+        child: '',
+    });
     const [variants, setVariants] = useState([]);
 
     const [listVariants, setListVariants] = useState([]);
     const [openPopup, setOpenPopup] = useState(false);
-    if (!loading) return (
+    if (!loading && currentCategory.child !== '') return (
         <div className='w-full flex flex-row'>
 
             <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
@@ -131,9 +142,10 @@ export default function EditProduct() {
                         <div className="flex flex-row gap-4">
                             <div className=' flex flex-col'>
                                 <label> Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory.name} onChange={(e) => {
+                                <select className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.parent} onChange={(e) => {
                                     const tmp = categories.find((i) => i.name === e.target.value)
-                                    setCurrentCategory(tmp)
+                                    setCurrentCategory({ parent: tmp.name, child: tmp.childCategories[0].name })
+                                    setProductForm({ ...productForm, categoryName: tmp.childCategories[0].name })
                                 }}>
                                     {categories.map((item, index) => {
                                         return (
@@ -146,9 +158,12 @@ export default function EditProduct() {
 
                             <div className=' flex flex-col'>
                                 <label>Sub Category</label>
-                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={productForm.categoryName.split('#')[0]} onChange={(e) => { setProductForm({ ...productForm, categoryName: e.target.value }) }}>
-                                    {currentCategory.sub_categories.map((item, index) => {
-                                        return <option key={index} value={item}>{item}</option>
+                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.child} 
+                                onChange={(e) => { 
+                                    setCurrentCategory({ parent: currentCategory.parent, child: e.target.value })
+                                    setProductForm({ ...productForm, categoryName: e.target.value }) }}>
+                                    {categories.find((i) => i.name === currentCategory.parent).childCategories.map((item, index) => {
+                                        return <option key={index} value={item.name}>{item.name}</option>
                                     })}
                                 </select>
                             </div>
