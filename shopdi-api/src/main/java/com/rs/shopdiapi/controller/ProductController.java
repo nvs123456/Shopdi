@@ -52,7 +52,23 @@ public class ProductController {
                 .build();
     }
 
-//    @GetMapping("/filter")
+   @GetMapping("/categories/{categoryName}")
+    public ApiResponse<?> getProductsByCategory(@PathVariable String categoryName,
+                                        @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
+                                        @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+        return ApiResponse.builder()
+                .result(productService.findProductByCategory(categoryName, pageNo, pageSize))
+                .build();
+    }
+    @GetMapping("/parent-categories/{categoryName}")
+    public ApiResponse<?> getProductsByParentCategory(@PathVariable String categoryName,
+                                        @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
+                                        @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+        return ApiResponse.builder()
+                .result(productService.findProductByParentCategory(categoryName, pageNo, pageSize))
+                .build();
+    }
+
 //
 
 //

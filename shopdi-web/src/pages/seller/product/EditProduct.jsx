@@ -3,7 +3,7 @@ import CATEGORIES from '@/data/categories_data';
 import { useState, useEffect } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-
+import {JSONToData} from '@/utils/todo';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PUT, GET, POST } from '@/api/GET';
 
@@ -42,6 +42,7 @@ export default function EditProduct() {
         GET(`products/${productId}`).then((data) => {
             const child = data.result.categoryName.split('#')[0];
             const parent = data.result.categoryName.split('#')[1];
+            console.log(categories.find((category) => category.name === parent))
             setCurrentCategory(categories.find((category) => category.name === parent))
             setProductForm({ ...data.result, categoryName: child, variantDetails: data.result.variants })
             setLoading(false)
@@ -50,7 +51,7 @@ export default function EditProduct() {
         })
     }, [])
 
-    const [currentCategory, setCurrentCategory] = useState(categories[0]);
+    const [currentCategory, setCurrentCategory] = useState(null);
     const [variants, setVariants] = useState([]);
 
     const [listVariants, setListVariants] = useState([]);
@@ -130,7 +131,7 @@ export default function EditProduct() {
                         <div className="flex flex-row gap-4">
                             <div className=' flex flex-col'>
                                 <label> Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory} onChange={(e) => {
+                                <select className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory.name} onChange={(e) => {
                                     const tmp = categories.find((i) => i.name === e.target.value)
                                     setCurrentCategory(tmp)
                                 }}>
@@ -295,7 +296,7 @@ function QuantityOfVariants({ productForm, setProductForm }) {
                 {productForm.variantDetails.map((item, index) => {
                     return (
                         <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
-                            <span className='border-r-2 border-gray-200 grow place-content-center'>{item.variantDetail}</span>
+                            <span className='border-r-2 border-gray-200 grow place-content-center'>{JSONToData(item.variantDetail)}</span>
                             <input type="number" defaultValue={productForm.variantDetails[index].quantity} placeholder='type number' className='list-quantity outline-none w-1/6 h-10' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
                                 let tmp = [...productForm.variantDetails];
