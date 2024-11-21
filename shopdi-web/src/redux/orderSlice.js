@@ -12,7 +12,7 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async (_, { ge
         }
     };
     const response = await axios.get(API_URL, config);
-    return response.data.result;
+    return response.data.result.items;
 });
 
 const orderSlice = createSlice({

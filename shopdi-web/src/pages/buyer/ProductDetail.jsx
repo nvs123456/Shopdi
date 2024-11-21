@@ -14,9 +14,9 @@ export default function ProductDetail() {
     const [product, setProduct] = useState({})
     useEffect(() => {
         GET(`products/${id}`).then((data) => {
-            for (let i = 0; i < data.result.variants.length; i++) {
-                data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
-            }
+            // for (let i = 0; i < data.result.variants.length; i++) {
+            //     data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
+            // }
             setProduct(data.result)
 
             if (data.result.variants.length > 0) {
@@ -38,7 +38,7 @@ export default function ProductDetail() {
         image: shopdiLogo,
         review: "3,1tr",
         "san_pham": "100",
-        "tham_gia": " 2 nam truoc"
+        "tham_gia": " 2 năm trước"
     }
 
     const [quantity, setQuantity] = useState(1);
@@ -107,7 +107,7 @@ export default function ProductDetail() {
     const [curImage, setCurImage] = useState(0)
     if (!isLoading) {
         return (
-            <div className="pr-40 pl-40 bg-cloudBlue">
+            <div className="pr-40 pl-40 bg-cloudBlue font-sans">
                 <div className="pt-10 flex flex-col gap-y-2">
                     <div className="product-info bg-white flex flex-row gap-x-8 border-2 rounded-md">
                         <div className="product-image w-2/5 p-2">
@@ -143,10 +143,10 @@ export default function ProductDetail() {
                                     {[1, 2, 3, 4, 5].map((i) => i < Math.round(product.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "20px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "20px" }} />)}
                                 </div>
                                 <div className='border-r-2 pr-4 border-grey'>
-                                    {1000} danh gia
+                                    {1000} đánh giá
                                 </div>
                                 <div>
-                                    {1000} da ban
+                                    {1000} đã bán
                                 </div>
                             </div>
                             <div>
@@ -157,12 +157,12 @@ export default function ProductDetail() {
                                 <div className='text-base align-middle text-gray-600 min-w-20 text-left'>So luong</div>
                                 <div className='flex flex-row flex-wrap'>
                                     <Quantity quantity={quantity} setQuantity={setQuantity} quantityInStock={quantityInStock} />
-                                    <div className='ml-4'> Con lai {isBuyNowWithoutAttribute ? product.quantity : quantityInStock} san pham </div>
+                                    <div className='ml-4'> Còn lại {isBuyNowWithoutAttribute ? product.quantity : quantityInStock} sản phẩm </div>
                                 </div>
                             </div>
                             {isBuyNowWithoutAttribute ? <div className='text-red message'></div> : null}
                             <div className='flex flex-row ml-4'>
-                                <button className='bg-pumpkin font-publicSans text-white rounded-sm cursor-pointer border-2 p-2' onClick={handleAddToCart}>Them vao gio hang</button>
+                                <button className='bg-pumpkin font-publicSans text-white rounded-sm cursor-pointer border-2 p-2' onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
                                 <button className='ml-2 bg-white font-publicSans text-pumpkin rounded-sm cursor-pointer  border-pumpkin  p-2 border-2' onClick={handleBuyNow}>Mua ngay</button>
                             </div>
                         </div>
@@ -170,7 +170,7 @@ export default function ProductDetail() {
                     <ShopBar shop_info={shop_info} />
                     <div className="description bg-white flex flex-col gap-x-8 border-2 rounded-md p-4">
                         <div className="text-2xl">
-                            <pre>Mo ta</pre>
+                            <h2>Mô tả</h2>
                         </div>
                         <div className="font-publicSans white-space-pre">
                             {product.description}

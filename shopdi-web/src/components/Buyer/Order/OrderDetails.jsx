@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {styled} from "@mui/material/styles";
+import axios from 'axios';
 
 import {Button, Step, StepLabel, Stepper, Typography} from '@mui/material';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
@@ -15,10 +16,11 @@ import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
 import StepConnector, {stepConnectorClasses,} from "@mui/material/StepConnector";
 import orderDetailData from '../../../data/orderDetailData.json';
+import { useParams } from 'react-router-dom';
+import { configureStore } from '@reduxjs/toolkit';
 
 const steps = ['Order Placed', 'Packaging', 'On The Road', 'Delivered'];
 const icons = [<InventoryOutlinedIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
-const activeStep = 2;
 const data = [
     ['PRODUCTS', 'PRICE', 'QUANTITY', 'TOTAL'],
 ];
@@ -45,7 +47,37 @@ const CustomisedConnector = styled(StepConnector)(({theme}) => ({
     },
 }));
 
-const OrderDetails = () => {
+function OrderDetails() {
+    const {id} = useParams();
+    const [orderDetail,setOrderDetail] = useState({});
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
+            'Access-Control-Allow-Origin': 'http://localhost:5173',
+        }
+    };
+    useEffect(() => {
+        axios.get(`http://localhost:8080/orders/${id}/details`, config)
+            .then((response) => {
+                if (response.data.code === 'OK') {
+                    setOrderDetail(response.data.result);
+                    console.log('Order detail:', response.data.result); // Log dữ liệu chi tiết
+                } else {
+                    console.warn('Unexpected response:', response.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching order details:', error.response?.data || error.message);
+            });
+    }, [id]);
+    const status = orderDetail.status;
+    const activeStep = status === 'PENDING' ? 1 
+                        : status === 'PROCESSING' ? 3 : 4;
+    const date = orderDetail?.date;
+    const formattedDate = date ? new Date(...date).toLocaleString() : "N/A";
+    const shippingAddress = orderDetail?.shippingAddress || {};
+    const { firstName = '', lastName = '', address = '', city = '', state = '' } = shippingAddress;
     return (
         <div className="bg-[#F7FBFF] flex justify-center font-sans">
             <div className="container md:mt-10 md:mb-10 my-5 h-5/6  bg-white w-full md:w-5/6 border-collapse">
@@ -61,21 +93,21 @@ const OrderDetails = () => {
                 <div className="bg-[#FDFAE7] border-2 border-[#F7E99E] p-3 md:p-6 w-5/6 mb-3 md:mb-6 ml-6 md:ml-20 border-collapse">
                     <div className="flex justify-between items-center">
                         <div className={'text-[16px]'}>
-                            Order #96459761
+                            Order #{orderDetail.orderId}
                         </div>
                         <div className={'text-[18px] font-bold text-celticBlue'}>
-                            $1736.99
+                            ${orderDetail.total}
                         </div>
                     </div>
                     <div className={'text-[14px] text-darkGray pt-1.5'}>
-                        Order placed on 17 Jan, 2021 at 7:32 PM
+                        Order placed on {formattedDate.split(",")[0]} at  {formattedDate.split(",")[1]}
                     </div>
                 </div>
-                <div className='ml-2 md:ml-20'>
+                {/* <div className='ml-2 md:ml-20'>
                     <div className='text-darkGray text-[16px]'>
                         Order expected arrival: <strong>23 Jun, 2021</strong>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Stepper for Order Status */}
                 <div className="bg-white border-b-2 p-2 md:p-6 mb-3 md:mb-6 border-collapse">
@@ -271,10 +303,10 @@ const OrderDetails = () => {
                         </div>
                         <div>
                             <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Shipping Address</div>
-                            <div className='text-[14px] md:text-[18px]'>Kevin Gilbert </div>
+                            <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
                             <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
-                                East Tejturi Bazar, Ward No. 04, Road No. 15, <br/>
-                                Dhaka-1208, Bangladesh <br/>
+                                <a href="">{address}</a> <br/>
+                                {city + ', ' + state } <br/>
                                 Phone Number: +202-555-0118 <br/>
                                 Email: kevin.gilbert@gmail.com
                             </div>

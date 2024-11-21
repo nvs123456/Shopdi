@@ -1,21 +1,14 @@
 import OrderItem from "../../components/Buyer/Order/OrderItem.jsx";
 import Pagination from "../../components/Navigation/Pagination.jsx";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {fetchOrders} from "../../redux/orderSlice.js";
-import data from "../../data/orderData.json";
+import dataTemp from "../../data/orderData.json";
 import axios from "axios";
 
 function OrderHistory() {
-    const dispatch = useDispatch();
-    const {orders} = useSelector((state) => state.orders);
-
-    useEffect(() => {
-        dispatch(fetchOrders());
-    }, [dispatch]);
-    if (!orders) {
-        console.log('No items')
-    }
+    const [orders,setOrders] = useState([]);
+    const [totalPages,setTotalPages] = useState(1);
     const config = {
         headers: {
             'Content-Type': 'application/json',
@@ -23,38 +16,22 @@ function OrderHistory() {
             'Access-Control-Allow-Origin': 'http://localhost:5173',
         }
     };
-    console.log(orders);
-    const items = axios.get('http://localhost:8080/orders/history', config);
-    console.log(items);
-//     INSERT INTO orders (
-//         created_at,
-//         updated_at,
-//         delivery_date,
-//         discount,
-//         order_id,
-//         order_status,
-//         total_discounted_price,
-//         total_item,
-//         total_price,
-//         shipping_address_id,
-//         user_id,
-//         discount_percent
-//     ) VALUES (
-//         NOW(),                        -- created_at
-//     NOW(),                        -- updated_at
-//     '2024-11-30',                 -- delivery_date
-//     10,                           -- discount
-//     'ORD12345',                   -- order_id
-//     'PENDING',                    -- order_status
-//     90.00,                        -- total_discounted_price
-//     2,                            -- total_item
-//     100.00,                       -- total_price
-//     11,                            -- shipping_address_id (giả sử địa chỉ đã tồn tại)
-//     2,                            -- user_id
-//     10.00                         -- discount_percent
-// );
-//     INSERT INTO address(id, first_name, last_name, address, city, state, zip_code)
-//     VALUES (11, 'Thinh', 'Nguyen', 'Nghia Hung', 'Vinh Tuong', 'Vinh Phuc', '90001');
+    useEffect(() => {
+        axios
+        .get('http://localhost:8080/orders/history', config)
+        .then((response) => {
+            const data = response.data;
+            if(data.code === 'OK') {
+                setOrders(data.result.items);
+                setTotalPages(data.result.totalPages);
+            }
+        })
+        
+        
+    },[]);
+    
+
+
 
     return (
         <div className='flex justify-center bg-[#F7FBFF] h-min-screen w-max-screen'>
@@ -83,15 +60,14 @@ function OrderHistory() {
 
                 </div>
                 <div>
-                    {data.map((orderItem) => (
+                    {orders.map((orderItem) => (
                         <OrderItem
-                            key={orderItem.id} orderId={orderItem.id} status={orderItem.status}
-                            orderDate={orderItem.orderDate} orderTotal={orderItem.orderTotal}
+                            key={orderItem.orderId} item={orderItem}
                         />
                     ))}
                 </div>
                 <div className='flex justify-center mt-5 mb-5'>
-                    <Pagination/>
+                    <Pagination totalPage={totalPages}/>
                 </div>
             </div>
         </div>

@@ -5,7 +5,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-function PaginationButton() {
+function PaginationButton({totalPage}) {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get('page') || '1', 10);
@@ -13,7 +13,7 @@ function PaginationButton() {
     return (
         <Pagination
             page={page}
-            count={10}
+            count={totalPage}
             renderItem={(item) => (
                 <PaginationItem
                     component={"a"}
@@ -21,6 +21,7 @@ function PaginationButton() {
                     {...item}
                     sx={{
                         color: 'black', // Màu của văn bản
+                        borderRadius: 100,
                         border: '1px solid #E4E7E9', // Màu viền
                         fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px' }, // Responsive font size
                         width: { xs: '20px', sm: '25px', md: '30px', lg: '35px', xl: '40px' }, // Responsive width
