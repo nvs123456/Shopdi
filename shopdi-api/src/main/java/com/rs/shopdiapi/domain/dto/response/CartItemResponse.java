@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartItemResponse {
+    Long sellerId;
     Long cartItemId;
     Long productId;
     String productName;

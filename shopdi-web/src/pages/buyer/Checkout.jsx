@@ -7,6 +7,15 @@ import { useLocation } from 'react-router-dom'
 export default function Checkout({ ProductList }) {
     let location = useLocation()
     let tmp = location.state.selectedProducts;
+    let productsOfSeller = []
+    for (let i = 0; i < tmp.length; i++) {
+        if (productsOfSeller.find((item) => item.sellerId === tmp[i].sellerId) === undefined) {
+            productsOfSeller.push({ sellerId: tmp[i].sellerId, products: [tmp[i]] })
+        } else {
+            productsOfSeller.find((item) => item.sellerId === tmp[i].sellerId)?.products.push(tmp[i])
+        }
+    }
+    console.log(productsOfSeller)
     const addresses = []
     for (let i = 0; i < 8; i++) {
         let t = {
@@ -25,7 +34,7 @@ export default function Checkout({ ProductList }) {
     }
     return (
         <div>
-            {openAddress && <AddressSelection onClose={onClose} addresses = {addresses} currentAddress = {currentAddress} setCurrentAddress = {setCurrentAddress}/>}
+            {openAddress && <AddressSelection onClose={onClose} addresses={addresses} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />}
             <div className={`bg-white ${(openAddress ? "brightness-50" : "")}`}>
                 <div className="flex flex-col gap-4 p-8 bg-gray-100 mr-40 ml-40">
                     <div className='border-b-2 border-gray-400 '>
@@ -41,27 +50,27 @@ export default function Checkout({ ProductList }) {
                         <span className="w-40 text-center">Thanh tien</span>
                     </div>
                     <div>
-                        {tmp.map((item) => <OrderItem key={item.id} item={item} />)}
+                        {tmp.map((item) => <OrderItem key={item.cartItemId} item={item} />)}
                     </div>
                     <div className="flex flex-row">
                         <div className="w-4/6">
                             <Payment /></div>
                         <div className="text-left text-xl w-80">
                             <div className="flex flex-row justify-between">
-                                <p className='inline-block'>Tien hang:</p>
-                                <p className='inline-block'>{tmp.reduce((a, b) => a + b.price * b.quantity, 0)}</p>
+                                <p className='inline-block'>Tiền hàng :</p>
+                                <p className='inline-block'>{tmp.reduce((a, b) => a + b.price * b.quantity, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className="flex flex-row justify-between mb-4 border-b-2 border-gray-400">
-                                <p className='inline-block'>Tien ship:</p>
-                                <p className='inline-block'>{10000}</p>
+                                <p className='inline-block'>Phí vận chuyển :</p>
+                                <p className='inline-block'>{Number(0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className="flex flex-row justify-between mb-4">
-                                <p className='inline-block'>Tong tien :</p>
-                                <p className='inline-block'>{tmp.reduce((a, b) => a + b.price * b.quantity, 0) + 10000}</p>
+                                <p className='inline-block'>Tổng tiền :</p>
+                                <p className='inline-block'>{tmp.reduce((a, b) => a + b.price * b.quantity, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div>
                                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Thanh toan
+                                    Thanh toán
                                 </button>
                             </div>
                         </div>

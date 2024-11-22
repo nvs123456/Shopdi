@@ -14,9 +14,9 @@ export default function ProductDetail() {
     const [product, setProduct] = useState({})
     useEffect(() => {
         GET(`products/${id}`).then((data) => {
-            // for (let i = 0; i < data.result.variants.length; i++) {
-            //     data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
-            // }
+            for (let i = 0; i < data.result.variants.length; i++) {
+                data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
+            }
             setProduct(data.result)
 
             if (data.result.variants.length > 0) {

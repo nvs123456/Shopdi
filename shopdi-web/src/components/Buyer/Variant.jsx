@@ -19,7 +19,7 @@ export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVa
         <>
             {v.map((item) => (
                 <div key={item.type} className='mt-2 flex flex-row'>
-                    <div className='text-base align-middle text-gray-600 min-w-20 h-24 text-left'>{item.type}</div>
+                    <div className='text-base align-middle text-gray-600 min-w-20  text-left'>{item.type}</div>
                     <div className='flex flex-row gap-x-2 gap-y-2 flex-wrap'>
                         {item.value.map((i) =>
                         (<div key={i}>
