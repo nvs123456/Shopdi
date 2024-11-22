@@ -4,6 +4,7 @@ import Payment from '@/components/Buyer/Checkout/Payment'
 import AddressSelection from '@/components/Buyer/Checkout/AddressSelection'
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { POST } from '../../api/GET'
 export default function Checkout({ ProductList }) {
     let location = useLocation()
     let tmp = location.state.selectedProducts;
@@ -15,7 +16,6 @@ export default function Checkout({ ProductList }) {
             productsOfSeller.find((item) => item.sellerId === tmp[i].sellerId)?.products.push(tmp[i])
         }
     }
-    console.log(productsOfSeller)
     const addresses = []
     for (let i = 0; i < 8; i++) {
         let t = {
@@ -50,7 +50,11 @@ export default function Checkout({ ProductList }) {
                         <span className="w-40 text-center">Thanh tien</span>
                     </div>
                     <div>
-                        {tmp.map((item) => <OrderItem key={item.cartItemId} item={item} />)}
+                        {productsOfSeller.map((item) =>
+                            <div key={item.sellerId}>
+                                <div className="text-xl font-bold">Shop : {item.products[0].sellerName}</div>
+                                {item.products.map((item) => <OrderItem key={item.cartItemId} item={item} />)}
+                            </div>)}
                     </div>
                     <div className="flex flex-row">
                         <div className="w-4/6">
@@ -69,7 +73,20 @@ export default function Checkout({ ProductList }) {
                                 <p className='inline-block'>{tmp.reduce((a, b) => a + b.price * b.quantity, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div>
-                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                <button onClick={() => {
+                                    for (let i = 0; i < productsOfSeller.length; i++) {
+                                        
+                                        POST('orders/checkout', {
+                                            "addressId": 2,
+                                            "selectedCartItemIds": productsOfSeller[i].products.map((item) => item.cartItemId),
+                                        }).then((res) => {
+                                            if (res.code === "OK") {
+                                                alert("Dat hang thanh cong")
+                                            }
+                                        })
+                                    }
+
+                                }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Thanh toán
                                 </button>
                             </div>

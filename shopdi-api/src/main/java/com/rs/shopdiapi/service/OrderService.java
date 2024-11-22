@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    Order createOrder(Long userId, CreateOrderRequest request);
+    OrderResponse createOrder(Long userId, CreateOrderRequest request);
 
     OrderResponse updateOrderStatus(Long orderId, String orderStatus);
 

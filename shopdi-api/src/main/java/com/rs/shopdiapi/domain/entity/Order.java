@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -37,11 +38,11 @@ import java.util.List;
 public class Order extends BaseEntity<Long> {
     @ManyToOne
     User user;
-
+    
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     Address shippingAddress;
 //    @Embedded
 //    PaymentDetails paymentDetails = new PaymentDetails();
@@ -53,4 +54,10 @@ public class Order extends BaseEntity<Long> {
     OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
 
     LocalDateTime deliveryDate;
+    public List<OrderItem> getOrderItems() {
+        if(orderItems == null) {            
+            orderItems = new ArrayList<>();
+        }
+        return orderItems;
+    }
 }

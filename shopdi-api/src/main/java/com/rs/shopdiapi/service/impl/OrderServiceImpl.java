@@ -33,6 +33,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,13 +53,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public Order createOrder(Long userId, CreateOrderRequest request) {
+    public OrderResponse createOrder(Long userId, CreateOrderRequest request) {
         var cart = cartRepository.findByUserId(userId);
 
         if (cart.getCartItems().isEmpty()) {
             throw new AppException(ErrorCode.CART_EMPTY);
         }
-
+        
         List<CartItem> selectedItems = cart.getCartItems().stream()
                 .filter(cartItem -> request.getSelectedCartItemIds().contains(cartItem.getId()))
                 .toList();
@@ -89,6 +90,7 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
                     .product(cartItem.getProduct())
+                    .seller(cartItem.getProduct().getSeller())
                     .variant(cartItem.getVariant())
                     .quantity(cartItem.getQuantity())
                     .price(cartItem.getPrice())
@@ -100,10 +102,10 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        selectedItems.forEach(cartItem -> cartItemService.deleteCartItem(userId, cartItem.getId()));
-        cartRepository.save(cart);
+        // selectedItems.forEach(cartItem -> cartItemService.deleteCartItem(userId, cartItem.getId()));
+        // cartRepository.save(cart);
 
-        return savedOrder;
+        return orderMapper.toOrderResponse(savedOrder);
     }
 
 
