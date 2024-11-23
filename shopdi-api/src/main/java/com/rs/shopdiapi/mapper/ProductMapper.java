@@ -10,12 +10,12 @@ import org.mapstruct.Named;
 import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
-    @Mappings({
-        @Mapping(target = "productId", source = "id"), // Explicit mapping for productId
-             @Mapping(target = "categoryName", source = "category.name"), // Example if you want categoryName in ProductResponse
-             @Mapping(target = "sellerId", source = "seller.id"),
-             @Mapping(target = "shopName", source = "seller.shopName"),
-    })
+    // @Mappings({
+    //     @Mapping(target = "productId", source = "id"), // Explicit mapping for productId
+    //          @Mapping(target = "categoryName", source = "category.name"), // Example if you want categoryName in ProductResponse
+    //          @Mapping(target = "sellerId", source = "seller.id"),
+    //          @Mapping(target = "shopName", source = "seller.shopName"),
+    // })
     ProductResponse toProductResponse(Product product);
     @Named("getCategoryName")
     default String getCategoryName(com.rs.shopdiapi.domain.entity.Category category) {

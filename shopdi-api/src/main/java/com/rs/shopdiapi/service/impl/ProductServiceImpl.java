@@ -242,4 +242,10 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
+@Override
+public PageResponse<?> findProductByParentCategory(String category, int pageNo, int pageSize) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductByParentCategory'");
+}
+
 }

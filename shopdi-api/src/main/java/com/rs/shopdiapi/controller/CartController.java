@@ -6,6 +6,7 @@ import com.rs.shopdiapi.domain.dto.response.CartItemResponse;
 import com.rs.shopdiapi.domain.dto.response.CartResponse;
 import com.rs.shopdiapi.domain.entity.Cart;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.mapper.CartMapper;
 import com.rs.shopdiapi.service.CartItemService;
 import com.rs.shopdiapi.service.CartService;
 import com.rs.shopdiapi.service.UserService;
@@ -59,7 +60,7 @@ public class CartController {
         // return ApiResponse.builder()
         //         .result(cartItemService.addOrUpdateCartItem(userId, request))
         //         .build();
-        CartItemResponse response =cartMapper.toCartItemResponse( cartItemService.addOrUpdateCartItem(userId, request));
+        String response =cartItemService.addOrUpdateCartItem(userId, request);
         return ApiResponse.builder()
                 .result(response)
                 .build();
