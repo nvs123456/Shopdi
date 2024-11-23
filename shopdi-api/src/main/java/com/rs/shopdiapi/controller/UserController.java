@@ -1,14 +1,21 @@
 package com.rs.shopdiapi.controller;
 
+import com.cloudinary.Api;
+import com.rs.shopdiapi.domain.dto.request.AddressRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateUserRequest;
 import com.rs.shopdiapi.domain.dto.request.UpdateUserRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.UserResponse;
+import com.rs.shopdiapi.domain.entity.Address;
+import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.service.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+
 
 @RestController
 @RequestMapping("/users")
@@ -31,11 +39,20 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/signup")
-    public ApiResponse<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
+    public ApiResponse<UserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest, HttpServletRequest request)
+            throws MessagingException, UnsupportedEncodingException {
+        UserResponse userResponse = userService.createUser(createUserRequest, getSiteURL(request));
+
         return ApiResponse.<UserResponse>builder()
-                .result(userService.createUser(request))
+                .result(userResponse)
                 .build();
     }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
+
 
     @GetMapping("/my-info")
     ApiResponse<UserResponse> getMyInfo() {
@@ -63,11 +80,18 @@ public class UserController {
                 .build();
     }
 
-    @DeleteMapping("/{userId}")
+    @PutMapping("/{userId}/ban")
     @PreAuthorize("hasRole('ADMIN')")
-    ApiResponse<String> deleteUser(@PathVariable Long userId) {
-        userService.deleteUser(userId);
-        return ApiResponse.<String>builder().result("User has been deleted").build();
+    ApiResponse<String> banUser(@PathVariable Long userId) {
+        userService.banUser(userId);
+        return ApiResponse.<String>builder().result("User has been ban").build();
+    }
+
+    @PutMapping("/{userId}/unban")
+    @PreAuthorize("hasRole('ADMIN')")
+    ApiResponse<String> unbanUser(@PathVariable Long userId) {
+        userService.unbanUser(userId);
+        return ApiResponse.<String>builder().result("User has been unban").build();
     }
 
     @PutMapping("/{userId}")
@@ -77,4 +101,7 @@ public class UserController {
                 .result(userService.updateUser(userId, request))
                 .build();
     }
+
+
+
 }

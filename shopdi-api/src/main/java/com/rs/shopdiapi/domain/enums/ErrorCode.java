@@ -58,7 +58,13 @@ public enum ErrorCode {
 
     ADDRESS_NOT_FOUND("ADDRESS_NOT_FOUND", "Address not found", HttpStatus.NOT_FOUND),
 
-    CART_ITEM_NOT_FOUND("CART_ITEM_NOT_FOUND", "Cart item not found", HttpStatus.NOT_FOUND)
+    CART_ITEM_NOT_FOUND("CART_ITEM_NOT_FOUND", "Cart item not found", HttpStatus.NOT_FOUND),
+
+    REVIEW_NOT_FOUND("REVIEW_NOT_FOUND", "Review not found", HttpStatus.NOT_FOUND),
+
+    REVIEW_ALREADY_EXISTS("REVIEW_ALREADY_EXISTS", "Review already exists", HttpStatus.BAD_REQUEST),
+
+    FILE_UPLOAD_FAILED("FILE_UPLOAD_FAILED", "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {

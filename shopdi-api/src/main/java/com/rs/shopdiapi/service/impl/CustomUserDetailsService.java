@@ -3,6 +3,7 @@ package com.rs.shopdiapi.service.impl;
 import com.rs.shopdiapi.domain.entity.Permission;
 import com.rs.shopdiapi.domain.entity.Role;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.UserStatusEnum;
 import com.rs.shopdiapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,14 +27,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user =userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
+        if (user.getStatus() == UserStatusEnum.INACTIVE) {
+            throw new IllegalStateException("Account is not verified. Please verify your email.");
+        }
+
+        if (user.getStatus() == UserStatusEnum.BLOCKED) {
+            throw new IllegalStateException("Account is blocked. Please contact support.");
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.get().getUsername(), user.get().getPassword(), getAuthorities(user.get().getRoles()));
+                user.getUsername(),
+                user.getPassword(),
+                getAuthorities(user.getRoles())
+        );
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(

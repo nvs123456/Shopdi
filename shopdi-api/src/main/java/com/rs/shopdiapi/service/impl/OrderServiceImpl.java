@@ -1,9 +1,13 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
+import com.rs.shopdiapi.domain.dto.response.AddressResponse;
+import com.rs.shopdiapi.domain.dto.response.OrderItemResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.SimpleOrderResponse;
 import com.rs.shopdiapi.domain.entity.Address;
+import com.rs.shopdiapi.domain.entity.Cart;
 import com.rs.shopdiapi.domain.entity.CartItem;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.OrderItem;
@@ -33,6 +37,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,37 +57,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public Order createOrder(Long userId, CreateOrderRequest request) {
-        var cart = cartRepository.findByUserId(userId);
-
+    public String createOrder(Long userId, CreateOrderRequest request) {
+        Cart cart = cartRepository.findByUserId(userId);
         if (cart.getCartItems().isEmpty()) {
             throw new AppException(ErrorCode.CART_EMPTY);
         }
-
-        List<CartItem> selectedItems = cart.getCartItems().stream()
-                .filter(cartItem -> request.getSelectedCartItemIds().contains(cartItem.getId()))
-                .toList();
-
-        if (selectedItems.isEmpty()) {
+        if (request.getSelectedCartItemIds().isEmpty()) {
             throw new AppException(ErrorCode.NO_ITEMS_SELECTED);
         }
 
-        BigDecimal totalPrice = selectedItems.stream()
-                .map(item -> item.getDiscountedPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<CartItem> selectedItems = cart.getCartItems().stream()
+                .filter(item -> request.getSelectedCartItemIds().contains(item.getId()))
+                .toList();
+        BigDecimal totalPrice = calculateTotalPrice(selectedItems);
 
-        BigDecimal totalDiscountedPrice = selectedItems.stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        Address shippingAddress = addressRepository.findById(request.getAddressId())
-                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
-
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Address address = addressRepository.findById(request.getAddressId()).orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
         Order order = Order.builder()
-                .user(userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)))
+                .user(user)
+                .shippingAddress(address)
                 .totalPrice(totalPrice)
-                .totalDiscountedPrice(totalDiscountedPrice)
-                .shippingAddress(shippingAddress)
+                .orderStatus(OrderStatusEnum.PENDING)
+                .orderItems(new ArrayList<>())
+                .orderNotes(request.getOrderNotes())
                 .build();
 
         selectedItems.forEach(cartItem -> {
@@ -92,18 +89,24 @@ public class OrderServiceImpl implements OrderService {
                     .variant(cartItem.getVariant())
                     .quantity(cartItem.getQuantity())
                     .price(cartItem.getPrice())
-                    .discountPercent(cartItem.getDiscountPercent())
-                    .discountedPrice(cartItem.getDiscountedPrice())
+                    .orderItemStatus(OrderItemStatusEnum.PENDING)
                     .build();
             order.getOrderItems().add(orderItem);
         });
 
-        Order savedOrder = orderRepository.save(order);
+        selectedItems.forEach(cartItem -> {
+            cart.getCartItems().remove(cartItem);
+        });
 
-        selectedItems.forEach(cartItem -> cartItemService.deleteCartItem(userId, cartItem.getId()));
-        cartRepository.save(cart);
+        orderRepository.save(order);
+        cartService.updateCartSummary(cart.getId());
+        return "Order created successfully";
+    }
 
-        return savedOrder;
+    private BigDecimal calculateTotalPrice(List<CartItem> items) {
+        return items.stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 
@@ -152,18 +155,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse findOrderById(Long orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-        return orderMapper.toOrderResponse(order);
+        return this.mapToOrderResponse(order);
     }
 
     @Transactional
     @Override
-    public Order cancelOrder(Long orderId) {
+    public String cancelOrder(Long orderId) {
         var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         if (order.getOrderStatus() == OrderStatusEnum.PENDING || order.getOrderStatus() == OrderStatusEnum.PROCESSING) {
             order.setOrderStatus(OrderStatusEnum.CANCELLED);
-            return orderRepository.save(order);
+            orderRepository.save(order);
+            return "Order cancelled successfully";
         }
 
         throw new AppException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
@@ -208,8 +212,8 @@ public class OrderServiceImpl implements OrderService {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Page<Order> ordersPage = orderRepository.findAllByUserId(userId, PageRequest.of(pageNo, pageSize, sort));
 
-        List<OrderResponse> orderResponses = ordersPage.stream()
-                .map(orderMapper::toOrderResponse)
+        List<SimpleOrderResponse> orderResponses = ordersPage.getContent().stream()
+                .map(this::mapToSimpleOrderResponse)
                 .toList();
 
         return PageResponse.builder()
@@ -221,4 +225,53 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    public OrderResponse mapToOrderResponse(Order order) {
+        return OrderResponse.builder()
+                .orderId(order.getId())
+                .totalPrice(order.getTotalPrice())
+                .orderStatus(order.getOrderStatus().name())
+                .deliveryDate(order.getDeliveryDate())
+                .shippingAddress(mapToAddressResponse(order.getUser().getShippingAddress()))
+                .billingAddress(mapToAddressResponse(order.getUser().getBillingAddress()))
+                .orderItems(order.getOrderItems().stream()
+                        .map(this::mapToOrderItemResponse)
+                        .toList())
+                .orderNotes(order.getOrderNotes())
+                .build();
+    }
+
+    private AddressResponse mapToAddressResponse(Address address) {
+        if (address == null) return null;
+        return AddressResponse.builder()
+                .firstName(address.getFirstName())
+                .lastName(address.getLastName())
+                .address(address.getAddress() + ", " + address.getCity() + ", " + address.getCountry())
+                .phone(address.getPhoneNumber())
+                .email(address.getEmail())
+                .build();
+    }
+
+    private OrderItemResponse mapToOrderItemResponse(OrderItem orderItem) {
+        return OrderItemResponse.builder()
+                .orderItemId(orderItem.getId())
+                .productId(orderItem.getProduct().getId())
+                .productImage(orderItem.getProduct().getImageUrls() != null && !orderItem.getProduct().getImageUrls().isEmpty()
+                        ? orderItem.getProduct().getImageUrls().get(0)
+                        : null)
+                .productName(orderItem.getProduct().getProductName())
+                .variant(orderItem.getVariant())
+                .quantity(orderItem.getQuantity())
+                .price(orderItem.getPrice())
+                .build();
+    }
+
+    private SimpleOrderResponse mapToSimpleOrderResponse(Order order) {
+        return SimpleOrderResponse.builder()
+                .orderId(order.getId())
+                .orderStatus(order.getOrderStatus().name())
+                .deliveryDate(String.valueOf(order.getDeliveryDate()))
+                .totalPrice(order.getTotalPrice())
+                .totalItems(order.getOrderItems().stream().mapToInt(OrderItem::getQuantity).sum())
+                .build();
+    }
 }

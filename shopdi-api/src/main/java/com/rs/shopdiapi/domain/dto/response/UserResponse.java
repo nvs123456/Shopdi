@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.domain.dto.response;
 
+import com.rs.shopdiapi.domain.enums.UserStatusEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,5 @@ public class UserResponse {
     String lastName;
     String email;
     Set<RoleResponse> roles;
+    UserStatusEnum status;
 }

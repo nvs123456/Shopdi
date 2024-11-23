@@ -1,6 +1,8 @@
 package com.rs.shopdiapi.service.impl;
 
+import com.rs.shopdiapi.domain.dto.response.CartItemResponse;
 import com.rs.shopdiapi.domain.dto.response.CartResponse;
+import com.rs.shopdiapi.domain.dto.response.SellerGroupResponse;
 import com.rs.shopdiapi.domain.entity.Cart;
 import com.rs.shopdiapi.domain.entity.CartItem;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
@@ -19,6 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -40,9 +46,48 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponse findUserCart(Long userId) {
+    public CartResponse getUserCart(Long userId) {
         Cart cart = cartRepository.findByUserId(userId);
-        return cartMapper.toCartResponse(cart);
+        if (cart == null) {
+            throw new AppException(ErrorCode.CART_NOT_FOUND);
+        }
+
+        Set<CartItem> cartItems = cart.getCartItems();
+
+        Map<Long, List<CartItem>> groupedBySeller = cartItems.stream()
+                .collect(Collectors.groupingBy(cartItem -> cartItem.getProduct().getSeller().getId()));
+
+        List<SellerGroupResponse> sellerGroups = groupedBySeller.entrySet().stream()
+                .map(entry -> {
+                    Long sellerId = entry.getKey();
+                    List<CartItem> sellerCartItems = entry.getValue();
+
+                    List<CartItemResponse> cartItemResponses = sellerCartItems.stream()
+                            .map(cartItem -> CartItemResponse.builder()
+                                    .cartItemId(cartItem.getId())
+                                    .productId(cartItem.getProduct().getId())
+                                    .productName(cartItem.getProduct().getProductName())
+                                    .productImage(cartItem.getProduct().getImageUrls() != null && !cartItem.getProduct().getImageUrls().isEmpty()
+                                            ? cartItem.getProduct().getImageUrls().get(0)
+                                            : null)
+                                    .variant(cartItem.getVariant())
+                                    .quantity(cartItem.getQuantity())
+                                    .price(cartItem.getPrice())
+                                    .build())
+                            .toList();
+
+                    return SellerGroupResponse.builder()
+                            .sellerId(sellerId)
+                            .sellerName(sellerCartItems.get(0).getProduct().getSeller().getShopName())
+                            .cartItems(cartItemResponses)
+                            .build();
+                }).toList();
+
+        return CartResponse.builder()
+                .sellerGroups(sellerGroups)
+                .totalItems(cart.getTotalItems())
+                .totalPrice(cart.getTotalPrice())
+                .build();
     }
 
     @Override
@@ -55,16 +100,6 @@ public class CartServiceImpl implements CartService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    @Override
-    public BigDecimal calculateTotalDiscountedPrice(Long cartId) {
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-
-        return cart.getCartItems().stream()
-                .map(item -> item.getDiscountedPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
     @Transactional
     @Override
     public Cart updateCartSummary(Long cartId) {
@@ -72,31 +107,13 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
         BigDecimal totalPrice = calculateTotalPrice(cartId);
-        BigDecimal totalDiscountedPrice = calculateTotalDiscountedPrice(cartId);
+        int totalItems = cart.getCartItems().stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
 
         cart.setTotalPrice(totalPrice);
-        cart.setTotalDiscountedPrice(totalDiscountedPrice);
-        cart.setTotalItems(cart.getCartItems().stream().mapToInt(CartItem::getQuantity).sum());
+        cart.setTotalItems(totalItems);
 
         return cartRepository.save(cart);
     }
-
-    @Transactional
-    @Override
-    public void applyDiscount(Long cartId, BigDecimal discountPercent) {
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-
-        cart.getCartItems().forEach(item -> {
-            BigDecimal discountedPrice = item.getPrice()
-                    .multiply(BigDecimal.valueOf(100).subtract(discountPercent))
-                    .divide(BigDecimal.valueOf(100));
-            item.setDiscountPercent(discountPercent);
-            item.setDiscountedPrice(discountedPrice);
-            cartItemRepository.save(item);
-        });
-
-        updateCartSummary(cartId);
-    }
-
 }

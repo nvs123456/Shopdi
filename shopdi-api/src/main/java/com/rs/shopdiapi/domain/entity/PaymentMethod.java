@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.rs.shopdiapi.domain.enums.PaymentMethodEnum;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -12,8 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @Builder
@@ -21,17 +20,17 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class CartItem extends BaseEntity<Long> {
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    Cart cart;
+public class PaymentMethod extends BaseEntity<Long> {
+    @Column(nullable = false)
+    String name;
+
+    @Column(nullable = false)
+    PaymentMethodEnum code;
+
+    @Column(nullable = false, columnDefinition = "TINYINT")
+    Integer status;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    Product product;
-
-    String variant;
-    Integer quantity;
-    BigDecimal price;
+    @JoinColumn(name = "user_id", nullable = false)
+    User user;
 }

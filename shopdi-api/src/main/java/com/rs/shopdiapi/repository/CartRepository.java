@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.repository;
 
 import com.rs.shopdiapi.domain.entity.Cart;
+import com.rs.shopdiapi.domain.entity.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Long>, JpaSpecificationExecutor<Cart> {
+public interface  CartRepository extends JpaRepository<Cart, Long>, JpaSpecificationExecutor<Cart> {
     @Query("SELECT c FROM Cart c WHERE c.user.id = :userId")
     Cart findByUserId(@Param("userId")Long userId);
 
@@ -19,4 +20,7 @@ public interface CartRepository extends JpaRepository<Cart, Long>, JpaSpecificat
 
     @Query("SELECT c FROM Cart c JOIN FETCH c.cartItems ci JOIN FETCH ci.product p WHERE p.id = :productId")
     List<Cart> findCartsByByProductId(Long productId);
+
+    @Query("SELECT c.cartItems FROM Cart c WHERE c.user.id = :userId")
+    List<CartItem> findCartItemsByUserId(@Param("userId") Long userId);
 }

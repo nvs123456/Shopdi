@@ -4,6 +4,7 @@ import com.rs.shopdiapi.domain.dto.request.CartItemRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.CartResponse;
 import com.rs.shopdiapi.domain.entity.Cart;
+import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.service.CartItemService;
 import com.rs.shopdiapi.service.CartService;
 import com.rs.shopdiapi.service.UserService;
@@ -37,33 +38,19 @@ public class CartController {
     public ApiResponse<?> getCart() {
         Long userId = userService.getCurrentUser().getId();
         return ApiResponse.builder()
-                .result(cartService.findUserCart(userId))
+                .result(cartService.getUserCart(userId))
                 .build();
     }
 
-    @GetMapping("/{cartId}/total-price")
-    public ApiResponse<?> calculateTotalPrice(@PathVariable Long cartId) {
-        BigDecimal totalPrice = cartService.calculateTotalPrice(cartId);
+    @GetMapping("/total-price")
+    public ApiResponse<?> calculateTotalPrice() {
+        User user = userService.getCurrentUser();
+        BigDecimal totalPrice = cartService.calculateTotalPrice(user.getCart().getId());
         return ApiResponse.builder()
                 .result(totalPrice)
                 .build();
     }
 
-    @GetMapping("/{cartId}/total-discounted-price")
-    public ApiResponse<?> calculateTotalDiscountedPrice(@PathVariable Long cartId) {
-        BigDecimal totalDiscountedPrice = cartService.calculateTotalDiscountedPrice(cartId);
-        return ApiResponse.builder()
-                .result(totalDiscountedPrice)
-                .build();
-    }
-
-    @PutMapping("/{cartId}/apply-discount")
-    public ApiResponse<?> applyDiscount(@PathVariable Long cartId, @RequestParam BigDecimal discountPercent) {
-        cartService.applyDiscount(cartId, discountPercent);
-        return ApiResponse.builder()
-                .result("Discount applied successfully ")
-                .build();
-    }
 
     @PostMapping("/add-item")
     public ApiResponse<?> addItemToCart(@RequestBody CartItemRequest request) {
@@ -73,7 +60,7 @@ public class CartController {
                 .build();
     }
 
-    @PutMapping("/items/{cartItemId}/quantity")
+    @PutMapping("/items/{cartItemId}")
     public ApiResponse<?> updateCartItemQuantity(@PathVariable Long cartItemId, @RequestParam Integer quantity) {
         Long userId = userService.getCurrentUser().getId();
         return ApiResponse.builder()
@@ -86,6 +73,14 @@ public class CartController {
         Long userId = userService.getCurrentUser().getId();
         return ApiResponse.builder()
                 .result(cartItemService.deleteCartItem(userId, cartItemId))
+                .build();
+    }
+
+    @DeleteMapping("/clear")
+    public ApiResponse<?> clearCart() {
+        Long userId = userService.getCurrentUser().getId();
+        return ApiResponse.builder()
+                .result(cartItemService.clearCart(userId))
                 .build();
     }
 }

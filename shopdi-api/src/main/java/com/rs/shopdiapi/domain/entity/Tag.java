@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -25,8 +26,8 @@ public class Tag extends BaseEntity<Long> {
     @Column(nullable = false)
     String name;
 
-    @Builder.Default
     @ManyToMany(mappedBy = "tags")
+    @JsonIgnore
     List<Product> products = new ArrayList<>();
 
     public Tag(String name) {

@@ -17,11 +17,26 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductResponse {
+public class ProductDetailResponse {
     Long productId;
-    String productImage;
     String productName;
-    int rating;
-    int reviewCount;
+    String description;
     BigDecimal price;
+    String brand;
+    ProductStatusEnum status;
+    List<String> imageUrls;
+    String categoryName;
+    Set<String> tagNames;
+    Long sellerId;
+    String shopName;
+    List<VariantResponse> variants;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class VariantResponse {
+        String variantDetail;
+        Integer quantity;
+    }
 }

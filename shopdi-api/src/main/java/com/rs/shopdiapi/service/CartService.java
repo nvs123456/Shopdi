@@ -8,13 +8,9 @@ import java.math.BigDecimal;
 public interface CartService {
     Cart createCart(Long userId);
 
-    CartResponse findUserCart(Long userId);
+    CartResponse getUserCart(Long userId);
 
     BigDecimal calculateTotalPrice(Long cartId);
 
-    BigDecimal calculateTotalDiscountedPrice(Long cartId);
-
     Cart updateCartSummary(Long cartId);
-
-    void applyDiscount(Long cartId, BigDecimal discountPercent);
 }

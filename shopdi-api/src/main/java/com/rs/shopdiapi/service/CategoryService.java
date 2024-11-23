@@ -12,6 +12,8 @@ public interface CategoryService {
 
     Category getCategoryById(Long categoryId);
 
+    Category getCategoryByName(String categoryName);
+
     CategoryResponse createCategory(CreateCategoryRequest category);
 
     Category updateCategory(Category category, Long categoryId);

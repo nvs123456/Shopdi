@@ -2,7 +2,6 @@ package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.AuthRequest;
 import com.rs.shopdiapi.domain.dto.request.ChangePasswordRequest;
-import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.TokenRequest;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
 import com.rs.shopdiapi.domain.dto.response.IntrospectResponse;
@@ -13,6 +12,7 @@ import com.rs.shopdiapi.repository.InvalidatedTokenRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.AuthService;
 import com.rs.shopdiapi.jwt.JwtUtil;
+import com.rs.shopdiapi.service.EmailService;
 import io.jsonwebtoken.SignatureException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
     InvalidatedTokenRepository invalidatedTokenRepository;
     CustomUserDetailsService customUserDetailsService;
     JwtUtil jwtUtil;
+    EmailService emailSenderService;
 
     @Override
     public IntrospectResponse introspect(TokenRequest request) {

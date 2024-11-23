@@ -15,8 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartResponse {
-    List<SellerGroupResponse> sellerGroups;
-    Integer totalItems;
-    BigDecimal totalPrice;
+public class SellerGroupResponse {
+    Long sellerId;
+    String sellerName;
+
+    List<CartItemResponse> cartItems;
 }

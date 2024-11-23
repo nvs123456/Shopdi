@@ -3,11 +3,12 @@ package com.rs.shopdiapi.service;
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
 import com.rs.shopdiapi.domain.dto.request.ProductFilterRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.ProductDetailResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductResponse;
 import com.rs.shopdiapi.domain.entity.Product;
 
 public interface ProductService {
-    ProductResponse createProduct(ProductRequest productRequest, Long sellerId);
+    ProductDetailResponse createProduct(ProductRequest productRequest, Long sellerId);
 
     String deleteProduct(Long productId, Long sellerId);
 

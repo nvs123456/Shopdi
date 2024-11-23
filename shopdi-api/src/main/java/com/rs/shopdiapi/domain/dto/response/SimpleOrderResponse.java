@@ -8,15 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartResponse {
-    List<SellerGroupResponse> sellerGroups;
-    Integer totalItems;
+public class SimpleOrderResponse {
+    Long orderId;
+    String orderStatus;
+    String deliveryDate;
     BigDecimal totalPrice;
+    Integer totalItems;
 }

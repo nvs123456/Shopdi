@@ -94,7 +94,6 @@ public class SellerServiceImpl implements SellerService {
         if (seller == null) {
             throw new AppException(ErrorCode.SELLER_NOT_EXIST);
         }
-
         return seller;
     }
 

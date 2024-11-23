@@ -3,11 +3,14 @@ package com.rs.shopdiapi.controller;
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
 import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
+import com.rs.shopdiapi.domain.dto.response.AuthResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.PageConstants;
+import com.rs.shopdiapi.jwt.JwtUtil;
+import com.rs.shopdiapi.service.ImageService;
 import com.rs.shopdiapi.service.OrderService;
 import com.rs.shopdiapi.service.ProductService;
 import com.rs.shopdiapi.service.SellerService;
@@ -17,10 +20,12 @@ import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +34,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.cloudinary.AccessControlRule.AccessType.token;
 
 @RestController
 @RequestMapping("/seller")
@@ -39,10 +50,11 @@ public class SellerController {
     ProductService productService;
     UserService userService;
     OrderService orderService;
+    JwtUtil jwtUtil;
 
     @PreAuthorize("hasRole('SELLER')")
-    @PostMapping("/add-product")
-    public ApiResponse<?> addProduct(@RequestBody @Valid ProductRequest request) {
+    @PostMapping( "/add-product")
+    public ApiResponse<?> addProduct(@Valid @RequestBody ProductRequest request) {
         Long sellerId = sellerService.getCurrentSeller().getId();
         return ApiResponse.builder()
                 .result(productService.createProduct(request, sellerId))
@@ -90,6 +102,7 @@ public class SellerController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('SELLER')")
     @PutMapping("/{orderId}/status")
     public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId,
                                                            @RequestParam String orderStatus) {
@@ -101,10 +114,15 @@ public class SellerController {
 
 
     @PostMapping("/register")
-    public ApiResponse<?> registerSeller(@RequestBody @Valid RegisterSellerRequest request) {
+    public AuthResponse registerSeller(@RequestBody @Valid RegisterSellerRequest request) {
         User user = userService.getCurrentUser();
-        return ApiResponse.builder()
-                .result(sellerService.sellerRegister(request, user))
+        sellerService.sellerRegister(request, user);
+
+        String token = jwtUtil.generateToken(user);
+
+        return AuthResponse.builder()
+                .token(token)
+                .expiryTime(jwtUtil.extractExpiration(token))
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.rs.shopdiapi.service.impl;
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
 import com.rs.shopdiapi.domain.dto.request.ProductFilterRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.ProductDetailResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductResponse;
 import com.rs.shopdiapi.domain.entity.*;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
@@ -10,7 +11,10 @@ import com.rs.shopdiapi.domain.enums.ProductStatusEnum;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.mapper.ProductMapper;
 import com.rs.shopdiapi.repository.*;
+import com.rs.shopdiapi.service.CategoryService;
+import com.rs.shopdiapi.service.ImageService;
 import com.rs.shopdiapi.service.ProductService;
+import com.rs.shopdiapi.service.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +25,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,19 +40,19 @@ import java.util.stream.Collectors;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
-    CategoryRepository categoryRepository;
+    CategoryService categoryService;
     ProductMapper productMapper;
     SellerRepository sellerRepository;
     TagRepository tagRepository;
+    ReviewService reviewService;
 
     @Transactional
     @Override
-    public ProductResponse createProduct(ProductRequest request, Long sellerId) {
-        Category category = categoryRepository.findByName(request.getCategoryName())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+    public ProductDetailResponse createProduct(ProductRequest request, Long sellerId) {
+        Category category = categoryService.getCategoryByName(request.getCategoryName());
 
         Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new RuntimeException("Seller not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_EXIST));
 
         Set<Tag> tags = request.getTagNames().stream()
                 .map(tagName -> tagRepository.findByName(tagName)
@@ -55,12 +63,11 @@ public class ProductServiceImpl implements ProductService {
                 .productName(request.getProductName())
                 .description(request.getDescription())
                 .price(request.getPrice())
-                .discountPercent(request.getDiscountPercent())
                 .brand(request.getBrand())
                 .category(category)
                 .seller(seller)
                 .tags(tags)
-                .status(ProductStatusEnum.valueOf(request.getProductStatus()))
+                .status(ProductStatusEnum.valueOf(request.getStatus()))
                 .build();
 
         Set<Variant> variants = request.getVariantDetails().stream()
@@ -76,21 +83,19 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
 
 
-        return ProductResponse.builder()
+        return ProductDetailResponse.builder()
                 .productId(savedProduct.getId())
                 .productName(savedProduct.getProductName())
                 .description(savedProduct.getDescription())
                 .price(savedProduct.getPrice())
-                .discountPercent(savedProduct.getDiscountPercent())
                 .brand(savedProduct.getBrand())
                 .status(savedProduct.getStatus())
-                .imageUrls(savedProduct.getImageUrls())
                 .categoryName(savedProduct.getCategory() != null ? savedProduct.getCategory().getName() : null)
                 .tagNames(savedProduct.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
                 .sellerId(savedProduct.getSeller().getId())
                 .shopName(savedProduct.getSeller().getShopName())
                 .variants(savedProduct.getVariants().stream()
-                        .map(variant -> ProductResponse.VariantResponse.builder()
+                        .map(variant -> ProductDetailResponse.VariantResponse.builder()
                                 .variantDetail(variant.getVariantDetail())
                                 .quantity(variant.getQuantity())
                                 .build())
@@ -135,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<?> findProductByCategory(String category, int pageNo, int pageSize) {
-        var categoryEntity = categoryRepository.findByName(category).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        var categoryEntity = categoryService.getCategoryByName(category);
 
         Page<Product> productPage = productRepository.findAllByCategoryId(categoryEntity.getId(), PageRequest.of(pageNo, pageSize));
 
@@ -202,7 +207,19 @@ public class ProductServiceImpl implements ProductService {
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNo, pageSize, sortByAndOrder));
 
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+        List<ProductResponse> products = productPage.stream()
+                .map(product -> ProductResponse.builder()
+                        .productId(product.getId())
+                        .productImage(product.getImageUrls() != null && !product.getImageUrls().isEmpty()
+                                ? product.getImageUrls().get(0)
+                                : null)
+                        .productName(product.getProductName())
+                        .rating(reviewService.calculateAverageRating(product.getId()))
+                        .reviewCount(reviewService.countReviewsByProduct(product.getId()))
+                        .price(product.getPrice())
+                        .build()
+                ).toList();
+
         return PageResponse.builder()
                 .pageNo(pageNo)
                 .pageSize(pageSize)

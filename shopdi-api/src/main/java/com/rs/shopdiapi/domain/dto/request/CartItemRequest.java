@@ -18,7 +18,4 @@ public class CartItemRequest {
     Long productId;
     String variant;
     Integer quantity;
-    BigDecimal price;
-    BigDecimal discountPercent;
-    BigDecimal discountedPrice;
 }
