@@ -15,6 +15,7 @@ export default function AddProduct() {
                 setCategories(res.result)
                 setCurrentCategory({parent: res.result[0].name, child: res.result[0].childCategories[0].name})
                 setLoading(false)
+                setProductForm({ ...productForm, categoryName: res.result[0].childCategories[0].name })
             }
         })
     },[])
@@ -36,7 +37,7 @@ export default function AddProduct() {
         quantity: 0,
 
         // Category and Tags
-        categoryName: '',
+        categoryName: 'dcm',
         tagNames: [],
 
         // Status
@@ -105,7 +106,8 @@ export default function AddProduct() {
                         <div className="flex flex-row gap-4">
                             <div className=' flex flex-col'>
                                 <label> Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory.parent} onChange={(e) => {
+                                <select className='border-2 border-gray-400 w-60 h-10 rounded'  value={currentCategory.parent} onChange={(e) => {
+
                                     const tmp = categories.find((i) => i.name === e.target.value)
                                     setCurrentCategory({ parent: e.target.value, child: tmp.childCategories[0].name })
                                 }}>
@@ -120,7 +122,11 @@ export default function AddProduct() {
 
                             <div className=' flex flex-col'>
                                 <label>Sub Category</label>
-                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' defaultValue={currentCategory.child} onChange={(e) => { setProductForm({ ...productForm, categoryName: e.target.value }) }}>
+                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded'  value={currentCategory.child} onChange={(e) => { 
+                                    setProductForm({ ...productForm, categoryName: e.target.value }) 
+                                    setCurrentCategory({ ...currentCategory, child: e.target.value })
+                                }
+                                    }>
                                     {categories.find((i) => i.name === currentCategory.parent).childCategories.map((item, index) => {
                                         return <option key={index} value={item.name}>{item.name}</option>
                                     })}
