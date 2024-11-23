@@ -1,27 +1,29 @@
 package com.rs.shopdiapi.domain.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateOrderRequest {
-    @NotNull(message = "Address Id is required")
-    Long addressId;
+public class ReviewRequest {
+    @Min(1)
+    @Max(5)
+    int rating;
 
-    @NotNull(message = "Selected Cart Item Ids are required")
-    List<Long> selectedCartItemIds;
-
-    String orderNotes;
+    @Length(max = 1000)
+    String review;
 }

@@ -1,6 +1,5 @@
 package com.rs.shopdiapi.domain.dto.response;
 
-import com.rs.shopdiapi.domain.enums.ProductStatusEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,19 +9,15 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductResponse {
-    Long productId;
-    String productImage;
-    String productName;
+public class SellerGroupResponse {
+    Long sellerId;
+    String sellerName;
 
-    int rating;
-    int reviewCount;
-    BigDecimal price;
+    List<CartItemResponse> cartItems;
 }

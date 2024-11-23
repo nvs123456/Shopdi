@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductFilterRequest {
+public class  ProductFilterRequest {
     private String productName;
     private Set<String> categories;
     private Set<String> brands;

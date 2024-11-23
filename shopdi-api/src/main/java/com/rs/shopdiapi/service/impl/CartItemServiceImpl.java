@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -32,7 +34,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Transactional
     @Override
-    public CartItem addOrUpdateCartItem(Long userId, CartItemRequest request) {
+    public String addOrUpdateCartItem(Long userId, CartItemRequest request) {
         Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
             throw new AppException(ErrorCode.CART_NOT_FOUND);
@@ -41,50 +43,52 @@ public class CartItemServiceImpl implements CartItemService {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        CartItem existingCartItem = cartItemRepository.isCartItemExist(cart, product, request.getVariant());
+        Optional<CartItem> existingCartItem = cartItemRepository.findByCartAndProductAndVariant(cart, product, request.getVariant());
 
-        if (existingCartItem != null) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + request.getQuantity());
-
-            BigDecimal updatedPrice = BigDecimal.valueOf(product.getPrice());
-            existingCartItem.setPrice(updatedPrice);
-
-            BigDecimal updatedDiscountedPrice = updatedPrice
-                    .multiply(BigDecimal.valueOf(100).subtract(existingCartItem.getDiscountPercent()))
-                    .divide(BigDecimal.valueOf(100));
-            existingCartItem.setDiscountedPrice(updatedDiscountedPrice);
-
-            cartService.updateCartSummary(cart.getId());
-            return cartItemRepository.save(existingCartItem);
-        } else {
-            BigDecimal price = request.getPrice();
-            BigDecimal discountedPrice = price
-                    .multiply(BigDecimal.valueOf(100).subtract(request.getDiscountPercent()))
-                    .divide(BigDecimal.valueOf(100));
-            System.out.println(product.getPrice());
-            CartItem cartItem = CartItem.builder()
-                    .cart(cart)
-                    .product(product)
-                    .variant(request.getVariant())
-                    .quantity(request.getQuantity())
-                    .price(price)
-                    .discountPercent(request.getDiscountPercent())
-                    .discountedPrice(discountedPrice)
-                    .build();
-
-            cartService.updateCartSummary(cart.getId());
-            return cartItemRepository.save(cartItem);
+        if (existingCartItem.isPresent()) {
+            return updateExistingCartItem(existingCartItem.get(), request, product, cart);
         }
+
+        return createNewCartItem(cart, product, request);
     }
 
+    private String updateExistingCartItem(CartItem existingCartItem, CartItemRequest request, Product product, Cart cart) {
+        existingCartItem.setQuantity(existingCartItem.getQuantity() + request.getQuantity());
+
+        BigDecimal updatedPrice = product.getPrice().multiply(BigDecimal.valueOf(existingCartItem.getQuantity()));
+        existingCartItem.setPrice(updatedPrice);
+
+        cartService.updateCartSummary(cart.getId());
+
+        cartItemRepository.save(existingCartItem);
+        return "Cart item updated successfully";
+    }
+
+    private String createNewCartItem(Cart cart, Product product, CartItemRequest request) {
+        BigDecimal price = product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
+
+        CartItem newCartItem = CartItem.builder()
+                .cart(cart)
+                .product(product)
+                .variant(request.getVariant())
+                .quantity(request.getQuantity())
+                .price(price)
+                .build();
+
+        cartService.updateCartSummary(cart.getId());
+
+        cartItemRepository.save(newCartItem);
+        return "Cart item added successfully";
+    }
+
+    @Transactional
     @Override
-    // @Transactional
     public String deleteCartItem(Long userId, Long cartItemId) {
+
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         Cart cart = cartRepository.findByUserId(userId);
-
         if (!cartItem.getCart().equals(cart)) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
@@ -94,8 +98,8 @@ public class CartItemServiceImpl implements CartItemService {
         return "Cart item deleted successfully";
     }
 
-    @Override
     @Transactional
+    @Override
     public String updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
         Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
@@ -105,19 +109,28 @@ public class CartItemServiceImpl implements CartItemService {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
-        cartItem.setQuantity(quantity);
-
-        BigDecimal updatedPrice = BigDecimal.valueOf(cartItem.getProduct().getPrice() * quantity);
+        cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        BigDecimal updatedPrice = cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(quantity));
         cartItem.setPrice(updatedPrice);
-
-        BigDecimal updatedDiscountedPrice = updatedPrice
-                .multiply(BigDecimal.valueOf(100).subtract(cartItem.getDiscountPercent()))
-                .divide(BigDecimal.valueOf(100));
-        cartItem.setDiscountedPrice(updatedDiscountedPrice);
 
         cartItemRepository.save(cartItem);
         cartService.updateCartSummary(cart.getId());
 
         return "Cart item updated successfully";
+    }
+
+
+    @Transactional
+    @Override
+    public String clearCart(Long userId) {
+        Cart cart = cartRepository.findByUserId(userId);
+
+        cartItemRepository.deleteAll(cart.getCartItems());
+
+        cart.setTotalItems(0);
+        cart.setTotalPrice(BigDecimal.ZERO);
+        cartRepository.save(cart);
+
+        return "Cart cleared successfully.";
     }
 }

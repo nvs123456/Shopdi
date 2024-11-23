@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,12 +31,10 @@ public class Cart extends BaseEntity<Long> {
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "cart_items")
     Set<CartItem> cartItems = new HashSet<>();
 
     BigDecimal totalPrice;
     Integer totalItems;
-    BigDecimal totalDiscountedPrice;
-    BigDecimal discountPercent;
 }

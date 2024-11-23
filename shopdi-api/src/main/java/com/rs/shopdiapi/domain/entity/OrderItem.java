@@ -40,17 +40,10 @@ public class OrderItem extends BaseEntity<Long> {
     Seller seller;
 
     @Enumerated(EnumType.STRING)
-    private OrderItemStatusEnum orderItemStatus = OrderItemStatusEnum.PENDING;
+    OrderItemStatusEnum orderItemStatus = OrderItemStatusEnum.PENDING;
 
     String variant;
-
     Integer quantity;
-
     BigDecimal price;
-
-    BigDecimal discountedPrice;
-
-    BigDecimal discountPercent;
-
     LocalDateTime deliveryDate;
 }

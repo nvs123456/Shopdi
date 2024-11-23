@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -66,7 +67,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
                         name = "role_id", referencedColumnName = "id"))
     Set<Role> roles;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Seller seller;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -81,8 +82,22 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @JsonIgnore
     List<Review> reviews;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<Order> orders;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<PaymentMethod> paymentMethods;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    Cart cart;
+
     @Enumerated(EnumType.STRING)
-    UserStatusEnum status;
+    UserStatusEnum status = UserStatusEnum.INACTIVE;
+
+    @Column(length = 64)
+    String verificationCode;
+
+    String resetPasswordToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

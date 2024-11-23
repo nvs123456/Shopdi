@@ -55,6 +55,11 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
+    @Override
+    public Category getCategoryByName(String categoryName) {
+        return categoryRepository.findByName(categoryName).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+    }
+
     @Transactional
     @Override
     public CategoryResponse createCategory(CreateCategoryRequest categoryRequest) {

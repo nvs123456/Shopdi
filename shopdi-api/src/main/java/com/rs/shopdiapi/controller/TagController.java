@@ -4,12 +4,17 @@ package com.rs.shopdiapi.controller;
 import com.rs.shopdiapi.domain.dto.request.TagRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.service.TagService;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tags")
+@AllArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class TagController {
     @Autowired
     private TagService tagService;

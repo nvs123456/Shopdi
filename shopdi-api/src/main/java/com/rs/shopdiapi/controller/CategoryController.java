@@ -37,7 +37,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public ApiResponse<?> getCategories(@PathVariable Long categoryId) {
+    public ApiResponse<?> getCategory(@PathVariable Long categoryId) {
         return ApiResponse.builder()
                 .result(categoryService.getCategoryById(categoryId))
                 .build();
@@ -61,6 +61,13 @@ public class CategoryController {
     public ApiResponse<?> deleteCategory(@PathVariable Long categoryId) {
         return ApiResponse.builder()
                 .result(categoryService.deleteCategory(categoryId))
+                .build();
+    }
+
+    @GetMapping("/name/{categoryName}")
+    public ApiResponse<?> getCategoryByName(@PathVariable String categoryName) {
+        return ApiResponse.builder()
+                .result(categoryService.getCategoryByName(categoryName))
                 .build();
     }
 }

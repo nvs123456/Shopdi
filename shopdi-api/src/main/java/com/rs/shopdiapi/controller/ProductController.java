@@ -21,10 +21,9 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ProductController {
     ProductService productService;
-    SellerService sellerService;
 
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping
     public ApiResponse<?> getAllProducts(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
                                          @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize,
@@ -52,48 +51,6 @@ public class ProductController {
                 .build();
     }
 
-   @GetMapping("/categories/{categoryName}")
-    public ApiResponse<?> getProductsByCategory(@PathVariable String categoryName,
-                                        @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                        @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
-        return ApiResponse.builder()
-                .result(productService.findProductByCategory(categoryName, pageNo, pageSize))
-                .build();
-    }
-    @GetMapping("/parent-categories/{categoryName}")
-    public ApiResponse<?> getProductsByParentCategory(@PathVariable String categoryName,
-                                        @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                        @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
-        return ApiResponse.builder()
-                .result(productService.findProductByParentCategory(categoryName, pageNo, pageSize))
-                .build();
-    }
-
-//
-
-//
-//    @GetMapping("{productId}/ratings")
-//    public ApiResponse<?> getRatings(@PathVariable Long productId) {
-//        return ApiResponse.builder()
-//                .result(productService.getRatings(productId))
-//                .build();
-//    }
-//
-//    @PostMapping("{productId}/reviews")
-//    public ApiResponse<?> addReview(@PathVariable Long productId, @RequestParam String review) {
-//        return ApiResponse.builder()
-//                .result(productService.addReview(productId, review))
-//                .build();
-//    }
-//
-//    @GetMapping("{productId}/reviews")
-//    public ApiResponse<?> getReviews(@PathVariable Long productId) {
-//        return ApiResponse.builder()
-//                .result(productService.getReviews(productId))
-//                .build();
-//    }
-
-
-
+//    @GetMapping("/filter")
 }
 

@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
     boolean existsByName(String name);
+
+    @Query("SELECT c FROM Category c WHERE c.name = :name")
     Optional<Category> findByName(String name);
 
     List<Category> findAllByParentCategoryIsNull();

@@ -47,11 +47,11 @@ public class Order extends BaseEntity<Long> {
 //    @Embedded
 //    PaymentDetails paymentDetails = new PaymentDetails();
     BigDecimal totalPrice;
-    BigDecimal totalDiscountedPrice;
-    BigDecimal discountPercent;
 
     @Enumerated(EnumType.STRING)
     OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
+
+    String orderNotes;
 
     LocalDateTime deliveryDate;
     public List<OrderItem> getOrderItems() {

@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    OrderResponse createOrder(Long userId, CreateOrderRequest request);
+    String createOrder(Long userId, CreateOrderRequest request);
 
     OrderResponse updateOrderStatus(Long orderId, String orderStatus);
 
@@ -20,7 +20,7 @@ public interface OrderService {
 
     OrderResponse findOrderById(Long orderId);
 
-    Order cancelOrder(Long orderId);
+    String cancelOrder(Long orderId);
 
     PageResponse<?> getAllOrders(int pageNo, int pageSize);
 

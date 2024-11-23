@@ -1,8 +1,8 @@
 package com.rs.shopdiapi.domain.dto.response;
 
-import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,13 +13,14 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderResponse {
     Long orderId;
-    OrderStatusEnum status;
-    LocalDateTime date;
-    Double total;
-    int productCount;
-    List<ProductResponse> products;
-    List<CartItemResponse> orderItems;
-    AddressResponse billingAddress;
+    BigDecimal totalPrice;
+    String orderStatus;
+    LocalDateTime deliveryDate;
+
+    List<OrderItemResponse> orderItems;
+
     AddressResponse shippingAddress;
-//    List<OrderActivityResponse> orderActivities;
+    AddressResponse billingAddress;
+
+    String orderNotes;
 }

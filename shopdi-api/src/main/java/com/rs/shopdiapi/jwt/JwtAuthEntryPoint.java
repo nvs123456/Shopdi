@@ -19,6 +19,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     public void commence(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
+        System.out.println("JwtAuthEntryPoint triggered for URI: " + request.getRequestURI());
         response.setStatus(ErrorCode.UNAUTHENTICATED.getStatusCode().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 

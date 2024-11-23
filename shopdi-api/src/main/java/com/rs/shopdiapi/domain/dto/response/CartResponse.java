@@ -16,11 +16,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartResponse {
-    Long sellerId;
-    String sellerName;
-
-    List<CartItemResponse> cartItems;
+    List<SellerGroupResponse> sellerGroups;
     Integer totalItems;
     BigDecimal totalPrice;
-    BigDecimal totalDiscountedPrice;
 }

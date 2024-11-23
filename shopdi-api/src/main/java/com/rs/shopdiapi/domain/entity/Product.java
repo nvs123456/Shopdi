@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rs.shopdiapi.domain.enums.ProductStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,8 +39,7 @@ public class Product extends BaseEntity<Long> {
     String productName;
 
     String description;
-    Double price;
-    Double discountPercent;
+    BigDecimal price;
     String brand;
 
     @Enumerated(EnumType.STRING)
@@ -50,6 +51,7 @@ public class Product extends BaseEntity<Long> {
     Seller seller;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     Set<Variant> variants = new HashSet<>();
 
     @ElementCollection
@@ -58,9 +60,6 @@ public class Product extends BaseEntity<Long> {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Review> reviews = new ArrayList<>();
 
-    @Column(name = "num_ratings")
-    int numRatings;
-    int quantity;
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;

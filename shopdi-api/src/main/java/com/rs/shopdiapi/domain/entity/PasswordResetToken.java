@@ -1,4 +1,4 @@
 package com.rs.shopdiapi.domain.entity;
 
-public class PaymentDetail {
+public class PasswordResetToken {
 }

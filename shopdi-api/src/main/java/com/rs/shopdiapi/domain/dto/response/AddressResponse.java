@@ -12,8 +12,6 @@ public class AddressResponse {
     String firstName;
     String lastName;
     String address;
-    String city;
-    String state;
-
-    String Note;
+    String phone;
+    String email;
 }

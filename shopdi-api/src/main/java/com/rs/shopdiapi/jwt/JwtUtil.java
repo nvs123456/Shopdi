@@ -1,6 +1,5 @@
 package com.rs.shopdiapi.jwt;
 
-import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.repository.InvalidatedTokenRepository;

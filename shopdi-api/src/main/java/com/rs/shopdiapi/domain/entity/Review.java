@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -24,12 +25,15 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Review extends BaseEntity<Long> {
+    @Column(columnDefinition = "TEXT")
     String review;
 
     @Min(1)
     @Max(5)
-    Double ratingScore;
+    @Column(nullable = false, columnDefinition = "TINYINT")
+    int rating;
 
+    @Column(columnDefinition = "TEXT")
     String reply;
 
     @ManyToOne(fetch = FetchType.LAZY)

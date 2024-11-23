@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,6 +25,4 @@ public class CartItemResponse {
     String variant;
     Integer quantity;
     BigDecimal price;
-    BigDecimal discountPercent;
-    BigDecimal totalDiscountedPrice;
 }
