@@ -2,6 +2,7 @@ import '@/css/product_detail.css'
 
 export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVariant, currenSelectedVariant }) {
     const v = []
+    console.log(variantWithQuantity)
     for (let i = 0; i < variantWithQuantity.length; i++) {
         let t = variantWithQuantity[i].variantDetail
         for (let j = 0; j < t.length; j++) {
@@ -15,6 +16,7 @@ export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVa
             }
         }
     }
+    console.log(v)
     return (
         <>
             {v.map((item) => (
