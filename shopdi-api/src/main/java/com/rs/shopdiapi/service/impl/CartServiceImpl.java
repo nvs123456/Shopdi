@@ -90,15 +90,15 @@ public class CartServiceImpl implements CartService {
                 .build();
     }
 
-    @Override
-    public BigDecimal calculateTotalPrice(Long cartId) {
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
-
-        return cart.getCartItems().stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+//    @Override
+//    public BigDecimal calculateTotalPrice(Long cartId) {
+//        Cart cart = cartRepository.findById(cartId)
+//                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
+//
+//        return cart.getCartItems().stream()
+//                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
 
     @Transactional
     @Override
@@ -106,7 +106,9 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
-        BigDecimal totalPrice = calculateTotalPrice(cartId);
+        BigDecimal totalPrice = cart.getCartItems().stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         int totalItems = cart.getCartItems().stream()
                 .mapToInt(CartItem::getQuantity)
                 .sum();

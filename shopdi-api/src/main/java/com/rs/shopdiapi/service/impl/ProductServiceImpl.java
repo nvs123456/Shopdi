@@ -25,11 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -128,9 +124,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse findProductById(Long productId) {
-        var product = productRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-        return productMapper.toProductResponse(product);
+    public ProductDetailResponse findProductById(Long productId) {
+        var product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        return ProductDetailResponse.builder()
+                .productId(product.getId())
+                .productName(product.getProductName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .brand(product.getBrand())
+                .status(product.getStatus())
+                .imageUrls(product.getImageUrls())
+                .categoryName(product.getCategory() != null ? product.getCategory().getName() : null) // Danh mục sản phẩm
+                .tagNames(product.getTags() != null
+                        ? product.getTags().stream().map(Tag::getName).collect(Collectors.toSet())
+                        : Set.of())
+                .sellerId(product.getSeller() != null ? product.getSeller().getId() : null) // ID người bán
+                .shopName(product.getSeller() != null ? product.getSeller().getShopName() : null) // Tên shop của người bán
+                .variants(product.getVariants() != null
+                        ? product.getVariants().stream()
+                        .map(variant -> ProductDetailResponse.VariantResponse.builder()
+                                .variantDetail(variant.getVariantDetail())
+                                .quantity(variant.getQuantity())
+                                .build())
+                        .toList()
+                        : List.of())
+                .build();
     }
 
     @Override

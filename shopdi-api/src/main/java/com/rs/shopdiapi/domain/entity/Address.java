@@ -1,9 +1,14 @@
 package com.rs.shopdiapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rs.shopdiapi.domain.enums.AddressEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,6 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,11 +39,16 @@ public class Address extends BaseEntity<Long> {
     String zipCode;
     String email;
 
+    @Enumerated(EnumType.STRING)
+    AddressEnum addressType;
+
     @Pattern(regexp = "(^0[3|5|7|8|9][0-9]{8}$)", message = "Enter valid 10 digit mobile number")
     String phoneNumber;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
+
+    @OneToMany(mappedBy = "shippingAddress", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Order> orders = new ArrayList<>();
 }

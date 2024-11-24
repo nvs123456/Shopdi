@@ -14,7 +14,7 @@ public interface ProductService {
 
     ProductResponse updateProduct(ProductRequest request, Long productId);
 
-    ProductResponse findProductById(Long productId);
+    ProductDetailResponse findProductById(Long productId);
 
     PageResponse<?> searchProduct(String query, int pageNo, int pageSize);
 

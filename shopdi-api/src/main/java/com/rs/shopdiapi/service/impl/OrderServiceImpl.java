@@ -12,6 +12,7 @@ import com.rs.shopdiapi.domain.entity.CartItem;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.OrderItem;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.AddressEnum;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
@@ -72,10 +73,19 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal totalPrice = calculateTotalPrice(selectedItems);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Address address = addressRepository.findById(request.getAddressId()).orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+        Address shippingAddress = user.getAddresses().stream()
+                .filter(address -> address.getAddressType() == AddressEnum.SHIPPING)
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        Address billingAddress = user.getAddresses().stream()
+                .filter(address -> address.getAddressType() == AddressEnum.BILLING)
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
         Order order = Order.builder()
                 .user(user)
-                .shippingAddress(address)
+                .shippingAddress(shippingAddress)
                 .totalPrice(totalPrice)
                 .orderStatus(OrderStatusEnum.PENDING)
                 .orderItems(new ArrayList<>())
@@ -155,6 +165,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse findOrderById(Long orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
         return this.mapToOrderResponse(order);
     }
 
@@ -226,13 +237,25 @@ public class OrderServiceImpl implements OrderService {
 
 
     public OrderResponse mapToOrderResponse(Order order) {
+        User user = order.getUser();
+
+        Address shippingAddress = user.getAddresses().stream()
+                .filter(address -> address.getAddressType() == AddressEnum.SHIPPING)
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        Address billingAddress = user.getAddresses().stream()
+                .filter(address -> address.getAddressType() == AddressEnum.BILLING)
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
         return OrderResponse.builder()
                 .orderId(order.getId())
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus().name())
                 .deliveryDate(order.getDeliveryDate())
-                .shippingAddress(mapToAddressResponse(order.getUser().getShippingAddress()))
-                .billingAddress(mapToAddressResponse(order.getUser().getBillingAddress()))
+                .shippingAddress(mapToAddressResponse(shippingAddress))
+                .billingAddress(mapToAddressResponse(billingAddress))
                 .orderItems(order.getOrderItems().stream()
                         .map(this::mapToOrderItemResponse)
                         .toList())

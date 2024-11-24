@@ -18,11 +18,8 @@ import java.util.Set;
 public class ProductRequest {
     String productName;
     String description;
-
     BigDecimal price;
-
     String Brand;
-
     List<VariantDetail> variantDetails;
 
     String categoryName;

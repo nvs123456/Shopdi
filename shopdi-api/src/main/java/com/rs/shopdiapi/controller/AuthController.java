@@ -64,7 +64,6 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/refresh")
     ApiResponse<AuthResponse> refreshToken(@RequestBody TokenRequest request) {
         var result = authenticationService.refreshToken(request);
@@ -89,7 +88,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("change-password")
+    @PostMapping("/change-password")
     public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
         return ApiResponse.<String>builder()
                 .message(authenticationService.changePassword(request))
