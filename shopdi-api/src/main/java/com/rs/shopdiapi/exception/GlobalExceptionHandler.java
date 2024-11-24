@@ -59,15 +59,10 @@ public class GlobalExceptionHandler {
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .code(errorCode.getCode())
                 .message(
-                        key)
+                        Objects.nonNull(attributes)
+                                ? mapAttribute(errorCode.getMessage(), attributes)
+                                : errorCode.getMessage())
                 .build();
-        // ApiResponse<?> apiResponse = ApiResponse.builder()
-        //         .code(errorCode.getCode())
-        //         .message(
-        //                 Objects.nonNull(attributes)
-        //                         ? mapAttribute(errorCode.getMessage(), attributes)
-        //                         : errorCode.getMessage())
-        //         .build();
 
         return ResponseEntity.badRequest().body(apiResponse);
     }

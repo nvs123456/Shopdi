@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {styled} from "@mui/material/styles";
-import axios from 'axios';
 
 import {Button, Step, StepLabel, Stepper, Typography} from '@mui/material';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
@@ -15,14 +14,13 @@ import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
 import StepConnector, {stepConnectorClasses,} from "@mui/material/StepConnector";
-import orderDetailData from '../../../data/orderDetailData.json';
-import { useParams } from 'react-router-dom';
-import { configureStore } from '@reduxjs/toolkit';
+import orderDetailData from '../../data/orderDetailData.json';
 
 const steps = ['Order Placed', 'Packaging', 'On The Road', 'Delivered'];
 const icons = [<InventoryOutlinedIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
+const activeStep = 2;
 const data = [
-    ['PRODUCTS', 'PRICE', 'QUANTITY', 'TOTAL'],
+    ['PRODUCTS', 'PRICE', 'QUANTITY', 'SUB-TOTAL'],
 ];
 
 const CustomisedConnector = styled(StepConnector)(({theme}) => ({
@@ -37,80 +35,47 @@ const CustomisedConnector = styled(StepConnector)(({theme}) => ({
         },
     },
     [`& .${stepConnectorClasses.line}`]: {
-        borderTopWidth: 8,
-        borderColor: '#FF9800',
-        width: '100%',
-        position: 'absolute',
-        top: '50%',
-        transform: 'translateY(-50%)',
-
+        height: 10,
+        border: "20px",
+        backgroundColor: "#FFE7D6",
+        borderRadius: 1,
     },
 }));
 
-function OrderDetails() {
-    const {id} = useParams();
-    const [orderDetail,setOrderDetail] = useState({});
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-            'Access-Control-Allow-Origin': 'http://localhost:5173',
-        }
-    };
-    useEffect(() => {
-        axios.get(`http://localhost:8080/orders/${id}/details`, config)
-            .then((response) => {
-                if (response.data.code === 'OK') {
-                    setOrderDetail(response.data.result);
-                    console.log('Order detail:', response.data.result); // Log dữ liệu chi tiết
-                } else {
-                    console.warn('Unexpected response:', response.data);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching order details:', error.response?.data || error.message);
-            });
-    }, [id]);
-    const status = orderDetail.status;
-    const activeStep = status === 'PENDING' ? 1 
-                        : status === 'PROCESSING' ? 3 : 4;
-    const date = orderDetail?.date;
-    const formattedDate = date ? new Date(...date).toLocaleString() : "N/A";
-    const shippingAddress = orderDetail?.shippingAddress || {};
-    const { firstName = '', lastName = '', address = '', city = '', state = '' } = shippingAddress;
+const OrderDetails = () => {
     return (
-        <div className="bg-[#F7FBFF] flex justify-center font-sans">
-            <div className="container md:mt-10 md:mb-10 my-5 h-5/6  bg-white w-full md:w-5/6 border-collapse">
+        <div className="bg-[#F7FBFF] flex justify-center">
+            <div className="container mt-10 mb-10 h-5/6  bg-white w-5/6 border-collapse">
                 {/* heading section */}
-                <div className="flex justify-between items-center border-2 h-6 md:h-10 mb-6 px-0 md:px-4">
+                <div className="flex justify-between items-center border-2 h-10 mb-6 px-4">
                     <div className="flex items-center">
-                        <ArrowBackIcon className="text-black" fontSize={'inherit'}/>
-                        <Button><span className='text-black text-[14px] md:text-[16px]'>Order Details</span></Button>
+                        <ArrowBackIcon className="text-black"/>
+                        <Button><span className='text-black'>Order Details</span></Button>
                     </div>
-                    <Button><span className='text-[#FA8232] text-[14px] md:text-[16px]'>Leave a Rating</span></Button>
+                    <Button><span className='text-[#FA8232]'>Leave a Rating</span></Button>
                 </div>
                 {/* Order Details Section */}
-                <div className="bg-[#FDFAE7] border-2 border-[#F7E99E] p-3 md:p-6 w-5/6 mb-3 md:mb-6 ml-6 md:ml-20 border-collapse">
+                <div className="bg-[#FDFAE7] border-2 border-[#F7E99E] p-6 w-5/6 mb-6 ml-20 border-collapse">
                     <div className="flex justify-between items-center">
-                        <div className={'text-[16px]'}>
-                            Order #{orderDetail.orderId}
-                        </div>
-                        <div className={'text-[18px] font-bold text-celticBlue'}>
-                            ${orderDetail.total}
-                        </div>
+                        <Typography variant="h6" component="h2">
+                            Order #96459761
+                        </Typography>
+                        <Typography variant="h6" component="h2" color="primary">
+                            $1736.99
+                        </Typography>
                     </div>
-                    <div className={'text-[14px] text-darkGray pt-1.5'}>
-                        Order placed on {formattedDate.split(",")[0]} at  {formattedDate.split(",")[1]}
-                    </div>
+                    <Typography variant="body2" color="textSecondary">
+                        Order placed on 17 Jan, 2021 at 7:32 PM
+                    </Typography>
                 </div>
-                {/* <div className='ml-2 md:ml-20'>
-                    <div className='text-darkGray text-[16px]'>
+                <div className='ml-20'>
+                    <Typography className='ml-20' variant="body2" color="textSecondary">
                         Order expected arrival: <strong>23 Jun, 2021</strong>
-                    </div>
-                </div> */}
+                    </Typography>
+                </div>
 
                 {/* Stepper for Order Status */}
-                <div className="bg-white border-b-2 p-2 md:p-6 mb-3 md:mb-6 border-collapse">
+                <div className="bg-white border-b-2 p-6 mb-6 border-collapse">
                     <Stepper activeStep={activeStep} alternativeLabel connector={<CustomisedConnector/>}>
                         {steps.map((label, index) => (
                             <Step key={label}>
@@ -120,7 +85,6 @@ function OrderDetails() {
                                             color: index < activeStep ? '#FF731D' : '#FFFFFF', // Color for completed steps
                                             border: '4px solid #FF731D', // Border color
                                             borderRadius: '50%', // Optional: make the border circular
-                                            fontSize:{xs:'22px',sm:'22px',md:'26px',lg:'26px',xl:'26px'},
                                             '&.Mui-active': {
                                                 color: '#FF731D', // Color for the current step
 
@@ -138,11 +102,11 @@ function OrderDetails() {
                                     }}
 
                                 >
-                                   <span className={'text-[12px] md:text-[16px]'}>{label}</span>
+                                    {label}
                                     <span className="flex justify-center mt-2">
                     {React.cloneElement(icons[index], {
                         style: {
-                            fontSize: {xs:'22px',sm:'22px',md:'26px',lg:'26px',xl:'26px'},
+                            fontSize: '60px',
                             color: index === activeStep ? '#FF731D' : index < activeStep ? '#2DB224' : '#FF8800',
                         },
                     })}
@@ -154,10 +118,10 @@ function OrderDetails() {
                 </div>
 
                 {/* Order Activity Section */}
-                <div className="bg-white border-b-2 px-3 py-1 md:p-6 md:pt-0">
-                    <div className={'mb-1 font-bold text-[16px] md:text-xl'}>
+                <div className="bg-white border-b-2 p-6 pt-0">
+                    <Typography variant="h6" component="h2" className="mb-4 pb-4">
                         Order Activity
-                    </div>
+                    </Typography>
                     <div>
                         <ul className="text-sm space-y-4">
                             <li className='flex flex-row items-center'>
@@ -168,9 +132,9 @@ function OrderDetails() {
 
                                 <div className='px-3'>
                                     <div>
-                                        <span className={"text-[14px] md:text-[18px]"}> Your order has been delivered. Thank you for shopping at Clicon! </span>
+                                        <span> Your order has been delivered. Thank you for shopping at Clicon! </span>
                                     </div>
-                                    <div className={"text-[14px] md:text-[18px]"}>
+                                    <div>
                                         23 Jun, 2021
                                     </div>
                                 </div>
@@ -181,9 +145,9 @@ function OrderDetails() {
                                     <PersonOutlineOutlinedIcon className='text-[#2DA5F3]'/>
                                 </div>
 
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
+                                <div className='px-3'>
                                     <div>
-                                        <span > Our delivery man John Wick has picked up your order. </span>
+                                        <span> Our delivery man John Wick has picked up your order. </span>
                                     </div>
                                     <div>
                                         23 Jun, 2021
@@ -196,7 +160,7 @@ function OrderDetails() {
                                     <LocationOnOutlinedIcon className='text-[#2DA5F3]'/>
                                 </div>
 
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
+                                <div className='px-3'>
                                     <div>
                                         <span> Your order has reached the last mile hub. </span>
                                     </div>
@@ -211,7 +175,7 @@ function OrderDetails() {
                                     <MapOutlinedIcon className='text-[#2DA5F3]'/>
                                 </div>
 
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
+                                <div className='px-3'>
                                     <div>
                                         <span> Your order is on the way to the last mile hub. </span>
                                     </div>
@@ -226,7 +190,7 @@ function OrderDetails() {
                                     <CheckCircleOutlinedIcon className='text-[#2DB224]'/>
                                 </div>
 
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
+                                <div className='px-3'>
                                     <div>
                                         <span> Your order is successfully verified.</span>
                                     </div>
@@ -241,7 +205,7 @@ function OrderDetails() {
                                     <EventNoteOutlinedIcon className='text-[#2DA5F3]'/>
                                 </div>
 
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
+                                <div className='px-3'>
                                     <div>
                                         <span>Your order has been confirmed. </span>
                                     </div>
@@ -256,16 +220,16 @@ function OrderDetails() {
                 </div>
 
                 {/* Product Section */}
-                <div className="bg-white border-b-2 md:p-6 p-2 font-sans">
-                    <div className={'text-[14px] font-bold md:text-xl'}>
+                <div className="bg-white border-b-2 p-6 font-sans">
+                    <Typography variant="h6" component="h2" className="mb-4">
                         Product {(orderDetailData.length)}
-                    </div>
+                    </Typography>
                     <table className="min-w-full border border-gray-200">
                         <thead>
                         <tr>
                             {data[0].map((header, index) => (
                                 <th key={index}
-                                    className=" bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">
+                                    className=" bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left font-small">
                                     {header}
                                 </th>
                             ))}
@@ -275,13 +239,13 @@ function OrderDetails() {
                         <tbody>
                         {orderDetailData.map((row, rowIndex) => (
                             <tr key={rowIndex}>
-                                <td className='flex items-center text-[12px] md:text-[18px]'>
-                                    <img className="md:w-20 md:h-20 w-8 h-8 " src={row.image} alt="temp"/>
+                                <td className='flex items-center'>
+                                    <img className="w-20 h-20" src={row.image} alt="temp"/>
                                     {row.name}
                                 </td>
-                                <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.price}</td>
-                                <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.quantity}</td>
-                                <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.subTotal}</td>
+                                <td className='pl-3'>{row.price}</td>
+                                <td className='pl-3'>{row.quantity}</td>
+                                <td className='pl-3'>{row.subTotal}</td>
                             </tr>
                         ))}
                         </tbody>
@@ -289,33 +253,33 @@ function OrderDetails() {
                 </div>
 
                 {/* Billing and Shipping Section */}
-                <div className="bg-white border-b-2 p-2 md:p-6 mb-0">
-                    <div className="md:grid md:grid-cols-3 md:gap-4">
+                <div className="bg-white border-b-2 p-6 mb-0">
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
-                            <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Billing Address</div>
-                            <div className='text-[14px] md:text-[18px]'>Kevin Gilbert </div>
-                            <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
+                            <Typography variant="h6" className='pb-4'>Billing Address</Typography>
+                            <Typography variant="body2" className='pb-2'>Kevin Gilbert </Typography>
+                            <Typography variant="body2" className='text-[#5F6C72]'>
                                 East Tejturi Bazar, Ward No. 04, Road No. 15, <br/>
                                 Dhaka-1208, Bangladesh <br/>
                                 Phone Number: +202-555-0118 <br/>
                                 Email: kevin.gilbert@gmail.com
-                            </div>
+                            </Typography>
                         </div>
                         <div>
-                            <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Shipping Address</div>
-                            <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
-                            <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
-                                <a href="">{address}</a> <br/>
-                                {city + ', ' + state } <br/>
+                            <Typography variant="h6" className='pb-4'>Shipping Address</Typography>
+                            <Typography variant="body2" className='pb-2'>Kevin Gilbert </Typography>
+                            <Typography variant="body2" className='text-[#5F6C72]'>
+                                East Tejturi Bazar, Ward No. 04, Road No. 15, <br/>
+                                Dhaka-1208, Bangladesh <br/>
                                 Phone Number: +202-555-0118 <br/>
                                 Email: kevin.gilbert@gmail.com
-                            </div>
+                            </Typography>
                         </div>
                         <div>
-                            <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Order Notes</div>
-                            <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
+                            <Typography variant="h6" className='pb-4'>Order Notes</Typography>
+                            <Typography variant="body2" className='text-[#5F6C72]'>
                                 Some notes about the order such as special delivery instructions or other information.
-                            </div>
+                            </Typography>
                         </div>
                     </div>
                 </div>

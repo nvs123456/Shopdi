@@ -63,9 +63,6 @@ public class Product extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
-    @ManyToOne
-    @JoinColumn(name = "parent_category_id")
-    Category parentCategory;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -74,13 +71,5 @@ public class Product extends BaseEntity<Long> {
             inverseJoinColumns = @JoinColumn(name = "tag_id", nullable = false)
     )
     Set<Tag> tags = new HashSet<>();
-    public void setVariants(Set<Variant> variants) {
-        if(this.variants == null) {
-            this.variants = new HashSet<>();
-            this.variants.addAll(variants);
-            return;
-        }
-        this.variants.clear();
-        this.variants.addAll(variants);
-    }
+
 }

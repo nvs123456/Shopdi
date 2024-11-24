@@ -1,28 +1,16 @@
 import React from 'react'
-import { useState } from 'react'
-import { useAuth } from '@/routes/AuthProvider'
+
 const LoginForm = () => {
-    const [message, setMessage] = useState("");
-    const [input, setInput] = useState({
-        usernameOrEmail: "",
-        password: "",
-    });
-    // if(localStorage.getItem("site")) window.location.href = "/";
-    const auth = useAuth();
-    const handleSubmitEvent = (e) => {
-        e.preventDefault();
-        if (input.username !== "" && input.password !== "") {
-            auth.loginAction(input).then((res) => {
-                if(!res){
-                    setMessage("User not exist !");
-                }
-            })
-            return
-        }
-        alert("pleae provide a valid input");
-    };
     return (
         <>
+            {/*
+            This example requires updating your template:
+    
+            ```
+            <html class="h-full bg-white">
+            <body class="h-full">
+            ```
+          */}
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-left text-5xl font-bold leading-9 tracking-tight text-gray-900">
@@ -31,14 +19,13 @@ const LoginForm = () => {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <div className="space-y-6">
+                    <form action="#" method="POST" className="space-y-6">
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                 Username/Email address
                             </label>
                             <div className="mt-2">
                                 <input
-                                    onChange={(e) => setInput({ ...input, usernameOrEmail: e.target.value })}
                                     id="email"
                                     name="email"
                                     type="email"
@@ -55,11 +42,10 @@ const LoginForm = () => {
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                     Password
                                 </label>
-
+                                
                             </div>
                             <div className="mt-2">
                                 <input
-                                    onChange={(e) => setInput({ ...input, password: e.target.value })}
                                     id="password"
                                     name="password"
                                     type="password"
@@ -73,29 +59,26 @@ const LoginForm = () => {
 
                         <div>
                             <button
-                                onClick={handleSubmitEvent}
+                                type="submit"
                                 tabIndex={3}
                                 className="flex w-full justify-center rounded-md bg-yaleBlue px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Sign in
                             </button>
                         </div>
-                        <div>
-                            <p className="text-red ">{message}</p>
-                        </div>
-                    </div>
+                    </form>
 
                     <p className="mt-10 text-left text-sm text-gray-500">
                         Not a member?{' '}
-                        <a href="/buyer/signup" className="font-semibold leading-6 text-orange-600 hover:text-orange-400">
+                        <a href="#" className="font-semibold leading-6 text-orange-600 hover:text-orange-400">
                             Create an account
                         </a>
                     </p>
                     <div className="text-sm">
-                        <a href="/forget" tabIndex={4} className="font-semibold text-indigo-600 hover:text-indigo-500">
-                            Forgot password?
-                        </a>
-                    </div>
+                                    <a href="#" tabIndex={4} className="font-semibold text-indigo-600 hover:text-indigo-500">
+                                        Forgot password?
+                                    </a>
+                                </div>
                 </div>
             </div>
         </>

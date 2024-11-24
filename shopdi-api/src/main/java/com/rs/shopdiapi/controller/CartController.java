@@ -2,12 +2,7 @@ package com.rs.shopdiapi.controller;
 
 import com.rs.shopdiapi.domain.dto.request.CartItemRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
-import com.rs.shopdiapi.domain.dto.response.CartItemResponse;
-import com.rs.shopdiapi.domain.dto.response.CartResponse;
-import com.rs.shopdiapi.domain.entity.Cart;
-
 import com.rs.shopdiapi.domain.entity.User;
-import com.rs.shopdiapi.mapper.CartMapper;
 import com.rs.shopdiapi.service.CartItemService;
 import com.rs.shopdiapi.service.CartService;
 import com.rs.shopdiapi.service.UserService;
@@ -34,7 +29,7 @@ public class CartController {
     CartService cartService;
     CartItemService cartItemService;
     UserService userService;
-    CartMapper cartMapper;
+
     @GetMapping
     public ApiResponse<?> getCart() {
         Long userId = userService.getCurrentUser().getId();
@@ -56,12 +51,8 @@ public class CartController {
     @PostMapping("/add-item")
     public ApiResponse<?> addItemToCart(@RequestBody CartItemRequest request) {
         Long userId = userService.getCurrentUser().getId();
-        // return ApiResponse.builder()
-        //         .result(cartItemService.addOrUpdateCartItem(userId, request))
-        //         .build();
-        String response =cartItemService.addOrUpdateCartItem(userId, request);
         return ApiResponse.builder()
-                .result(response)
+                .result(cartItemService.addOrUpdateCartItem(userId, request))
                 .build();
     }
 
