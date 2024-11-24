@@ -60,61 +60,61 @@
     "orderTotal": 300
   },
   {
-    "id": 11,
+    "id": 1,
     "status": "Completed",
     "orderDate": "2021-10-01",
     "orderTotal": 100
   },
   {
-    "id": 12,
+    "id": 2,
     "status": "In progress",
     "orderDate": "2021-10-02",
     "orderTotal": 200
   },
   {
-    "id": 13,
+    "id": 3,
     "status": "Cancelled",
     "orderDate": "2021-10-03",
     "orderTotal": 300
   },
   {
-    "id": 14,
+    "id": 4,
     "status": "Completed",
     "orderDate": "2021-10-01",
     "orderTotal": 100
   },
   {
-    "id": 15,
+    "id": 5,
     "status": "In progress",
     "orderDate": "2021-10-02",
     "orderTotal": 200
   },
   {
-    "id": 16,
+    "id": 6,
     "status": "Cancelled",
     "orderDate": "2021-10-03",
     "orderTotal": 300
   },
   {
-    "id": 17,
+    "id": 7,
     "status": "Completed",
     "orderDate": "2021-10-01",
     "orderTotal": 100
   },
   {
-    "id": 18,
+    "id": 8,
     "status": "In progress",
     "orderDate": "2021-10-02",
     "orderTotal": 200
   },
   {
-    "id": 19,
+    "id": 9,
     "status": "Cancelled",
     "orderDate": "2021-10-03",
     "orderTotal": 300
   },
   {
-    "id": 20,
+    "id": 10,
     "status": "Cancelled",
     "orderDate": "2021-10-03",
     "orderTotal": 300

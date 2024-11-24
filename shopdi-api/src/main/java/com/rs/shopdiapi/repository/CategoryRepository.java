@@ -18,6 +18,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSp
     Optional<Category> findByName(String name);
 
     List<Category> findAllByParentCategoryIsNull();
-    @Query("SELECT c FROM Category c WHERE c.parentCategory = :parentCategory")
-    List<Category> findAllByParentCategory(@Param("parentCategory") Category parentCategory);
 }

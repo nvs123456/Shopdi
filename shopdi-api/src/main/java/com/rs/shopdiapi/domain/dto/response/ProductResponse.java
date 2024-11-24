@@ -21,7 +21,6 @@ public class ProductResponse {
     Long productId;
     String productImage;
     String productName;
-
     int rating;
     int reviewCount;
     BigDecimal price;

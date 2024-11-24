@@ -37,7 +37,7 @@ public class OrderItem extends BaseEntity<Long> {
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
-    Seller seller;
+    User seller;
 
     @Enumerated(EnumType.STRING)
     OrderItemStatusEnum orderItemStatus = OrderItemStatusEnum.PENDING;
