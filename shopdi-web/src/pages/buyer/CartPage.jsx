@@ -9,69 +9,82 @@ export default function CartPage({ CartId }) {
     useEffect(() => {
         GET("cart").then((res) => {
             if (res.code === "OK") {
-                // setProductsInCart(res.result.cartItems)
-                setProductsInCart({
-                    "sellerGroups": [
-                        {
-                            "sellerId": "SG123",
-                            "sellerName": "Shop Name 1",
-                            "cartItems": [
-                                {
-                                    "cartItemId": "CI123",
-                                    "productId": "P123",
-                                    "productName": "Product 1",
-                                    "productImage": "https://example.com/image1.jpg",
-                                    "variant": "Variant 1",
-                                    "quantity": 2,
-                                    "price": 19.99
-                                },
-                                {
-                                    "cartItemId": "CI456",
-                                    "productId": "P456",
-                                    "productName": "Product 2",
-                                    "productImage": "https://example.com/image2.jpg",
-                                    "variant": "Variant 2",
-                                    "quantity": 1,
-                                    "price": 49.99
-                                }
-                            ]
-                        },
-                        {
-                            "sellerId": "SG456",
-                            "sellerName": "Shop Name 2",
-                            "cartItems": [
-                                {
-                                    "cartItemId": "CI789",
-                                    "productId": "P789",
-                                    "productName": "Product 3",
-                                    "productImage": "https://example.com/image3.jpg",
-                                    "variant": "Variant 3",
-                                    "quantity": 3,
-                                    "price": 9.99
-                                },
-                                {
-                                    "cartItemId": "CI012",
-                                    "productId": "P012",
-                                    "productName": "Product 4",
-                                    "productImage": "https://example.com/image4.jpg",
-                                    "variant": "Variant 4",
-                                    "quantity": 1,
-                                    "price": 29.99
-                                }
-                            ]
-                        }
-                    ]
-                })
+                let tmp = res.result
+                // let tmp = {
+                //     "sellerGroups": [
+                //         {
+                //             "sellerId": "SG123",
+                //             "sellerName": "Shop Name 1",
+                //             "cartItems": [
+                //                 {
+                //                     "cartItemId": "CI123",
+                //                     "productId": "P123",
+                //                     "productName": "Product 1",
+                //                     "productImage": "https://example.com/image1.jpg",
+                //                     "variant": "Variant 1",
+                //                     "quantity": 2,
+                //                     "price": 19.99
+                //                 },
+                //                 {
+                //                     "cartItemId": "CI456",
+                //                     "productId": "P456",
+                //                     "productName": "Product 2",
+                //                     "productImage": "https://example.com/image2.jpg",
+                //                     "variant": "Variant 2",
+                //                     "quantity": 1,
+                //                     "price": 49.99
+                //                 }
+                //             ]
+                //         },
+                //         {
+                //             "sellerId": "SG456",
+                //             "sellerName": "Shop Name 2",
+                //             "cartItems": [
+                //                 {
+                //                     "cartItemId": "CI789",
+                //                     "productId": "P789",
+                //                     "productName": "Product 3",
+                //                     "productImage": "https://example.com/image3.jpg",
+                //                     "variant": "Variant 3",
+                //                     "quantity": 3,
+                //                     "price": 9.99
+                //                 },
+                //                 {
+                //                     "cartItemId": "CI012",
+                //                     "productId": "P012",
+                //                     "productName": "Product 4",
+                //                     "productImage": "https://example.com/image4.jpg",
+                //                     "variant": "Variant 4",
+                //                     "quantity": 1,
+                //                     "price": 29.99
+                //                 }
+                //             ]
+                //         }
+                //     ]
+                // }
+                setProductsInCart(tmp)
+                setProductsInCart(tmp);
+                let tmp2 = [...tmp.sellerGroups]
+                for(let i = 0; i < tmp2.length; i++){
+                    for(let j = 0; j < tmp2[i].cartItems.length; j++){
+                        tmp2[i].cartItems[j]["isSelected"] = false
+                    }
+                }
+                console.log(tmp2)
+                setSelectedProducts(tmp2)
+
             }
         })
     }, [])
     const [productsInCart, setProductsInCart] = useState([]);
-    const onDelete = (id) => {
-        DELETE("cart/items/" + id).then((res) => {
+    const onDelete = (cartItemId) => {
+        DELETE("cart/items/" + cartItemId).then((res) => {
             if (res.code === "OK") {
-                let l = productsInCart.filter((item) => item.cartItemId !== id);
-                setProductsInCart(l);
-                alert("Delete successfully")
+                // GET("cart").then((res) => {
+                //     if (res.code === "OK") {
+                //         setProductsInCart(res.result)
+                //     }
+                // })
             }
         })
 
@@ -79,14 +92,16 @@ export default function CartPage({ CartId }) {
 
     const [total, setTotal] = useState(0);
     const [selectedProducts, setSelectedProducts] = useState([]);
-    const onSelect = (i) => {
-        if (selectedProducts.includes(i)) {
-            setSelectedProducts(selectedProducts.filter((item) => item.id !== i.id));
-        } else {
-            let l = selectedProducts;
-            l.push(i);
-            setSelectedProducts(l);
+    const onSelect = (cartItemId) => {
+        let tmp = [...selectedProducts]
+        for(let i = 0; i < tmp.length; i++){
+            for(let j = 0; j < tmp[i].cartItems.length; j++){
+                if(tmp[i].cartItems[j].cartItemId === cartItemId){
+                    tmp[i].cartItems[j]["isSelected"] = !tmp[i].cartItems[j]["isSelected"]
+                }
+            }
         }
+        setSelectedProducts(tmp)
     }
     return (
         <>

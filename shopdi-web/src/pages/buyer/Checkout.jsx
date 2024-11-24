@@ -8,52 +8,39 @@ import { POST } from '../../api/GET'
 export default function Checkout({ ProductList }) {
     let location = useLocation()
     let tmp = location.state.selectedProducts;
-    let productsOfSeller = []
-    for (let i = 0; i < tmp.length; i++) {
-        if (productsOfSeller.find((item) => item.sellerId === tmp[i].sellerId) === undefined) {
-            productsOfSeller.push({ sellerId: tmp[i].sellerId, products: [tmp[i]] })
-        } else {
-            productsOfSeller.find((item) => item.sellerId === tmp[i].sellerId)?.products.push(tmp[i])
-        }
-    }
+
     const addresses = []
-    for (let i = 0; i < 8; i++) {
-        let t = {
-            id: i,
-            firstName: "Nguyen",
-            lastName: "Van Som" + i,
-            address: "dia chi cua nguoi dung " + i,
-            phone: `${i}${i}${i}${i}${i}${i}`
-        }
-        addresses.push(t)
-    }
-    const [currentAddress, setCurrentAddress] = useState(addresses[0])
+
+    const [currentAddress, setCurrentAddress] = useState(addresses[0] ? addresses[0] : null)
+    const [allAddress, setAllAddress] = useState([])
     const [openAddress, setOpenAddress] = useState(false)
     const onClose = () => {
         setOpenAddress(!openAddress)
     }
     return (
         <div>
-            {openAddress && <AddressSelection onClose={onClose} addresses={addresses} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />}
+            {openAddress && <AddressSelection onClose={onClose} addresses={allAddress} setAllAddress={setAllAddress} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />}
             <div className={`bg-white ${(openAddress ? "brightness-50" : "")}`}>
                 <div className="flex flex-col gap-4 p-8 bg-gray-100 mr-40 ml-40">
                     <div className='border-b-2 border-gray-400 '>
                         <div className='text-xl text-red font-bold'>Dia chi nhan hang</div>
-                        <div>{`
+                        <div>{currentAddress === null ? "Chưa có địa chỉ" : `
                          ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}`}</div>
-                        <div className="text-blue-500 hover:underline" onClick={() => setOpenAddress(!openAddress)}>Thay doi</div>
+                        <div className="text-blue-500 hover:underline" onClick={() => setOpenAddress(!openAddress)}>Thay đổi</div>
                     </div>
                     <div className="header flex flex-row w-full border-b-2 border-gray-400 pb-4">
-                        <span className="grow pl-12">Ten san pham</span>
-                        <span className="w-40 text-center">Gia</span>
-                        <span className="w-40 text-center">So luong</span>
-                        <span className="w-40 text-center">Thanh tien</span>
+                        <span className="grow pl-12">Tên sản phẩm   </span>
+                        <span className="w-40 text-center">Giá</span>
+                        <span className="w-40 text-center">Số lượng</span>
+                        <span className="w-40 text-center">Thành tiền</span>
                     </div>
                     <div>
-                        {productsOfSeller.map((item) =>
+                        {tmp.map((item) =>
                             <div key={item.sellerId}>
-                                <div className="text-xl font-bold">Shop : {item.products[0].sellerName}</div>
-                                {item.products.map((item) => <OrderItem key={item.cartItemId} item={item} />)}
+                                <div className="text-xl font-bold">Cửa hàng  : {item.sellerName}</div>
+                                {item.cartItems.map((item) => {
+                                    if (item.isSelected) return <OrderItem key={item.cartItemId} item={item} />
+                                })}
                             </div>)}
                     </div>
                     <div className="flex flex-row">
@@ -62,7 +49,15 @@ export default function Checkout({ ProductList }) {
                         <div className="text-left text-xl w-80">
                             <div className="flex flex-row justify-between">
                                 <p className='inline-block'>Tiền hàng :</p>
-                                <p className='inline-block'>{tmp.reduce((a, b) => a + b.price * b.quantity, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
+                                <p className='inline-block'>{
+                                    tmp.reduce((total, current) => {
+                                        for (let i = 0; i < current.cartItems.length; i++) {
+                                            if (current.cartItems[i].isSelected) {
+                                                total += current.cartItems[i].price * current.cartItems[i].quantity
+                                            }
+                                        }
+                                        return total
+                                    }, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className="flex flex-row justify-between mb-4 border-b-2 border-gray-400">
                                 <p className='inline-block'>Phí vận chuyển :</p>
@@ -70,15 +65,23 @@ export default function Checkout({ ProductList }) {
                             </div>
                             <div className="flex flex-row justify-between mb-4">
                                 <p className='inline-block'>Tổng tiền :</p>
-                                <p className='inline-block'>{tmp.reduce((a, b) => a + b.price * b.quantity, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
+                                <p className='inline-block'>{
+                                    tmp.reduce((total, current) => {
+                                        for (let i = 0; i < current.cartItems.length; i++) {
+                                            if (current.cartItems[i].isSelected) {
+                                                total += current.cartItems[i].price * current.cartItems[i].quantity
+                                            }
+                                        }
+                                        return total
+                                    }, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div>
                                 <button onClick={() => {
-                                    for (let i = 0; i < productsOfSeller.length; i++) {
-                                        
+                                    for (let i = 0; i < tmp.length; i++) {
+
                                         POST('orders/checkout', {
-                                            "addressId": 2,
-                                            "selectedCartItemIds": productsOfSeller[i].products.map((item) => item.cartItemId),
+                                            "addressId": 1,
+                                            "selectedCartItemIds": tmp[i].cartItems.map((item) => item.cartItemId),
                                         }).then((res) => {
                                             if (res.code === "OK") {
                                                 alert("Dat hang thanh cong")

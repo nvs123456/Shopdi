@@ -14,41 +14,41 @@ export default function ProductDetail() {
     const [product, setProduct] = useState({})
     useEffect(() => {
         GET(`products/${id}`).then((data) => {
-            data = {
-                code: "OK",
-                result: {
-                    id: 1,
-                    productName: "Áo thun nam",
-                    description: "Áo thun nam 100% cotton",
-                    price: 100000,
-                    sold: 1000,
-                    rating: 4.5,
-                    reviewCount: 100,
-                    discountPercent: 0,
-                    variants: [
-                        {
-                            id: 1,
-                            variantDetail: '[{"type":"size","value":"M"},{"type":"color","value":"red"}]',
-                            quantity: 10
-                        },
-                        {
-                            id: 1,
-                            variantDetail: '[{"type":"size","value":"M"},{"type":"color","value":"blue"}]',
-                            quantity: 10
-                        },
-                        {
-                            id: 1,
-                            variantDetail: '[{"type":"size","value":"XL"},{"type":"color","value":"red"}]',
-                            quantity: 10
-                        },
-                        {
-                            id: 1,
-                            variantDetail: '[{"type":"size","value":"XL"},{"type":"color","value":"blue"}]',
-                            quantity: 10
-                        },
-                    ]
-                }
-            }
+            // data = {
+            //     code: "OK",
+            //     result: {
+            //         id: 1,
+            //         productName: "Áo thun nam",
+            //         description: "Áo thun nam 100% cotton",
+            //         price: 100000,
+            //         sold: 1000,
+            //         rating: 4.5,
+            //         reviewCount: 100,
+            //         discountPercent: 0,
+            //         variants: [
+            //             {
+            //                 id: 1,
+            //                 variantDetail: '[{"type":"size","value":"M"},{"type":"color","value":"red"}]',
+            //                 quantity: 10
+            //             },
+            //             {
+            //                 id: 1,
+            //                 variantDetail: '[{"type":"size","value":"M"},{"type":"color","value":"blue"}]',
+            //                 quantity: 10
+            //             },
+            //             {
+            //                 id: 1,
+            //                 variantDetail: '[{"type":"size","value":"XL"},{"type":"color","value":"red"}]',
+            //                 quantity: 10
+            //             },
+            //             {
+            //                 id: 1,
+            //                 variantDetail: '[{"type":"size","value":"XL"},{"type":"color","value":"blue"}]',
+            //                 quantity: 10
+            //             },
+            //         ]
+            //     }
+            // }
             for (let i = 0; i < data.result.variants.length; i++) {
                 data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
             }
