@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
+import com.rs.shopdiapi.domain.dto.request.ProductRequest.VariantDetail;
 import com.rs.shopdiapi.domain.dto.request.ProductFilterRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductDetailResponse;
@@ -260,5 +261,11 @@ public class ProductServiceImpl implements ProductService {
                 .items(products)
                 .build();
     }
+
+@Override
+public PageResponse<?> findProductByParentCategory(String category, int pageNo, int pageSize) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductByParentCategory'");
+}
 
 }
