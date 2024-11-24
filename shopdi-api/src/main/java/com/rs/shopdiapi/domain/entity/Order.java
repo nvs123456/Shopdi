@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -39,11 +40,12 @@ public class Order extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;
-
+    
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne
+
     @JoinColumn(name = "shipping_address_id", nullable = false)
     private Address shippingAddress;
 //    @Embedded
@@ -56,4 +58,10 @@ public class Order extends BaseEntity<Long> {
     String orderNotes;
 
     LocalDateTime deliveryDate;
+    public List<OrderItem> getOrderItems() {
+        if(orderItems == null) {            
+            orderItems = new ArrayList<>();
+        }
+        return orderItems;
+    }
 }
