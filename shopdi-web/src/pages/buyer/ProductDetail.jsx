@@ -14,6 +14,41 @@ export default function ProductDetail() {
     const [product, setProduct] = useState({})
     useEffect(() => {
         GET(`products/${id}`).then((data) => {
+            data = {
+                code: "OK",
+                result: {
+                    id: 1,
+                    productName: "Áo thun nam",
+                    description: "Áo thun nam 100% cotton",
+                    price: 100000,
+                    sold: 1000,
+                    rating: 4.5,
+                    reviewCount: 100,
+                    discountPercent: 0,
+                    variants: [
+                        {
+                            id: 1,
+                            variantDetail: '[{"type":"size","value":"M"},{"type":"color","value":"red"}]',
+                            quantity: 10
+                        },
+                        {
+                            id: 1,
+                            variantDetail: '[{"type":"size","value":"M"},{"type":"color","value":"blue"}]',
+                            quantity: 10
+                        },
+                        {
+                            id: 1,
+                            variantDetail: '[{"type":"size","value":"XL"},{"type":"color","value":"red"}]',
+                            quantity: 10
+                        },
+                        {
+                            id: 1,
+                            variantDetail: '[{"type":"size","value":"XL"},{"type":"color","value":"blue"}]',
+                            quantity: 10
+                        },
+                    ]
+                }
+            }
             for (let i = 0; i < data.result.variants.length; i++) {
                 data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
             }
@@ -25,7 +60,7 @@ export default function ProductDetail() {
                     v.push({ type: data.result.variants[0].variantDetail[i].type, value: null })
                 }
                 setCurrentSelectedVariant(v)
-            }else{
+            } else {
                 setIsBuyNowWithoutAttribute(false)
             }
             setIsLoading(false)
@@ -143,10 +178,10 @@ export default function ProductDetail() {
                                     {[1, 2, 3, 4, 5].map((i) => i < Math.round(product.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "20px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "20px" }} />)}
                                 </div>
                                 <div className='border-r-2 pr-4 border-grey'>
-                                    {1000} đánh giá
+                                    {product.reviewCount} đánh giá
                                 </div>
                                 <div>
-                                    {1000} đã bán
+                                    {product.sold} đã bán
                                 </div>
                             </div>
                             <div>

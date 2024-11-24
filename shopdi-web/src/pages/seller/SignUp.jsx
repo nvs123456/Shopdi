@@ -19,13 +19,7 @@ const SellerSignUp = () => {
     const signUp = (e) => {
         e.preventDefault();
         POST(`seller/register`, form).then((res) => {
-            console.log(res)
-            if (res.code === 'OK') {
-                localStorage.clear()
-                navigate("/login")
-            }else {
-                setMessage(res.message)
-            }
+            localStorage.setItem("Authorization", res.token);
         })
     }
     return (

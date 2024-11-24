@@ -30,7 +30,7 @@ export default function AddProduct() {
         price: 0,
         discountPercent: 0,
 
-        brand: '',
+        Brand: '',
 
         // Variant
         variantDetails: [],
@@ -41,7 +41,7 @@ export default function AddProduct() {
         tagNames: [],
 
         // Status
-        productStatus: 'PUBLISHED',
+        status: 'PUBLISHED',
     })
     const [currentCategory, setCurrentCategory] = useState({parent: '', child: ''});
     const [variants, setVariants] = useState([]);
@@ -166,7 +166,7 @@ export default function AddProduct() {
                         <div>
                             <label className='block'>Status</label>
                             <select className='border-2 border-gray-400 w-60 h-10 rounded' onChange={(e) => {
-                                setProductForm({ ...productForm, productStatus: e.target.value })
+                                setProductForm({ ...productForm, status: e.target.value })
                             }}>
                                 <option value={"PUBLISHED"}>PUBLISHED</option>
                                 <option value={"DRAFT"}>DRAFT</option>

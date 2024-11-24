@@ -1,7 +1,7 @@
 import React from "react";
 import CartItem from "./CartItem";
 import { useState } from "react";
-export default function Cart({ productInCart, selectedProducts, onSelect, setTotal, total, onDelete }) {
+export default function Cart({ sellerGroups, selectedProducts, onSelect, setTotal, total, onDelete }) {
 
     return (
         <div className="flex flex-col w-full font-sans min-h-screen">
@@ -14,7 +14,15 @@ export default function Cart({ productInCart, selectedProducts, onSelect, setTot
                 <span className="w-40 text-center">Thành tiền</span>
                 <span className="w-40 text-center">Thao tác</span>
             </div>
-            {productInCart && productInCart.map((item) => <div key={item.cartItemId} className="border-b-2 border-gray-200 py-4"><CartItem onSelect={onSelect} selectedProducts={selectedProducts} onDelete={onDelete} item={item} setTotal={setTotal} total={total} /></div>)}
+            {sellerGroups && sellerGroups.map((seller) =>
+                <div key={seller.sellerId} className="border-b-8 border-pumpkin py-4">
+                    <div>{seller.sellerName}</div>
+                    {seller.cartItems && seller.cartItems.map((item) =>
+                        <div key={item.cartItemId} className="border-b-2 border-gray-200 py-4">
+                            <CartItem onSelect={onSelect} selectedProducts={selectedProducts} onDelete={onDelete} item={item} setTotal={setTotal} total={total} />
+                        </div>
+                    )}
+                </div>)}
         </div>
     )
 }

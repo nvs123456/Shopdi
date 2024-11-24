@@ -3,10 +3,15 @@
  * --> Chieu dai:15, Mau muc:den
  */
 export const JSONToData = (json) => {
-    const data = JSON.parse(json);
-    let ans = "";
-    for (let i = 0; i < data.length; i++) {
-        ans = ans + data[i].type + ":" + data[i].value + ", ";
+    try {
+        const data = JSON.parse(json);
+        let ans = "";
+        for (let i = 0; i < data.length; i++) {
+            ans = ans + data[i].type + ":" + data[i].value + ", ";
+        }
+        return ans.substring(0, ans.length - 2);
+    } catch (error) {
+        return json
     }
-    return ans.substring(0, ans.length - 2);
+
 }
