@@ -45,7 +45,7 @@ public class Order extends BaseEntity<Long> {
 
     @ManyToOne
     @JoinColumn(name = "shipping_address_id", nullable = false)
-    private Address shippingAddress;
+    Address shippingAddress;
 //    @Embedded
 //    PaymentDetails paymentDetails = new PaymentDetails();
     BigDecimal totalPrice;

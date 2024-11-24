@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,23 +24,20 @@ public class AddressController {
     UserService userService;
     AddressService addressService;
 
-    @PostMapping("/billing")
-    public ApiResponse<?> addBillingAddress(@RequestBody @Valid AddressRequest billingAddressRequest) {
-        Long userId = userService.getCurrentUser().getId();
-        Address billingAddress = addressService.addAddress(userId, billingAddressRequest, true);
-        return ApiResponse.builder()
-                .result(billingAddress)
-                .message("Billing address added successfully")
-                .build();
-    }
-
     @PostMapping("/shipping")
     public ApiResponse<?> addShippingAddress(@RequestBody @Valid AddressRequest shippingAddressRequest) {
         Long userId = userService.getCurrentUser().getId();
-        Address shippingAddress = addressService.addAddress(userId, shippingAddressRequest, false);
+
         return ApiResponse.builder()
-                .result(shippingAddress)
-                .message("Shipping address added successfully")
+                .result(addressService.addAddress(userId, shippingAddressRequest))
+                .build();
+    }
+
+    @GetMapping("/shipping")
+    public ApiResponse<?> getShippingAddress() {
+        Long userId = userService.getCurrentUser().getId();
+        return ApiResponse.builder()
+                .result(addressService.getUserAddress(userId))
                 .build();
     }
 }

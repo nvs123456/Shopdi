@@ -1,23 +1,25 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
+import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.SimpleSellerResponse;
 import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.Role;
 import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.exception.AppException;
-import com.rs.shopdiapi.mapper.SellerMapper;
+import com.rs.shopdiapi.repository.OrderItemRepository;
 import com.rs.shopdiapi.repository.RoleRepository;
 import com.rs.shopdiapi.repository.SellerRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.SellerService;
-import com.rs.shopdiapi.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,25 +29,14 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SellerServiceImpl implements SellerService {
     SellerRepository sellerRepository;
     UserRepository userRepository;
-    SellerMapper sellerMapper;
     RoleRepository roleRepository;
+    OrderItemRepository orderItemRepository;
 
-    @Override
-    public Seller createSeller(Seller seller) {
-
-        return null;
-    }
-
-    @Override
-    public Seller addProducts(Integer sellerId, Product product) {
-        return null;
-    }
 
     @Override
     public Seller findByUsernameAndPassword(String username, String password) {
@@ -64,8 +55,16 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public List<Seller> viewAllSeller() {
-        return List.of();
+    public PageResponse<?> getAllSeller(int pageNo, int pageSize) {
+        Page<Seller> page = sellerRepository.findAll(PageRequest.of(0, 10));
+        List<SimpleSellerResponse> sellers = page.map(this::toSimpleSellerResponse).toList();
+
+        return PageResponse.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPages(page.getTotalPages())
+                .items(sellers)
+                .build();
     }
 
     @Override
@@ -132,5 +131,16 @@ public class SellerServiceImpl implements SellerService {
 
         sellerRepository.save(seller);
         return "Seller registered successfully";
+    }
+
+    private SimpleSellerResponse toSimpleSellerResponse(Seller seller) {
+        return SimpleSellerResponse.builder()
+                .id(seller.getId())
+                .shopName(seller.getShopName())
+                .profileImage(seller.getProfileImage())
+                .status(seller.getUser().getStatus().toString())
+                .totalProducts(seller.getProducts().size())
+                .totalRevenue(orderItemRepository.calculateRevenueBySeller(seller.getId()))
+                .build();
     }
 }

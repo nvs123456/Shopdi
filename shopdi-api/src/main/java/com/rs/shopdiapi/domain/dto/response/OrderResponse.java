@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -16,12 +17,11 @@ public class OrderResponse {
     Long orderId;
     BigDecimal totalPrice;
     String orderStatus;
-    LocalDateTime deliveryDate;
+    Date deliveryDate;
 
     List<OrderItemResponse> orderItems;
 
     AddressResponse shippingAddress;
-    AddressResponse billingAddress;
 
     String orderNotes;
 }
