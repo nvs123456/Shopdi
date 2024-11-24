@@ -10,7 +10,7 @@ public interface CartService {
 
     CartResponse getUserCart(Long userId);
 
-    BigDecimal calculateTotalPrice(Long cartId);
+//    BigDecimal calculateTotalPrice(Long cartId);
 
     Cart updateCartSummary(Long cartId);
 }

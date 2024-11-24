@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -37,13 +38,16 @@ import java.util.List;
 @Table(name = "orders")
 public class Order extends BaseEntity<Long> {
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne
-    Address shippingAddress;
+
+    @JoinColumn(name = "shipping_address_id", nullable = false)
+    private Address shippingAddress;
 //    @Embedded
 //    PaymentDetails paymentDetails = new PaymentDetails();
     BigDecimal totalPrice;

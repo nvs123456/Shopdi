@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
     public boolean verifyUser(String token) {
         User user = userRepository.findByVerificationCode(token);
 
-        if (user == null || user.isEnabled()) {
+        if (user == null) {
             return false;
         } else {
             user.setVerificationCode(null);

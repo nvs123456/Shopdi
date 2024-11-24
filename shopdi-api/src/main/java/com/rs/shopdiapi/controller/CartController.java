@@ -5,6 +5,7 @@ import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.CartItemResponse;
 import com.rs.shopdiapi.domain.dto.response.CartResponse;
 import com.rs.shopdiapi.domain.entity.Cart;
+
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.mapper.CartMapper;
 import com.rs.shopdiapi.service.CartItemService;
@@ -12,9 +13,7 @@ import com.rs.shopdiapi.service.CartService;
 import com.rs.shopdiapi.service.UserService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,14 +43,14 @@ public class CartController {
                 .build();
     }
 
-    @GetMapping("/total-price")
-    public ApiResponse<?> calculateTotalPrice() {
-        User user = userService.getCurrentUser();
-        BigDecimal totalPrice = cartService.calculateTotalPrice(user.getCart().getId());
-        return ApiResponse.builder()
-                .result(totalPrice)
-                .build();
-    }
+//    @GetMapping("/total-price")
+//    public ApiResponse<?> calculateTotalPrice() {
+//        User user = userService.getCurrentUser();
+//        BigDecimal totalPrice = cartService.calculateTotalPrice(user.getCart().getId());
+//        return ApiResponse.builder()
+//                .result(totalPrice)
+//                .build();
+//    }
 
 
     @PostMapping("/add-item")

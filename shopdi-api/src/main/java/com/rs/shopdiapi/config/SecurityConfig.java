@@ -57,6 +57,11 @@ public class SecurityConfig {
                                 "swagger-ui/**",
                                 "swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/auth/verify-email"
+                        ).permitAll(
+                        )
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

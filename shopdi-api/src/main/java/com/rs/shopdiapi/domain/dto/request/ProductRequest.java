@@ -21,11 +21,8 @@ import jakarta.validation.constraints.NotBlank;
 public class ProductRequest {
     String productName;
     String description;
-
     BigDecimal price;
-
     String Brand;
-
     List<VariantDetail> variantDetails;
 
     String categoryName;

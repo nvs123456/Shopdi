@@ -58,9 +58,8 @@ public class CartItemServiceImpl implements CartItemService {
         BigDecimal updatedPrice = product.getPrice().multiply(BigDecimal.valueOf(existingCartItem.getQuantity()));
         existingCartItem.setPrice(updatedPrice);
 
-        cartService.updateCartSummary(cart.getId());
-
         cartItemRepository.save(existingCartItem);
+        cartService.updateCartSummary(cart.getId());
         return "Cart item updated successfully";
     }
 
@@ -75,9 +74,8 @@ public class CartItemServiceImpl implements CartItemService {
                 .price(price)
                 .build();
 
-        cartService.updateCartSummary(cart.getId());
-
         cartItemRepository.save(newCartItem);
+        cartService.updateCartSummary(cart.getId());
         return "Cart item added successfully";
     }
 
@@ -124,13 +122,16 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public String clearCart(Long userId) {
         Cart cart = cartRepository.findByUserId(userId);
+        if (cart == null) {
+            throw new AppException(ErrorCode.CART_NOT_FOUND);
+        }
 
-        cartItemRepository.deleteAll(cart.getCartItems());
+        cart.getCartItems().clear();
 
         cart.setTotalItems(0);
         cart.setTotalPrice(BigDecimal.ZERO);
-        cartRepository.save(cart);
 
+        cartRepository.save(cart);
         return "Cart cleared successfully.";
     }
 }
