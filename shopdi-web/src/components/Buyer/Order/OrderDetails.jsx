@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {styled} from "@mui/material/styles";
 import axios from 'axios';
 
@@ -8,16 +8,12 @@ import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
-import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
+import CheckIcon from '@mui/icons-material/Check';
 import StepConnector, {stepConnectorClasses,} from "@mui/material/StepConnector";
-import orderDetailData from '../../../data/orderDetailData.json';
-import { useParams } from 'react-router-dom';
-import { configureStore } from '@reduxjs/toolkit';
+import {useParams} from 'react-router-dom';
+import Review from "../../../pages/buyer/Review.jsx";
+import FiveStar from "../Review/FiveStar.jsx";
+import {Textarea} from "@headlessui/react";
 
 const steps = ['Order Placed', 'Packaging', 'On The Road', 'Delivered'];
 const icons = [<InventoryOutlinedIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
@@ -48,8 +44,13 @@ const CustomisedConnector = styled(StepConnector)(({theme}) => ({
 }));
 
 function OrderDetails() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [productIdToReview, setProductIdToReview] = useState('');
+    const [starRating, setStarRating] = useState(0);
+    const [review, setReview] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const {id} = useParams();
-    const [orderDetail,setOrderDetail] = useState({});
+    const [orderDetail, setOrderDetail] = useState({});
     const config = {
         headers: {
             'Content-Type': 'application/json',
@@ -57,29 +58,96 @@ function OrderDetails() {
             'Access-Control-Allow-Origin': 'http://localhost:5173',
         }
     };
+    const handleOpenModal = (productId) => {
+        setIsModalOpen(true);
+        setProductIdToReview(productId);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+    async function handleCancelOrder(orderId) {
+        try {
+            const response = await axios.put(
+                `https://localhost:8080/orders/cancel/${orderId}`,
+                null,
+                config
+            );
+            console.log('Data updated:', response.data);
+        } catch (error) {
+            if (error.response) {
+                console.error('Response error:', error.response.data);
+            } else if (error.request) {
+                console.error('Request error:', error.request);
+            } else {
+                console.error('Error:', error.message);
+            }
+        }
+    }
+
+    async function handleUploadReview() {
+        try {
+            const response = await axios.post(
+                `https://localhost:8080/reviews/product/${productIdToReview}`,
+                {
+                    rating: starRating,
+                    review: review,
+                },
+                config
+            );
+            console.log('Data updated:', response.data);
+        } catch (error) {
+            if (error.response) {
+                console.error('Response error:', error.response.data);
+            } else if (error.request) {
+                console.error('Request error:', error.request);
+            } else {
+                console.error('Error:', error.message);
+            }
+        }
+    }
+    const handleRating = (index) => {
+        setStarRating(index + 1); // index bắt đầu từ 0, nên cần +1 để đúng số ngôi sao
+    };
     useEffect(() => {
         axios.get(`http://localhost:8080/orders/${id}/details`, config)
             .then((response) => {
                 if (response.data.code === 'OK') {
                     setOrderDetail(response.data.result);
-                    console.log('Order detail:', response.data.result); // Log dữ liệu chi tiết
+                    //console.log('Order detail:', response.data.result); // Log dữ liệu chi tiết
                 } else {
                     console.warn('Unexpected response:', response.data);
                 }
             })
             .catch(error => {
                 console.error('Error fetching order details:', error.response?.data || error.message);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }, [id]);
-    const status = orderDetail.status;
-    const activeStep = status === 'PENDING' ? 1 
-                        : status === 'PROCESSING' ? 3 : 4;
-    const date = orderDetail?.date;
-    const formattedDate = date ? new Date(...date).toLocaleString() : "N/A";
+
+
+    const status = orderDetail.orderStatus;
+    // const activeStep = status === 'PENDING' ? 1
+    //                     : status === 'PROCESSING' ? 3 : 4;
+    const activeStep = 4;
+    const deliveryDate = orderDetail?.deliveryDate;
+    const date = new Date(deliveryDate);
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-
+    ${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:
+    ${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
     const shippingAddress = orderDetail?.shippingAddress || {};
-    const { firstName = '', lastName = '', address = '', city = '', state = '' } = shippingAddress;
+    const {firstName = '', lastName = '', address = '', city = '', state = ''} = shippingAddress;
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>Loading...</p>
+            </div>
+        );
+    }
     return (
-        <div className="bg-[#F7FBFF] flex justify-center font-sans">
+        <div className={`'bg-[#F7FBFF] flex justify-center font-sans'}`}>
             <div className="container md:mt-10 md:mb-10 my-5 h-5/6  bg-white w-full md:w-5/6 border-collapse">
                 {/* heading section */}
                 <div className="flex justify-between items-center border-2 h-6 md:h-10 mb-6 px-0 md:px-4">
@@ -87,178 +155,182 @@ function OrderDetails() {
                         <ArrowBackIcon className="text-black" fontSize={'inherit'}/>
                         <Button><span className='text-black text-[14px] md:text-[16px]'>Order Details</span></Button>
                     </div>
-                    <Button><span className='text-[#FA8232] text-[14px] md:text-[16px]'>Leave a Rating</span></Button>
+                    {activeStep > 3 && <Button onClick={() => {
+                        handleOpenModal()
+                    }}><span className='text-[#FA8232] text-[14px] md:text-[16px]'>Leave a Rating</span></Button>}
                 </div>
                 {/* Order Details Section */}
-                <div className="bg-[#FDFAE7] border-2 border-[#F7E99E] p-3 md:p-6 w-5/6 mb-3 md:mb-6 ml-6 md:ml-20 border-collapse">
+                <div
+                    className="bg-[#FDFAE7] border-2 border-[#F7E99E] p-3 md:p-6 w-5/6 mb-3 md:mb-6 ml-6 md:ml-10 lg:ml-20 border-collapse">
                     <div className="flex justify-between items-center">
                         <div className={'text-[16px]'}>
                             Order #{orderDetail.orderId}
                         </div>
                         <div className={'text-[18px] font-bold text-celticBlue'}>
-                            ${orderDetail.total}
+                            ${orderDetail.totalPrice}
                         </div>
                     </div>
                     <div className={'text-[14px] text-darkGray pt-1.5'}>
-                        Order placed on {formattedDate.split(",")[0]} at  {formattedDate.split(",")[1]}
+                        Order placed on {formattedDate.split(" ")[0]} at {formattedDate.split(" ")[1]}
                     </div>
                 </div>
+
                 {/* <div className='ml-2 md:ml-20'>
                     <div className='text-darkGray text-[16px]'>
                         Order expected arrival: <strong>23 Jun, 2021</strong>
                     </div>
                 </div> */}
 
-                {/* Stepper for Order Status */}
-                <div className="bg-white border-b-2 p-2 md:p-6 mb-3 md:mb-6 border-collapse">
-                    <Stepper activeStep={activeStep} alternativeLabel connector={<CustomisedConnector/>}>
-                        {steps.map((label, index) => (
-                            <Step key={label}>
-                                <StepLabel
-                                    StepIconProps={{
-                                        sx: {
-                                            color: index < activeStep ? '#FF731D' : '#FFFFFF', // Color for completed steps
-                                            border: '4px solid #FF731D', // Border color
-                                            borderRadius: '50%', // Optional: make the border circular
-                                            fontSize:{xs:'22px',sm:'22px',md:'26px',lg:'26px',xl:'26px'},
-                                            '&.Mui-active': {
-                                                color: '#FF731D', // Color for the current step
+                {/* Order Progress Section */}
+                {status === 'CANCELLED' ?
+                    <div
+                        className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-20">Order
+                        Cancelled!</div>
+                    :
+                    <div className={`relative md:relative lg:relative`}>
+                        {/* Mở tab review */}
+                        {isModalOpen && (
+                            <div className={`absolute top-0 left-5 md:absolute md:top-0 md:left-32 xl:top-[-200px] xl:left-[500px]`}>
+                                <div
+                                    className='h-56 w-60 md:h-full md:w-[500px] mx-auto mb-2 border-2 border-[#E4E7E9] rounded bg-white font-sans'>
+                                    <div
+                                        className='flex items-center justify-between border-2 border-[#E4E7E9] rounded p-2 m-2'>
+                                        <h1 className='text-[14px] md:text-[16px] font-sans'>BILLING ADDRESS</h1>
+                                    </div>
+                                    <div className='h-4/6 m-1 md:m-2 text-[14px]'>
+                                        <div>
+                                            <h2 className='text-[14px] font-bold'>Rating</h2>
+                                            <div className="flex items-center mb-1 md:mb-5">
+                                                {/* <FiveStar/> */}
+                                                <div className="flex items-center space-x-1">
+                                                    {[...Array(5)].map((_, index) => (
+                                                        <svg
+                                                            key={index}
+                                                            onClick={() => handleRating(index)}
+                                                            className={`w-3 h-3 md:w-5 md:h-5 cursor-pointer ${
+                                                                index < starRating ? "text-yellow-500" : "text-gray-400"
+                                                            }`}
+                                                            aria-hidden="true"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="currentColor"
+                                                            viewBox="0 0 22 20"
+                                                        >
+                                                            <path
+                                                                d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                                                            />
+                                                        </svg>
 
-                                            },
-                                            '&.Mui-completed': {
-                                                color: '#FF731D', // Color for completed steps
-                                            },
-                                            '&.Mui-incompleted': {
-                                                color: '#FF731D', // Color for incompleted steps
-                                            },
-                                            '& .MuiStepIcon-text': {
-                                                fill: 'transparent', // Change color of the step number text
-                                            },
-                                        },
-                                    }}
+                                                    ))}
+                                                    <p className="pl-2 ms-1 text-[14px] md:text-[16px] font-medium text-gray-500 dark:text-gray-400">{starRating} Star
+                                                        Rating</p>
+                                                </div>
+                                            </div>
 
-                                >
-                                   <span className={'text-[12px] md:text-[16px]'}>{label}</span>
-                                    <span className="flex justify-center mt-2">
-                    {React.cloneElement(icons[index], {
-                        style: {
-                            fontSize: {xs:'22px',sm:'22px',md:'26px',lg:'26px',xl:'26px'},
-                            color: index === activeStep ? '#FF731D' : index < activeStep ? '#2DB224' : '#FF8800',
-                        },
-                    })}
-                  </span>
-                                </StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                </div>
+                                            <h2 className='text-[14px] font-bold font-sans'>Feedback</h2>
+                                            <div className='border-2 border-[#E4E7E9] mb-4'>
+                                                <Textarea className='w-full h-14 md:h-28' onChange={(e) => {
+                                                    setReview(e.target.value)
+                                                }}
+                                                          placeholder={"Write down your feedback about our product & services"}></Textarea>
+                                            </div>
+                                        </div>
+                                        <div className='flex justify-around  mx-auto'>
+                                            <button onClick={(productId) => handleUploadReview(orderDetail.orderId)}
+                                                    className='bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-28 md:h-8 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
+                                                PUBLISH REVIEW
+                                            </button>
+                                            <button onClick={handleCloseModal}
+                                                    className='bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-28 md:h-8 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
+                                                REVIEW LATER
+                                            </button>
+                                        </div>
+                                    </div>
 
-                {/* Order Activity Section */}
-                <div className="bg-white border-b-2 px-3 py-1 md:p-6 md:pt-0">
-                    <div className={'mb-1 font-bold text-[16px] md:text-xl'}>
-                        Order Activity
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Progress bar */}
+                        <div className=" pl-8 md:pl-16 xl:pl-36 bg-white  mb-3 md:mb-6">
+                            <div className="flex justify-between items-center w-full">
+                                {steps.map((label, index) => (
+                                    <div key={label} className="flex items-center w-full">
+                                        {/* Step Circle */}
+                                        <div
+                                            className={`flex items-center justify-center w-4 h-4 md:w-10 md:h-10 rounded-full border-4 ${
+                                                index < activeStep
+                                                    ? 'bg-[#2DB224] border-[#2DB224]' // Completed step
+                                                    : index === activeStep
+                                                        ? 'bg-white border-[#FF731D]' // Active step
+                                                        : 'bg-gray-200 border-gray-300' // Upcoming step
+                                            }`}
+                                        >
+          <span
+              className={`text-[12px] md:text-lg font-bold ${
+                  index < activeStep ? 'text-white pb-1' : 'text-[#FF731D]'
+              }`}
+          >
+            {index < activeStep ? <CheckIcon/> : index + 1}
+          </span>
+
+                                        </div>
+
+
+                                        {/* Connector Line */}
+                                        {index < steps.length - 1 && (
+                                            <div
+                                                className={`flex-1 h-1 md:h-2 ${
+                                                    index < activeStep
+                                                        ? 'bg-[#2DB224]' // Completed line
+                                                        : 'bg-gray-300' // Incomplete line
+                                                }`}
+                                            ></div>
+                                        )}
+
+
+                                    </div>
+
+                                ))}
+                            </div>
+
+                        </div>
+                        {/* Step Labels */}
+                        <div className={`flex px-2 lg:px-2.5 ml-4 md:ml-12 xl:ml-[180px]`}>
+                            {steps.map((label, index) => (
+                                <div key={label}
+                                     className="text-[12px] md:text-[18px] mt-0 flex items-center w-full"> {/* Step Label */}
+                                    {label}
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Step Icons */}
+                        <div
+                            className={`flex border-b-2 justify-around pr-5 md:pr-10 xl:pl-2 xl:mx-12 pl-3 md:pl-5 pb-2 `}>
+                            {steps.map((label, index) => (
+                                <span className="flex justify-center mt-2">
+                              {React.cloneElement(icons[index], {
+                                  className: `text-[24px] sm:text-[28px] md:text-[32px] lg:text-[36px] xl:text-[40px] 
+                  ${
+                                      index === activeStep
+                                          ? 'text-[#FF731D]' // Active step color
+                                          : index < activeStep
+                                              ? 'text-[#2DB224]' // Completed step color
+                                              : 'text-[#FF8800]' // Upcoming step color
+                                  }`,
+                              })}
+                            </span>
+                            ))}
+                        </div>
+
                     </div>
-                    <div>
-                        <ul className="text-sm space-y-4">
-                            <li className='flex flex-row items-center'>
-                                <div
-                                    className='flex justify-center items-center border-2 bg-[#EAF7E9] border-[#D5F0D3] size-10 '>
-                                    <DoneAllIcon className='text-[#2DB224]'/>
-                                </div>
+                }
 
-                                <div className='px-3'>
-                                    <div>
-                                        <span className={"text-[14px] md:text-[18px]"}> Your order has been delivered. Thank you for shopping at Clicon! </span>
-                                    </div>
-                                    <div className={"text-[14px] md:text-[18px]"}>
-                                        23 Jun, 2021
-                                    </div>
-                                </div>
-                            </li>
-                            <li className='flex flex-row items-center'>
-                                <div
-                                    className='flex justify-center items-center border-2 bg-[#EAF6FE] border-[#D5EDFD] size-10 '>
-                                    <PersonOutlineOutlinedIcon className='text-[#2DA5F3]'/>
-                                </div>
-
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
-                                    <div>
-                                        <span > Our delivery man John Wick has picked up your order. </span>
-                                    </div>
-                                    <div>
-                                        23 Jun, 2021
-                                    </div>
-                                </div>
-                            </li>
-                            <li className='flex flex-row items-center'>
-                                <div
-                                    className='flex justify-center items-center border-2 bg-[#EAF6FE] border-[#D5EDFD] size-10 '>
-                                    <LocationOnOutlinedIcon className='text-[#2DA5F3]'/>
-                                </div>
-
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
-                                    <div>
-                                        <span> Your order has reached the last mile hub. </span>
-                                    </div>
-                                    <div>
-                                        21 Jun, 2021
-                                    </div>
-                                </div>
-                            </li>
-                            <li className='flex flex-row items-center'>
-                                <div
-                                    className='flex justify-center items-center border-2 bg-[#EAF6FE] border-[#D5EDFD] size-10 '>
-                                    <MapOutlinedIcon className='text-[#2DA5F3]'/>
-                                </div>
-
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
-                                    <div>
-                                        <span> Your order is on the way to the last mile hub. </span>
-                                    </div>
-                                    <div>
-                                        21 Jun, 2021
-                                    </div>
-                                </div>
-                            </li>
-                            <li className='flex flex-row items-center'>
-                                <div
-                                    className='flex justify-center items-center border-2 bg-[#EAF7E9] border-[#D5F0D3] size-10 '>
-                                    <CheckCircleOutlinedIcon className='text-[#2DB224]'/>
-                                </div>
-
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
-                                    <div>
-                                        <span> Your order is successfully verified.</span>
-                                    </div>
-                                    <div>
-                                        20 Jun, 2021
-                                    </div>
-                                </div>
-                            </li>
-                            <li className='flex flex-row items-center'>
-                                <div
-                                    className='flex justify-center items-center border-2 bg-[#EAF6FE] border-[#D5EDFD] size-10 '>
-                                    <EventNoteOutlinedIcon className='text-[#2DA5F3]'/>
-                                </div>
-
-                                <div className={"px-3 text-[14px] md:text-[18px]"}>
-                                    <div>
-                                        <span>Your order has been confirmed. </span>
-                                    </div>
-                                    <div>
-                                        19 Jun, 2021
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
 
                 {/* Product Section */}
                 <div className="bg-white border-b-2 md:p-6 p-2 font-sans">
                     <div className={'text-[14px] font-bold md:text-xl'}>
-                        Product {(orderDetailData.length)}
+                        Product ({orderDetail.orderItems?.length})
                     </div>
                     <table className="min-w-full border border-gray-200">
                         <thead>
@@ -273,15 +345,21 @@ function OrderDetails() {
 
                         </thead>
                         <tbody>
-                        {orderDetailData.map((row, rowIndex) => (
+                        {orderDetail.orderItems.map((row, rowIndex) => (
                             <tr key={rowIndex}>
                                 <td className='flex items-center text-[12px] md:text-[18px]'>
-                                    <img className="md:w-20 md:h-20 w-8 h-8 " src={row.image} alt="temp"/>
-                                    {row.name}
+                                    <img className="md:w-20 md:h-20 w-8 h-8 " src={row.productImage} alt="temp"/>
+                                    {row.productName}
                                 </td>
                                 <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.price}</td>
                                 <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.quantity}</td>
-                                <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.subTotal}</td>
+                                <td className='pl-0 relative md:pl-3 text-[12px] md:text-[18px]'>
+                                      <span className={``}>{row.price}</span>
+
+                                     {activeStep > 3 && <button onClick={(productId) => {
+                                    handleOpenModal(row.productId)
+                                }}><span className=' absolute lg:top-8 lg:right-3 text-[#FA8232] text-[14px] md:text-[16px]'>Leave a Rating</span></button>}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
@@ -293,32 +371,40 @@ function OrderDetails() {
                     <div className="md:grid md:grid-cols-3 md:gap-4">
                         <div>
                             <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Billing Address</div>
-                            <div className='text-[14px] md:text-[18px]'>Kevin Gilbert </div>
+                            <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
                             <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
-                                East Tejturi Bazar, Ward No. 04, Road No. 15, <br/>
-                                Dhaka-1208, Bangladesh <br/>
-                                Phone Number: +202-555-0118 <br/>
-                                Email: kevin.gilbert@gmail.com
+                                {address} <br/>
+                                Phone Number: {shippingAddress.phone} <br/>
+                                Email: {shippingAddress.email}
                             </div>
                         </div>
                         <div>
                             <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Shipping Address</div>
                             <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
                             <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
-                                <a href="">{address}</a> <br/>
-                                {city + ', ' + state } <br/>
-                                Phone Number: +202-555-0118 <br/>
-                                Email: kevin.gilbert@gmail.com
+                                {address} <br/>
+                                Phone Number: {shippingAddress.phone} <br/>
+                                Email: {shippingAddress.email}
                             </div>
                         </div>
                         <div>
                             <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Order Notes</div>
                             <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
-                                Some notes about the order such as special delivery instructions or other information.
+                                {orderDetail.orderNotes !== null ? orderDetail.orderNotes : "None"}
                             </div>
                         </div>
                     </div>
                 </div>
+                <div className={`relative lg:h-20`}>
+                    {activeStep === 1 && <button disabled={status === 'CANCELLED'}
+                                                 onClick={() => {
+                                                     handleCancelOrder(orderDetail.orderId)
+                                                 }}
+                                                 className={`absolute rounded hover:bg-orangeRed right-0 md:right-2 lg:right-4 
+                        top-0 md:top-2  lg:top-5 ${status === 'CANCELLED' ? 'bg-gray-300' : 'bg-red'} text-white text-[12px] md:text-[18px] w-1/4 md:w-[160px] 
+                        h-5 md:h-8 lg:h-10 lg:mb-3 mb-4 md:mb-6`}>{status === 'CANCELLED' ? 'Cancelled' : 'Cancel'}</button>}
+                </div>
+
             </div>
         </div>
     );
