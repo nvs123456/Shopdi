@@ -1,7 +1,5 @@
 package com.rs.shopdiapi.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rs.shopdiapi.domain.enums.AddressEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,9 +36,6 @@ public class Address extends BaseEntity<Long> {
     String city;
     String zipCode;
     String email;
-
-    @Enumerated(EnumType.STRING)
-    AddressEnum addressType;
 
     @Pattern(regexp = "(^0[3|5|7|8|9][0-9]{8}$)", message = "Enter valid 10 digit mobile number")
     String phoneNumber;

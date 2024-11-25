@@ -12,7 +12,6 @@ import com.rs.shopdiapi.domain.entity.CartItem;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.OrderItem;
 import com.rs.shopdiapi.domain.entity.User;
-import com.rs.shopdiapi.domain.enums.AddressEnum;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
@@ -40,7 +39,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -73,19 +71,10 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal totalPrice = calculateTotalPrice(selectedItems);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Address shippingAddress = user.getAddresses().stream()
-                .filter(address -> address.getAddressType() == AddressEnum.SHIPPING)
-                .findFirst()
-                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
-
-        Address billingAddress = user.getAddresses().stream()
-                .filter(address -> address.getAddressType() == AddressEnum.BILLING)
-                .findFirst()
-                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
 
         Order order = Order.builder()
                 .user(user)
-                .shippingAddress(shippingAddress)
+                .shippingAddress(user.getAddresses().get(0))
                 .totalPrice(totalPrice)
                 .orderStatus(OrderStatusEnum.PENDING)
                 .orderItems(new ArrayList<>())
@@ -238,25 +227,12 @@ public class OrderServiceImpl implements OrderService {
 
 
     public OrderResponse mapToOrderResponse(Order order) {
-        User user = order.getUser();
-
-        Address shippingAddress = user.getAddresses().stream()
-                .filter(address -> address.getAddressType() == AddressEnum.SHIPPING)
-                .findFirst()
-                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
-
-        Address billingAddress = user.getAddresses().stream()
-                .filter(address -> address.getAddressType() == AddressEnum.BILLING)
-                .findFirst()
-                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
-
         return OrderResponse.builder()
                 .orderId(order.getId())
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus().name())
-                .deliveryDate(order.getDeliveryDate())
-                .shippingAddress(mapToAddressResponse(shippingAddress))
-                .billingAddress(mapToAddressResponse(billingAddress))
+                .deliveryDate(order.getCreatedAt())
+                .shippingAddress(this.mapToAddressResponse(order.getShippingAddress()))
                 .orderItems(order.getOrderItems().stream()
                         .map(this::mapToOrderItemResponse)
                         .toList())
@@ -267,9 +243,10 @@ public class OrderServiceImpl implements OrderService {
     private AddressResponse mapToAddressResponse(Address address) {
         if (address == null) return null;
         return AddressResponse.builder()
+                .addressId(address.getId())
                 .firstName(address.getFirstName())
                 .lastName(address.getLastName())
-                .address(address.getAddress() + ", " + address.getCity() + ", " + address.getCountry())
+                .address(address.getAddress() + ", " + address.getCity() + ", " + address.getState() + address.getCountry())
                 .phone(address.getPhoneNumber())
                 .email(address.getEmail())
                 .build();
@@ -293,7 +270,7 @@ public class OrderServiceImpl implements OrderService {
         return SimpleOrderResponse.builder()
                 .orderId(order.getId())
                 .orderStatus(order.getOrderStatus().name())
-                .deliveryDate(String.valueOf(order.getDeliveryDate()))
+                .deliveryDate(String.valueOf(order.getCreatedAt()))
                 .totalPrice(order.getTotalPrice())
                 .totalItems(order.getOrderItems().stream().mapToInt(OrderItem::getQuantity).sum())
                 .build();
