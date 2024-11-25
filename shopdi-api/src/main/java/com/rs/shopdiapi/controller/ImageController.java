@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +31,7 @@ public class ImageController {
 
     @PreAuthorize("hasRole('SELLER')")
     @PostMapping(value = "/upload-product-images/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<?> uploadImages(@RequestParam("productId") Long productId,
+    public ApiResponse<?> uploadImages(@PathVariable("productId") Long productId,
                                        @RequestParam("images") List<MultipartFile> images) {
         return ApiResponse.builder()
                 .result(imageService.uploadProductImage(images, productId))
