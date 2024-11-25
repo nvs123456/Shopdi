@@ -82,16 +82,13 @@ public class CartItemServiceImpl implements CartItemService {
     @Transactional
     @Override
     public String deleteCartItem(Long userId, Long cartItemId) {
-
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+        Cart cart = cartRepository.findByUserId(userId);
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getId().equals(cartItemId))
+                .findFirst()
                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
-        Cart cart = cartRepository.findByUserId(userId);
-        if (!cartItem.getCart().equals(cart)) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
-        }
-
-        cartItemRepository.deleteById(cartItem.getId());
+        cart.getCartItems().remove(cartItem);
         cartService.updateCartSummary(cart.getId());
         return "Cart item deleted successfully";
     }
