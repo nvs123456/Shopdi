@@ -2,16 +2,29 @@ import React from 'react'
 import OrderItem from '@/components/Buyer/Checkout/OrderItem'
 import Payment from '@/components/Buyer/Checkout/Payment'
 import AddressSelection from '@/components/Buyer/Checkout/AddressSelection'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { POST } from '../../api/GET'
+import { GET, POST } from '../../api/GET'
 export default function Checkout({ ProductList }) {
     let location = useLocation()
     let tmp = location.state.selectedProducts;
 
-    const addresses = []
+    const [isLoading, setIsLoading] = useState(true)
+    useEffect(() => {
+        GET("address/shipping").then((data) => {
+            if (data.code === "OK") {
+                setIsLoading(false)
+                if(data.result.length === 0){
+                    setCurrentAddress(null)
+                }else{
+                    setCurrentAddress(data.result[0])
+                }
+                setAllAddress(data.result)
+            }
+        })
+    },[isLoading])
 
-    const [currentAddress, setCurrentAddress] = useState(addresses[0] ? addresses[0] : null)
+    const [currentAddress, setCurrentAddress] = useState( null)
     const [allAddress, setAllAddress] = useState([])
     const [openAddress, setOpenAddress] = useState(false)
     const onClose = () => {
@@ -78,9 +91,11 @@ export default function Checkout({ ProductList }) {
                             <div>
                                 <button onClick={() => {
                                     for (let i = 0; i < tmp.length; i++) {
-
+                                        if(currentAddress === null) {
+                                            alert("Vui lòng chọn điểm giao hàng")
+                                        }
                                         POST('orders/checkout', {
-                                            "addressId": 1,
+                                            "addressId": currentAddress.addressId,
                                             "selectedCartItemIds": tmp[i].cartItems.map((item) => item.cartItemId),
                                         }).then((res) => {
                                             if (res.code === "OK") {

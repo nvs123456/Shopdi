@@ -5,16 +5,16 @@ export default function AddressSelection({ onClose, addresses, setAllAddress, cu
     const [isAdding, setIsAdding] = useState(false)
     const [newAddress, setNewAddress] = useState(
         {
-            "firstName": null,
-            "lastName": null,
-            "companyName": null,
-            "address": null,
-            "country": null,
-            "state": null,
-            "city": null,
-            "zipCode": null,
-            "email": null,
-            "phoneNumber": null
+            // "firstName": null,
+            // "lastName": null,
+            // "companyName": null,
+            // "address": null,
+            // "country": null,
+            // "state": null,
+            // "city": null,
+            // "zipCode": null,
+            // "email": null,
+            // "phoneNumber": null
         }
     )
     return (
@@ -31,21 +31,21 @@ export default function AddressSelection({ onClose, addresses, setAllAddress, cu
                                     setIsAdding(false)
                                 }} className="bg-white cursor-pointer border-2 border-gray-400 text-black w-20 p-2 mt-2 mb-2 mr-2">Hủy</button>
                                 <button onClick={() => {
-                                    // POST(`addresses/shipping`, newAddress).then((data) => {
-                                    //     if (data.code === "OK") {
-                                    //         setAllAddress(addresses.push(newAddress))
-                                    //         setIsAdding(false)
-                                    //     }
-                                    // })
-                                    setAllAddress([...addresses, newAddress]);
-                                    console.log(addresses)
+                                    POST(`address/shipping`, newAddress).then((data) => {
+                                        if (data.code === "OK") {
+                                            setAllAddress([...addresses, newAddress])
+                                            setIsAdding(false)
+                                        }
+                                    })
+                                    // setAllAddress([...addresses, newAddress]);
+                                    // console.log(addresses)
                                     setIsAdding(false)
                                 }} className="bg-pumpkin cursor-pointer border-2 border-gray-400 text-white w-20 p-2 mt-2 mb-2 mr-4">Lưu</button>
                             </div>
                         </>
                     ) : (<>
                         <div className="text-xl text-red font-bold border-b-2 border-gray-400 pb-4">Địa chỉ của tôi</div>
-                        <div className="no-scrollbar overflow-y-scroll">
+                        <div className="no-scrollbar overflow-y-scroll h-full">
                             {addresses.map((item) => <Address key={item.id} address={item} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />)}
 
                         </div>
@@ -63,12 +63,12 @@ function Address({ address, currentAddress, setCurrentAddress }) {
     return (
         <div className="flex flex-row gap-2 py-2 border-b-2 border-gray-400">
             <div className="">
-                <input type="radio" name="selected-address" onClick={() => setCurrentAddress(address)} className="mt-2" />
+                <input id={`address${currentAddress.addressId}`} type="radio" name="selected-address" onClick={() => setCurrentAddress(address)} className="mt-2" />
             </div>
             <div>
-                <div className="flex flex-row">
+                <div htmlFor={`address${currentAddress.addressId}`} className="flex flex-row">
                     <div className="pr-2 border-r-2 border-gray-400">{address.firstName} {address.lastName}</div>
-                    <div className="text-gray-600">(SDT:){address.phoneNumber}</div>
+                    <div className="text-gray-600">(SDT:){address.phone}</div>
                 </div>
                 <div className="text-gray-600">{address.address}</div>
             </div>

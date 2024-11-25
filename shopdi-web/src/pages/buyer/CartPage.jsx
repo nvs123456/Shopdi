@@ -80,11 +80,19 @@ export default function CartPage({ CartId }) {
     const onDelete = (cartItemId) => {
         DELETE("cart/items/" + cartItemId).then((res) => {
             if (res.code === "OK") {
-                // GET("cart").then((res) => {
-                //     if (res.code === "OK") {
-                //         setProductsInCart(res.result)
-                //     }
-                // })
+                let tmp = [...productsInCart.sellerGroups]
+                for(let i = 0; i < tmp.length; i++){
+                    for(let j = 0; j < tmp[i].cartItems.length; j++){
+                        if(tmp[i].cartItems[j].cartItemId === cartItemId){
+                            tmp[i].cartItems.splice(j, 1)
+                            break
+                        }
+                    }
+                    if(tmp[i].cartItems.length === 0){
+                        tmp.splice(i, 1)
+                    }
+                }
+                setProductsInCart({ ...productsInCart, sellerGroups: tmp })
             }
         })
 
