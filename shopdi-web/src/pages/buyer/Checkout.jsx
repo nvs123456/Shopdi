@@ -36,10 +36,10 @@ export default function Checkout({ ProductList }) {
             <div className={`bg-white ${(openAddress ? "brightness-50" : "")}`}>
                 <div className="flex flex-col gap-4 p-8 bg-gray-100 mr-40 ml-40">
                     <div className='border-b-2 border-gray-400 '>
-                        <div className='text-xl text-red font-bold'>Dia chi nhan hang</div>
+                        <div className='text-xl text-red font-bold'>Địa chỉ nhận hàng</div>
                         <div>{currentAddress === null ? "Chưa có địa chỉ" : `
                          ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}`}</div>
-                        <div className="text-blue-500 hover:underline" onClick={() => setOpenAddress(!openAddress)}>Thay đổi</div>
+                        <div className="text-blue-500 hover:underline" onClick={() => setOpenAddress(!openAddress)}>{currentAddress === null ? "Thêm" : "Thay đổi"}</div>
                     </div>
                     <div className="header flex flex-row w-full border-b-2 border-gray-400 pb-4">
                         <span className="grow pl-12">Tên sản phẩm   </span>

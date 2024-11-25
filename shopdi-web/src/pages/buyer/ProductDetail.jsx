@@ -6,12 +6,14 @@ import { useLocation } from "react-router-dom";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import ShopBar from "../../components/Buyer/ShopBar.jsx";
 import { GET, POST } from "@/api/GET";
+import Comments from "../../components/Buyer/Review/Comments.jsx";
 export default function ProductDetail() {
     const location = useLocation();
     let t = location.pathname.split("/")
     const id = t[t.length - 1]
     const [isLoading, setIsLoading] = useState(true)
     const [product, setProduct] = useState({})
+    const [review, setReview] = useState({})
     useEffect(() => {
         GET(`products/${id}`).then((data) => {
             // data = {
@@ -65,9 +67,12 @@ export default function ProductDetail() {
             } else {
                 setIsBuyNowWithoutAttribute(false)
             }
-            setIsLoading(false)
-
+            getReview(id).then((res) => {
+                setReview(res)
+                setIsLoading(false)
+            })
         })
+
     }, [isLoading])
     const shop_info = {
         name: "Shopdi",
@@ -110,7 +115,7 @@ export default function ProductDetail() {
             document.getElementsByClassName('message')[0].innerHTML = "Please select attributes"
             return
         }
-        if(quantity > quantityInStock){
+        if (quantity > quantityInStock) {
             alert("Product is out of stock")
             return
         }
@@ -176,20 +181,10 @@ export default function ProductDetail() {
                             </div>
                         </div>
                         <div className="product-description flex flex-col gap-y-4">
-                            <div className="text-2xl text-wrap">
+                            <div className="mt-8 text-3xl text-wrap">
                                 <p>{product.productName}</p>
                             </div>
-                            <div className="flex flex-row gap-x-5">
-                                <div className='border-r-2 pr-4 border-grey'>
-                                    {[1, 2, 3, 4, 5].map((i) => i < Math.round(product.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "20px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "20px" }} />)}
-                                </div>
-                                <div className='border-r-2 pr-4 border-grey'>
-                                    {product.reviewCount} đánh giá
-                                </div>
-                                <div>
-                                    {product.sold} đã bán
-                                </div>
-                            </div>
+
                             <div>
                                 <span className='text-4xl'>&#8363; {product.price.toLocaleString()}</span>
                             </div>
@@ -217,10 +212,47 @@ export default function ProductDetail() {
                             {product.description}
                         </div>
                     </div>
+                    <div className="description bg-white flex flex-row gap-x-8 border-2 rounded-md p-4">
+                        <div className="w-full">
+                            <div className="text-2xl">
+                                <h2>Bình luận</h2>
+                            </div>
+                            <div className="font-publicSans white-space-pre">
+                                <Comments productId={product.productId} />
+                            </div>
+                        </div>
+                        <div className="w-1/4">
+                            <button>
+
+                            </button>
+                            <div className="flex flex-col gap-y-2 items-center">
+                                <div className=''>
+                                    {[1, 2, 3, 4, 5].map((i) => i < Math.round(product.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "30px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "30px" }} />)}
+                                </div>
+                                <div className=' text-xl font-bold'>
+                                    {review.count} đánh giá
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div >
         )
     }
+}
+const getReview =async (productId) => {
+    const count = await GET(`reviews/product/${productId}/count`).then((res) => {
+        if (res.code === "OK") {
+            return res.result
+        }
+    })
+    const rating = await GET(`reviews/product/${productId}/average-rating`).then((res) => {
+        if (res.code === "OK") {
+            return res.result
+        }
+    })
+    return { count, rating }
 }
 
 

@@ -10,29 +10,26 @@ import Cart from "../../components/Buyer/Cart.jsx";
 import { GET } from "@/api/GET";
 const HomePage = () => {
   const location = useLocation();
-  const currentCategory = decodeURIComponent(location.pathname.split("/")[1]);
+
 
   const query = new URLSearchParams(location.search);
+  const currentCategory = query.get('category');
   const pageParams = query.get('page');
   let pageUrl = ''
   if (pageParams !== null) {
-    pageUrl = `?page=${pageParams}`
+    pageUrl = `?pageNo=${pageParams}`
   }
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     if (location.pathname === '/') {
-      GET("products" + pageUrl).then((data) => {
-        setProducts(data.result?.items)
-        setIsLoading(false)
-      })
-    } else {
-      GET(`products/categories/${currentCategory}` + pageUrl).then((res) => {
+      GET(`products` + pageUrl).then((res) => {
         if (res.code === "OK") {
           setProducts(res.result?.items)
+          setIsLoading(false)
         }
       })
-    }
+    } 
   }, [location])
 
 
@@ -42,7 +39,7 @@ const HomePage = () => {
         <Route path="/" element={<div className='flex flex-col justify-center'>
           <ProductList products={products} />
         </div>} />
-        <Route path="/:category" element={
+        <Route path="/category/:categoryId" element={
           <div className="flex flex-row">
             <div className="w-1/4">
               <Filter products={products} setProducts={setProducts} />
