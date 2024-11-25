@@ -49,11 +49,13 @@ export default function ProductDetail() {
             //         ]
             //     }
             // }
+            let tmp_quantityInStock = 0
             for (let i = 0; i < data.result.variants.length; i++) {
                 data.result.variants[i].variantDetail = JSON.parse(data.result.variants[i].variantDetail)
+                tmp_quantityInStock += data.result.variants[i].quantity
             }
             setProduct(data.result)
-
+            setQuantityInStock(tmp_quantityInStock)
             if (data.result.variants.length > 0) {
                 let v = []
                 for (let i = 0; i < data.result.variants[0].variantDetail.length; i++) {
@@ -66,7 +68,7 @@ export default function ProductDetail() {
             setIsLoading(false)
 
         })
-    }, [])
+    }, [isLoading])
     const shop_info = {
         name: "Shopdi",
         link: "https://shopdi.com",
@@ -106,6 +108,10 @@ export default function ProductDetail() {
     const handleAddToCart = () => {
         if (isBuyNowWithoutAttribute) {
             document.getElementsByClassName('message')[0].innerHTML = "Please select attributes"
+            return
+        }
+        if(quantity > quantityInStock){
+            alert("Product is out of stock")
             return
         }
         POST(`cart/add-item`, {
@@ -192,7 +198,7 @@ export default function ProductDetail() {
                                 <div className='text-base align-middle text-gray-600 min-w-20 text-left'>So luong</div>
                                 <div className='flex flex-row flex-wrap'>
                                     <Quantity quantity={quantity} setQuantity={setQuantity} quantityInStock={quantityInStock} />
-                                    <div className='ml-4'> Còn lại {isBuyNowWithoutAttribute ? product.quantity : quantityInStock} sản phẩm </div>
+                                    <div className='ml-4'> Còn lại {quantityInStock} sản phẩm </div>
                                 </div>
                             </div>
                             {isBuyNowWithoutAttribute ? <div className='text-red message'></div> : null}
