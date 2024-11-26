@@ -2,7 +2,7 @@ import React from "react";
 import Product from "./Product.jsx";
 import Pagination from "@/components/Navigation/Pagination.jsx";
 import { useState } from "react";
-export default function ProductList({ products }) {
+export default function ProductList({ products,page }) {
     const [isSortOpen, setSortOpen] = useState(false);
 
     return (
@@ -33,7 +33,7 @@ export default function ProductList({ products }) {
             <div className="self-center inline-grid grid-cols-4 gap-x-1 gap-y-1 font-sans min-h-screen">
                 {products.map(product => <Product key={product.productId + product.productName} product={product} />)}
             </div>
-            <Pagination />
+            <Pagination pageObject={page}/>
         </div >
     )
 }

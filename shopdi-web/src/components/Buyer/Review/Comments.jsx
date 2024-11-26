@@ -30,7 +30,7 @@ export default function Comments({ productId }) {
         <div >
             {comments.map((comment) => {
                 return (
-                    <div className="flex flex-col bg-white p-4 ">
+                    <div key={`${comment.userName}`} className="flex flex-col bg-white p-4 ">
                         <div className="flex items-center mb-4 border-b border-gray-200">
                             {/* <img
                                 src={comment.user.avatar}
@@ -54,10 +54,10 @@ export default function Comments({ productId }) {
 const stars = (ratingScore) => {
     const tmp = []
     for(let i = 0; i < ratingScore; i++){
-        tmp.push(<StarIcon key={i} className="w-4 h-4 inline" style={{color: "yellow",fontSize: "20px"}} />)
+        tmp.push(<StarIcon key={`start-${i}`} className="w-4 h-4 inline" style={{color: "yellow",fontSize: "20px"}} />)
     }
     for(let i = 0; i < 5 - ratingScore; i++){
-        tmp.push(<StarIcon key={5 - i} className="w-4 h-4 inline text-gray-300"style={{fontSize: "20px"}} />)
+        tmp.push(<StarIcon key={`start-${5-i}`} className="w-4 h-4 inline text-gray-300"style={{fontSize: "20px"}} />)
     }
     return tmp
 }
