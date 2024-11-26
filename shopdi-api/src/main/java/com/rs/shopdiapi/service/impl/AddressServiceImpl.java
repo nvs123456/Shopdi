@@ -39,6 +39,7 @@ public class AddressServiceImpl implements AddressService {
                     }
 
                     Address savedAddress = addressRepository.save(address);
+
                     return AddressResponse.builder()
                             .addressId(savedAddress.getId())
                             .firstName(savedAddress.getFirstName())
@@ -70,6 +71,7 @@ public class AddressServiceImpl implements AddressService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public AddressResponse setDefaultAddress(Long userId, Long addressId) {
         User user = userRepository.findById(userId)
@@ -96,6 +98,48 @@ public class AddressServiceImpl implements AddressService {
                 .email(defaultAddress.getEmail())
                 .phone(defaultAddress.getPhoneNumber())
                 .isDefault(defaultAddress.isDefault())
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public AddressResponse updateAddress(Long userId, Long addressId, AddressRequest addressRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Address address = addressRepository.findById(addressId)
+                .filter(a -> a.getUser().getId().equals(userId))
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        address.setFirstName(addressRequest.getFirstName());
+        address.setLastName(addressRequest.getLastName());
+        address.setCompanyName(addressRequest.getCompanyName());
+        address.setAddress(addressRequest.getAddress());
+        address.setCity(addressRequest.getCity());
+        address.setState(addressRequest.getState());
+        address.setCountry(addressRequest.getCountry());
+        address.setZipCode(addressRequest.getZipCode());
+        address.setEmail(addressRequest.getEmail());
+        address.setPhoneNumber(addressRequest.getPhoneNumber());
+
+        if (addressRequest.isDefault()) {
+            user.getAddresses().forEach(existingAddress -> existingAddress.setDefault(false));
+            address.setDefault(true);
+        }
+
+        Address updatedAddress = addressRepository.save(address);
+
+        return AddressResponse.builder()
+                .addressId(updatedAddress.getId())
+                .firstName(updatedAddress.getFirstName())
+                .lastName(updatedAddress.getLastName())
+                .address(updatedAddress.getAddress() + ", " +
+                        updatedAddress.getCity() + ", " +
+                        updatedAddress.getState() + ", " +
+                        updatedAddress.getCountry())
+                .email(updatedAddress.getEmail())
+                .phone(updatedAddress.getPhoneNumber())
+                .isDefault(updatedAddress.isDefault())
                 .build();
     }
 
