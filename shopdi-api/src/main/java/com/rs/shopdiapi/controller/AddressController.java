@@ -43,6 +43,14 @@ public class AddressController {
                 .build();
     }
 
+    @PutMapping("/{addressId}")
+    public ApiResponse<?> updateAddress(@PathVariable Long addressId, @RequestBody @Valid AddressRequest addressRequest) {
+        Long userId = userService.getCurrentUser().getId();
+        return ApiResponse.builder()
+                .result(addressService.updateAddress(userId, addressId, addressRequest))
+                .build();
+    }
+
     @PutMapping("/{addressId}/default")
     public ApiResponse<?> setDefaultAddress(@PathVariable Long addressId) {
         Long userId = userService.getCurrentUser().getId();
@@ -50,4 +58,6 @@ public class AddressController {
                 .result(addressService.setDefaultAddress(userId, addressId))
                 .build();
     }
+
+
 }
