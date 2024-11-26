@@ -4,6 +4,7 @@ import com.rs.shopdiapi.domain.dto.request.AddressRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateUserRequest;
 import com.rs.shopdiapi.domain.dto.request.UpdateUserRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.ProfileResponse;
 import com.rs.shopdiapi.domain.dto.response.UserResponse;
 import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.User;
@@ -16,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 public interface UserService {
     UserResponse createUser(CreateUserRequest request, String siteURL) throws MessagingException, UnsupportedEncodingException;
 
-    UserResponse getMyInfo();
+   ProfileResponse getMyInfo();
 
     UserResponse updateUser(Long userId, UpdateUserRequest request);
 

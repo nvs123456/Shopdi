@@ -18,5 +18,7 @@ public class UpdateUserRequest {
     String password;
     String firstName;
     String lastName;
+    String email;
+    String mobileNo;
     List<String> roles;
 }

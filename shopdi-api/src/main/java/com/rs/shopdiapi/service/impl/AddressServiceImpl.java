@@ -9,6 +9,7 @@ import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.repository.AddressRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.AddressService;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +26,7 @@ public class AddressServiceImpl implements AddressService {
     UserRepository userRepository;
     AddressRepository addressRepository;
 
+    @Transactional
     @Override
     public AddressResponse addAddress(Long userId, AddressRequest addressRequest) {
         return userRepository.findById(userId)
@@ -32,16 +34,19 @@ public class AddressServiceImpl implements AddressService {
                     Address address = convertToAddressEntity(addressRequest);
                     address.setUser(user);
 
-                    user.getAddresses().add(address);
+                    if (addressRequest.isDefault()) {
+                        user.getAddresses().forEach(existingAddress -> existingAddress.setDefault(false));
+                    }
 
-                    userRepository.save(user);
+                    Address savedAddress = addressRepository.save(address);
                     return AddressResponse.builder()
-                            .addressId(address.getId())
-                            .firstName(address.getFirstName())
-                            .lastName(address.getLastName())
-                            .address(address.getAddress() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getCountry())
-                            .email(address.getEmail())
-                            .phone(address.getPhoneNumber())
+                            .addressId(savedAddress.getId())
+                            .firstName(savedAddress.getFirstName())
+                            .lastName(savedAddress.getLastName())
+                            .address(savedAddress.getAddress() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getCountry())
+                            .email(savedAddress.getEmail())
+                            .phone(savedAddress.getPhoneNumber())
+                            .isDefault(savedAddress.isDefault())
                             .build();
                 })
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -60,8 +65,38 @@ public class AddressServiceImpl implements AddressService {
                         .address(address.getAddress() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getCountry())
                         .email(address.getEmail())
                         .phone(address.getPhoneNumber())
+                        .isDefault(address.isDefault())
                         .build())
                 .toList();
+    }
+
+    @Override
+    public AddressResponse setDefaultAddress(Long userId, Long addressId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Address defaultAddress = addressRepository.findById(addressId)
+                .filter(address -> address.getUser().getId().equals(userId))
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        user.getAddresses().forEach(address -> address.setDefault(false));
+
+        defaultAddress.setDefault(true);
+
+        userRepository.save(user);
+
+        return AddressResponse.builder()
+                .addressId(defaultAddress.getId())
+                .firstName(defaultAddress.getFirstName())
+                .lastName(defaultAddress.getLastName())
+                .address(defaultAddress.getAddress() + ", " +
+                        defaultAddress.getCity() + ", " +
+                        defaultAddress.getState() + ", " +
+                        defaultAddress.getCountry())
+                .email(defaultAddress.getEmail())
+                .phone(defaultAddress.getPhoneNumber())
+                .isDefault(defaultAddress.isDefault())
+                .build();
     }
 
     private Address convertToAddressEntity(AddressRequest request) {
@@ -76,6 +111,7 @@ public class AddressServiceImpl implements AddressService {
                 .zipCode(request.getZipCode())
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
+                .isDefault(request.isDefault())
                 .build();
     }
 }

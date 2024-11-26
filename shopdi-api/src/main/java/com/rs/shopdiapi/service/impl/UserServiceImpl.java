@@ -3,7 +3,9 @@ package com.rs.shopdiapi.service.impl;
 import com.rs.shopdiapi.domain.dto.request.AddressRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateUserRequest;
 import com.rs.shopdiapi.domain.dto.request.UpdateUserRequest;
+import com.rs.shopdiapi.domain.dto.response.AddressResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.ProfileResponse;
 import com.rs.shopdiapi.domain.dto.response.UserResponse;
 import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.Role;
@@ -35,10 +37,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -92,12 +96,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponse getMyInfo() {
+    public ProfileResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
 
         User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        return userMapper.toUserResponse(user);
+        return this.toProfileResponse(user);
     }
 
     @Transactional
@@ -205,4 +209,29 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    private ProfileResponse toProfileResponse(User user) {
+        return ProfileResponse.builder()
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .mobileNo(user.getMobileNo())
+                .profileImage(user.getProfileImage())
+                .address(user.getAddresses() == null ? new ArrayList<>() :
+                        user.getAddresses().stream()
+                                .map(address -> AddressResponse.builder()
+                                        .addressId(address.getId())
+                                        .firstName(address.getFirstName())
+                                        .lastName(address.getLastName())
+                                        .address(address.getAddress() + ", " +
+                                                address.getCity() + ", " +
+                                                address.getState() + ", " +
+                                                address.getCountry())
+                                        .email(address.getEmail())
+                                        .phone(address.getPhoneNumber())
+                                        .build())
+                                .collect(Collectors.toList()))
+                .status(user.getStatus())
+                .build();
+    }
 }
