@@ -6,6 +6,7 @@ import com.rs.shopdiapi.domain.dto.request.ProductFilterRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductDetailResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductResponse;
+import com.rs.shopdiapi.domain.dto.response.ProductSuggestionResponse;
 import com.rs.shopdiapi.domain.entity.*;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.domain.enums.ProductStatusEnum;
@@ -23,6 +24,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -67,6 +69,8 @@ public class ProductServiceImpl implements ProductService {
                 .status(ProductStatusEnum.valueOf(request.getStatus()))
                 .build();
 
+        category.getProducts().add(product);
+
         Set<Variant> variants = request.getVariantDetails().stream()
                 .map(detail -> {
                     Variant variant = new Variant();
@@ -75,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
                     variant.setQuantity(detail.getQuantity());
                     return variant;
                 }).collect(Collectors.toSet());
+
         product.setVariants(variants);
 
         Product savedProduct = productRepository.save(product);
@@ -121,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
 
         productMapper.updateProduct(product, productRequest);
 
-        return productMapper.toProductResponse(productRepository.save(product));
+        return this.toProductResponse(productRepository.save(product));
     }
 
     @Override
@@ -156,7 +161,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<?> searchProduct(String query, int pageNo, int pageSize) {
-        return null;
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("productName").ascending()); // hoặc sử dụng bất kỳ trường nào khác để sắp xếp
+
+        Page<Product> products = productRepository.findByProductNameContainingIgnoreCase(query, pageable);
+
+        List<ProductResponse> productResponses = products.map(this::toProductResponse).toList();
+        return PageResponse.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPages(products.getTotalPages())
+                .items(productResponses)
+                .build();
     }
 
     @Override
@@ -165,7 +180,7 @@ public class ProductServiceImpl implements ProductService {
 
         Page<Product> productPage = productRepository.findAllByCategoryId(categoryEntity.getId(), PageRequest.of(pageNo, pageSize));
 
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+        List<ProductResponse> products = productPage.map(this::toProductResponse).toList();
 
         return PageResponse.builder()
                 .pageNo(pageNo)
@@ -187,7 +202,7 @@ public class ProductServiceImpl implements ProductService {
 
         Page<Product> productPage = productRepository.findAll(specification, PageRequest.of(pageNo, pageSize));
 
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+        List<ProductResponse> products = productPage.map(this::toProductResponse).toList();
 
         return PageResponse.builder()
                 .pageNo(pageNo)
@@ -253,7 +268,7 @@ public class ProductServiceImpl implements ProductService {
     public PageResponse<?> getMyProducts(int pageNo, int pageSize, String sortBy, String sortOrder, Long sellerId) {
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Page<Product> productPage = productRepository.findAllBySellerId(sellerId, PageRequest.of(pageNo, pageSize, sortByAndOrder));
-        List<ProductResponse> products = productPage.map(productMapper::toProductResponse).toList();
+        List<ProductResponse> products = productPage.map(this::toProductResponse).toList();
         return PageResponse.builder()
                 .pageNo(pageNo)
                 .pageSize(pageSize)
@@ -262,10 +277,27 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
-@Override
-public PageResponse<?> findProductByParentCategory(String category, int pageNo, int pageSize) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findProductByParentCategory'");
-}
+    @Override
+    public List<ProductSuggestionResponse> getProductSuggestions(String query) {
+        List<Product> products = productRepository.findByProductNameContainingIgnoreCase(query);
+
+        return products.stream()
+                .map(product -> new ProductSuggestionResponse(product.getId(), product.getProductName()))
+                .collect(Collectors.toList());
+    }
+
+
+    private ProductResponse toProductResponse(Product product) {
+        return ProductResponse.builder()
+                .productId(product.getId())
+                .productImage(product.getImageUrls().isEmpty() ? null : product.getImageUrls().get(0))
+                .productName(product.getProductName())
+                .price(product.getPrice())
+                .stock(product.getVariants().stream().mapToInt(Variant::getQuantity).sum())
+                .publishedOn(product.getCreatedAt())
+                .rating(product.getReviews().isEmpty() ? 0 : product.getReviews().stream().mapToInt(Review::getRating).sum() / product.getReviews().size())
+                .reviewCount(product.getReviews().size())
+                .build();
+    }
 
 }

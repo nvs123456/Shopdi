@@ -29,4 +29,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Product> searchProduct(@Param("query") String query);
 
     Page<Product> findAllBySellerId(Long sellerId, Pageable pageable);
+
+    Page<Product> findByProductNameContainingIgnoreCase(String query, Pageable pageable);
+
+    List<Product> findByProductNameContainingIgnoreCase(String query);
 }

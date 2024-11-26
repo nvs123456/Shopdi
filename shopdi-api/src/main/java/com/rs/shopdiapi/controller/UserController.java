@@ -55,8 +55,8 @@ public class UserController {
 
 
     @GetMapping("/my-info")
-    ApiResponse<UserResponse> getMyInfo() {
-        return ApiResponse.<UserResponse>builder()
+    public ApiResponse<?> getMyInfo() {
+        return ApiResponse.builder()
                 .result(userService.getMyInfo())
                 .build();
     }
@@ -94,11 +94,12 @@ public class UserController {
         return ApiResponse.<String>builder().result("User has been unban").build();
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("update-profile")
     @PreAuthorize("hasRole('ADMIN')")
-    ApiResponse<UserResponse> updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
+    ApiResponse<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
+        User user = userService.getCurrentUser();
         return ApiResponse.<UserResponse>builder()
-                .result(userService.updateUser(userId, request))
+                .result(userService.updateUser(user.getId(), request))
                 .build();
     }
 

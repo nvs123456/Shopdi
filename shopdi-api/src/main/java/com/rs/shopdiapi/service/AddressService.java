@@ -10,4 +10,6 @@ public interface AddressService {
     AddressResponse addAddress(Long userId, AddressRequest addressRequest);
 
     List<AddressResponse> getUserAddress(Long userId);
+
+    AddressResponse setDefaultAddress(Long userId, Long addressId);
 }

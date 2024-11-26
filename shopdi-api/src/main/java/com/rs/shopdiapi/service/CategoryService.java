@@ -9,7 +9,9 @@ import java.util.Optional;
 
 public interface CategoryService {
     List<CategoryResponse> getAllCategories();
+
     List<CategoryResponse> getCategoriesByParent(String parent);
+
     Category getCategoryById(Long categoryId);
 
     Category getCategoryByName(String categoryName);
