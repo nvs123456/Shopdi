@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { POST,GET } from '@/api/GET';
+import { POST, GET } from '@/api/GET';
 import { JSONToData } from '@/utils/todo';
 export default function AddProduct() {
     const [categories, setCategories] = useState([]);
@@ -13,18 +13,18 @@ export default function AddProduct() {
         GET("categories").then((res) => {
             if (res.code === "OK") {
                 setCategories(res.result)
-                setCurrentCategory({parent: res.result[0].name, child: res.result[0].childCategories[0].name})
+                setCurrentCategory({ parent: res.result[0].name, child: res.result[0].childCategories[0].name })
                 setLoading(false)
                 setProductForm({ ...productForm, categoryName: res.result[0].childCategories[0].name })
             }
         })
-    },[])
+    }, [])
     const [productForm, setProductForm] = useState({
         productName: '',
         description: '',
 
         // Media
-        imageUrls: [],
+        images: [],
 
         // Pricing
         price: 0,
@@ -43,14 +43,15 @@ export default function AddProduct() {
         // Status
         status: 'PUBLISHED',
     })
-    const [currentCategory, setCurrentCategory] = useState({parent: '', child: ''});
+    const [currentCategory, setCurrentCategory] = useState({ parent: '', child: '' });
     const [variants, setVariants] = useState([]);
 
+    const [selectedImage, setSelectedImage] = useState([]);
     const [listVariants, setListVariants] = useState([]);
     const [openPopup, setOpenPopup] = useState(false);
     if (!loading) return (
         <div className='w-full flex flex-row'>
-            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}><QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup} productForm={productForm} setProductForm={setProductForm} /></div>
+            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}><QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup} productForm={productForm} setProductForm={setProductForm} selectedImage={selectedImage} /></div>
             <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
 
             <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
@@ -63,6 +64,10 @@ export default function AddProduct() {
                         for (let i = 0; i < allInput.length; i++) {
                             if (allInput[i].value === '') {
                                 alert('Vui long nhap day du thong tin')
+                                return
+                            }
+                            if(!imagesEnough(selectedImage).code){
+                                alert(imagesEnough(selectedImage).message)
                                 return
                             }
                         }
@@ -94,8 +99,8 @@ export default function AddProduct() {
                     </div>
                     <div className='media border-2 border-gray-200 p-4'>
                         <div>
-                            <span className='font-bold text-xl'>Media</span>
-                            <UploadAndDisplayImage productForm={productForm} setProductForm={setProductForm} />
+                            <span className='font-bold text-xl'>Media (from 5 to 10 images)</span>
+                            <UploadAndDisplayImage selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
                         </div>
                     </div>
                     <div className='category border-2 border-gray-200 p-4'>
@@ -106,7 +111,7 @@ export default function AddProduct() {
                         <div className="flex flex-row gap-4">
                             <div className=' flex flex-col'>
                                 <label> Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded'  value={currentCategory.parent} onChange={(e) => {
+                                <select className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.parent} onChange={(e) => {
 
                                     const tmp = categories.find((i) => i.name === e.target.value)
                                     setCurrentCategory({ parent: e.target.value, child: tmp.childCategories[0].name })
@@ -122,11 +127,11 @@ export default function AddProduct() {
 
                             <div className=' flex flex-col'>
                                 <label>Sub Category</label>
-                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded'  value={currentCategory.child} onChange={(e) => { 
-                                    setProductForm({ ...productForm, categoryName: e.target.value }) 
+                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.child} onChange={(e) => {
+                                    setProductForm({ ...productForm, categoryName: e.target.value })
                                     setCurrentCategory({ ...currentCategory, child: e.target.value })
                                 }
-                                    }>
+                                }>
                                     {categories.find((i) => i.name === currentCategory.parent).childCategories.map((item, index) => {
                                         return <option key={index} value={item.name}>{item.name}</option>
                                     })}
@@ -140,20 +145,20 @@ export default function AddProduct() {
                         </div>
                         <div>
                             <label className='block'>Price</label>
-                            <input 
-                            onWheel={ event => event.currentTarget.blur()}
-                            onChange={(e) => {
-                                setProductForm({ ...productForm, price: e.target.value })
-                            }}
+                            <input
+                                onWheel={event => event.currentTarget.blur()}
+                                onChange={(e) => {
+                                    setProductForm({ ...productForm, price: e.target.value })
+                                }}
                                 type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
                         <div>
                             <label className='block'>Discount</label>
-                            <input 
-                            onWheel={ event => event.currentTarget.blur()}
-                            onChange={(e) => {
-                                setProductForm({ ...productForm, discountPercent: e.target.value })
-                            }}
+                            <input
+                                onWheel={event => event.currentTarget.blur()}
+                                onChange={(e) => {
+                                    setProductForm({ ...productForm, discountPercent: e.target.value })
+                                }}
                                 type="number" className='required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' placeholder='0 if not available'></input>
                         </div>
                         <div>
@@ -192,9 +197,8 @@ export default function AddProduct() {
     else return (<div>Loading...</div>)
 }
 
-const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
+const UploadAndDisplayImage = ({ selectedImage, setSelectedImage }) => {
     // Define a state variable to store the selected image
-    const [selectedImage, setSelectedImage] = useState([]);
 
     // Return the JSX for rendering
     return (
@@ -216,7 +220,6 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
                         }
                         setSelectedImage(tmp);
 
-                        setProductForm({ ...productForm, images: event.target.files })
                     }}
                 />
                 {selectedImage.length > 0 && (
@@ -248,7 +251,7 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
         </div >
     );
 };
-function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductForm }) {
+function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductForm, selectedImage }) {
     const navigate = useNavigate();
     if (variants.length === 0) {
         return (
@@ -265,8 +268,15 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                             return
                         }
                         POST("seller/add-product", productForm).then((res) => {
-                            setOpenPopup(false);
-                            navigate("/seller/products");
+                            if (res.code === "OK") {
+                                uploadImages(res.result.productId, selectedImage).then((res) => {
+                                    if (res.code === "OK") {
+                                        setOpenPopup(false);
+                                        navigate("/seller/products");
+                                    }
+                                })
+                            }
+
                         })
                     }} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
                 </div>
@@ -317,8 +327,13 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                     POST("seller/add-product", { ...productForm, quantity: tmp }
                     ).then((res) => {
                         if (res.code === "OK") {
-                            navigate("/seller/products");
-                            setOpenPopup(false)
+                            uploadImages(res.result.productId, selectedImage).then((res) => {
+                                if (res.code === "OK") {
+                                    navigate("/seller/products");
+                                    setOpenPopup(false)
+                                }
+                            })
+
                         } else {
                             alert(res.message)
                         }
@@ -485,4 +500,31 @@ function VariantValue({ variants, setVariants, index, sub_index }) {
             }} />
         </div>
     );
+}
+async function uploadImages(productId, selectedImage) {
+    const formData = new FormData();
+    for (let i = 0; i < selectedImage.length; i++) {
+        if (selectedImage[i].isChoosed) {
+            formData.append('files', selectedImage[i].path);
+        }
+    }
+    return await fetch(`http://localhost:8080/images/upload-product-images/${productId}`, {
+        method: "POST",
+        headers: {
+            // 'Content-Type': 'multipart/form-data',
+            "Authorization": `Bearer ${localStorage.getItem("Authorization")}`
+        },
+        body: formData
+    });
+}
+function imagesEnough(selectedImage) {
+    let count = 0;
+    for (let i = 0; i < selectedImage.length; i++) {
+        if (selectedImage[i].isChoosed)
+            count++;
+    }
+    if(count < 5){return{"code" :false,message : "Please upload at least 5 images"}}
+    if(count >10){return{"code" :false,message : "Please upload at most 10 images"}}
+    return {"code" :true,message : "ok"}
+
 }

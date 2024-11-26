@@ -11,14 +11,14 @@ export default function Product({product}) {
         stars.push(<StarIcon key={i} style={{color: "yellow", fontSize: "20px"}}/>)
     }
     for (let i = 0; i < 5 - Math.round(product.rating); i++) {
-        stars.push(<StarIcon key={5 - i} style={{color: "white", fontSize: "20px"}}/>)
+        stars.push(<StarIcon key={5 - i} style={{color: "gray", fontSize: "20px"}}/>)
     }
     return (
         <Link to={`/product/${product.productId}`}>
-            <div className="bg-tuftsBlue p-2 w-60 h-[300px] rounded-md ">
-                <div className="h-full rounded-md flex flex-col space-y-2">
-                    <div className=" bg-white min-w-full h-[224px] ">
-                        <img src={product.imageUrls} width={224} alt={product.name}/>
+            <div className="bg-cloudBlue p-2 w-60 h-[350px] ">
+                <div className="h-full flex flex-col space-y-2">
+                    <div className=" bg-white min-w-full min-h-[224px]">
+                        <img className="rounded-md" src={product.productImage}  style={{aspectRatio: "1/1"}} alt={product.name}/>
                     </div>
                     <div className="text-lg grow p-2">
                         <p>{product.productName}</p>
@@ -27,7 +27,7 @@ export default function Product({product}) {
                         {stars}<span className="text-sm">({product.reviewCount})</span>
                     </div>
                     <div>
-                        <p>{product.price.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
+                        <p className="text-red">{product.price.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                     </div>
                 </div>
             </div>

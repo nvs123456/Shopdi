@@ -3,7 +3,7 @@ import Product from "./Product.jsx";
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
 import PaginationButton from "@/components/Navigation/Pagination.jsx";
-export default function ProductList({ products }) {
+export default function ProductList({ products, page }) {
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -30,8 +30,8 @@ export default function ProductList({ products }) {
             {products && products.map((product) => <div key={product.productId}>
                 <Product product={product} />
             </div>)}
-            <div className="flex flex-row justify-center absolute bottom-4 left-1/2">
-                <PaginationButton />
+            <div className="flex flex-col items-center">
+                <PaginationButton pageObject={page}/>
             </div>
         </div>
     )

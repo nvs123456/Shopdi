@@ -6,12 +6,14 @@ import { useLocation } from "react-router-dom";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import ShopBar from "../../components/Buyer/ShopBar.jsx";
 import { GET, POST } from "@/api/GET";
+import Comments from "../../components/Buyer/Review/Comments.jsx";
 export default function ProductDetail() {
     const location = useLocation();
     let t = location.pathname.split("/")
     const id = t[t.length - 1]
     const [isLoading, setIsLoading] = useState(true)
     const [product, setProduct] = useState({})
+    const [review, setReview] = useState({})
     useEffect(() => {
         GET(`products/${id}`).then((data) => {
             // data = {
@@ -55,6 +57,7 @@ export default function ProductDetail() {
                 tmp_quantityInStock += data.result.variants[i].quantity
             }
             setProduct(data.result)
+            setProductImages(data.result.imageUrls)
             setQuantityInStock(tmp_quantityInStock)
             if (data.result.variants.length > 0) {
                 let v = []
@@ -65,9 +68,12 @@ export default function ProductDetail() {
             } else {
                 setIsBuyNowWithoutAttribute(false)
             }
-            setIsLoading(false)
-
+            getReview(id).then((res) => {
+                setReview(res)
+                setIsLoading(false)
+            })
         })
+
     }, [isLoading])
     const shop_info = {
         name: "Shopdi",
@@ -80,9 +86,11 @@ export default function ProductDetail() {
 
     const [quantity, setQuantity] = useState(1);
     const [currentSelectedVariant, setCurrentSelectedVariant] = useState([]);
-
     const [isBuyNowWithoutAttribute, setIsBuyNowWithoutAttribute] = useState(true);
     const [quantityInStock, setQuantityInStock] = useState(0)
+    const [productImages,setProductImages] = useState([])
+    const [subImages, setSubImages] = useState([0, 1, 2, 3, 4])
+    const [curImage, setCurImage] = useState(0)
     const onChangeCurrentSelectedVariant = (type, value) => {
 
         let tmp = []
@@ -110,7 +118,7 @@ export default function ProductDetail() {
             document.getElementsByClassName('message')[0].innerHTML = "Please select attributes"
             return
         }
-        if(quantity > quantityInStock){
+        if (quantity > quantityInStock) {
             alert("Product is out of stock")
             return
         }
@@ -143,17 +151,15 @@ export default function ProductDetail() {
             // console.log(currentSelectedVariant)
         }
     }
-    const product_subImages = ["link-main-image", "link-image-1", "link-image-2", "link-image-3", "link-image-4", "link-image-5", "link-image-6", "link-image-7", "link-image-8", "link-image-9", "link-image-10"]
-    const [subImages, setSubImages] = useState([0, 1, 2, 3, 4])
-    const [curImage, setCurImage] = useState(0)
+    
     if (!isLoading) {
         return (
             <div className="pr-40 pl-40 bg-cloudBlue font-sans">
                 <div className="pt-10 flex flex-col gap-y-2">
                     <div className="product-info bg-white flex flex-row gap-x-8 border-2 rounded-md">
                         <div className="product-image w-2/5 p-2">
-                            <div className=" main-image w-full min-h-96 bg-red">
-                                <img src="#" alt={`image ${curImage}`} className="w-100 h-100" />
+                            <div className=" main-image w-full min-h-96">
+                                <img src={productImages[curImage]} alt={`image ${curImage}`} className="w-100 h-100 rounded-md" style={{aspectRatio: "1/1"}} />
                             </div>
                             <div className="sub-image w-full min-h-12 bg-white flex flex-row gap-x-2 mt-2">
                                 <button onClick={() => {
@@ -164,9 +170,9 @@ export default function ProductDetail() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
                                     </svg>
                                 </button>
-                                {subImages.map((i) => <div className="w-16 h-16 stretch bg-green" key={i} onClick={() => setCurImage(i)}><img src="#" alt={`image ${i}`} /></div>)}
+                                {subImages.map((i) => <div className="w-16 h-16 stretch bg-green" key={i} onClick={() => setCurImage(i)}><img src={productImages[i]} style={{aspectRatio: "1/1"}} alt={`image ${i}`} /></div>)}
                                 <button onClick={() => {
-                                    if (subImages[4] === product_subImages.length - 1) return
+                                    if (subImages[4] === productImages.length - 1) return
                                     let tmp = subImages.map((i) => i + 1)
                                     setSubImages(tmp)
                                 }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -176,20 +182,10 @@ export default function ProductDetail() {
                             </div>
                         </div>
                         <div className="product-description flex flex-col gap-y-4">
-                            <div className="text-2xl text-wrap">
+                            <div className="mt-8 text-3xl text-wrap">
                                 <p>{product.productName}</p>
                             </div>
-                            <div className="flex flex-row gap-x-5">
-                                <div className='border-r-2 pr-4 border-grey'>
-                                    {[1, 2, 3, 4, 5].map((i) => i < Math.round(product.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "20px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "20px" }} />)}
-                                </div>
-                                <div className='border-r-2 pr-4 border-grey'>
-                                    {product.reviewCount} đánh giá
-                                </div>
-                                <div>
-                                    {product.sold} đã bán
-                                </div>
-                            </div>
+
                             <div>
                                 <span className='text-4xl'>&#8363; {product.price.toLocaleString()}</span>
                             </div>
@@ -217,10 +213,47 @@ export default function ProductDetail() {
                             {product.description}
                         </div>
                     </div>
+                    <div className="description bg-white flex flex-row gap-x-8 border-2 rounded-md p-4">
+                        <div className="w-full">
+                            <div className="text-2xl">
+                                <h2>Bình luận</h2>
+                            </div>
+                            <div className="font-publicSans white-space-pre">
+                                <Comments productId={product.productId} />
+                            </div>
+                        </div>
+                        <div className="w-1/4">
+                            <button>
+
+                            </button>
+                            <div className="flex flex-col gap-y-2 items-center">
+                                <div className=''>
+                                    {[1, 2, 3, 4, 5].map((i) => i < Math.round(review.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "30px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "30px" }} />)}
+                                </div>
+                                <div className=' text-xl font-bold'>
+                                    {review.count} đánh giá
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div >
         )
     }
+}
+const getReview =async (productId) => {
+    const count = await GET(`reviews/product/${productId}/count`).then((res) => {
+        if (res.code === "OK") {
+            return res.result
+        }
+    })
+    const rating = await GET(`reviews/product/${productId}/average-rating`).then((res) => {
+        if (res.code === "OK") {
+            return res.result
+        }
+    })
+    return { count, rating }
 }
 
 
