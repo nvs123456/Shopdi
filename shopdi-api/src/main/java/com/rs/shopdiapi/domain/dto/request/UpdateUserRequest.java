@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateUserRequest {
-    String password;
     String firstName;
     String lastName;
     String email;
