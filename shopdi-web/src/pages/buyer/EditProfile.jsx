@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import UETLogo from "/src/assets/images/UETLogo.png";
 import axios from "axios";
 import {AddressForm} from "../../components/Buyer/AddressForm.jsx";
+import {useLocation} from "react-router-dom";
 
 const EditProfile = () => {
     const [addressList, setAddressList] = useState({});
@@ -15,6 +16,8 @@ const EditProfile = () => {
     const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
     const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
     const [form, setForm] = useState({firstName: "", lastName: "", email: "", mobileNo: ""});
+    const [addressIdsToRemove, setAddressIdsToRemove] = useState([]);
+    const location = useLocation();
     const [addressForm, setAddressForm] = useState({
         firstName: "",
         lastName: "",
@@ -24,27 +27,20 @@ const EditProfile = () => {
         email: "",
         phone: ""
     });
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
+            'Access-Control-Allow-Origin': 'http://localhost:5173',
+        }
+    }
     useEffect(() => {
-        axios.get(`http://localhost:8080/users/my-info`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-                    'Access-Control-Allow-Origin': 'http://localhost:5173',
-                }
-            })
+        axios.get(`http://localhost:8080/users/my-info`,config)
             .then((respsonse) => {
                 const data = respsonse.data;
                 setInfo(data.result);
             })
-        axios.get(`http://localhost:8080/address/shipping`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-                    'Access-Control-Allow-Origin': 'http://localhost:5173',
-                }
-            })
+        axios.get(`http://localhost:8080/address/shipping`, config)
             .then((respsonse) => {
                 const data = respsonse.data;
                 setAddressList(data.result);
@@ -74,13 +70,8 @@ const EditProfile = () => {
                     mobileNo: form.mobileNo === "" ? info.mobileNo : form.mobileNo
 
                 },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-                        'Access-Control-Allow-Origin': 'http://localhost:5173',
-                    }
-                })
+                config
+            )
                 .then((respsonse) => {
                     const data = respsonse.data;
                     console.log(data);
@@ -161,19 +152,13 @@ const EditProfile = () => {
         console.log(addressForm);
         axios.post(`http://localhost:8080/address/shipping`,
             addressForm,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-                    'Access-Control-Allow-Origin': 'http://localhost:5173',
-                }
-            })
+            config)
             .then((respsonse) => {
-                const data = respsonse.data;
-                console.log(data);
+
                 window.alert("Thêm địa chỉ thành công");
                 setIsAddressPopupOpen(false);
-                window.location.reload();
+
+                setAddressList([...addressList, addressForm]);
             })
     }
 
@@ -187,9 +172,26 @@ const EditProfile = () => {
 
     function handleUpdateAddress() {
         setIsUpdatingAddress(true);
-        openAddressPopup();
         console.log("update address");
 
+    }
+
+    function handleDeleteAddress(id) {
+        axios.delete(`http://localhost:8080/address/${id}`,
+            config
+        ).then(r => {
+            console.log(r);
+        })
+        setAddressList(addressList.filter((address) => address.addressId !== id));
+
+    }
+
+    function handleSetAddressAsDefault(addressId) {
+        axios.put(`http://localhost:8080/address/${addressId}/default`,
+            config
+        ).then(r => {
+            console.log(r);
+        })
     }
 
     return (
@@ -409,7 +411,7 @@ const EditProfile = () => {
                                             <div className={`lg:flex lg:relative border-b-2`}>
                                                 <div className={`flex flex-col`}>
                                                     <div className={`text-[14px] lg:text-[16px] pt-2`}>
-                                                        <b>{address.firstName + " " + address.lastName}</b> {"|" + address.phone}
+                                                        <b>{address.firstName + " " + address.lastName}</b> {"|" + address.phone || address.phoneNumber}
                                                     </div>
                                                     <span className={`text-[14px]`}>{address.email}</span>
                                                     <span className={`text-[14px] md:mb-2`}>{address.address}</span>
@@ -418,14 +420,16 @@ const EditProfile = () => {
                                                 <div
                                                     className={`xl:ml-[400px] text-[14px] lg:text-[16px]  xl:text-[18px]`}>
                                                     <button onClick={handleUpdateAddress}
-                                                        className={`text-celticBlue mr-1 xl:mr-2 xl:absolute xl:top-2 xl:right-8`}>Cập
+                                                            className={`text-celticBlue mr-1 xl:mr-2 xl:absolute xl:top-2 xl:right-8`}>Cập
                                                         nhật
                                                     </button>
-                                                    <button
-                                                        className={`text-celticBlue mr-1 xl:absolute xl:top-2 xl:right-0`}>Xóa
+                                                    <button onClick={() => handleDeleteAddress(address.addressId)}
+                                                            className={`text-celticBlue mr-1 xl:absolute xl:top-2 xl:right-0`}>Xóa
                                                     </button>
-                                                    <button
-                                                        className={`xl:absolute mr-1 xl:right-0 xl:top-8 border-2 border-gray-300 px-1`}>Thiết
+                                                    <button onClick={() => {
+                                                        handleSetAddressAsDefault(address.addressId)
+                                                    }}
+                                                            className={`xl:absolute mr-1 xl:right-0 xl:top-8 border-2 border-gray-300 px-1`}>Thiết
                                                         lập mặc định
                                                     </button>
 
