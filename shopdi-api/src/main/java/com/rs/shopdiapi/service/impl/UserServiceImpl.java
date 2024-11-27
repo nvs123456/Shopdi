@@ -112,10 +112,6 @@ public class UserServiceImpl implements UserService {
 
         userMapper.updateUser(user, request);
 
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        var roles = roleRepository.findAllByNameIn(request.getRoles());
-        user.setRoles(new HashSet<>(roles));
-
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
