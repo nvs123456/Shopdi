@@ -95,7 +95,6 @@ public class UserController {
     }
 
     @PutMapping("update-profile")
-    @PreAuthorize("hasRole('ADMIN')")
     ApiResponse<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
         User user = userService.getCurrentUser();
         return ApiResponse.<UserResponse>builder()
