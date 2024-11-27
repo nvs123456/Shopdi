@@ -6,6 +6,7 @@ import com.rs.shopdiapi.domain.dto.request.UpdateUserRequest;
 import com.rs.shopdiapi.domain.dto.response.AddressResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.dto.response.ProfileResponse;
+import com.rs.shopdiapi.domain.dto.response.RoleResponse;
 import com.rs.shopdiapi.domain.dto.response.UserResponse;
 import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.Role;
@@ -231,6 +232,12 @@ public class UserServiceImpl implements UserService {
                                         .phone(address.getPhoneNumber())
                                         .build())
                                 .collect(Collectors.toList()))
+                .roles(user.getRoles().stream()
+                        .map(role -> RoleResponse.builder()
+                                .name(role.getName())
+                                .description(role.getDescription())
+                                .build())
+                        .collect(Collectors.toSet()))
                 .status(user.getStatus())
                 .build();
     }

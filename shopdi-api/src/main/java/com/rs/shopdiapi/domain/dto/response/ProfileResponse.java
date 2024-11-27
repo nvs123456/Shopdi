@@ -24,5 +24,6 @@ public class ProfileResponse {
     String mobileNo;
     String profileImage;
     List<AddressResponse> address;
+    Set<RoleResponse> roles;
     UserStatusEnum status;
 }
