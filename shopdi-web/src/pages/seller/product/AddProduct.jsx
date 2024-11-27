@@ -505,7 +505,7 @@ async function uploadImages(productId, selectedImage) {
     const formData = new FormData();
     for (let i = 0; i < selectedImage.length; i++) {
         if (selectedImage[i].isChoosed) {
-            formData.append('files', selectedImage[i].path);
+            formData.append('images', selectedImage[i].path);
         }
     }
     return await fetch(`http://localhost:8080/images/upload-product-images/${productId}`, {
