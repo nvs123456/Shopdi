@@ -46,7 +46,7 @@ public class AddressServiceImpl implements AddressService {
                             .lastName(savedAddress.getLastName())
                             .address(savedAddress.getAddress() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getCountry())
                             .email(savedAddress.getEmail())
-                            .phone(savedAddress.getPhoneNumber())
+                            .phoneNumber(savedAddress.getPhoneNumber())
                             .isDefault(savedAddress.isDefault())
                             .build();
                 })
@@ -65,7 +65,7 @@ public class AddressServiceImpl implements AddressService {
                         .lastName(address.getLastName())
                         .address(address.getAddress() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getCountry())
                         .email(address.getEmail())
-                        .phone(address.getPhoneNumber())
+                        .phoneNumber(address.getPhoneNumber())
                         .isDefault(address.isDefault())
                         .build())
                 .toList();
@@ -96,7 +96,7 @@ public class AddressServiceImpl implements AddressService {
                         defaultAddress.getState() + ", " +
                         defaultAddress.getCountry())
                 .email(defaultAddress.getEmail())
-                .phone(defaultAddress.getPhoneNumber())
+                .phoneNumber(defaultAddress.getPhoneNumber())
                 .isDefault(defaultAddress.isDefault())
                 .build();
     }
@@ -138,7 +138,7 @@ public class AddressServiceImpl implements AddressService {
                         updatedAddress.getState() + ", " +
                         updatedAddress.getCountry())
                 .email(updatedAddress.getEmail())
-                .phone(updatedAddress.getPhoneNumber())
+                .phoneNumber(updatedAddress.getPhoneNumber())
                 .isDefault(updatedAddress.isDefault())
                 .build();
     }
