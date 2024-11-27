@@ -14,4 +14,6 @@ public interface AddressService {
     AddressResponse setDefaultAddress(Long userId, Long addressId);
 
     AddressResponse updateAddress(Long userId, Long addressId, AddressRequest addressRequest);
+
+    String deleteAddress(Long userId, Long addressId);
 }
