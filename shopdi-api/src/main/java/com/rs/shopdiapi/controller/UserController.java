@@ -94,7 +94,7 @@ public class UserController {
         return ApiResponse.<String>builder().result("User has been unban").build();
     }
 
-    @PutMapping("update-profile")
+    @PutMapping("/update-profile")
     ApiResponse<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
         User user = userService.getCurrentUser();
         return ApiResponse.<UserResponse>builder()
