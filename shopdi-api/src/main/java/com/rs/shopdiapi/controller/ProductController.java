@@ -1,6 +1,8 @@
 package com.rs.shopdiapi.controller;
 
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
+import com.rs.shopdiapi.domain.dto.response.ProductResponse;
+import com.rs.shopdiapi.domain.dto.response.ProductSuggestionResponse;
 import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.service.ProductService;
 import com.rs.shopdiapi.service.SellerService;
@@ -51,6 +53,20 @@ public class ProductController {
                 .build();
     }
 
-//    @GetMapping("/filter")
+    @GetMapping("/category/{categoryName}")
+    public ApiResponse<?> getProductsByCategoryId(@PathVariable String categoryName,
+                                                  @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
+                                                  @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+        return ApiResponse.builder()
+                .result(productService.findProductByCategory(categoryName, pageNo, pageSize))
+                .build();
+    }
+
+    @GetMapping("/suggestions")
+    public ApiResponse<?> getProductSuggestions(@RequestParam String query) {
+        return ApiResponse.builder()
+                .result(productService.getProductSuggestions(query))
+                .build();
+    }
 }
 

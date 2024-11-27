@@ -15,4 +15,5 @@ public class AddressResponse {
     String address;
     String phone;
     String email;
+    boolean isDefault;
 }

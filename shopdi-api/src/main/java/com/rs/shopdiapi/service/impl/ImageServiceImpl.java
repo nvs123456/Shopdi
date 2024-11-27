@@ -3,9 +3,11 @@ package com.rs.shopdiapi.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.rs.shopdiapi.domain.entity.Product;
+import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.repository.ProductRepository;
+import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 public class ImageServiceImpl implements ImageService {
     Cloudinary cloudinary;
     ProductRepository productRepository;
-
+    UserRepository userRepository;
 
     private String uploadImage(MultipartFile file) {
         try {
@@ -61,5 +63,15 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void deleteProductImage(String imageUrl) {
 
+    }
+
+    @Override
+    public String uploadProfileImage(Long userId, MultipartFile file) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        user.setProfileImage(uploadImage(file));
+        userRepository.save(user);
+        return user.getProfileImage();
     }
 }

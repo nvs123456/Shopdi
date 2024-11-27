@@ -1,7 +1,9 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
+import com.rs.shopdiapi.domain.dto.request.UpdateSellerRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.SellerResponse;
 import com.rs.shopdiapi.domain.dto.response.SimpleSellerResponse;
 import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.Role;
@@ -14,6 +16,7 @@ import com.rs.shopdiapi.repository.RoleRepository;
 import com.rs.shopdiapi.repository.SellerRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.SellerService;
+import com.rs.shopdiapi.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class SellerServiceImpl implements SellerService {
     SellerRepository sellerRepository;
     UserRepository userRepository;
     RoleRepository roleRepository;
+    UserService userService;
     OrderItemRepository orderItemRepository;
 
 
@@ -131,6 +135,56 @@ public class SellerServiceImpl implements SellerService {
 
         sellerRepository.save(seller);
         return "Seller registered successfully";
+    }
+
+    @Transactional
+    @Override
+    public SellerResponse updateSellerProfile(Long sellerId, UpdateSellerRequest request) {
+        Seller seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_EXIST));
+
+        User user = userService.getCurrentUser();
+        if (!seller.getUser().getId().equals(user.getId())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        seller.setShopName(request.getShopName());
+        seller.setEmail(request.getEmail());
+        seller.setLocation(request.getLocation());
+        seller.setContactNumber(request.getContactNumber());
+        seller.setAbout(request.getAbout());
+
+        Seller updatedSeller = sellerRepository.save(seller);
+
+        return SellerResponse.builder()
+                .sellerId(updatedSeller.getId())
+                .shopName(updatedSeller.getShopName())
+                .email(updatedSeller.getEmail())
+                .location(updatedSeller.getLocation())
+                .contactNumber(updatedSeller.getContactNumber())
+                .about(updatedSeller.getAbout())
+                .coverImage(seller.getCoverImage())
+                .profileImage(seller.getProfileImage())
+                .username(updatedSeller.getUser().getUsername())
+                .build();
+    }
+
+    @Override
+    public SellerResponse getSellerProfile(Long sellerId) {
+        Seller seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_EXIST));
+
+        return SellerResponse.builder()
+                .sellerId(seller.getId())
+                .shopName(seller.getShopName())
+                .email(seller.getEmail())
+                .location(seller.getLocation())
+                .contactNumber(seller.getContactNumber())
+                .about(seller.getAbout())
+                .coverImage(seller.getCoverImage())
+                .profileImage(seller.getProfileImage())
+                .username(seller.getUser().getUsername())
+                .build();
     }
 
     private SimpleSellerResponse toSimpleSellerResponse(Seller seller) {

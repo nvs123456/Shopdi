@@ -7,14 +7,24 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../routes/AuthProvider.jsx';
 import { useContext, useEffect, useState } from 'react';
 import {CategoryContext} from '../../pages/buyer/CategoryContext';
-const categories = CATEGORIES.CATEGORIES
+import { GET } from '../../api/GET.jsx';
 
 export default function Navigation(props) {
     const [isAdmin, setIsAdmin] = useState(false);
-    const { category, setCategory } = useContext(CategoryContext)
+    const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
+        GET("categories").then((res) => {
+            if (res.code === "OK") {
+                setCategories(res.result)
+                setIsLoading(false)
+            }
+        });
         JSON.parse(localStorage.getItem('roles')).find(role => role.name === 'ADMIN') ? setIsAdmin(true) : setIsAdmin(false);
     }, []);
+    if(isLoading){
+        return <div className="text-center">Loading...</div>
+    }
     return (
         <div className={`font-sans`}>
             <div className={'bg-yaleBlue text-yaleBlue text-[18px]'}>
@@ -71,7 +81,7 @@ export default function Navigation(props) {
                                                             <div
                                                                 className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                                                                 {categories.map((section) => (
-                                                                    <a key={section.name} href={`/${section.name}`}
+                                                                    <a key={section.name} href={`/category/${section.categoryId}`}
                                                                         >
                                                                         <div key={section.name}>
                                                                             <p id={`${section.name}-heading`}

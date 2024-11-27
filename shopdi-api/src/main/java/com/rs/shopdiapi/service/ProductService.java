@@ -5,7 +5,10 @@ import com.rs.shopdiapi.domain.dto.request.ProductFilterRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductDetailResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductResponse;
+import com.rs.shopdiapi.domain.dto.response.ProductSuggestionResponse;
 import com.rs.shopdiapi.domain.entity.Product;
+
+import java.util.List;
 
 public interface ProductService {
     ProductDetailResponse createProduct(ProductRequest productRequest, Long sellerId);
@@ -19,8 +22,6 @@ public interface ProductService {
     PageResponse<?> searchProduct(String query, int pageNo, int pageSize);
 
     PageResponse<?> findProductByCategory(String category, int pageNo, int pageSize);
-    PageResponse<?> findProductByParentCategory(String category, int pageNo, int pageSize);
-
 
     PageResponse<?> filterProducts(ProductFilterRequest filterRequest, int pageNo, int pageSize);
 
@@ -30,4 +31,5 @@ public interface ProductService {
 
     PageResponse<?> getMyProducts(int pageNo, int pageSize, String sortBy, String sortOrder, Long sellerId);
 
+    List<ProductSuggestionResponse> getProductSuggestions(String query);
 }

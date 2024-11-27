@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.domain.entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,6 +37,9 @@ public class Address extends BaseEntity<Long> {
     String city;
     String zipCode;
     String email;
+
+    @Column(nullable = false)
+    boolean isDefault = false;
 
     @Pattern(regexp = "(^0[3|5|7|8|9][0-9]{8}$)", message = "Enter valid 10 digit mobile number")
     String phoneNumber;

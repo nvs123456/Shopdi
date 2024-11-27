@@ -72,7 +72,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
     Seller seller;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses = new ArrayList<>();
+    List<Address> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore

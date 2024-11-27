@@ -13,14 +13,16 @@ export default function ProductManagement() {
   const query = new URLSearchParams(location.search);
   const pageParams = query.get('page');
   let pageUrl = ''
+  const [page, setPage] = useState({pageNo:0, totalPage:1})
   if (pageParams !== null) {
-    pageUrl = `?page=${pageParams}`
+    pageUrl = `?pageNo=${pageParams-1}`
   }
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     GET("seller/my-products" + pageUrl).then((data) => {
       setProducts(data.result?.items)
+      setPage({pageNo:data.result.pageNo, totalPage:data.result.totalPages})
       setIsLoading(false)
 
     })
@@ -28,7 +30,7 @@ export default function ProductManagement() {
   return (
     <div>
       <Filter>
-        <ProductList products={products} />
+        <ProductList products={products} page={page}/>
       </Filter>
     </div>
   )

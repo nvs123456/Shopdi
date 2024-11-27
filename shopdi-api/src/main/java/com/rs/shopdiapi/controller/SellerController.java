@@ -2,11 +2,14 @@ package com.rs.shopdiapi.controller;
 
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
 import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
+import com.rs.shopdiapi.domain.dto.request.UpdateSellerRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderResponse;
+import com.rs.shopdiapi.domain.dto.response.SellerResponse;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.Product;
+import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.jwt.JwtUtil;
@@ -116,6 +119,27 @@ public class SellerController {
                 .build();
     }
 
+    @GetMapping("/profile")
+    public ApiResponse<?> getSellerProfile() {
+        Seller seller = sellerService.getCurrentSeller();
+        SellerResponse response = sellerService.getSellerProfile(seller.getId());
+        return ApiResponse.builder()
+                .result(response)
+                .build();
+    }
+
+
+    @PutMapping("/profile")
+    public ApiResponse<?> updateSellerProfile(@RequestBody @Valid UpdateSellerRequest request) {
+        Seller seller = sellerService.getCurrentSeller();
+        SellerResponse response = sellerService.updateSellerProfile(seller.getId(), request);
+        return ApiResponse.builder()
+                .result(response)
+                .message("Profile updated successfully")
+                .build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<?> getAllSeller(@RequestParam(defaultValue = "0", required = false) int pageNo,
                                        @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {

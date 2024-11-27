@@ -5,19 +5,19 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-function PaginationButton({totalPage}) {
+function PaginationButton({pageObject}) {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get('page') || '1', 10);
 
     return (
         <Pagination
-            page={page}
-            count={totalPage}
+            page={pageObject?.pageNo+1 || 1}
+            count={pageObject?.totalPage || 1}
             renderItem={(item) => (
                 <PaginationItem
                     component={"a"}
-                    href={`${item.page === 1 ? '' : `?page=${item.page}`}`}
+                    href={`${location.pathname}?page=${item.page}`}
                     {...item}
                     sx={{
                         color: 'black', // Màu của văn bản

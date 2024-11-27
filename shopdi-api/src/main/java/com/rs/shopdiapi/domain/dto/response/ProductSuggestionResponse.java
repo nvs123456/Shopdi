@@ -9,10 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewResponse {
-    private Long reviewId;
-    private Long userId;
-    private String username;
-    private String review;
-    private Double ratingScore;
+public class ProductSuggestionResponse {
+    private Long id;
+    private String productName;
 }

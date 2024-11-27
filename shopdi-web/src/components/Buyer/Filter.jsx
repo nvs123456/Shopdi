@@ -9,22 +9,16 @@ const categories = CATEGORIES.CATEGORIES
 
 export default function Filter({ children, products, setProducts }) {
     const location = useLocation();
-    const currentCategory = decodeURIComponent(location.pathname.split("/")[1]);
+    const path = location.pathname.split("/");
+    const query = new URLSearchParams(location.search);
+    const currentCategoryId = path[path.length - 1];
 
     const [loading, setLoading] = useState(true);
     const [sub_categories, setSubCategories] = useState([])
     const buildUrl = (name, value, isCategory = false, checked = true) => {
-        // console.log(name, value, isCategory, checked)
-        if (isCategory) {
-            // console.log(`/${value}` + location.search)
-            return `/${value}` + location.search
-        }
         const params = new URLSearchParams(location.search);
-        // console.log(params)
         if (params.has(name)) {
-            // console.log(params)
             params.set(name, encodeURI(value))
-            // console.log(location.pathname + `?${params.toString()}`)
             return location.pathname + `?${params.toString()}`
         }
         if (location.search === '') {
@@ -42,19 +36,25 @@ export default function Filter({ children, products, setProducts }) {
         return false
     }
     useEffect(() => {
-        GET(`categories/child/${currentCategory}`).then((res) => {
-            if (res.code === "OK") {
-                // console.log(res)
-                setSubCategories(res.result.map((item) => item.name))
-                setLoading(false)
-            } else {
-                // console.log(res)
+        console.log(currentCategoryId)
+        GET(`categories/${currentCategoryId}`).then((res) => {
+            if(res.code === "OK") {
+                setSubCategories(res.result.childCategories.map((item) => item.name))
                 setLoading(false)
             }
         })
+        // GET(`categories/child/${currentCategory}`).then((res) => {
+        //     if (res.code === "OK") {
+        //         // console.log(res)
+        //         setSubCategories(res.result.map((item) => item.name))
+        //         setLoading(false)
+        //     } else {
+        //         // console.log(res)
+        //         setLoading(false)
+        //     }
+        // })
     }, [])
     if (!loading) {
-        const category = categories.find((category) => category.name === currentCategory);
         return (
             <div className="bg-white">
                 <main className="mx-auto max-width-20 px-4 sm:px-6 lg:px-8">
@@ -72,7 +72,7 @@ export default function Filter({ children, products, setProducts }) {
                                 <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                                     {category.sub_categories.map(item => <li key={item}><a href="#">{item}</a></li>)}
                                 </ul> */}
-                                <FilterSection location={location} type={currentCategory} values={sub_categories} buildUrl={(value) => { return buildUrl("category", value, true, false) }} />
+                                <FilterSection location={location} type="All" values={sub_categories} buildUrl={(value) => { return buildUrl("category", value, true, false) }} />
                                 <FilterSection location={location} type="brand" values={["Apple", "Samsung", "Google", "Sony"]} buildUrl={(value) => { return buildUrl("brand", value, false, false) }} />
                                 <PriceFilter />
                                 <FilterSection location={location} type="rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} buildUrl={(value) => { return buildUrl("rating", value, false, false) }} />

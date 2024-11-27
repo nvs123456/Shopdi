@@ -11,4 +11,6 @@ public interface ImageService {
     List<String> uploadProductImage(List<MultipartFile> file, Long productId);
 
     void deleteProductImage(String imageUrl);
+
+    String uploadProfileImage(Long userId,MultipartFile file);
 }

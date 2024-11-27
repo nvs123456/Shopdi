@@ -60,12 +60,9 @@ public class Product extends BaseEntity<Long> {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Review> reviews = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     Category category;
-    @ManyToOne
-    @JoinColumn(name = "parent_category_id")
-    Category parentCategory;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
