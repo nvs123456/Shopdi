@@ -13,7 +13,7 @@ public class AddressResponse {
     String firstName;
     String lastName;
     String address;
-    String phone;
+    String phoneNumber;
     String email;
     boolean isDefault;
 }

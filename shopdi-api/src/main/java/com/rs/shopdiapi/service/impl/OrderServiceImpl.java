@@ -247,7 +247,7 @@ public class OrderServiceImpl implements OrderService {
                 .firstName(address.getFirstName())
                 .lastName(address.getLastName())
                 .address(address.getAddress() + ", " + address.getCity() + ", " + address.getState() + address.getCountry())
-                .phone(address.getPhoneNumber())
+                .phoneNumber(address.getPhoneNumber())
                 .email(address.getEmail())
                 .build();
     }
