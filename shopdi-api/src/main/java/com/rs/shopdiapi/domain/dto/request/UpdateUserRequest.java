@@ -19,5 +19,4 @@ public class UpdateUserRequest {
     String lastName;
     String email;
     String mobileNo;
-    List<String> roles;
 }
