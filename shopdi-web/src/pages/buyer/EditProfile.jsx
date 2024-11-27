@@ -11,6 +11,7 @@ const EditProfile = () => {
     const [errorNo, setErrorNo] = useState(""); // Lưu thông báo lỗi
     const [errorEmail, setErrorEmail] = useState(""); // Lưu thông báo lỗi
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
     const [form, setForm] = useState({firstNameForm: "", lastNameForm: "", emailForm: "", phoneForm: ""});
     useEffect(() => {
         axios.get(`http://localhost:8080/users/my-info`,
@@ -59,7 +60,7 @@ const EditProfile = () => {
                     lastName: form.lastNameForm,
                     email: form.emailForm,
                     mobileNo: form.phoneForm,
-                    role: info.role,
+                    role: localStorage.getItem('roles'),
 
                 },
                 {
@@ -144,9 +145,20 @@ const EditProfile = () => {
         </div>
     );
 
+    function handleAddAddress() {
+
+    }
+
+    function openAddressPopup() {
+        setIsAddressPopupOpen(true);
+    }
+    function closeAddressPopup() {
+        setIsAddressPopupOpen(false);
+    }
+
     return (
-        <div className="bg-[#F7FBFF] flex flex-col lg:flex-row font-sans md:text-[14px] p-1 md:p-8">
-            <div className={`lg:flex lg:flex-col `}>
+        <div className={`bg-[#F7FBFF] flex flex-col lg:flex-row font-sans md:text-[14px] p-1 md:p-8`}>
+            <div className={`${isAddressPopupOpen ? 'pointer-events-none brightness-50' : ' '} lg:flex lg:flex-col `}>
                 <ul className=" flex lg:flex-col lg:space-y lg:space-y-4 text-[12px] md:text-[16px] font-medium text-gray-500 dark:text-gray-400  md:me-4 mb-2 md:mb-0">
                     <li>
                         <a onClick={() => setActiveTab('profile')}
@@ -268,13 +280,14 @@ const EditProfile = () => {
                 {/* Billing and Shipping Address Section */}
                 {activeTab === 'address' &&
                     <section
-                        className="md:ml-[60px] lg:ml-[100px] xl:ml-[250px] max-w-4xl mx-auto bg-white p-2 md:p-6 mb-8 border-2 border-[#E4E7E9]">
+                        className={`md:ml-[60px] lg:ml-[100px] xl:ml-[250px] max-w-4xl mx-auto bg-white p-2 md:p-6 mb-8 border-2 border-[#E4E7E9]`}>
                         <div className="relative w-full md:w-full px-0 md:px-4 lg:mb-4">
                             <h3 className=" text-[16px] xl:text-xl md:mb-4 border-b-2 pb-2">Địa chỉ của tôi</h3>
-                            <button
-                                className={` absolute top-1 right-0 xl:fixed xl:top-[210px] xl:right-[500px] bg-orangeRed lg:h-[40px] rounded px-1 md:px-2 text-white text-[12px] lg:text-sm`}>Thêm
+                            <button onClick={openAddressPopup}
+                                className={` absolute top-1 right-0 xl:absolute xl:top-[0px] xl:right-[30px] bg-orangeRed lg:h-[40px] rounded px-1 md:px-2 text-white text-[12px] lg:text-sm`}>Thêm
                                 địa chỉ mới
                             </button>
+                            {isAddressPopupOpen && <AddressForm title="Thêm địa chỉ mới"/>}
                             <div>
                                 <h4 className=" text-[14px] xl:text-lg mt-1 md:pb-2">Địa chỉ</h4>
                                 <div>
@@ -362,29 +375,25 @@ function isEmail(email) {
 const AddressForm = ({
                          title
                      }) => (
-    <div className="w-full md:w-full px-0 md:px-4 mb-4">
-        <h3 className=" text-[20px] text-xl mb-4 border-b-4">{title}</h3>
-        <button className={``}>Thêm địa chỉ mới</button>
+    <div className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-2 fixed z-10 bg-gray-300 top-[15%] right-[35%]  px-0 md:px-4 mb-4">
+        <h3 className=" text-[20px] mb-4 border-b-4">{title}</h3>
         <div className="grid grid-cols-2 gap-4">
             {[
                 {label: "First Name", placeholder: "Kevin"},
                 {label: "Last Name", placeholder: "Gilbert"},
-                {label: "Company Name", placeholder: "Optional", colSpan: true},
                 {label: "Address", placeholder: "Street address", colSpan: true},
-                {label: "Country", placeholder: "Country"},
-                {label: "Region/State", placeholder: "State"},
+                {label: "District", placeholder: "State"},
                 {label: "City", placeholder: "City"},
-                {label: "Zip Code", placeholder: "Zip Code"},
                 {label: "Email", placeholder: "email@example.com", colSpan: true},
                 {label: "Phone Number", placeholder: "Phone number", colSpan: true},
             ].map((field, index) => (
                 <div key={index} className={field.colSpan ? "col-span-2" : ""}>
-                    <label className="block text-[15px] md:text-sm mb-1">
+                    <label className="block text-[14px] md:text-[14px] mb-1">
                         {field.label}
                     </label>
                     <input
                         type="text"
-                        className="w-full border-[#E4E7E9] border-2 rounded-sm p-2"
+                        className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded-sm p-2"
                         placeholder={field.placeholder}
                     />
                 </div>
