@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import UETLogo from "/src/assets/images/UETLogo.png";
 import axios from "axios";
+import {AddressForm} from "../../components/Buyer/AddressForm.jsx";
 
 const EditProfile = () => {
     const [addressList, setAddressList] = useState({});
@@ -12,7 +13,17 @@ const EditProfile = () => {
     const [errorEmail, setErrorEmail] = useState(""); // Lưu thông báo lỗi
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
-    const [form, setForm] = useState({firstNameForm: "", lastNameForm: "", emailForm: "", phoneForm: ""});
+    const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
+    const [form, setForm] = useState({firstName: "", lastName: "", email: "", mobileNo: ""});
+    const [addressForm, setAddressForm] = useState({
+        firstName: "",
+        lastName: "",
+        address: "",
+        district: "",
+        city: "",
+        email: "",
+        phone: ""
+    });
     useEffect(() => {
         axios.get(`http://localhost:8080/users/my-info`,
             {
@@ -53,14 +64,14 @@ const EditProfile = () => {
     function handleUpdateProfile() {
         console.log(info);
         console.log(form);
-        if(errorNo === "" && errorEmail === "") {
+        const newForm = Object.fromEntries(Object.entries(form).filter(([key, value]) => value !== ""));
+        if (errorNo === "" && errorEmail === "") {
             axios.put(`http://localhost:8080/users/update-profile`,
                 {
-                    firstName: form.firstNameForm,
-                    lastName: form.lastNameForm,
-                    email: form.emailForm,
-                    mobileNo: form.phoneForm,
-                    role: localStorage.getItem('roles'),
+                    firstName: form.firstName === "" ? info.firstName : form.firstName,
+                    lastName: form.lastName === "" ? info.lastName : form.lastName,
+                    email: form.email === "" ? info.email : form.email,
+                    mobileNo: form.mobileNo === "" ? info.mobileNo : form.mobileNo
 
                 },
                 {
@@ -87,7 +98,7 @@ const EditProfile = () => {
             setErrorNo("Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng.");
         } else {
             setErrorNo("");
-            setForm({...form, phoneForm: value});
+            setForm({...form, mobileNo: value});
         }
     }
 
@@ -100,7 +111,7 @@ const EditProfile = () => {
             setErrorEmail("Email không hợp lệ. Vui lòng nhập đúng định dạng.");
         } else {
             setErrorEmail(""); // Xóa lỗi nếu hợp lệ
-            setForm({...form, emailForm: value});
+            setForm({...form, email: value});
         }
     }
 
@@ -122,7 +133,8 @@ const EditProfile = () => {
         handleUpdateProfile();
     };
     const AskAgainNotification = () => (
-        <div className="fixed left-[15%] md:left-[20%] xl:left-[35%] bg-gray-500 bg-opacity-50 z-10 flex justify-center items-center">
+        <div
+            className="fixed left-[15%] md:left-[20%] xl:left-[35%] bg-gray-500 bg-opacity-50 z-10 flex justify-center items-center">
             <div className="bg-gray-300 rounded-lg shadow-lg p-6 w-80">
                 <h2 className="lg:text-[22px] font-bold text-gray-800">
                     Bạn có chắc chắn sửa lại thông tin?
@@ -146,14 +158,38 @@ const EditProfile = () => {
     );
 
     function handleAddAddress() {
-
+        console.log(addressForm);
+        axios.post(`http://localhost:8080/address/shipping`,
+            addressForm,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
+                    'Access-Control-Allow-Origin': 'http://localhost:5173',
+                }
+            })
+            .then((respsonse) => {
+                const data = respsonse.data;
+                console.log(data);
+                window.alert("Thêm địa chỉ thành công");
+                setIsAddressPopupOpen(false);
+                window.location.reload();
+            })
     }
 
     function openAddressPopup() {
         setIsAddressPopupOpen(true);
     }
+
     function closeAddressPopup() {
         setIsAddressPopupOpen(false);
+    }
+
+    function handleUpdateAddress() {
+        setIsUpdatingAddress(true);
+        openAddressPopup();
+        console.log("update address");
+
     }
 
     return (
@@ -218,7 +254,7 @@ const EditProfile = () => {
                                         defaultValue={info.firstName}
                                         onChange={(e) => {
                                             setIsEdit(true);
-                                            setForm({...form, firstNameForm: e.target.value});
+                                            setForm({...form, firstName: e.target.value});
                                         }}
                                         className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
                                     />
@@ -233,7 +269,7 @@ const EditProfile = () => {
                                         defaultValue={info.lastName}
                                         onChange={(e) => {
                                             setIsEdit(true);
-                                            setForm({...form, lastNameForm: e.target.value});
+                                            setForm({...form, lastName: e.target.value});
                                         }}
                                         className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
                                     />
@@ -249,7 +285,9 @@ const EditProfile = () => {
                                         onChange={handleEmailChange}
                                         className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
                                     />
-                                    {errorEmail && <p className="text-[10px] md:text-[12px] lg:text-[14px] text-red">Email không hợp lệ</p>}
+                                    {errorEmail &&
+                                        <p className="text-[10px] md:text-[12px] lg:text-[14px] text-red">Email không
+                                            hợp lệ</p>}
                                 </div>
                                 <div>
                                     <label className="block text-[15px] md:text-sm mb-1 col-span-2">
@@ -262,7 +300,9 @@ const EditProfile = () => {
                                         onChange={handleNumberChange}
                                         className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
                                     />
-                                    {errorNo && <p className=" text-[10px] md:text-[12px] lg:text-[14px] text-red">Số điện thoại không hợp lệ</p>}
+                                    {errorNo &&
+                                        <p className=" text-[10px] md:text-[12px] lg:text-[14px] text-red">Số điện thoại
+                                            không hợp lệ</p>}
                                 </div>
                             </div>
                             {isEdit && <button onClick={() => {
@@ -282,12 +322,85 @@ const EditProfile = () => {
                     <section
                         className={`md:ml-[60px] lg:ml-[100px] xl:ml-[250px] max-w-4xl mx-auto bg-white p-2 md:p-6 mb-8 border-2 border-[#E4E7E9]`}>
                         <div className="relative w-full md:w-full px-0 md:px-4 lg:mb-4">
-                            <h3 className=" text-[16px] xl:text-xl md:mb-4 border-b-2 pb-2">Địa chỉ của tôi</h3>
+                            <h3 className=" text-[16px] xl:text-xl md:mb-4 border-b-2 md:pb-2">Địa chỉ của tôi</h3>
                             <button onClick={openAddressPopup}
-                                className={` absolute top-1 right-0 xl:absolute xl:top-[0px] xl:right-[30px] bg-orangeRed lg:h-[40px] rounded px-1 md:px-2 text-white text-[12px] lg:text-sm`}>Thêm
-                                địa chỉ mới
+                                    className={` absolute right-0 top-0 lg:top-0 lg:right-5 xl:absolute xl:top-[0px] xl:right-[30px] bg-orangeRed lg:h-[30px] xl:h-[40px] rounded px-1 md:px-2 text-white text-[12px] lg:text-[14px]`}>
+                                Thêm địa chỉ mới
                             </button>
-                            {isAddressPopupOpen && <AddressForm title="Thêm địa chỉ mới"/>}
+                            {isAddressPopupOpen &&
+                                <div
+                                    className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-2 fixed z-10 bg-gray-300 top-[15%] right-[35%]  px-0 md:px-4 mb-4">
+                                    <h3 className=" text-[20px] mb-4 border-b-4">Thêm địa chỉ</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {[
+                                            {
+                                                label: "First Name",
+                                                labelForm: "firstName",
+                                                placeholder: "Enter your first name"
+                                            },
+                                            {
+                                                label: "Last Name",
+                                                labelForm: "lastName",
+                                                placeholder: "Enter your last name"
+                                            },
+                                            {
+                                                label: "Address",
+                                                labelForm: "address",
+                                                placeholder: "specific address",
+                                                colSpan: true
+                                            },
+                                            {label: "District", labelForm: "district", placeholder: "District"},
+                                            {label: "City", labelForm: "city", placeholder: "City"},
+                                            {
+                                                label: "Email",
+                                                labelForm: "email",
+                                                placeholder: "email@example.com",
+                                                colSpan: true
+                                            },
+                                            {
+                                                label: "Phone Number",
+                                                labelForm: "phoneNumber",
+                                                placeholder: "Phone number",
+                                                colSpan: true
+                                            },
+                                        ].map((field, index) => (
+                                            <div key={index} className={field.colSpan ? "col-span-2" : ""}>
+                                                <label className="block text-[14px] md:text-[14px] mb-1">
+                                                    {field.label}
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    onChange={(e) => {
+                                                        setAddressForm({
+                                                            ...addressForm,
+                                                            [field.labelForm]: e.target.value
+                                                        });
+                                                    }}
+                                                    required={true}
+                                                    className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded-sm p-2"
+                                                    placeholder={field.placeholder}
+                                                />
+                                            </div>
+                                        ))}
+                                        <div className={`col-span-2 flex`}>
+                                            <label className="block text-[14px] md:text-[14px] pr-2 mb-1">
+                                                Select as default address
+                                            </label>
+                                            <input type={"checkbox"} className={"w-4 h-4"} onChange={(e) => {
+                                                setAddressForm({...addressForm, default: e.target.checked});
+                                            }}/>
+                                        </div>
+                                    </div>
+                                    <button onClick={handleAddAddress}
+                                            className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded-sm hover:bg-orange-600">
+                                        Save Changes
+                                    </button>
+                                    <button onClick={closeAddressPopup}
+                                            className="bg-gray-400 mx-2 text-white py-2 px-4 mt-4 rounded-sm hover:bg-gray-600">
+                                        Cancel
+                                    </button>
+                                </div>
+                            }
                             <div>
                                 <h4 className=" text-[14px] xl:text-lg mt-1 md:pb-2">Địa chỉ</h4>
                                 <div>
@@ -304,7 +417,7 @@ const EditProfile = () => {
 
                                                 <div
                                                     className={`xl:ml-[400px] text-[14px] lg:text-[16px]  xl:text-[18px]`}>
-                                                    <button
+                                                    <button onClick={handleUpdateAddress}
                                                         className={`text-celticBlue mr-1 xl:mr-2 xl:absolute xl:top-2 xl:right-8`}>Cập
                                                         nhật
                                                     </button>
@@ -371,38 +484,5 @@ function isEmail(email) {
     return regex.test(email);
 }
 
-
-const AddressForm = ({
-                         title
-                     }) => (
-    <div className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-2 fixed z-10 bg-gray-300 top-[15%] right-[35%]  px-0 md:px-4 mb-4">
-        <h3 className=" text-[20px] mb-4 border-b-4">{title}</h3>
-        <div className="grid grid-cols-2 gap-4">
-            {[
-                {label: "First Name", placeholder: "Kevin"},
-                {label: "Last Name", placeholder: "Gilbert"},
-                {label: "Address", placeholder: "Street address", colSpan: true},
-                {label: "District", placeholder: "State"},
-                {label: "City", placeholder: "City"},
-                {label: "Email", placeholder: "email@example.com", colSpan: true},
-                {label: "Phone Number", placeholder: "Phone number", colSpan: true},
-            ].map((field, index) => (
-                <div key={index} className={field.colSpan ? "col-span-2" : ""}>
-                    <label className="block text-[14px] md:text-[14px] mb-1">
-                        {field.label}
-                    </label>
-                    <input
-                        type="text"
-                        className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded-sm p-2"
-                        placeholder={field.placeholder}
-                    />
-                </div>
-            ))}
-        </div>
-        <button className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded-sm hover:bg-orange-600">
-            Save Changes
-        </button>
-    </div>
-);
 
 export default EditProfile;
