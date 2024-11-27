@@ -143,6 +143,20 @@ public class AddressServiceImpl implements AddressService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public String deleteAddress(Long userId, Long addressId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Address address = addressRepository.findById(addressId)
+                .filter(a -> a.getUser().getId().equals(userId))
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        addressRepository.delete(address);
+        return "Address deleted successfully";
+    }
+
     private Address convertToAddressEntity(AddressRequest request) {
         return Address.builder()
                 .firstName(request.getFirstName())
