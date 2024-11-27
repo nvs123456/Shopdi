@@ -31,6 +31,10 @@ code {
 }
 }
 @layer base {
+  @font-face {
+    font-family: "open-sans";
+    src: url("./font/OpenSans_variablefont.ttf") format('truetype');
+  }
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;

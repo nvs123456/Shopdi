@@ -16,7 +16,7 @@ export default function Navigation(props) {
         JSON.parse(localStorage.getItem('roles')).find(role => role.name === 'ADMIN') ? setIsAdmin(true) : setIsAdmin(false);
     }, []);
     return (
-        <div>
+        <div className={`font-sans`}>
             <div className={'bg-yaleBlue text-yaleBlue text-[18px]'}>
                 header
             </div>

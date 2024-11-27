@@ -1,14 +1,14 @@
 export default function  SellerProfile() {
     return (
         <div className="min-h-screen flex flex-col items-center font-sans text-sm">
-            <h1 className="text-3xl font-semibold mt-10">Profile</h1>
+            <h1 className="text-3xl font-semibold mt-10">EditProfile</h1>
             <div className="bg-white w-full max-w-4xl rounded-lg mb-10 mt-10">
-                {/* Profile Picture and Name */}
+                {/* EditProfile Picture and Name */}
                 <div className="bg-gradient-to-b from-blue-300 rounded-t-lg to-blue-50 flex flex-col items-center">
                     <div className="relative mt-2 w-20 h-20">
                         <img
                             src="/src/assets/images/UETLogo.png" // replace with actual image path
-                            alt="Profile"
+                            alt="EditProfile"
                             className="w-full h-full object-cover rounded-full"
                         />
                     </div>

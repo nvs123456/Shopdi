@@ -8,9 +8,10 @@ import OrderHistory from "../pages/buyer/OrderHistory.jsx";
 import Review from "../pages/buyer/Review.jsx";
 import Navigation from '../components/Navigation/Navigation.jsx';
 import Footer from '../components/Footer/Footer.jsx';
-import Profile from "../pages/buyer/Profile.jsx";
+import EditProfile from "../pages/buyer/EditProfile.jsx";
 
 import SellerList from "../pages/admin/SellerList.jsx";
+import Profile from "../pages/buyer/Profile.jsx";
 const AppRouter = () => {
     const [category, setCategory] = React.useState("");
     return (
@@ -21,6 +22,7 @@ const AppRouter = () => {
             </div>
             <Routes basename="/">
                 <Route path={"/profile"} exact element={<Profile />} />
+                <Route path={"/editprofile"} exact element={<EditProfile />} />
                 <Route path="review" exact element={<Review />} />
                 <Route path="/orderhistory" exact element={<OrderHistory/>} />
                 <Route path="orders/:id" exact element={<OrderDetails  />} />
