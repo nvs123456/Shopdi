@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
 import profileDefault from "../../assets/images/profileDefault.png";
 import axios from "axios";
-import {AddressForm} from "../../components/Buyer/AddressForm.jsx";
-import {useLocation} from "react-router-dom";
 
 const EditProfile = () => {
     const [addressList, setAddressList] = useState({});
@@ -240,6 +238,7 @@ const EditProfile = () => {
         }).finally(() => {
             setPreview(null);
             setInfo({...info, profileImage: preview});
+            window.alert("Upload ảnh thành công");
         })
 
     }
@@ -282,7 +281,7 @@ const EditProfile = () => {
                         {/* EditProfile Image */}
                         <div className="w-full md:w-1/4 flex flex-col justify-top items-center  ">
                             <img
-                                src={preview ||info.profileImage|| profileDefault }
+                                src={preview || info.profileImage || profileDefault}
                                 alt="EditProfile"
                                 className="w-10 h-10 lg:w-16 lg:h-16 border-2 border-gray-400 p-1 rounded-full"
                             />
