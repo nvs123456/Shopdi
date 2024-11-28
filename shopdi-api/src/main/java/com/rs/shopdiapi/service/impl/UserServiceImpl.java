@@ -226,6 +226,7 @@ public class UserServiceImpl implements UserService {
                                                 address.getCountry())
                                         .email(address.getEmail())
                                         .phoneNumber(address.getPhoneNumber())
+                                        .isDefault(address.isDefault())
                                         .build())
                                 .collect(Collectors.toList()))
                 .roles(user.getRoles().stream()
