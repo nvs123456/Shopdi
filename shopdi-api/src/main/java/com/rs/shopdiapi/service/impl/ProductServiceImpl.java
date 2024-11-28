@@ -121,12 +121,40 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductResponse updateProduct(ProductRequest productRequest, Long productId) {
-        var product = productRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+    public ProductResponse updateProduct(ProductRequest productRequest, Long productId, Long sellerId) {
+        var product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        productMapper.updateProduct(product, productRequest);
+        if (!product.getSeller().getId().equals(sellerId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
 
-        return this.toProductResponse(productRepository.save(product));
+        product.setProductName(productRequest.getProductName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setBrand(productRequest.getBrand());
+
+        Category category = categoryService.getCategoryByName(productRequest.getCategoryName());
+        product.setCategory(category);
+
+        Set<Tag> tags = productRequest.getTagNames().stream()
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseGet(() -> new Tag(tagName)))
+                .collect(Collectors.toSet());
+        product.setTags(tags);
+
+        Set<Variant> newVariants = productRequest.getVariantDetails().stream()
+                .map(variantDetail -> {
+                    Variant variant = new Variant();
+                    variant.setVariantDetail(variantDetail.getVariantDetail());
+                    variant.setQuantity(variantDetail.getQuantity());
+                    variant.setProduct(product);
+                    return variant;
+                }).collect(Collectors.toSet());
+        product.setVariants(newVariants);
+
+        Product updatedProduct = productRepository.save(product);
+        return this.toProductResponse(updatedProduct);
     }
 
     @Override
