@@ -34,7 +34,7 @@ public class AddressServiceImpl implements AddressService {
                     Address address = convertToAddressEntity(addressRequest);
                     address.setUser(user);
 
-                    if (addressRequest.isDefault()) {
+                    if (addressRequest.isDefault() || user.getAddresses().isEmpty()) {
                         user.getAddresses().forEach(existingAddress -> existingAddress.setDefault(false));
                     }
 
