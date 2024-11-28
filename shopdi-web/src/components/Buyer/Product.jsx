@@ -20,8 +20,8 @@ export default function Product({product}) {
                     <div className=" bg-white min-w-full min-h-[224px]">
                         <img className="rounded-md" src={product.productImage}  style={{aspectRatio: "1/1"}} alt={product.name}/>
                     </div>
-                    <div className="text-lg grow p-2">
-                        <p>{product.productName}</p>
+                    <div className="text-sm grow p-2">
+                        <p className="truncate overflow-hidden">{product.productName}</p>
                     </div>
                     <div>
                         {stars}<span className="text-sm">({product.reviewCount})</span>

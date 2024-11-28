@@ -205,12 +205,12 @@ export default function ProductDetail() {
                         </div>
                     </div>
                     <ShopBar shop_info={shop_info} />
-                    <div className="description bg-white flex flex-col gap-x-8 border-2 rounded-md p-4">
+                    <div className="description  bg-white flex flex-col gap-x-8 border-2 rounded-md p-4">
                         <div className="text-2xl">
                             <h2>Mô tả</h2>
                         </div>
-                        <div className="font-publicSans white-space-pre">
-                            {product.description}
+                        <div>
+                            <p className="font-publicSans white-space-pre" dangerouslySetInnerHTML={{__html: product.description.replace(/\n/g, "<br>")}}></p>
                         </div>
                     </div>
                     <div className="description bg-white flex flex-row gap-x-8 border-2 rounded-md p-4">
