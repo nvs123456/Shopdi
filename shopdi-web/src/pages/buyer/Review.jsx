@@ -1,10 +1,11 @@
 import React from 'react';
 import {Textarea} from "@headlessui/react";
 import FiveStar from '../../components/Buyer/Review/FiveStar.jsx'
+import hiddenCssClasses from "@mui/material/Hidden/hiddenCssClasses.js";
 
-function Review() {
+function Review({isModalOpen,setIsModalOpen}) {
     return (
-        <div className='h-56 w-60 md:h-full md:w-[400px] mx-auto mb-2 border-2 border-[#E4E7E9] rounded bg-white font-sans'>
+        <div className={`${isModalOpen ? '':'hidden' }max-h-80 w-60 md:h-full md:w-[400px] fixed top-[25%] left-[780px] z-10 mx-auto mb-2 border-2 border-[#E4E7E9] rounded bg-white font-sans`}>
             <div className='flex items-center justify-between border-2 border-[#E4E7E9] rounded p-2 m-2'>
                 <h1 className='text-[14px] md:text-[16px] font-sans'>BILLING ADDRESS</h1>
             </div>
@@ -25,7 +26,7 @@ function Review() {
                     <button className='bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-28 md:h-8 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
                         PUBLISH REVIEW
                     </button>
-                    <button className='bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-28 md:h-8 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
+                    <button onClick={() => setIsModalOpen(false)} className='bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-28 md:h-8 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
                         REVIEW LATER
                     </button>
                 </div>
