@@ -16,8 +16,7 @@ const EditProfile = () => {
     const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
     const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
     const [form, setForm] = useState({firstName: "", lastName: "", email: "", mobileNo: ""});
-    const [addressIdsToRemove, setAddressIdsToRemove] = useState([]);
-    const location = useLocation();
+    const [passwordForm, setPasswordForm] = useState({token: localStorage.getItem('Authorization'),currentPassword: "", newPassword: "", confirmPassword: ""});
     const [addressForm, setAddressForm] = useState({
         firstName: "",
         lastName: "",
@@ -148,20 +147,6 @@ const EditProfile = () => {
         </div>
     );
 
-    function handleAddAddress() {
-        console.log(addressForm);
-        axios.post(`http://localhost:8080/address/shipping`,
-            addressForm,
-            config)
-            .then((respsonse) => {
-
-                window.alert("Thêm địa chỉ thành công");
-                setIsAddressPopupOpen(false);
-
-                setAddressList([...addressList, addressForm]);
-            })
-    }
-
     function openAddressPopup() {
         setIsAddressPopupOpen(true);
     }
@@ -185,13 +170,39 @@ const EditProfile = () => {
         setAddressList(addressList.filter((address) => address.addressId !== id));
 
     }
+    function handleAddAddress() {
+        console.log(addressForm);
+        axios.post(`http://localhost:8080/address/shipping`,
+            addressForm,
+            config)
+            .then((respsonse) => {
 
+                window.alert("Thêm địa chỉ thành công");
+                setIsAddressPopupOpen(false);
+                axios.get(`http://localhost:8080/address/shipping`, config)
+                    .then((respsonse) => {
+                        const data = respsonse.data;
+                        setAddressList(data.result);
+                    })
+            })
+    }
     function handleSetAddressAsDefault(addressId) {
-        axios.put(`http://localhost:8080/address/${addressId}/default`,
-            config
+        axios.put(`http://localhost:8080/address/${addressId}/default`, {}, config
         ).then(r => {
-            console.log(r);
+            axios.get(`http://localhost:8080/address/shipping`, config)
+                .then((respsonse) => {
+                    const data = respsonse.data;
+                    setAddressList(data.result);
+                })
         })
+    }
+
+    function handleChangePassword() {
+        axios.post(`http://localhost:8080/auth/change-password`,
+            passwordForm, config)
+            .then((respsonse) => {
+                window.alert("Đổi mật khẩu thành công");
+            })
     }
 
     return (
@@ -411,10 +422,11 @@ const EditProfile = () => {
                                             <div className={`lg:flex lg:relative border-b-2`}>
                                                 <div className={`flex flex-col`}>
                                                     <div className={`text-[14px] lg:text-[16px] pt-2`}>
-                                                        <b>{address.firstName + " " + address.lastName}</b> {"|" + address.phone || address.phoneNumber}
+                                                        <b>{address.firstName + " " + address.lastName}</b> {"|" + address.phoneNumber}
                                                     </div>
                                                     <span className={`text-[14px]`}>{address.email}</span>
-                                                    <span className={`text-[14px] md:mb-2`}>{address.address}</span>
+                                                    <span className={`text-[14px] ${address.default !== true ? 'md:mb-2' :''}`}>{address.address}</span>
+                                                    {address.default === true && <span className={`text-[14px] max-w-fit px-0.5 md:mb-2 border-red border-2`}>Mặc định</span>}
                                                 </div>
 
                                                 <div
@@ -426,12 +438,12 @@ const EditProfile = () => {
                                                     <button onClick={() => handleDeleteAddress(address.addressId)}
                                                             className={`text-celticBlue mr-1 xl:absolute xl:top-2 xl:right-0`}>Xóa
                                                     </button>
-                                                    <button onClick={() => {
+                                                    {address.default === false &&  <button onClick={() =>
                                                         handleSetAddressAsDefault(address.addressId)
-                                                    }}
+                                                    }
                                                             className={`xl:absolute mr-1 xl:right-0 xl:top-8 border-2 border-gray-300 px-1`}>Thiết
                                                         lập mặc định
-                                                    </button>
+                                                    </button>}
 
                                                 </div>
                                             </div>
@@ -451,9 +463,9 @@ const EditProfile = () => {
                         <h3 className=" text-[16px] md:text-[20px] border-b-4 mb-2 md:mb-4">Change Password</h3>
                         <div className="grid grid-cols-1 gap-1 md:gap-4">
                             {[
-                                {label: "Current Password", type: "password"},
-                                {label: "New Password", type: "password"},
-                                {label: "Confirm Password", type: "password"},
+                                {label: "Current Password", labelForm:"currentPassword", type: "password"},
+                                {label: "New Password", labelForm:"newPassword", type: "password"},
+                                {label: "Confirm Password", labelForm:"confirmPassword", type: "password"},
                             ].map((field, index) => (
                                 <div key={index}>
                                     <label className="block text-[14px] md:text-sm mb-1">
@@ -461,13 +473,16 @@ const EditProfile = () => {
                                     </label>
                                     <input
                                         type={field.type}
+                                        onChange={(e) => {
+                                            setPasswordForm({...passwordForm, [field.labelForm]: e.target.value});
+                                        }}
                                         className="w-full h-[20px] border-[#E4E7E9] border-2 rounded-sm p-2"
                                         placeholder="••••••••"
                                     />
                                 </div>
                             ))}
                         </div>
-                        <button
+                        <button onClick={() => handleChangePassword()}
                             className="bg-[#FA8232] text-white flex h-[30px] xl:h-[40px] xl:my-2 items-center px-1 mb-1 rounded-sm hover:bg-orange-600">
                             <span className={`text-[12px] md:text-[16px] `}> Change Password </span>
                         </button>

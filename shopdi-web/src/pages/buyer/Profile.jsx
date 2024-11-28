@@ -55,14 +55,18 @@ export default function Profile() {
             </div>
 
             {/* Dashboard Cards */}
-            <div className="max-w-5xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="max-w-5xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 <div className="relative bg-white border-[#E4E7E9] border-2 rounded-sm p-4">
                     <h2 className="text-sm font-medium text-gray-600 border-b-2">ACCOUNT INFO</h2>
                     <p className="text-gray-800 font-semibold mt-2 mb-4">{info.username}</p>
+                    <p className="text-gray-500 text-sm">{info.firstName + " " + info.lastName}</p>
                     <p className="text-gray-500 text-sm">Email: {info.email}</p>
                     <p className="text-gray-500 text-sm mb-4">Phone: </p>
-                    <button onClick={() => {window.location.href = '/editprofile'}}
-                        className="absolute bottom-4 mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] px-4 py-2 text-sm">Edit Account
+                    <button onClick={() => {
+                        window.location.href = '/editprofile'
+                    }}
+                            className="xl:absolute xl:bottom-4 px-1 py-0.5 text-[14px] lg:mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] lg:px-4 lg:py-2 lg:text-sm">Edit
+                        Account
                     </button>
                 </div>
 
@@ -73,7 +77,7 @@ export default function Profile() {
                     <p className="text-gray-500 text-sm ">Phone: 01234567</p>
                     <p className="text-gray-500 text-sm mb-4">Email: {info.email}</p>
                     <button onClick={() => {window.location.href = '/editprofile'}}
-                        className="mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] px-4 py-2 text-sm">Edit Address
+                        className="px-1 py-0.5 text-[14px] lg:mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] lg:px-4 lg:py-2 lg:text-sm">Edit Address
                     </button>
                 </div>
 
@@ -112,7 +116,7 @@ export default function Profile() {
 
                     </div>
                     <div className={`bg-[#FFF3EB] flex mb-3 h-full rounded-sm`}>
-                        <div className={`bg-white lg:p-2 w-12 lg:m-2`}>
+                        <div className={`bg-white p-2 w-12 m-2`}>
                             <svg width="50" height="50" viewBox="0 0 32 32" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path opacity="0.2"
@@ -134,7 +138,7 @@ export default function Profile() {
                         </div>
                     </div>
                     <div className={`bg-[#EAF7E9] flex h-full rounded-sm`}>
-                        <div className={`bg-white lg:m-2 lg:p-2 w-12`}>
+                        <div className={`bg-white m-2 p-2 w-12`}>
                             <svg width="50" height="50" viewBox="0 0 32 32" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path opacity="0.2"
@@ -167,10 +171,10 @@ export default function Profile() {
                 <div className={`relative`}>
                     <h2 className="text-gray-800 font-semibold text-lg">Recent Orders</h2>
                     <button onClick={() => {window.location.href = '/orderhistory'}}
-                        className={`absolute lg:right-0 lg:top-0 text-[#FA8232]`}>View all<ArrowForwardIcon className={`ml-1 pb-1`} fontSize={'inherit'}/></button>
+                        className={`md:absolute md:right-0 md:top-1 lg:absolute lg:right-0 lg:top-0 text-[#FA8232]`}>View all<ArrowForwardIcon className={`ml-1 pb-1`} fontSize={'inherit'}/></button>
                 </div>
 
-                <table className="mt-4 w-full text-left text-sm text-black ">
+                <table className="mt-4 w-full text-left text-[10px] lg:text-sm text-black ">
                 <thead>
                     <tr className={`bg-[#F2F4F5] border-2 border-[#E4E7E9] `}>
                         <th className="pb-2 border-b">ORDER ID</th>
