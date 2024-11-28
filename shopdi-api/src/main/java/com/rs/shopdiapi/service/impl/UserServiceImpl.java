@@ -112,10 +112,6 @@ public class UserServiceImpl implements UserService {
 
         userMapper.updateUser(user, request);
 
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        var roles = roleRepository.findAllByNameIn(request.getRoles());
-        user.setRoles(new HashSet<>(roles));
-
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
@@ -229,7 +225,8 @@ public class UserServiceImpl implements UserService {
                                                 address.getState() + ", " +
                                                 address.getCountry())
                                         .email(address.getEmail())
-                                        .phone(address.getPhoneNumber())
+                                        .phoneNumber(address.getPhoneNumber())
+                                        .isDefault(address.isDefault())
                                         .build())
                                 .collect(Collectors.toList()))
                 .roles(user.getRoles().stream()

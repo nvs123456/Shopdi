@@ -23,6 +23,6 @@ public interface AuthService {
 
     String forgotPassword(String email);
 
-    String changePassword(ChangePasswordRequest request);
+    String changePassword(Long userId,ChangePasswordRequest request);
 
 }

@@ -90,8 +90,9 @@ public class AuthController {
 
     @PostMapping("/change-password")
     public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        Long userId = userService.getCurrentUser().getId();
         return ApiResponse.<String>builder()
-                .message(authenticationService.changePassword(request))
+                .message(authenticationService.changePassword(userId,request))
                 .build();
     }
 }

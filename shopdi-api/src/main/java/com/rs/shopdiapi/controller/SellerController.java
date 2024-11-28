@@ -57,8 +57,9 @@ public class SellerController {
     @PreAuthorize("hasRole('SELLER')")
     @PutMapping("/update-product/{productId}")
     public ApiResponse<?> updateProduct(@PathVariable Long productId, @RequestBody ProductRequest request) {
+        Long sellerId = sellerService.getCurrentSeller().getId();
         return ApiResponse.builder()
-                .result(productService.updateProduct(request, productId))
+                .result(productService.updateProduct(request, productId, sellerId))
                 .build();
     }
 
