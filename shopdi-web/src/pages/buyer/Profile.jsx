@@ -2,11 +2,14 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import orderItem from "../../components/Buyer/Order/OrderItem.jsx";
+import profileDefault from "../../assets/images/profileDefault.png";
 
 export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
-    const [orders,setOrders] = useState([]);
-    const [info,setInfo] = useState({});
+    const [orders, setOrders] = useState([]);
+    const [info, setInfo] = useState({});
+    const [address, setAddress] = useState([]);
+    const [addressDefault, setAddressDefault] = useState({});
     const config = {
         headers: {
             'Content-Type': 'application/json',
@@ -15,28 +18,32 @@ export default function Profile() {
         }
     };
     useEffect(() => {
-        axios
-            .get('http://localhost:8080/orders/history', config)
-            .then((response) => {
-                const data = response.data;
-                if(data.code === 'OK') {
-                    setOrders(data.result.items);
-                }
-            })
-        axios
-            .get('http://localhost:8080/users/my-info', config)
-            .then((response) => {
-                const data = response.data;
-                if(data.code === 'OK') {
-                    setInfo(data.result);
-                }
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    },[]);
+        const fetchData = async () => {
+            try {
+                const [ordersResponse, infoResponse] = await Promise.all([
+                    axios.get('http://localhost:8080/orders/history', config),
+                    axios.get('http://localhost:8080/users/my-info', config),
+                ]);
 
-    if(isLoading) {
+                // Kiểm tra từng response
+                if (ordersResponse.data.code === 'OK') {
+                    setOrders(ordersResponse.data.result.items);
+                }
+
+                if (infoResponse.data.code === 'OK') {
+                    setInfo(infoResponse.data.result);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false); // Đảm bảo set loading = false sau khi tất cả hoàn tất
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (isLoading) {
         return <div>Loading...</div>;
     }
     return (
@@ -58,10 +65,15 @@ export default function Profile() {
             <div className="max-w-5xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 <div className="relative bg-white border-[#E4E7E9] border-2 rounded-sm p-4">
                     <h2 className="text-sm font-medium text-gray-600 border-b-2">ACCOUNT INFO</h2>
-                    <p className="text-gray-800 font-semibold mt-2 mb-4">{info.username}</p>
+                    <div className={`flex flex-row lg:py-2`}>
+                        <img src={info.profileImage ? info.profileImage : profileDefault} alt="profile"
+                             className="lg:w-12 lg:h-12 p-1 mr-2 border-2 border-gray-400 rounded-full"/>
+                        <p className="text-gray-800 font-semibold mt-2 mb-4">{info.username}</p>
+
+                    </div>
                     <p className="text-gray-500 text-sm">{info.firstName + " " + info.lastName}</p>
                     <p className="text-gray-500 text-sm">Email: {info.email}</p>
-                    <p className="text-gray-500 text-sm mb-4">Phone: </p>
+                    <p className="text-gray-500 text-sm mb-4">Phone: {info.mobileNo}</p>
                     <button onClick={() => {
                         window.location.href = '/editprofile'
                     }}
@@ -73,16 +85,20 @@ export default function Profile() {
                 <div className="bg-white border-[#E4E7E9] border-2 rounded-sm p-4">
                     <h2 className="text-sm font-medium text-gray-600 border-b-2">BILLING ADDRESS</h2>
                     <p className="text-gray-800 font-semibold mt-2 mb-4">{info.username}</p>
-                    <p className="text-gray-500 text-sm">ĐHQGHN, 144 Xuân Thủy, Hà Nội</p>
-                    <p className="text-gray-500 text-sm ">Phone: 01234567</p>
-                    <p className="text-gray-500 text-sm mb-4">Email: {info.email}</p>
-                    <button onClick={() => {window.location.href = '/editprofile'}}
-                        className="px-1 py-0.5 text-[14px] lg:mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] lg:px-4 lg:py-2 lg:text-sm">Edit Address
+                    <p className="text-gray-500 text-sm">{info.address.filter((ad) => ad.default === true)[0].firstName + " " + info.address.filter((ad) => ad.default === true)[0].lastName}</p>
+                    <p className="text-gray-500 text-sm">{info.address.filter((ad) => ad.default === true)[0].address}</p>
+                    <p className="text-gray-500 text-sm ">Phone: {info.address.filter((ad) => ad.default === true)[0].phoneNumber}</p>
+                    <p className="text-gray-500 text-sm mb-4">Email: {info.address.filter((ad) => ad.default === true)[0].email}</p>
+                    <button onClick={() => {
+                        window.location.href = '/editprofile'
+                    }}
+                            className="px-1 py-0.5 text-[14px] lg:mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] lg:px-4 lg:py-2 lg:text-sm">Edit
+                        Address
                     </button>
                 </div>
 
                 <div className=" flex flex-col justify-around">
-                <div className={`bg-[#EAF6FE] flex mb-3 h-full rounded-sm`}>
+                    <div className={`bg-[#EAF6FE] flex mb-3 h-full rounded-sm`}>
                         <div className={`bg-white p-2 m-2 w-12`}>
                             <svg width="50" height="50" viewBox="0 0 32 32" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -170,12 +186,15 @@ export default function Profile() {
             <div className="max-w-5xl mx-auto mt-6 p-4 bg-white border-2 border-[#E4E7E9]">
                 <div className={`relative`}>
                     <h2 className="text-gray-800 font-semibold text-lg">Recent Orders</h2>
-                    <button onClick={() => {window.location.href = '/orderhistory'}}
-                        className={`md:absolute md:right-0 md:top-1 lg:absolute lg:right-0 lg:top-0 text-[#FA8232]`}>View all<ArrowForwardIcon className={`ml-1 pb-1`} fontSize={'inherit'}/></button>
+                    <button onClick={() => {
+                        window.location.href = '/orderhistory'
+                    }}
+                            className={`md:absolute md:right-0 md:top-1 lg:absolute lg:right-0 lg:top-0 text-[#FA8232]`}>View
+                        all<ArrowForwardIcon className={`ml-1 pb-1`} fontSize={'inherit'}/></button>
                 </div>
 
                 <table className="mt-4 w-full text-left text-[10px] lg:text-sm text-black ">
-                <thead>
+                    <thead>
                     <tr className={`bg-[#F2F4F5] border-2 border-[#E4E7E9] `}>
                         <th className="pb-2 border-b">ORDER ID</th>
                         <th className="pb-2 border-b">STATUS</th>
@@ -190,13 +209,17 @@ export default function Profile() {
                             <tr key={orderItem.orderId}>
                                 <td className="py-2 xl:pl-4">{orderItem.orderId}</td>
                                 {orderItem.orderStatus === 'DELIVERED' ? <td className='text-[#2DB224]'>COMPLETED</td> :
-                                    orderItem.orderStatus === 'PENDING' ? <td className='text-[#FA8232]'>IN PROGRESS</td> :
+                                    orderItem.orderStatus === 'PENDING' ?
+                                        <td className='text-[#FA8232]'>IN PROGRESS</td> :
                                         <td className='text-[#EE5858]'>CANCELLED</td>
                                 }
                                 <td className="py-2">{orderItem.deliveryDate.split(" ")[0]}</td>
                                 <td className="py-2">${orderItem.totalPrice}({orderItem.totalItems} Products)</td>
-                                <td onClick={() => {window.location.href = `/orders/${orderItem.orderId}`}}
-                                    className="py-2 text-blue-500 cursor-pointer">View Details<ArrowForwardIcon className={`ml-1`} fontSize={'inherit'}/></td>
+                                <td onClick={() => {
+                                    window.location.href = `/orders/${orderItem.orderId}`
+                                }}
+                                    className="py-2 text-blue-500 cursor-pointer">View Details<ArrowForwardIcon
+                                    className={`ml-1`} fontSize={'inherit'}/></td>
                             </tr>
                         ))
                     }

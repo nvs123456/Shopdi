@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import UETLogo from "/src/assets/images/UETLogo.png";
+import profileDefault from "../../assets/images/profileDefault.png";
 import axios from "axios";
 import {AddressForm} from "../../components/Buyer/AddressForm.jsx";
 import {useLocation} from "react-router-dom";
@@ -15,8 +15,15 @@ const EditProfile = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
     const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
+    const [preview, setPreview] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [form, setForm] = useState({firstName: "", lastName: "", email: "", mobileNo: ""});
-    const [passwordForm, setPasswordForm] = useState({token: localStorage.getItem('Authorization'),currentPassword: "", newPassword: "", confirmPassword: ""});
+    const [passwordForm, setPasswordForm] = useState({
+        token: localStorage.getItem('Authorization'),
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+    });
     const [addressForm, setAddressForm] = useState({
         firstName: "",
         lastName: "",
@@ -34,7 +41,7 @@ const EditProfile = () => {
         }
     }
     useEffect(() => {
-        axios.get(`http://localhost:8080/users/my-info`,config)
+        axios.get(`http://localhost:8080/users/my-info`, config)
             .then((respsonse) => {
                 const data = respsonse.data;
                 setInfo(data.result);
@@ -170,6 +177,7 @@ const EditProfile = () => {
         setAddressList(addressList.filter((address) => address.addressId !== id));
 
     }
+
     function handleAddAddress() {
         console.log(addressForm);
         axios.post(`http://localhost:8080/address/shipping`,
@@ -186,6 +194,7 @@ const EditProfile = () => {
                     })
             })
     }
+
     function handleSetAddressAsDefault(addressId) {
         axios.put(`http://localhost:8080/address/${addressId}/default`, {}, config
         ).then(r => {
@@ -203,6 +212,36 @@ const EditProfile = () => {
             .then((respsonse) => {
                 window.alert("Đổi mật khẩu thành công");
             })
+    }
+
+    function handlePreviewProfileImage(e) {
+        const file = e.target.files[0]; // Lấy file được chọn
+        if (file) {
+            setPreview(URL.createObjectURL(file)); // Tạo URL preview từ file
+            setSelectedImage(file); // Lưu file đã chọn vào state
+        }
+    }
+
+    function handleUploadProfileImage() {
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+        axios.post(`http://localhost:8080/images/upload-profile-image`, formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
+                    'Access-Control-Allow-Origin': 'http://localhost:5173',
+                }
+            })
+            .then((respsonse) => {
+                console.log(respsonse);
+            }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            setPreview(null);
+            setInfo({...info, profileImage: preview});
+        })
+
     }
 
     return (
@@ -241,11 +280,28 @@ const EditProfile = () => {
                     <h2 className="text-[16px] md:text-xl mb-6 border-b-4">ACCOUNT PROFILE EDIT</h2>
                     <div className="md:flex md:flex-wrap md:-mx-4">
                         {/* EditProfile Image */}
-                        <div className="w-full md:w-1/4 flex justify-center  ">
+                        <div className="w-full md:w-1/4 flex flex-col justify-top items-center  ">
                             <img
-                                src={UETLogo}
+                                src={preview ||info.profileImage|| profileDefault }
                                 alt="EditProfile"
-                                className="w-10 h-10 lg:w-16 lg:h-16 rounded-full"
+                                className="w-10 h-10 lg:w-16 lg:h-16 border-2 border-gray-400 p-1 rounded-full"
+                            />
+                            {preview ? <button
+
+                                    onClick={() => handleUploadProfileImage()}
+                                    className="cursor-pointer bg-metallicOrange lg:h-[10%] lg:w-1/2 mt-1 text-white items-center justify-center flex rounded-lg hover:bg-red transition"
+                                >
+                                    Upload
+                                </button>
+                                :
+                                <label
+                                    htmlFor="file-upload"
+                                    className="cursor-pointer bg-blue-500 lg:h-[10%] lg:w-1/2 mt-1 text-white items-center justify-center flex rounded-lg hover:bg-blue-600 transition"
+                                >
+                                    Choose
+                                </label>}
+                            <input id={'file-upload'} className={'hidden'} type={"file"} accept={"image/*"}
+                                   onChange={handlePreviewProfileImage}
                             />
                         </div>
                         {/* EditProfile Information */}
@@ -299,7 +355,8 @@ const EditProfile = () => {
                                         className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
                                     />
                                     {errorEmail &&
-                                        <p className="text-[10px] md:text-[12px] lg:text-[14px] text-red">Email không
+                                        <p className="text-[10px] md:text-[12px] lg:text-[14px] text-red">Email
+                                            không
                                             hợp lệ</p>}
                                 </div>
                                 <div>
@@ -314,7 +371,8 @@ const EditProfile = () => {
                                         className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
                                     />
                                     {errorNo &&
-                                        <p className=" text-[10px] md:text-[12px] lg:text-[14px] text-red">Số điện thoại
+                                        <p className=" text-[10px] md:text-[12px] lg:text-[14px] text-red">Số điện
+                                            thoại
                                             không hợp lệ</p>}
                                 </div>
                             </div>
@@ -425,8 +483,10 @@ const EditProfile = () => {
                                                         <b>{address.firstName + " " + address.lastName}</b> {"|" + address.phoneNumber}
                                                     </div>
                                                     <span className={`text-[14px]`}>{address.email}</span>
-                                                    <span className={`text-[14px] ${address.default !== true ? 'md:mb-2' :''}`}>{address.address}</span>
-                                                    {address.default === true && <span className={`text-[14px] max-w-fit px-0.5 md:mb-2 border-red border-2`}>Mặc định</span>}
+                                                    <span
+                                                        className={`text-[14px] ${address.default !== true ? 'md:mb-2' : ''}`}>{address.address}</span>
+                                                    {address.default === true && <span
+                                                        className={`text-[14px] max-w-fit px-0.5 md:mb-2 border-red border-2`}>Mặc định</span>}
                                                 </div>
 
                                                 <div
@@ -438,10 +498,10 @@ const EditProfile = () => {
                                                     <button onClick={() => handleDeleteAddress(address.addressId)}
                                                             className={`text-celticBlue mr-1 xl:absolute xl:top-2 xl:right-0`}>Xóa
                                                     </button>
-                                                    {address.default === false &&  <button onClick={() =>
+                                                    {address.default === false && <button onClick={() =>
                                                         handleSetAddressAsDefault(address.addressId)
                                                     }
-                                                            className={`xl:absolute mr-1 xl:right-0 xl:top-8 border-2 border-gray-300 px-1`}>Thiết
+                                                                                          className={`xl:absolute mr-1 xl:right-0 xl:top-8 border-2 border-gray-300 px-1`}>Thiết
                                                         lập mặc định
                                                     </button>}
 
@@ -463,9 +523,9 @@ const EditProfile = () => {
                         <h3 className=" text-[16px] md:text-[20px] border-b-4 mb-2 md:mb-4">Change Password</h3>
                         <div className="grid grid-cols-1 gap-1 md:gap-4">
                             {[
-                                {label: "Current Password", labelForm:"currentPassword", type: "password"},
-                                {label: "New Password", labelForm:"newPassword", type: "password"},
-                                {label: "Confirm Password", labelForm:"confirmPassword", type: "password"},
+                                {label: "Current Password", labelForm: "currentPassword", type: "password"},
+                                {label: "New Password", labelForm: "newPassword", type: "password"},
+                                {label: "Confirm Password", labelForm: "confirmPassword", type: "password"},
                             ].map((field, index) => (
                                 <div key={index}>
                                     <label className="block text-[14px] md:text-sm mb-1">
@@ -483,7 +543,7 @@ const EditProfile = () => {
                             ))}
                         </div>
                         <button onClick={() => handleChangePassword()}
-                            className="bg-[#FA8232] text-white flex h-[30px] xl:h-[40px] xl:my-2 items-center px-1 mb-1 rounded-sm hover:bg-orange-600">
+                                className="bg-[#FA8232] text-white flex h-[30px] xl:h-[40px] xl:my-2 items-center px-1 mb-1 rounded-sm hover:bg-orange-600">
                             <span className={`text-[12px] md:text-[16px] `}> Change Password </span>
                         </button>
                     </section>
