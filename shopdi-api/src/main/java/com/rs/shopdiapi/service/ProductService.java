@@ -15,7 +15,7 @@ public interface ProductService {
 
     String deleteProduct(Long productId, Long sellerId);
 
-    ProductResponse updateProduct(ProductRequest request, Long productId);
+    ProductResponse updateProduct(ProductRequest request, Long productId, Long sellerId);
 
     ProductDetailResponse findProductById(Long productId);
 

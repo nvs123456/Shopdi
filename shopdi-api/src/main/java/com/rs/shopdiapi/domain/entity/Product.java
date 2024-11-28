@@ -38,6 +38,7 @@ import java.util.Set;
 public class Product extends BaseEntity<Long> {
     String productName;
 
+    @Column(columnDefinition = "TEXT")
     String description;
     BigDecimal price;
     String brand;
