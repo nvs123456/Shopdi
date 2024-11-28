@@ -13,8 +13,10 @@ const EditProfile = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
     const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
+    const [addressIdToBeUpdated, setAddressIdToBeUpdated] = useState(null);
     const [preview, setPreview] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [addressUpdateForm, setAddressUpdateForm] = useState({});
     const [form, setForm] = useState({firstName: "", lastName: "", email: "", mobileNo: ""});
     const [passwordForm, setPasswordForm] = useState({
         token: localStorage.getItem('Authorization'),
@@ -160,8 +162,24 @@ const EditProfile = () => {
         setIsAddressPopupOpen(false);
     }
 
-    function handleUpdateAddress() {
-        setIsUpdatingAddress(true);
+    function handleUpdateAddress(addressId) {
+        setAddressIdToBeUpdated(addressId);
+        axios.put(`http://localhost:8080/address/${addressId}`,
+            addressUpdateForm,
+            config
+        ).then(r => {
+            console.log(r);
+        })
+            .finally(() => {
+                    setIsUpdatingAddress(false);
+                    setAddressUpdateForm({});
+                    axios.get(`http://localhost:8080/address/shipping`, config)
+                        .then((respsonse) => {
+                            const data = respsonse.data;
+                            setAddressList(data.result);
+                        })
+                }
+            )
         console.log("update address");
 
     }
@@ -243,27 +261,32 @@ const EditProfile = () => {
 
     }
 
+    function handleOpenUpdateAddressPopup(addressId) {
+        setIsUpdatingAddress(true);
+        setAddressUpdateForm(addressList.filter((address) => address.addressId === addressId)[0]);
+    }
+
     return (
-        <div className={`bg-[#F7FBFF] flex flex-col lg:flex-row font-sans md:text-[14px] p-1 md:p-8`}>
+        <div className={` bg-[#F7FBFF] flex flex-col lg:flex-row font-sans md:text-[14px] p-1 md:p-8`}>
             <div className={`${isAddressPopupOpen ? 'pointer-events-none brightness-50' : ' '} lg:flex lg:flex-col `}>
                 <ul className=" flex lg:flex-col lg:space-y lg:space-y-4 text-[12px] md:text-[16px] font-medium text-gray-500 dark:text-gray-400  md:me-4 mb-2 md:mb-0">
                     <li>
                         <a onClick={() => setActiveTab('profile')}
-                           className={`inline-flex items-center px-4 py-1 cursor-pointer ${activeTab === 'profile' ? 'text-orangeRed' : 'text-tintedBlack'} bg-transparent  active w-full`}
+                           className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} inline-flex items-center px-4 py-1 cursor-pointer ${activeTab === 'profile' ? 'text-orangeRed' : 'text-tintedBlack'} bg-transparent  active w-full`}
                            aria-current="page">
                             Hồ sơ
                         </a>
                     </li>
                     <li>
                         <a onClick={() => setActiveTab('address')}
-                           className={`inline-flex items-center px-4 py-1 cursor-pointer ${activeTab === 'address' ? 'text-orangeRed' : 'text-tintedBlack'}  bg-transparent active w-full`}
+                           className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} inline-flex items-center px-4 py-1 cursor-pointer ${activeTab === 'address' ? 'text-orangeRed' : 'text-tintedBlack'}  bg-transparent active w-full`}
                            aria-current="page">
                             Địa chỉ
                         </a>
                     </li>
                     <li>
                         <a onClick={() => setActiveTab('password')}
-                           className={`inline-flex items-center px-4 py-1 cursor-pointer ${activeTab === 'password' ? 'text-orangeRed' : 'text-tintedBlack'}  bg-transparent active w-full`}
+                           className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} inline-flex items-center px-4 py-1 cursor-pointer ${activeTab === 'password' ? 'text-orangeRed' : 'text-tintedBlack'}  bg-transparent active w-full`}
                            aria-current="page">
                             Đổi mật khẩu
                         </a>
@@ -275,7 +298,7 @@ const EditProfile = () => {
 
                 {/* Account EditProfile Edit Section */}
                 {activeTab === 'profile' && <section
-                    className="md:ml-[60px] lg:ml-[80px] xl:ml-[150px] xl:w-4xl mx-auto bg-white p-2 md:p-6 rounded-s mb-4 md:mb-8 border-2 border-[#E4E7E9]">
+                    className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} md:ml-[60px] lg:ml-[80px] xl:ml-[150px] xl:w-4xl mx-auto bg-white p-2 md:p-6 rounded-s mb-4 md:mb-8 border-2 border-[#E4E7E9]`}>
                     <h2 className="text-[16px] md:text-xl mb-6 border-b-4">ACCOUNT PROFILE EDIT</h2>
                     <div className="md:flex md:flex-wrap md:-mx-4">
                         {/* EditProfile Image */}
@@ -394,7 +417,7 @@ const EditProfile = () => {
                         <div className="relative w-full md:w-full px-0 md:px-4 lg:mb-4">
                             <h3 className=" text-[16px] xl:text-xl md:mb-4 border-b-2 md:pb-2">Địa chỉ của tôi</h3>
                             <button onClick={openAddressPopup}
-                                    className={` absolute right-0 top-0 lg:top-0 lg:right-5 xl:absolute xl:top-[0px] xl:right-[30px] bg-orangeRed lg:h-[30px] xl:h-[40px] rounded px-1 md:px-2 text-white text-[12px] lg:text-[14px]`}>
+                                    className={` ${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} absolute right-0 top-0 lg:top-0 lg:right-5 xl:absolute xl:top-[0px] xl:right-[30px] bg-orangeRed lg:h-[30px] xl:h-[40px] rounded px-1 md:px-2 text-white text-[12px] lg:text-[14px]`}>
                                 Thêm địa chỉ mới
                             </button>
                             {isAddressPopupOpen &&
@@ -487,20 +510,97 @@ const EditProfile = () => {
                                                     {address.default === true && <span
                                                         className={`text-[14px] max-w-fit px-0.5 md:mb-2 border-red border-2`}>Mặc định</span>}
                                                 </div>
+                                                {isUpdatingAddress &&
+                                                    <div
+                                                        className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-2 fixed bg-gray-300 top-[15%] right-[35%]  px-0 md:px-4 mb-4">
+                                                        <h3 className=" text-[20px] mb-4 border-b-4">Thêm địa chỉ</h3>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            {[
+                                                                {
+                                                                    label: "First Name",
+                                                                    labelForm: "firstName",
+                                                                    placeholder: "Enter your first name"
+                                                                },
+                                                                {
+                                                                    label: "Last Name",
+                                                                    labelForm: "lastName",
+                                                                    placeholder: "Enter your last name"
+                                                                },
+                                                                {
+                                                                    label: "Address",
+                                                                    labelForm: "address",
+                                                                    placeholder: "specific address",
+                                                                    colSpan: true
+                                                                },
+                                                                {
+                                                                    label: "District",
+                                                                    labelForm: "district",
+                                                                    placeholder: "District"
+                                                                },
+                                                                {label: "City", labelForm: "city", placeholder: "City"},
+                                                                {
+                                                                    label: "Email",
+                                                                    labelForm: "email",
+                                                                    placeholder: "email@example.com",
+                                                                    colSpan: true
+                                                                },
+                                                                {
+                                                                    label: "Phone Number",
+                                                                    labelForm: "phoneNumber",
+                                                                    placeholder: "Phone number",
+                                                                    colSpan: true
+                                                                },
+                                                            ].map((field, index) => (
+                                                                <div key={index}
+                                                                     className={field.colSpan ? "col-span-2" : ""}>
+                                                                    <label
+                                                                        className="block text-[14px] md:text-[14px] mb-1">
+                                                                        {field.label}
+                                                                    </label>
+                                                                    <input
+                                                                        type="text"
+                                                                        defaultValue={addressUpdateForm[field.labelForm]}
+                                                                        onChange={(e) => {
+                                                                            setAddressUpdateForm({
+                                                                                ...addressUpdateForm,
+                                                                                [field.labelForm]: e.target.value
+                                                                            });
+                                                                        }}
+                                                                        required={true}
+                                                                        className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded-sm p-2"
+                                                                        placeholder={field.placeholder}
+                                                                    />
+                                                                </div>
+                                                            ))}
 
+                                                        </div>
+                                                        <button onClick={() => handleUpdateAddress(address.addressId)}
+                                                                className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded-sm hover:bg-orange-600">
+                                                            Save Changes
+                                                        </button>
+                                                        <button onClick={() => {
+                                                            setIsUpdatingAddress(false);
+                                                            setAddressUpdateForm({});
+                                                        }}
+                                                                className="bg-gray-400 mx-2 text-white py-2 px-4 mt-4 rounded-sm hover:bg-gray-600">
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                }
                                                 <div
                                                     className={`xl:ml-[400px] text-[14px] lg:text-[16px]  xl:text-[18px]`}>
-                                                    <button onClick={handleUpdateAddress}
-                                                            className={`text-celticBlue mr-1 xl:mr-2 xl:absolute xl:top-2 xl:right-8`}>Cập
+                                                    <button
+                                                        onClick={() => handleOpenUpdateAddressPopup(address.addressId)}
+                                                        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} text-celticBlue mr-1 xl:mr-2 xl:absolute xl:top-2 xl:right-8`}>Cập
                                                         nhật
                                                     </button>
                                                     <button onClick={() => handleDeleteAddress(address.addressId)}
-                                                            className={`text-celticBlue mr-1 xl:absolute xl:top-2 xl:right-0`}>Xóa
+                                                            className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} text-celticBlue mr-1 xl:absolute xl:top-2 xl:right-0`}>Xóa
                                                     </button>
                                                     {address.default === false && <button onClick={() =>
                                                         handleSetAddressAsDefault(address.addressId)
                                                     }
-                                                                                          className={`xl:absolute mr-1 xl:right-0 xl:top-8 border-2 border-gray-300 px-1`}>Thiết
+                                                                                          className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} xl:absolute mr-1 xl:right-0 xl:top-8 border-2 border-gray-300 px-1`}>Thiết
                                                         lập mặc định
                                                     </button>}
 
