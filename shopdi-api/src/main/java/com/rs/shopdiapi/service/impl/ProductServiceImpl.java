@@ -1,7 +1,6 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.ProductRequest;
-import com.rs.shopdiapi.domain.dto.request.ProductRequest.VariantDetail;
 import com.rs.shopdiapi.domain.dto.request.ProductFilterRequest;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductDetailResponse;
@@ -14,7 +13,6 @@ import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.mapper.ProductMapper;
 import com.rs.shopdiapi.repository.*;
 import com.rs.shopdiapi.service.CategoryService;
-import com.rs.shopdiapi.service.ImageService;
 import com.rs.shopdiapi.service.ProductService;
 import com.rs.shopdiapi.service.ReviewService;
 import jakarta.transaction.Transactional;
@@ -30,6 +28,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,15 +39,14 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     CategoryService categoryService;
-    ProductMapper productMapper;
+    CategoryRepository categoryRepository;
     SellerRepository sellerRepository;
     TagRepository tagRepository;
-    ReviewService reviewService;
 
     @Transactional
     @Override
     public ProductDetailResponse createProduct(ProductRequest request, Long sellerId) {
-        Category category = categoryService.getCategoryByName(request.getCategoryName());
+        Category category = categoryRepository.findByName(request.getCategoryName()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Seller seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_EXIST));
@@ -134,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productRequest.getPrice());
         product.setBrand(productRequest.getBrand());
 
-        Category category = categoryService.getCategoryByName(productRequest.getCategoryName());
+        Category category = categoryRepository.findByName(productRequest.getCategoryName()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         product.setCategory(category);
 
         Set<Tag> tags = productRequest.getTagNames().stream()
@@ -189,7 +187,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<?> searchProduct(String query, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("productName").ascending()); // hoặc sử dụng bất kỳ trường nào khác để sắp xếp
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("productName").ascending());
 
         Page<Product> products = productRepository.findByProductNameContainingIgnoreCase(query, pageable);
 
@@ -203,10 +201,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageResponse<?> findProductByCategory(String category, int pageNo, int pageSize) {
-        var categoryEntity = categoryService.getCategoryByName(category);
+    public PageResponse<?> findProductByCategory(String categoryName, int pageNo, int pageSize) {
+        Category category = categoryRepository.findByName(categoryName).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        Page<Product> productPage = productRepository.findAllByCategoryId(categoryEntity.getId(), PageRequest.of(pageNo, pageSize));
+        Page<Product> productPage = productRepository.findAllByCategoryId(category.getId(), PageRequest.of(pageNo, pageSize));
 
         List<ProductResponse> products = productPage.map(this::toProductResponse).toList();
 
@@ -272,17 +270,8 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNo, pageSize, sortByAndOrder));
 
         List<ProductResponse> products = productPage.stream()
-                .map(product -> ProductResponse.builder()
-                        .productId(product.getId())
-                        .productImage(product.getImageUrls() != null && !product.getImageUrls().isEmpty()
-                                ? product.getImageUrls().get(0)
-                                : null)
-                        .productName(product.getProductName())
-                        .rating(reviewService.calculateAverageRating(product.getId()))
-                        .reviewCount(reviewService.countReviewsByProduct(product.getId()))
-                        .price(product.getPrice())
-                        .build()
-                ).toList();
+                .map(this::toProductResponse)
+                .toList();
 
         return PageResponse.builder()
                 .pageNo(pageNo)
@@ -297,6 +286,23 @@ public class ProductServiceImpl implements ProductService {
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Page<Product> productPage = productRepository.findAllBySellerId(sellerId, PageRequest.of(pageNo, pageSize, sortByAndOrder));
         List<ProductResponse> products = productPage.map(this::toProductResponse).toList();
+        return PageResponse.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPages(productPage.getTotalPages())
+                .items(products)
+                .build();
+    }
+
+    @Override
+    public PageResponse<?> getSellerProducts(Long sellerId, int pageNo, int pageSize) {
+
+        Page<Product> productPage = productRepository.findAllBySellerId(sellerId ,PageRequest.of(pageNo, pageSize));
+
+        List<ProductResponse> products = productPage.stream()
+                .map(this::toProductResponse)
+                .toList();
+
         return PageResponse.builder()
                 .pageNo(pageNo)
                 .pageSize(pageSize)

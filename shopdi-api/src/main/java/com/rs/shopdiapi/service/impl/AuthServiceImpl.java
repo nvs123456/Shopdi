@@ -11,7 +11,7 @@ import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.repository.InvalidatedTokenRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.AuthService;
-import com.rs.shopdiapi.jwt.JwtUtil;
+import com.rs.shopdiapi.util.JwtUtil;
 import com.rs.shopdiapi.service.EmailService;
 import io.jsonwebtoken.SignatureException;
 import lombok.AccessLevel;

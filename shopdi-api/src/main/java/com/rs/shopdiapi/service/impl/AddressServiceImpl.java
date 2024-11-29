@@ -40,15 +40,7 @@ public class AddressServiceImpl implements AddressService {
 
                     Address savedAddress = addressRepository.save(address);
 
-                    return AddressResponse.builder()
-                            .addressId(savedAddress.getId())
-                            .firstName(savedAddress.getFirstName())
-                            .lastName(savedAddress.getLastName())
-                            .address(savedAddress.getAddress() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getCountry())
-                            .email(savedAddress.getEmail())
-                            .phoneNumber(savedAddress.getPhoneNumber())
-                            .isDefault(savedAddress.isDefault())
-                            .build();
+                    return toAddressResponse(savedAddress);
                 })
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
@@ -59,15 +51,7 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return addressRepository.findByUserId(user.getId())
                 .stream()
-                .map(address -> AddressResponse.builder()
-                        .addressId(address.getId())
-                        .firstName(address.getFirstName())
-                        .lastName(address.getLastName())
-                        .address(address.getAddress() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getCountry())
-                        .email(address.getEmail())
-                        .phoneNumber(address.getPhoneNumber())
-                        .isDefault(address.isDefault())
-                        .build())
+                .map(this::toAddressResponse)
                 .toList();
     }
 
@@ -87,18 +71,7 @@ public class AddressServiceImpl implements AddressService {
 
         userRepository.save(user);
 
-        return AddressResponse.builder()
-                .addressId(defaultAddress.getId())
-                .firstName(defaultAddress.getFirstName())
-                .lastName(defaultAddress.getLastName())
-                .address(defaultAddress.getAddress() + ", " +
-                        defaultAddress.getCity() + ", " +
-                        defaultAddress.getState() + ", " +
-                        defaultAddress.getCountry())
-                .email(defaultAddress.getEmail())
-                .phoneNumber(defaultAddress.getPhoneNumber())
-                .isDefault(defaultAddress.isDefault())
-                .build();
+        return toAddressResponse(defaultAddress);
     }
 
     @Transactional
@@ -129,18 +102,7 @@ public class AddressServiceImpl implements AddressService {
 
         Address updatedAddress = addressRepository.save(address);
 
-        return AddressResponse.builder()
-                .addressId(updatedAddress.getId())
-                .firstName(updatedAddress.getFirstName())
-                .lastName(updatedAddress.getLastName())
-                .address(updatedAddress.getAddress() + ", " +
-                        updatedAddress.getCity() + ", " +
-                        updatedAddress.getState() + ", " +
-                        updatedAddress.getCountry())
-                .email(updatedAddress.getEmail())
-                .phoneNumber(updatedAddress.getPhoneNumber())
-                .isDefault(updatedAddress.isDefault())
-                .build();
+        return toAddressResponse(updatedAddress);
     }
 
     @Override
@@ -171,5 +133,21 @@ public class AddressServiceImpl implements AddressService {
                 .phoneNumber(request.getPhoneNumber())
                 .isDefault(request.isDefault())
                 .build();
+    }
+
+    private AddressResponse toAddressResponse(Address address) {
+        return AddressResponse.builder()
+                .addressId(address.getId())
+                .firstName(address.getFirstName())
+                .lastName(address.getLastName())
+                .address(address.getAddress())
+                .city(address.getCity())
+                .state(address.getState())
+                .country(address.getCountry())
+                .email(address.getEmail())
+                .phoneNumber(address.getPhoneNumber())
+                .isDefault(address.isDefault())
+                .build();
+
     }
 }
