@@ -152,9 +152,9 @@ function OrderDetails() {
         <div>
             {isModalOpen && <Review isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>}
             <div className={`${isModalOpen ? "brightness-50" : ''}  bg-[#F7FBFF] flex justify-center font-sans`}>
-                <div className="container md:mt-10 md:mb-10 my-5 h-5/6   bg-white w-full md:w-5/6 border-collapse">
+                <div className="container md:mt-10 md:mb-10 my-5 h-5/6 border-2 bg-white w-full md:w-5/6 border-collapse">
                     {/* heading section */}
-                    <div className="flex justify-between items-center border-2 h-6 md:h-10 mb-6 px-0 md:px-4">
+                    <div className="flex justify-between items-center border-b-2 h-6 md:h-10 mb-6 px-0 md:px-4">
                         <div className="flex items-center rounded hover:bg-gray-100 lg:h-[80%] hover:shadow-sm" >
                             <ArrowBackIcon className="text-black" fontSize={'inherit'}/>
                             <button className={`text-black text-[14px] md:text-[16px] px-1 `} disabled={isModalOpen} onClick={() => window.location.href ='/orderhistory'}>
@@ -169,7 +169,7 @@ function OrderDetails() {
                                 Order #{orderDetail.orderId}
                             </div>
                             <div className={'text-[18px] md:text-[26px] xl:text-[32px] font-bold text-celticBlue'}>
-                                ${orderDetail.totalPrice}
+                                {orderDetail.totalPrice.toLocaleString()}đ
                             </div>
                         </div>
                         <div className={'text-[14px] text-darkGray pt-1.5'}>
@@ -273,34 +273,33 @@ function OrderDetails() {
                         <div className={'text-[14px] font-bold md:text-xl'}>
                             Product ({orderDetail.orderItems?.length})
                         </div>
-                        <table className="min-w-full border border-gray-200">
+                        <table className="xl:table-fixed min-w-full border border-gray-200">
                             <thead>
                             <tr>
-                                {data[0].map((header, index) => (
-                                    <th key={index}
-                                        className="  bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">
-                                        {header}
-                                    </th>
-                                ))}
+                                <th className="xl:w-[50%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Products</th>
+                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Price</th>
+                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Quantity </th>
+                                <th className="xl:w-[20%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Total</th>
+
                             </tr>
 
                             </thead>
                             <tbody>
                             {orderDetail.orderItems.map((row, rowIndex) => (
                                 <tr key={rowIndex}>
-                                    <td className='flex items-center text-[12px] md:text-[18px]'>
+                                    <td className='flex md:w-[90%] items-center text-[12px] md:text-[18px]'>
                                         <img className="md:w-20 md:h-20 w-8 h-8 " src={row.productImage} alt="temp"/>
                                         {row.productName}
                                     </td>
-                                    <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.price}</td>
-                                    <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>{row.quantity}</td>
+                                    <td className='pl-0 text-[12px] md:text-[18px]'>{row.price.toLocaleString()}đ</td>
+                                    <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>x{row.quantity}</td>
                                     <td className='pl-0 relative md:pl-3 text-[12px] md:text-[18px]'>
-                                        <span className={``}>{row.price}</span>
+                                        <span className={`font-semibold`}>{row.price.toLocaleString()}đ</span>
 
-                                        {activeStep > 3 && <button disabled={isModalOpen} onClick={(productId) => {
+                                        {activeStep > 3 && <button className={`pl-0`} disabled={isModalOpen} onClick={(productId) => {
                                             handleOpenModal(row.productId)
                                         }}><span
-                                            className=' absolute lg:top-8 lg:right-3 text-[#FA8232] hover:text-orangeRed text-[14px] md:text-[16px]'>Leave a Rating</span>
+                                            className=' absolute lg:top-8 lg:right-10 text-[#FA8232] hover:text-orangeRed text-[14px] md:text-[16px]'>Leave a Rating</span>
                                         </button>}
                                     </td>
                                 </tr>
@@ -312,7 +311,7 @@ function OrderDetails() {
                     {/* Billing and Shipping Section */}
                     <div className=" bg-white border-b-2 p-2 md:p-6 mb-0">
                         <div className="md:grid md:grid-cols-3 md:gap-4">
-                            <div>
+                            <div className={`border-r-2`}>
                                 <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Billing Address</div>
                                 <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
                                 <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
@@ -321,7 +320,7 @@ function OrderDetails() {
                                     Email: {shippingAddress.email}
                                 </div>
                             </div>
-                            <div>
+                            <div className={`border-r-2`}>
                                 <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Shipping Address
                                 </div>
                                 <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>

@@ -422,9 +422,9 @@ const EditProfile = () => {
                             </button>
                             {isAddressPopupOpen &&
                                 <div
-                                    className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-2 fixed z-10 bg-gray-300 top-[15%] right-[35%]  px-0 md:px-4 mb-4">
+                                    className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-4 border-orangeRed fixed z-10 bg-gray-400 top-[15%] right-[35%]  px-0 md:px-4 py-2">
                                     <h3 className=" text-[20px] mb-4 border-b-4">Thêm địa chỉ</h3>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-2">
                                         {[
                                             {
                                                 label: "First Name",
@@ -442,18 +442,18 @@ const EditProfile = () => {
                                                 placeholder: "specific address",
                                                 colSpan: true
                                             },
-                                            {label: "District", labelForm: "district", placeholder: "District"},
+                                            {label: "District", labelForm: "state", placeholder: "District"},
                                             {label: "City", labelForm: "city", placeholder: "City"},
-                                            {
-                                                label: "Email",
-                                                labelForm: "email",
-                                                placeholder: "email@example.com",
-                                                colSpan: true
-                                            },
+                                            {label: "Country", labelForm: "country", placeholder: "Country"},
                                             {
                                                 label: "Phone Number",
                                                 labelForm: "phoneNumber",
                                                 placeholder: "Phone number",
+                                            },
+                                            {
+                                                label: "Email",
+                                                labelForm: "email",
+                                                placeholder: "email@example.com",
                                                 colSpan: true
                                             },
                                         ].map((field, index) => (
@@ -475,8 +475,8 @@ const EditProfile = () => {
                                                 />
                                             </div>
                                         ))}
-                                        <div className={`col-span-2 flex`}>
-                                            <label className="block text-[14px] md:text-[14px] pr-2 mb-1">
+                                        <div className={`col-span-2 flex    `}>
+                                            <label className="block text-[14px] md:text-[14px] pr-2">
                                                 Select as default address
                                             </label>
                                             <input type={"checkbox"} className={"w-4 h-4"} onChange={(e) => {
@@ -485,11 +485,11 @@ const EditProfile = () => {
                                         </div>
                                     </div>
                                     <button onClick={handleAddAddress}
-                                            className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded-sm hover:bg-orange-600">
+                                            className="bg-[#FA8232] text-white py-2 px-4 mt-2 rounded-sm hover:bg-orange-600">
                                         Save Changes
                                     </button>
                                     <button onClick={closeAddressPopup}
-                                            className="bg-gray-400 mx-2 text-white py-2 px-4 mt-4 rounded-sm hover:bg-gray-600">
+                                            className="bg-gray-500 mx-2 text-white py-2 px-4 mt-2 rounded-sm hover:bg-gray-600">
                                         Cancel
                                     </button>
                                 </div>
@@ -512,9 +512,9 @@ const EditProfile = () => {
                                                 </div>
                                                 {isUpdatingAddress &&
                                                     <div
-                                                        className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-2 fixed bg-gray-300 top-[15%] right-[35%]  px-0 md:px-4 mb-4">
-                                                        <h3 className=" text-[20px] mb-4 border-b-4">Thêm địa chỉ</h3>
-                                                        <div className="grid grid-cols-2 gap-4">
+                                                        className="w-full md:w-1/3 md:h-2/3 overflow-y-auto border-4 border-orangeRed fixed bg-paleGray top-[15%] right-[35%]  px-0 md:px-4 py-2">
+                                                        <h3 className=" text-[20px] mb-4 border-b-4">Cập nhật địa chỉ</h3>
+                                                        <div className="grid grid-cols-2 gap-2">
                                                             {[
                                                                 {
                                                                     label: "First Name",
@@ -534,22 +534,23 @@ const EditProfile = () => {
                                                                 },
                                                                 {
                                                                     label: "District",
-                                                                    labelForm: "district",
+                                                                    labelForm: "state",
                                                                     placeholder: "District"
                                                                 },
                                                                 {label: "City", labelForm: "city", placeholder: "City"},
+                                                                {label: "Country", labelForm: "country", placeholder: "country"},
+                                                                {
+                                                                    label: "Phone Number",
+                                                                    labelForm: "phoneNumber",
+                                                                    placeholder: "Phone number",
+                                                                },
                                                                 {
                                                                     label: "Email",
                                                                     labelForm: "email",
                                                                     placeholder: "email@example.com",
                                                                     colSpan: true
                                                                 },
-                                                                {
-                                                                    label: "Phone Number",
-                                                                    labelForm: "phoneNumber",
-                                                                    placeholder: "Phone number",
-                                                                    colSpan: true
-                                                                },
+
                                                             ].map((field, index) => (
                                                                 <div key={index}
                                                                      className={field.colSpan ? "col-span-2" : ""}>
@@ -582,7 +583,7 @@ const EditProfile = () => {
                                                             setIsUpdatingAddress(false);
                                                             setAddressUpdateForm({});
                                                         }}
-                                                                className="bg-gray-400 mx-2 text-white py-2 px-4 mt-4 rounded-sm hover:bg-gray-600">
+                                                                className="bg-gray-500 mx-2 text-white py-2 px-4 mt-4 rounded-sm hover:bg-gray-600">
                                                             Cancel
                                                         </button>
                                                     </div>
@@ -618,7 +619,7 @@ const EditProfile = () => {
                 {/* Change Password Section */}
                 {activeTab === 'password' &&
                     <section
-                        className="md:ml-[60px] lg:ml-[200px] xl:ml-[400px] w-[200px] md:w-[500px] mx-auto bg-white px-2 md:p-6 border-2 border-[#E4E7E9] font-sans">
+                        className="md:ml-[60px] lg:ml-[200px] xl:ml-[450px] w-[200px] md:w-[500px] mx-auto bg-white px-2 md:p-6 border-2 border-[#E4E7E9] font-sans">
                         <h3 className=" text-[16px] md:text-[20px] border-b-4 mb-2 md:mb-4">Change Password</h3>
                         <div className="grid grid-cols-1 gap-1 md:gap-4">
                             {[
@@ -635,7 +636,7 @@ const EditProfile = () => {
                                         onChange={(e) => {
                                             setPasswordForm({...passwordForm, [field.labelForm]: e.target.value});
                                         }}
-                                        className="w-full h-[20px] border-[#E4E7E9] border-2 rounded-sm p-2"
+                                        className="w-full md:h-[50px] border-[#E4E7E9] border-2 rounded-sm p-2"
                                         placeholder="••••••••"
                                     />
                                 </div>
