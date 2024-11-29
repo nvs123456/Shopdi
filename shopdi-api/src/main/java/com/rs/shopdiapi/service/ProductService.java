@@ -31,5 +31,7 @@ public interface ProductService {
 
     PageResponse<?> getMyProducts(int pageNo, int pageSize, String sortBy, String sortOrder, Long sellerId);
 
+    PageResponse<?> getSellerProducts(Long sellerId, int pageNo, int pageSize);
+
     List<ProductSuggestionResponse> getProductSuggestions(String query);
 }

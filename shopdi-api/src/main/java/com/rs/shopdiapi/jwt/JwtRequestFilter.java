@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.jwt;
 
 import com.rs.shopdiapi.service.impl.CustomUserDetailsService;
+import com.rs.shopdiapi.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

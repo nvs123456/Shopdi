@@ -26,7 +26,6 @@ import java.util.Optional;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
-    CategoryMapper categoryMapper;
 
     @Transactional
     @Override
@@ -49,15 +48,18 @@ public class CategoryServiceImpl implements CategoryService {
                 .toList();
     }
 
-    @Transactional
     @Override
-    public Category getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+    public CategoryResponse getCategoryById(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        return toCategoryResponse(category);
+
     }
 
     @Override
-    public Category getCategoryByName(String categoryName) {
-        return categoryRepository.findByName(categoryName).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+    public CategoryResponse getCategoryByName(String categoryName) {
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        return toCategoryResponse(category);
     }
 
     @Transactional
@@ -100,13 +102,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public Category updateCategory(Category category, Long categoryId) {
-        var categoryToUpdate = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-        categoryToUpdate.setName(category.getName());
-        categoryToUpdate.setParentCategory(category.getParentCategory());
+    public CategoryResponse updateCategory(Category categoryRequest, Long categoryId) {
+        Category categoryToUpdate = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
+        categoryToUpdate.setName(categoryRequest.getName());
+        categoryToUpdate.setParentCategory(categoryRequest.getParentCategory());
 
-        return categoryRepository.save(category);
+        Category updatedCategory = categoryRepository.save(categoryToUpdate);
+        return toCategoryResponse(updatedCategory);
     }
 
     @Transactional
@@ -136,6 +140,7 @@ public class CategoryServiceImpl implements CategoryService {
         child.setParentCategory(null);
         categoryRepository.save(child);
     }
+
     @Override
     public List<CategoryResponse> getCategoriesByParent(String parent) {
         var parentCategory = categoryRepository.findByName(parent).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -149,5 +154,20 @@ public class CategoryServiceImpl implements CategoryService {
                         .name(category.getName())
                         .build())
                 .toList();
+    }
+
+    private CategoryResponse toCategoryResponse(Category category) {
+        return CategoryResponse.builder()
+                .categoryId(category.getId())
+                .name(category.getName())
+                .parentId(Optional.ofNullable(category.getParentCategory()).map(Category::getId).orElse(null))
+                .parentName(Optional.ofNullable(category.getParentCategory()).map(Category::getName).orElse(null))
+                .childCategories(category.getChildCategories().stream()
+                        .map(childCategory -> ChildCategoryResponse.builder()
+                                .id(childCategory.getId())
+                                .name(childCategory.getName())
+                                .build())
+                        .toList())
+                .build();
     }
 }

@@ -13,6 +13,9 @@ public class AddressResponse {
     String firstName;
     String lastName;
     String address;
+    String city;
+    String state;
+    String country;
     String phoneNumber;
     String email;
     boolean isDefault;

@@ -1,9 +1,11 @@
 package com.rs.shopdiapi.controller;
 
+import com.cloudinary.Api;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductResponse;
 import com.rs.shopdiapi.domain.dto.response.ProductSuggestionResponse;
 import com.rs.shopdiapi.domain.enums.PageConstants;
+import com.rs.shopdiapi.repository.ProductRepository;
 import com.rs.shopdiapi.service.ProductService;
 import com.rs.shopdiapi.service.SellerService;
 import jakarta.validation.constraints.Min;
@@ -23,7 +25,6 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ProductController {
     ProductService productService;
-
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping
@@ -66,6 +67,15 @@ public class ProductController {
     public ApiResponse<?> getProductSuggestions(@RequestParam String query) {
         return ApiResponse.builder()
                 .result(productService.getProductSuggestions(query))
+                .build();
+    }
+
+    @GetMapping("/seller/{sellerId}")
+    public ApiResponse<?> getProductsBySeller(@PathVariable Long sellerId,
+                                              @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
+                                              @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+        return ApiResponse.builder()
+                .result(productService.getSellerProducts(sellerId, pageNo, pageSize))
                 .build();
     }
 }
