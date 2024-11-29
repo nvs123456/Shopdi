@@ -170,7 +170,7 @@ export default function ProductDetail() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
                                     </svg>
                                 </button>
-                                {subImages.map((i) => <div className="w-16 h-16 stretch bg-green" key={i} onClick={() => setCurImage(i)}><img src={productImages[i]} style={{aspectRatio: "1/1"}} alt={`image ${i}`} /></div>)}
+                                {subImages.map((i) => <div className="w-16 h-16 stretch border-2 border-gray-400 rounded-lg " key={i} onClick={() => setCurImage(i)}><img src={productImages[i]} className={`rounded-lg`} style={{aspectRatio: "1/1"}} alt={`image ${i}`} /></div>)}
                                 <button onClick={() => {
                                     if (subImages[4] === productImages.length - 1) return
                                     let tmp = subImages.map((i) => i + 1)
@@ -187,20 +187,29 @@ export default function ProductDetail() {
                             </div>
 
                             <div>
-                                <span className='text-4xl'>&#8363; {product.price.toLocaleString()}</span>
+                                <span
+                                    className='text-4xl text-[#2DA5F3]'>&#8363; {product.price.toLocaleString()}</span>
                             </div>
-                            <Variant variantWithQuantity={product.variants} onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant} currenSelectedVariant={currentSelectedVariant} />
+                            <Variant variantWithQuantity={product.variants}
+                                     onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant}
+                                     currenSelectedVariant={currentSelectedVariant}/>
                             <div className='flex flex-row'>
-                                <div className='text-base align-middle text-gray-600 min-w-20 text-left'>So luong</div>
+                                <div className='text-base align-middle text-gray-600 min-w-20 text-left'>Số lượng</div>
                                 <div className='flex flex-row flex-wrap'>
-                                    <Quantity quantity={quantity} setQuantity={setQuantity} quantityInStock={quantityInStock} />
-                                    <div className='ml-4'> Còn lại {quantityInStock} sản phẩm </div>
+                                    <Quantity quantity={quantity} setQuantity={setQuantity}
+                                              quantityInStock={quantityInStock}/>
+                                    <div className='ml-4'> Còn lại {quantityInStock} sản phẩm</div>
                                 </div>
                             </div>
                             {isBuyNowWithoutAttribute ? <div className='text-red message'></div> : null}
                             <div className='flex flex-row ml-4'>
-                                <button className='bg-pumpkin font-publicSans text-white rounded-sm cursor-pointer border-2 p-2' onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
-                                <button className='ml-2 bg-white font-publicSans text-pumpkin rounded-sm cursor-pointer  border-pumpkin  p-2 border-2' onClick={handleBuyNow}>Mua ngay</button>
+                                <button className='bg-pumpkin font-sans text-white rounded-md cursor-pointer px-6'
+                                        onClick={handleAddToCart}>Thêm vào giỏ hàng
+                                </button>
+                                <button
+                                    className='ml-2 bg-white font-sans text-pumpkin rounded-md cursor-pointer  border-pumpkin  p-2 border-2'
+                                    onClick={handleBuyNow}>Mua ngay
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -213,12 +222,13 @@ export default function ProductDetail() {
                             <p className="font-publicSans white-space-pre" dangerouslySetInnerHTML={{__html: product.description.replace(/\n/g, "<br>")}}></p>
                         </div>
                     </div>
+                    <ShopBar shop_info={shop_info}/>
                     <div className="description bg-white flex flex-row gap-x-8 border-2 rounded-md p-4">
                         <div className="w-full">
                             <div className="text-2xl">
                                 <h2>Bình luận</h2>
                             </div>
-                            <div className="font-publicSans white-space-pre">
+                            <div className="font-sans white-space-pre">
                                 <Comments productId={product.productId} />
                             </div>
                         </div>

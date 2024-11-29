@@ -26,7 +26,7 @@ export default function Navigation(props) {
         return <div className="text-center">Loading...</div>
     }
     return (
-        <div>
+        <div className={`font-sans`}>
             <div className={'bg-yaleBlue text-yaleBlue text-[18px]'}>
                 header
             </div>
