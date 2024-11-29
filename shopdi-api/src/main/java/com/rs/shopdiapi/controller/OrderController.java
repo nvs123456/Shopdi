@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.controller;
 
+import com.rs.shopdiapi.domain.dto.request.BuyNowRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.entity.User;
@@ -21,11 +22,19 @@ public class OrderController {
     OrderService orderService;
     UserService userService;
 
-    @PostMapping("/checkout")
-    public ApiResponse<?> checkout(@RequestBody @Valid CreateOrderRequest request) {
+    @PostMapping("/place-order")
+    public ApiResponse<?> placeOrder(@RequestBody @Valid CreateOrderRequest request) {
         User user = userService.getCurrentUser();
         return ApiResponse.builder()
                 .result(orderService.createOrder(user.getId(), request))
+                .build();
+    }
+
+    @PostMapping("/buy-now/{productId}")
+    public ApiResponse<?> buyNow(@PathVariable Long productId, @RequestBody @Valid BuyNowRequest request) {
+        User user = userService.getCurrentUser();
+        return ApiResponse.builder()
+                .result(orderService.buyNow(user.getId(), productId, request))
                 .build();
     }
 
@@ -51,4 +60,6 @@ public class OrderController {
                 .result(orderService.findOrderById(orderId))
                 .build();
     }
+
+
 }

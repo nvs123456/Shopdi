@@ -12,13 +12,13 @@ public interface CategoryService {
 
     List<CategoryResponse> getCategoriesByParent(String parent);
 
-    Category getCategoryById(Long categoryId);
+    CategoryResponse getCategoryById(Long categoryId);
 
-    Category getCategoryByName(String categoryName);
+    CategoryResponse getCategoryByName(String categoryName);
 
     CategoryResponse createCategory(CreateCategoryRequest category);
 
-    Category updateCategory(Category category, Long categoryId);
+    CategoryResponse updateCategory(Category category, Long categoryId);
 
     String deleteCategory(Long categoryId);
 

@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.service;
 
+import com.rs.shopdiapi.domain.dto.request.BuyNowRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
 import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
@@ -13,6 +14,8 @@ import java.util.List;
 public interface OrderService {
 
     String createOrder(Long userId, CreateOrderRequest request);
+
+    String buyNow(Long userId, Long productId, BuyNowRequest request);
 
     OrderResponse updateOrderStatus(Long orderId, String orderStatus);
 

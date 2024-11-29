@@ -1,16 +1,19 @@
 package com.rs.shopdiapi.service.impl;
 
+import com.rs.shopdiapi.domain.dto.request.BuyNowRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
 import com.rs.shopdiapi.domain.dto.response.AddressResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderItemResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
+import com.rs.shopdiapi.domain.dto.response.ProductResponse;
 import com.rs.shopdiapi.domain.dto.response.SimpleOrderResponse;
 import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.Cart;
 import com.rs.shopdiapi.domain.entity.CartItem;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.OrderItem;
+import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
@@ -21,6 +24,7 @@ import com.rs.shopdiapi.repository.AddressRepository;
 import com.rs.shopdiapi.repository.CartRepository;
 import com.rs.shopdiapi.repository.OrderItemRepository;
 import com.rs.shopdiapi.repository.OrderRepository;
+import com.rs.shopdiapi.repository.ProductRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.CartItemService;
 import com.rs.shopdiapi.service.CartService;
@@ -50,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     CartService cartService;
     AddressRepository addressRepository;
     UserRepository userRepository;
-    CartItemService cartItemService;
+    ProductRepository productRepository;
     OrderItemRepository orderItemRepository;
     CartRepository cartRepository;
 
@@ -100,6 +104,44 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
         cartService.updateCartSummary(cart.getId());
+        return "Order created successfully";
+    }
+
+    @Override
+    public String buyNow(Long userId, Long productId, BuyNowRequest request) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        OrderItem orderItem = OrderItem.builder()
+                .product(product)
+                .variant(request.getVariant())
+                .quantity(request.getQuantity())
+                .price(product.getPrice())
+                .orderItemStatus(OrderItemStatusEnum.PENDING)
+                .seller(product.getSeller())
+                .build();
+
+        BigDecimal totalPrice = product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
+
+        Address address = addressRepository.findById(request.getAddressId())
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        Order order = Order.builder()
+                .user(user)
+                .shippingAddress(address)
+                .totalPrice(totalPrice)
+                .orderStatus(OrderStatusEnum.PENDING)
+                .orderNotes(request.getOrderNotes())
+                .orderItems(List.of(orderItem))
+                .build();
+
+        orderRepository.save(order);
+        orderItem.setOrder(order);
+        orderItemRepository.save(orderItem);
+
         return "Order created successfully";
     }
 

@@ -1,4 +1,4 @@
-package com.rs.shopdiapi.jwt;
+package com.rs.shopdiapi.util;
 
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.exception.AppException;
