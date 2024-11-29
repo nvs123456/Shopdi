@@ -120,7 +120,16 @@ export default function CartPage({ CartId }) {
                     <div className="text-2xl">Total : {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
                     <Link to="/buyer/checkout" onClick={
                         (e) => {
-                            if (selectedProducts.length === 0) {
+                            let isSelected = false
+                            for(let i = 0; i < selectedProducts.length; i++){
+                                for(let j = 0; j < selectedProducts[i].cartItems.length; j++){
+                                    if(selectedProducts[i].cartItems[j].isSelected){
+                                        isSelected = true
+                                        break
+                                    }
+                                }
+                            }
+                            if (!isSelected) {
                                 e.preventDefault();
 
                                 alert("Please select at least one product");

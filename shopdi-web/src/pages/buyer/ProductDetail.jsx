@@ -2,11 +2,13 @@ import Quantity from "../../components/Buyer/Quantity.jsx";
 import Variant from "../../components/Buyer/Variant.jsx";
 import StarIcon from "@mui/icons-material/Star";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import ShopBar from "../../components/Buyer/ShopBar.jsx";
 import { GET, POST } from "@/api/GET";
 import Comments from "../../components/Buyer/Review/Comments.jsx";
+import CartItem from "../../components/Buyer/CartItem.jsx";
 export default function ProductDetail() {
     const location = useLocation();
     let t = location.pathname.split("/")
@@ -88,7 +90,7 @@ export default function ProductDetail() {
     const [currentSelectedVariant, setCurrentSelectedVariant] = useState([]);
     const [isBuyNowWithoutAttribute, setIsBuyNowWithoutAttribute] = useState(true);
     const [quantityInStock, setQuantityInStock] = useState(0)
-    const [productImages,setProductImages] = useState([])
+    const [productImages, setProductImages] = useState([])
     const [subImages, setSubImages] = useState([0, 1, 2, 3, 4])
     const [curImage, setCurImage] = useState(0)
     const onChangeCurrentSelectedVariant = (type, value) => {
@@ -135,23 +137,43 @@ export default function ProductDetail() {
             }
         })
     }
+    const navigate = useNavigate();
     const handleBuyNow = () => {
         console.log(isBuyNowWithoutAttribute)
         if (isBuyNowWithoutAttribute) {
             document.getElementsByClassName('message')[0].innerHTML = "Please select attributes"
             return
         }
-        if (product.variants.length === 0 && product.quantity === 0) {
+        if (quantity > quantityInStock) {
             alert("Product is out of stock")
             return
-        } else if (product.variants.length > 0 && currentSelectedVariant.length === 0) {
-            alert("Product is out of stock")
-
-        } else {
-            // console.log(currentSelectedVariant)
         }
+        navigate("/buyer/checkout", {
+            state: {
+                selectedProducts: [
+                    {
+                        sellerId: product.sellerId,
+                        sellerName: product.shopName,
+                        cartItems: [
+                            {
+                                "sellerId": product.sellerId,
+                                "sellerName": product.shopName,
+                                "cartItemId": 16,
+                                "productId": product.productId,
+                                "productName": product.productName,
+                                "productImage": productImages[0],
+                                "variant": JSON.stringify(currentSelectedVariant),
+                                "quantity": quantity,
+                                "price": product.price,
+                                isSelected : true
+                            }
+                        ]
+                    }
+                ]
+            }
+        })
     }
-    
+
     if (!isLoading) {
         return (
             <div className="pr-40 pl-40 bg-cloudBlue font-sans">
@@ -159,7 +181,7 @@ export default function ProductDetail() {
                     <div className="product-info bg-white flex flex-row gap-x-8 border-2 rounded-md">
                         <div className="product-image w-2/5 p-2">
                             <div className=" main-image w-full min-h-96">
-                                <img src={productImages[curImage]} alt={`image ${curImage}`} className="w-100 h-100 rounded-md" style={{aspectRatio: "1/1"}} />
+                                <img src={productImages[curImage]} alt={`image ${curImage}`} className="w-100 h-100 rounded-md" style={{ aspectRatio: "1/1" }} />
                             </div>
                             <div className="sub-image w-full min-h-12 bg-white flex flex-row gap-x-2 mt-2">
                                 <button onClick={() => {
@@ -170,7 +192,7 @@ export default function ProductDetail() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
                                     </svg>
                                 </button>
-                                {subImages.map((i) => <div className="w-16 h-16 stretch border-2 border-gray-400 rounded-lg " key={i} onClick={() => setCurImage(i)}><img src={productImages[i]} className={`rounded-lg`} style={{aspectRatio: "1/1"}} alt={`image ${i}`} /></div>)}
+                                {subImages.map((i) => <div className="w-16 h-16 stretch border-2 border-gray-400 rounded-lg " key={i} onClick={() => setCurImage(i)}><img src={productImages[i]} className={`rounded-lg`} style={{ aspectRatio: "1/1" }} alt={`image ${i}`} /></div>)}
                                 <button onClick={() => {
                                     if (subImages[4] === productImages.length - 1) return
                                     let tmp = subImages.map((i) => i + 1)
@@ -191,20 +213,20 @@ export default function ProductDetail() {
                                     className='text-4xl text-[#2DA5F3]'>&#8363; {product.price.toLocaleString()}</span>
                             </div>
                             <Variant variantWithQuantity={product.variants}
-                                     onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant}
-                                     currenSelectedVariant={currentSelectedVariant}/>
+                                onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant}
+                                currenSelectedVariant={currentSelectedVariant} />
                             <div className='flex flex-row'>
                                 <div className='text-base align-middle text-gray-600 min-w-20 text-left'>Số lượng</div>
                                 <div className='flex flex-row flex-wrap'>
                                     <Quantity quantity={quantity} setQuantity={setQuantity}
-                                              quantityInStock={quantityInStock}/>
+                                        quantityInStock={quantityInStock} />
                                     <div className='ml-4'> Còn lại {quantityInStock} sản phẩm</div>
                                 </div>
                             </div>
                             {isBuyNowWithoutAttribute ? <div className='text-red message'></div> : null}
                             <div className='flex flex-row ml-4'>
                                 <button className='bg-pumpkin font-sans text-white rounded-md cursor-pointer px-6'
-                                        onClick={handleAddToCart}>Thêm vào giỏ hàng
+                                    onClick={handleAddToCart}>Thêm vào giỏ hàng
                                 </button>
                                 <button
                                     className='ml-2 bg-white font-sans text-pumpkin rounded-md cursor-pointer  border-pumpkin  p-2 border-2'
@@ -219,10 +241,9 @@ export default function ProductDetail() {
                             <h2>Mô tả</h2>
                         </div>
                         <div>
-                            <p className="font-publicSans white-space-pre" dangerouslySetInnerHTML={{__html: product.description.replace(/\n/g, "<br>")}}></p>
+                            <p className="font-publicSans white-space-pre" dangerouslySetInnerHTML={{ __html: product.description.replace(/\n/g, "<br>") }}></p>
                         </div>
                     </div>
-                    <ShopBar shop_info={shop_info}/>
                     <div className="description bg-white flex flex-row gap-x-8 border-2 rounded-md p-4">
                         <div className="w-full">
                             <div className="text-2xl">
@@ -252,7 +273,7 @@ export default function ProductDetail() {
         )
     }
 }
-const getReview =async (productId) => {
+const getReview = async (productId) => {
     const count = await GET(`reviews/product/${productId}/count`).then((res) => {
         if (res.code === "OK") {
             return res.result
