@@ -2,29 +2,29 @@ import React from 'react'
 import OrderItem from '@/components/Buyer/Checkout/OrderItem'
 import Payment from '@/components/Buyer/Checkout/Payment'
 import AddressSelection from '@/components/Buyer/Checkout/AddressSelection'
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { GET, POST } from '../../api/GET'
 export default function Checkout({ ProductList }) {
     let location = useLocation()
     let tmp = location.state.selectedProducts;
-
+    let isBuyNow = location.state.isBuyNow;
     const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
         GET("address/shipping").then((data) => {
             if (data.code === "OK") {
                 setIsLoading(false)
-                if(data.result.length === 0){
+                if (data.result.length === 0) {
                     setCurrentAddress(null)
-                }else{
+                } else {
                     setCurrentAddress(data.result[0])
                 }
                 setAllAddress(data.result)
             }
         })
-    },[isLoading])
+    }, [isLoading])
 
-    const [currentAddress, setCurrentAddress] = useState( null)
+    const [currentAddress, setCurrentAddress] = useState(null)
     const [allAddress, setAllAddress] = useState([])
     const [openAddress, setOpenAddress] = useState(false)
     const onClose = () => {
@@ -58,7 +58,12 @@ export default function Checkout({ ProductList }) {
                     </div>
                     <div className="flex flex-row">
                         <div className="w-4/6">
-                            <Payment /></div>
+                            <Payment />
+                            <div>
+                                <div>Order Note ( Optional )</div>
+                                <textarea id="note" className="w-full h-20 border-2 border-black rounded" placeholder="Order Note ( Optional )"></textarea>
+                            </div>
+                        </div>
                         <div className="text-left text-xl w-80">
                             <div className="flex flex-row justify-between">
                                 <p className='inline-block'>Tiền hàng :</p>
@@ -91,17 +96,33 @@ export default function Checkout({ ProductList }) {
                             <div>
                                 <button onClick={() => {
                                     for (let i = 0; i < tmp.length; i++) {
-                                        if(currentAddress === null) {
+                                        if (currentAddress === null) {
                                             alert("Vui lòng chọn điểm giao hàng")
                                         }
-                                        POST('orders/checkout', {
-                                            "addressId": currentAddress.addressId,
-                                            "selectedCartItemIds": tmp[i].cartItems.map((item) => item.cartItemId),
-                                        }).then((res) => {
-                                            if (res.code === "OK") {
-                                                alert("Dat hang thanh cong")
-                                            }
-                                        })
+                                        if (isBuyNow) {
+                                            POST('orders/buy-now/' + tmp[i].cartItems[0].productId, {
+
+                                                "variant": tmp[i].cartItems[0].variant,
+                                                "quantity": tmp[i].cartItems[0].quantity,
+                                                "addressId": currentAddress.addressId,
+                                                "orderNotes": document.getElementById("note").value
+
+                                            }).then((res) => {
+                                                if (res.code === "OK") {
+                                                    alert("Dat hang thanh cong")
+                                                }
+                                            })
+                                        } else {
+                                            POST('orders/place-order', {
+                                                "addressId": currentAddress.addressId,
+                                                "selectedCartItemIds": tmp[i].cartItems.map((item) => item.cartItemId),
+                                                orderNotes: document.getElementById("note").value
+                                            }).then((res) => {
+                                                if (res.code === "OK") {
+                                                    alert("Dat hang thanh cong")
+                                                }
+                                            })
+                                        }
                                     }
 
                                 }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

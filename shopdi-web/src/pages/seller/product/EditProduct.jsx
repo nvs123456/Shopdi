@@ -180,13 +180,7 @@ export default function EditProduct() {
                             }}
                                 type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
-                        <div>
-                            <label className='block'>Discount</label>
-                            <input defaultValue={productForm.discountPercent} onChange={(e) => {
-                                setProductForm({ ...productForm, discountPercent: e.target.value })
-                            }}
-                                type="number" className='required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' placeholder='0 if not available'></input>
-                        </div>
+                        
                         <div>
                             <label className='block'>Brand</label>
                             <input defaultValue={productForm.brand} onChange={(e) => {
@@ -286,13 +280,13 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
     );
 };
 function QuantityOfVariants({ productForm, setProductForm }) {
-    if (productForm.variantDetails.length === 0) {
+    if ((productForm.variantDetails.length === 1 && productForm.variantDetails[0].variantDetail === null) || (productForm.variantDetails.length === 0)){
         return (
             <div className='bg-white p-4'>
                 <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
                     <span className='font-bold text-xl'>Enter quantity</span>
                     <input defaultValue={productForm.quantity} id="quantity" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' type='number' onChange={(e) => {
-                        setProductForm({ ...productForm, quantity: e.target.value })
+                        setProductForm({ ...productForm, variantDetails: [{ variantDetail: null, quantity: e.target.value }] })
                     }} />
                 </div>
             </div>
