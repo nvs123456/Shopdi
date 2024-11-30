@@ -5,7 +5,7 @@ import hiddenCssClasses from "@mui/material/Hidden/hiddenCssClasses.js";
 
 function Review({isModalOpen,setIsModalOpen}) {
     return (
-        <div className={`${isModalOpen ? '':'hidden' }max-h-80 w-60 md:h-full md:w-[400px] fixed top-[25%] left-[780px] z-10 mx-auto mb-2 border-2 border-[#E4E7E9] rounded bg-white font-sans`}>
+        <div className={`${isModalOpen ? '':'hidden' }max-h-80 w-60 md:h-full md:w-[400px] fixed top-40 lg:left-[30%] left-[7%] xl:top-[25%] xl:left-[40%] z-10 mx-auto mb-2 border-2 border-[#E4E7E9] rounded bg-white font-sans`}>
             <div className='flex items-center justify-between border-2 border-[#E4E7E9] rounded p-2 m-2'>
                 <h1 className='text-[14px] md:text-[16px] font-sans'>BILLING ADDRESS</h1>
             </div>
