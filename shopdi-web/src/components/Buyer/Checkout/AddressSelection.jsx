@@ -45,8 +45,8 @@ export default function AddressSelection({ onClose, addresses, setAllAddress, cu
                         </>
                     ) : (<>
                         <div className="text-xl text-red font-bold border-b-2 border-gray-400 pb-4">Địa chỉ của tôi</div>
-                        <div className="no-scrollbar overflow-y-scroll h-full">
-                            {addresses.map((item) => <Address key={item.id} address={item} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />)}
+                        <div className="no-scrollbar overflow-y-scroll h-full"> 
+                            {addresses.map((item) => <Address key={item.addressId} address={item} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />)}
 
                         </div>
                         <div className="flex flex-row justify-end ">
@@ -63,10 +63,10 @@ function Address({ address, currentAddress, setCurrentAddress }) {
     return (
         <div className="flex flex-row gap-2 py-2 border-b-2 border-gray-400">
             <div className="">
-                <input id={`address${currentAddress.addressId}`} type="radio" name="selected-address" onClick={() => setCurrentAddress(address)} className="mt-2" />
+                <input id={`address${address.addressId}`} type="radio" name="selected-address" onClick={() => setCurrentAddress(address)} className="mt-2" />
             </div>
             <div>
-                <div htmlFor={`address${currentAddress.addressId}`} className="flex flex-row">
+                <div htmlFor={`address${address.addressId}`} className="flex flex-row">
                     <div className="pr-2 border-r-2 border-gray-400">{address.firstName} {address.lastName}</div>
                     <div className="text-gray-600">(SDT:){address.phone}</div>
                 </div>

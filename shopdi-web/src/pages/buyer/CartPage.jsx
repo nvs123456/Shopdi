@@ -135,7 +135,7 @@ export default function CartPage({ CartId }) {
                                 alert("Please select at least one product");
                             }
                         }
-                    } state={{ selectedProducts: selectedProducts }}><button className="bg-red text-white p-2">Checkout</button></Link>
+                    } state={{isBuyNow: false, selectedProducts: selectedProducts }}><button className="bg-red text-white p-2">Checkout</button></Link>
                 </div>
 
             </div>

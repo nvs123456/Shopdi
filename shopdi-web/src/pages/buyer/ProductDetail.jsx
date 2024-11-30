@@ -150,6 +150,7 @@ export default function ProductDetail() {
         }
         navigate("/buyer/checkout", {
             state: {
+                isBuyNow: true,
                 selectedProducts: [
                     {
                         sellerId: product.sellerId,

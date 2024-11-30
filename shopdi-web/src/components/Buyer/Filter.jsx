@@ -37,12 +37,12 @@ export default function Filter({ children, products, setProducts }) {
     }
     useEffect(() => {
         console.log(currentCategoryId)
-        // GET(`categories/${currentCategoryId}`).then((res) => {
-        //     if(res.code === "OK") {
-        //         setSubCategories([])
-        //         setLoading(false)
-        //     }
-        // })
+        GET(`categories/${currentCategoryId}`).then((res) => {
+            if(res.code === "OK") {
+                setSubCategories(res.result.childCategories.map((item) => item.name))
+                setLoading(false)
+            }
+        })
         // GET(`categories/child/${currentCategory}`).then((res) => {
         //     if (res.code === "OK") {
         //         // console.log(res)
