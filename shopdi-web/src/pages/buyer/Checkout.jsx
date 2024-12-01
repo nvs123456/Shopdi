@@ -38,7 +38,7 @@ export default function Checkout({ ProductList }) {
                     <div className='border-b-2 border-gray-400 '>
                         <div className='text-xl text-red font-bold'>Địa chỉ nhận hàng</div>
                         <div>{currentAddress === null ? "Chưa có địa chỉ" : `
-                         ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}`}</div>
+                         ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}, ${currentAddress.city}, ${currentAddress.state}, ${currentAddress.country}`}</div>
                         <div className="text-blue-500 hover:underline" onClick={() => setOpenAddress(!openAddress)}>{currentAddress === null ? "Thêm" : "Thay đổi"}</div>
                     </div>
                     <div className="header flex flex-row w-full border-b-2 border-gray-400 pb-4">

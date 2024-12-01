@@ -11,13 +11,13 @@ import { GET } from "@/api/GET";
 const HomePage = () => {
   const location = useLocation();
 
-  const [page, setPage] = useState({pageNo:0, totalPage:1})
+  const [page, setPage] = useState({ pageNo: 0, totalPage: 1 })
   const query = new URLSearchParams(location.search);
   const currentCategory = query.get('category');
   const pageParams = query.get('page');
   let pageUrl = ''
   if (pageParams !== null) {
-    pageUrl = `?pageNo=${pageParams-1}`
+    pageUrl = `?pageNo=${pageParams - 1}`
   }
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -27,15 +27,24 @@ const HomePage = () => {
       GET(`products` + pageUrl).then((res) => {
         if (res.code === "OK") {
           setProducts(res.result?.items)
-          setPage({pageNo:res.result.pageNo, totalPage:res.result.totalPages})
+          setPage({ pageNo: res.result.pageNo, totalPage: res.result.totalPages })
           setIsLoading(false)
         }
       })
     } else if (location.pathname.split("/")[1] === "category") {
-      GET(`products/category/Thiết Bị Điện Tử` + pageUrl).then((res) => {
+      if (currentCategory !== null) {
+        GET(`products/category/` + currentCategory + pageUrl).then((res) => {
+          if (res.code === "OK") {
+            setProducts(res.result?.items)
+            setPage({ pageNo: res.result.pageNo, totalPage: res.result.totalPages })
+            setIsLoading(false)
+          }
+        })
+      }
+      GET(`products/category/` + decodeURI(location.pathname.split("/")[2]) + pageUrl).then((res) => {
         if (res.code === "OK") {
           setProducts(res.result?.items)
-          setPage({pageNo:res.result.pageNo, totalPage:res.result.totalPages})
+          setPage({ pageNo: res.result.pageNo, totalPage: res.result.totalPages })
           setIsLoading(false)
         }
       })
@@ -47,7 +56,7 @@ const HomePage = () => {
     <div>
       <Routes>
         <Route path="/" element={<div className='flex flex-col justify-center'>
-          <ProductList products={products} page = {page}/>
+          <ProductList products={products} page={page} />
         </div>} />
         <Route path="/category/:categoryId" element={
           <div className="flex flex-row">
@@ -55,7 +64,7 @@ const HomePage = () => {
               <Filter products={products} setProducts={setProducts} />
             </div>
             <div className="w-3/4">
-              <ProductList products={products} page = {page}/>
+              <ProductList products={products} page={page} />
             </div>
 
           </div>} />
