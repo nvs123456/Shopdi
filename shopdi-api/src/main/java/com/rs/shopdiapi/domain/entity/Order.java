@@ -49,8 +49,6 @@ public class Order extends BaseEntity<Long> {
 
     @JoinColumn(name = "shipping_address_id", nullable = false)
     Address shippingAddress;
-//    @Embedded
-//    PaymentDetails paymentDetails = new PaymentDetails();
     BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
@@ -59,7 +57,13 @@ public class Order extends BaseEntity<Long> {
 
     String orderNotes;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
+    Payment payment;
+
+
     LocalDateTime deliveryDate;
+
     public List<OrderItem> getOrderItems() {
         if(orderItems == null) {            
             orderItems = new ArrayList<>();

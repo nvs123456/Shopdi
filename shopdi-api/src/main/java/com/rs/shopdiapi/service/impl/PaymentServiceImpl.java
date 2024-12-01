@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.service.impl;
 
 
+import com.rs.shopdiapi.config.VNPayConfig;
 import com.rs.shopdiapi.domain.dto.response.PaymentResponse;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
@@ -25,21 +26,22 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PaymentServiceImpl implements PaymentService {
-    UserRepository userRepository;
+
+    VNPayConfig vnPayConfig;
     VNPayUtil vnPayUtil;
     UserService userService;
 
+    @Override
     public PaymentResponse createVnPayPayment(HttpServletRequest request) {
         BigDecimal amount = new BigDecimal(request.getParameter("amount")).multiply(BigDecimal.valueOf(100));
-//        String email = SecurityUtils.getCurrentUserLogin().orElseThrow();
         User user = userService.getCurrentUser();
 
         PaymentInfo paymentInfo = new PaymentInfo()
-//                .setReference(PaymentType.DEPOSIT + "_" + user.getId() + "_" + VNPayUtil.getRandomNumber(6))
+                .setReference("ORDER_" + System.currentTimeMillis())
                 .setAmount(amount)
-                .setDescription("Thanh toan")
+                .setDescription("Thanh toán đơn hàng cho user: " + user.getId())
                 .setExpiresIn(Duration.ofMinutes(15));
-//                .setIpAddress(ServletHelper.extractIPAddress(request));
+
         String paymentUrl = vnPayUtil.getPaymentURL(paymentInfo);
 
         return PaymentResponse.builder()

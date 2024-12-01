@@ -54,12 +54,12 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/category/{categoryName}")
-    public ApiResponse<?> getProductsByCategoryId(@PathVariable String categoryName,
+    @GetMapping("/category/{categoryId}")
+    public ApiResponse<?> getProductsByCategoryId(@PathVariable Long categoryId,
                                                   @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
                                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
         return ApiResponse.builder()
-                .result(productService.findProductByCategory(categoryName, pageNo, pageSize))
+                .result(productService.findProductByCategory(categoryId, pageNo, pageSize))
                 .build();
     }
 
