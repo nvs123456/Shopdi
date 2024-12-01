@@ -9,6 +9,7 @@ import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.SellerResponse;
 import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.util.JwtUtil;
 import com.rs.shopdiapi.service.OrderService;
@@ -20,6 +21,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,9 +86,7 @@ public class SellerController {
     @PreAuthorize("hasRole('SELLER')")
     @GetMapping("/orders")
     public ApiResponse<?> getOrders(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize,
-                                   @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
-                                   @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
+                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
         Long sellerId = sellerService.getCurrentSeller().getId();
         return ApiResponse.builder()
                 .result(orderService.getAllOrdersForSeller(sellerId, pageNo, pageSize))
@@ -94,14 +94,16 @@ public class SellerController {
     }
 
     @PreAuthorize("hasRole('SELLER')")
-    @PutMapping("/{orderId}/status")
-    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId,
-                                                           @RequestParam String orderStatus) {
-        OrderResponse updatedOrder = orderService.updateOrderStatus(orderId, orderStatus);
+    @PutMapping("/{orderId}/update-status")
+    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatusEnum orderStatus) {
+
         return ApiResponse.builder()
-                .result(updatedOrder)
+                .result(orderService.updateOrderStatus(orderId, orderStatus))
                 .build();
     }
+
+
+
 
 
     @PostMapping("/register")

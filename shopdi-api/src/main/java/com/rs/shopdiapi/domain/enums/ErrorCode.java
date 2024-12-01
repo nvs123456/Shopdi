@@ -65,6 +65,8 @@ public enum ErrorCode {
     REVIEW_ALREADY_EXISTS("REVIEW_ALREADY_EXISTS", "Review already exists", HttpStatus.BAD_REQUEST),
 
     FILE_UPLOAD_FAILED("FILE_UPLOAD_FAILED", "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    IMAGE_NOT_FOUND("IMAGE_NOT_FOUND", "Image not found", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {
