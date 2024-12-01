@@ -6,7 +6,6 @@ import com.rs.shopdiapi.domain.dto.response.AddressResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderItemResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
-import com.rs.shopdiapi.domain.dto.response.ProductResponse;
 import com.rs.shopdiapi.domain.dto.response.SimpleOrderResponse;
 import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.Cart;
@@ -26,7 +25,6 @@ import com.rs.shopdiapi.repository.OrderItemRepository;
 import com.rs.shopdiapi.repository.OrderRepository;
 import com.rs.shopdiapi.repository.ProductRepository;
 import com.rs.shopdiapi.repository.UserRepository;
-import com.rs.shopdiapi.service.CartItemService;
 import com.rs.shopdiapi.service.CartService;
 import com.rs.shopdiapi.service.OrderService;
 import jakarta.transaction.Transactional;
@@ -43,6 +41,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -154,17 +153,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponse updateOrderStatus(Long orderId, String orderStatus) {
+    public OrderResponse updateOrderStatus(Long orderId, OrderStatusEnum newStatus) {
         var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-        try {
-            OrderStatusEnum newStatus = OrderStatusEnum.valueOf(orderStatus.toUpperCase());
-            order.setOrderStatus(newStatus);
-            return orderMapper.toOrderResponse(orderRepository.save(order));
-        } catch (IllegalArgumentException e) {
+
+        OrderStatusEnum currentStatus = order.getOrderStatus();
+        if(newStatus.ordinal() < currentStatus.ordinal()) {
             throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
         }
+        if (newStatus == OrderStatusEnum.DELIVERED) {
+            if (currentStatus.ordinal() < OrderStatusEnum.PROCESSING.ordinal()) {
+                throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
+            }
+        }
+
+        order.setOrderStatus(newStatus);
+        orderRepository.save(order);
+
+        return mapToOrderResponse(order);
     }
 
     @Override
@@ -191,7 +198,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         orderRepository.save(order);
-        return orderMapper.toOrderResponse(orderRepository.save(order));
+        return mapToOrderResponse(orderRepository.save(order));
     }
 
     @Override
@@ -208,7 +215,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         if (order.getOrderStatus() == OrderStatusEnum.PENDING || order.getOrderStatus() == OrderStatusEnum.PROCESSING) {
-            order.setOrderStatus(OrderStatusEnum.CANCELLED);
+            order.setOrderStatus(OrderStatusEnum.CANCELED);
             orderRepository.save(order);
             return "Order cancelled successfully";
         }
@@ -235,10 +242,23 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PageResponse<?> getAllOrdersForSeller(Long sellerId, int pageNo, int pageSize) {
         Sort sort = Sort.by(Sort.Order.asc("orderStatus"), Sort.Order.desc("createdAt"));
-        Page<Order> ordersPage = orderRepository.findAllBySellerId(sellerId, PageRequest.of(pageNo, pageSize, sort));
+        Page<Order> ordersPage = orderRepository.findOrdersBySellerId(sellerId, PageRequest.of(pageNo, pageSize, sort));
 
         List<OrderResponse> orderResponses = ordersPage.stream()
-                .map(orderMapper::toOrderResponse)
+                .map(order -> {
+                    List<OrderItemResponse> sellerOrderItems = order.getOrderItems().stream()
+                            .filter(item -> Objects.equals(item.getSeller().getId(), sellerId))
+                            .map(this::mapToOrderItemResponse)
+                            .toList();
+                    if (sellerOrderItems.isEmpty()) {
+                        return null;
+                    }
+
+                    OrderResponse orderResponse = this.mapToOrderResponse(order);
+                    orderResponse.setOrderItems(sellerOrderItems);
+                    return orderResponse;
+                })
+                .filter(Objects::nonNull)
                 .toList();
 
         return PageResponse.builder()
@@ -288,7 +308,10 @@ public class OrderServiceImpl implements OrderService {
                 .addressId(address.getId())
                 .firstName(address.getFirstName())
                 .lastName(address.getLastName())
-                .address(address.getAddress() + ", " + address.getCity() + ", " + address.getState() + address.getCountry())
+                .address(address.getAddress())
+                .city(address.getCity())
+                .state(address.getState())
+                .country(address.getCountry())
                 .phoneNumber(address.getPhoneNumber())
                 .email(address.getEmail())
                 .build();

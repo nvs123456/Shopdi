@@ -1,22 +1,38 @@
 package com.rs.shopdiapi.util;
 
+import com.rs.shopdiapi.config.VNPayConfig;
+import com.rs.shopdiapi.domain.entity.Payment;
+import com.rs.shopdiapi.domain.model.PaymentInfo;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+@Component
+@RequiredArgsConstructor
 public class VNPayUtil {
+    private static final Random RANDOM = new Random();
+    private final VNPayConfig vnPayConfig;
+
     public static String hmacSHA512(final String key, final String data) {
         try {
             if (key == null || data == null) {
-                throw new NullPointerException();
+                throw new NullPointerException("Key or Data is null for HMAC SHA512");
             }
             final Mac hmac512 = Mac.getInstance("HmacSHA512");
-            byte[] hmacKeyBytes = key.getBytes();
+            byte[] hmacKeyBytes = key.getBytes(StandardCharsets.UTF_8);
             final SecretKeySpec secretKey = new SecretKeySpec(hmacKeyBytes, "HmacSHA512");
             hmac512.init(secretKey);
             byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
@@ -28,42 +44,48 @@ public class VNPayUtil {
             return sb.toString();
 
         } catch (Exception ex) {
-            return "";
+            ex.printStackTrace();
+            throw new RuntimeException("Error generating HMAC SHA512 hash", ex);
         }
-    }
-
-    public static String getIpAddress(HttpServletRequest request) {
-        String ipAdress;
-        try {
-            ipAdress = request.getHeader("X-FORWARDED-FOR");
-            if (ipAdress == null) {
-                ipAdress = request.getRemoteAddr();
-            }
-        } catch (Exception e) {
-            ipAdress = "Invalid IP:" + e.getMessage();
-        }
-        return ipAdress;
     }
 
     public static String getRandomNumber(int len) {
-        Random rnd = new Random();
         String chars = "0123456789";
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++) {
-            sb.append(chars.charAt(rnd.nextInt(chars.length())));
+            sb.append(chars.charAt(RANDOM.nextInt(chars.length())));
         }
         return sb.toString();
     }
-    public static String getPaymentURL(Map<String, String> paramsMap, boolean encodeKey) {
-        return paramsMap.entrySet().stream()
-                .filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
+
+    public String getPaymentURL(PaymentInfo paymentInfo) {
+        Map<String, String> params = vnPayConfig.getVNPayConfig();
+        ZoneId zone = TimeZone.getTimeZone("GMT+7").toZoneId();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+        params.put("vnp_TxnRef", paymentInfo.getReference());
+        params.put("vnp_OrderInfo", paymentInfo.getDescription());
+        params.put("vnp_Amount", paymentInfo.getAmount().setScale(0, RoundingMode.DOWN).toString());
+        params.put("vnp_CreateDate", formatter.format(paymentInfo.getCreatedAt().atZone(zone).toLocalDateTime()));
+        params.put("vnp_ExpireDate", formatter.format(paymentInfo.getExpiredAt().atZone(zone).toLocalDateTime()));
+        params.put("vnp_IpAddr", paymentInfo.getIpAddress());
+
+        String query = buildQuery(params, true);
+        String checksum = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), buildQuery(params, false));
+        query += "&vnp_SecureHash=" + checksum;
+
+        return vnPayConfig.getVnp_PayUrl() + "?" + query;
+    }
+
+    private String buildQuery(Map<String, String> params, boolean encodeKey) {
+        return params.entrySet().stream()
+                .filter(e -> e.getValue() != null && !e.getValue().isEmpty())
                 .sorted(Map.Entry.comparingByKey())
-                .map(entry ->
-                        (encodeKey ? URLEncoder.encode(entry.getKey(),
-                                StandardCharsets.US_ASCII)
-                                : entry.getKey()) + "=" +
-                                URLEncoder.encode(entry.getValue()
-                                        , StandardCharsets.US_ASCII))
+                .map(e -> {
+                    Charset charset = StandardCharsets.US_ASCII;
+                    String key = encodeKey ? URLEncoder.encode(e.getKey(), charset) : e.getKey();
+                    return key + "=" + URLEncoder.encode(e.getValue(), charset);
+                })
                 .collect(Collectors.joining("&"));
     }
 }
