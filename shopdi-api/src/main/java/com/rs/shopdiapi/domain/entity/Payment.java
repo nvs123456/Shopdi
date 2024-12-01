@@ -32,11 +32,14 @@ public class Payment extends BaseEntity<Long> {
     User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
-    Order course;
+    @JoinColumn(name = "order_id", nullable = false)
+    Order order;
 
-    @Column(name = "transaction_id")
-    String transactionId;
+    @Column(name = "amount", nullable = false)
+    BigDecimal amount;
+
+    @Column(name = "transaction_ref", unique = true, nullable = false)
+    String transactionRef;
 
     @JoinColumn(name = "payment_method_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,9 +49,6 @@ public class Payment extends BaseEntity<Long> {
     @Column(name = "status", nullable = false)
     PaymentStatusEnum status;
 
-    @Column(name = "price", nullable = false)
-    BigDecimal price;
-
-    @Column(name = "points")
-    BigDecimal points;
+    @Column(name = "response_code")
+    String responseCode;
 }

@@ -83,24 +83,7 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
 
 
-        return ProductDetailResponse.builder()
-                .productId(savedProduct.getId())
-                .productName(savedProduct.getProductName())
-                .description(savedProduct.getDescription())
-                .price(savedProduct.getPrice())
-                .brand(savedProduct.getBrand())
-                .status(savedProduct.getStatus())
-                .categoryName(savedProduct.getCategory() != null ? savedProduct.getCategory().getName() : null)
-                .tagNames(savedProduct.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
-                .sellerId(savedProduct.getSeller().getId())
-                .shopName(savedProduct.getSeller().getShopName())
-                .variants(savedProduct.getVariants().stream()
-                        .map(variant -> ProductDetailResponse.VariantResponse.builder()
-                                .variantDetail(variant.getVariantDetail())
-                                .quantity(variant.getQuantity())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
+        return toProductDetailResponse(savedProduct);
     }
 
     @Transactional
@@ -160,29 +143,7 @@ public class ProductServiceImpl implements ProductService {
         var product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        return ProductDetailResponse.builder()
-                .productId(product.getId())
-                .productName(product.getProductName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .brand(product.getBrand())
-                .status(product.getStatus())
-                .imageUrls(product.getImageUrls())
-                .categoryName(product.getCategory() != null ? product.getCategory().getName() : null) // Danh mục sản phẩm
-                .tagNames(product.getTags() != null
-                        ? product.getTags().stream().map(Tag::getName).collect(Collectors.toSet())
-                        : Set.of())
-                .sellerId(product.getSeller() != null ? product.getSeller().getId() : null) // ID người bán
-                .shopName(product.getSeller() != null ? product.getSeller().getShopName() : null) // Tên shop của người bán
-                .variants(product.getVariants() != null
-                        ? product.getVariants().stream()
-                        .map(variant -> ProductDetailResponse.VariantResponse.builder()
-                                .variantDetail(variant.getVariantDetail())
-                                .quantity(variant.getQuantity())
-                                .build())
-                        .toList()
-                        : List.of())
-                .build();
+        return toProductDetailResponse(product);
     }
 
     @Override
@@ -201,8 +162,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageResponse<?> findProductByCategory(String categoryName, int pageNo, int pageSize) {
-        Category category = categoryRepository.findByName(categoryName).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+    public PageResponse<?> findProductByCategory(Long categoryId, int pageNo, int pageSize) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Page<Product> productPage = productRepository.findAllByCategoryId(category.getId(), PageRequest.of(pageNo, pageSize));
 
@@ -316,7 +277,9 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByProductNameContainingIgnoreCase(query);
 
         return products.stream()
-                .map(product -> new ProductSuggestionResponse(product.getId(), product.getProductName()))
+                .map(Product::getProductName)
+                .distinct()
+                .map(ProductSuggestionResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -331,6 +294,42 @@ public class ProductServiceImpl implements ProductService {
                 .publishedOn(product.getCreatedAt())
                 .rating(product.getReviews().isEmpty() ? 0 : product.getReviews().stream().mapToInt(Review::getRating).sum() / product.getReviews().size())
                 .reviewCount(product.getReviews().size())
+                .build();
+    }
+
+    private ProductDetailResponse toProductDetailResponse(Product product) {
+        return ProductDetailResponse.builder()
+                .productId(product.getId())
+                .productName(product.getProductName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .brand(product.getBrand())
+                .status(product.getStatus())
+                .imageUrls(product.getImageUrls())
+                .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
+                .tagNames(product.getTags() != null
+                        ? product.getTags().stream().map(Tag::getName).collect(Collectors.toSet())
+                        : Set.of())
+                .seller(ProductDetailResponse.SellerResponse.builder()
+                        .sellerId(product.getSeller().getId())
+                        .shopName(product.getSeller().getShopName())
+                        .shopImageUrl(product.getSeller().getProfileImage())
+                        .productCount(product.getSeller().getProducts().size())
+                        .rating(product.getSeller().getProducts().stream()
+                                .mapToInt(p -> {
+                                    int reviewCount = p.getReviews().size();
+                                    return reviewCount > 0 ? p.getReviews().stream().mapToInt(Review::getRating).sum() / reviewCount : 0;
+                                })
+                                .sum() / product.getSeller().getProducts().size())
+                        .build())
+                .variants(product.getVariants() != null
+                        ? product.getVariants().stream()
+                        .map(variant -> ProductDetailResponse.VariantResponse.builder()
+                                .variantDetail(variant.getVariantDetail())
+                                .quantity(variant.getQuantity())
+                                .build())
+                        .toList()
+                        : List.of())
                 .build();
     }
 
