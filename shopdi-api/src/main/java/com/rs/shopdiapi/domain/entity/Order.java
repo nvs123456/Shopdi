@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +54,7 @@ public class Order extends BaseEntity<Long> {
     BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
 
     String orderNotes;

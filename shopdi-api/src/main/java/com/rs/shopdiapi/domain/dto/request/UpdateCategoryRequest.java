@@ -11,9 +11,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateCategoryRequest {
-    @NotNull(message = "Category ID is required")
-    Long id;
-
     @NotNull
     @Size(min = 1, message = "Category name cannot be empty")
     String name;

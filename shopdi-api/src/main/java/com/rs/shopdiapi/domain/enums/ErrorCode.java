@@ -65,6 +65,15 @@ public enum ErrorCode {
     REVIEW_ALREADY_EXISTS("REVIEW_ALREADY_EXISTS", "Review already exists", HttpStatus.BAD_REQUEST),
 
     FILE_UPLOAD_FAILED("FILE_UPLOAD_FAILED", "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    IMAGE_NOT_FOUND("IMAGE_NOT_FOUND", "Image not found", HttpStatus.NOT_FOUND),
+
+    VARIANT_NOT_FOUND("VARIANT_NOT_FOUND", "Variant not found", HttpStatus.NOT_FOUND),
+
+    PRODUCT_OUT_OF_STOCK("PRODUCT_OUT_OF_STOCK", "Product out of stock", HttpStatus.BAD_REQUEST),
+
+    NOT_ENOUGH_STOCK("NOT_ENOUGH_STOCK", "Not enough stock", HttpStatus.BAD_REQUEST),
+
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {

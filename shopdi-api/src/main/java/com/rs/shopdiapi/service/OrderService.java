@@ -7,6 +7,7 @@ import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +18,7 @@ public interface OrderService {
 
     String buyNow(Long userId, Long productId, BuyNowRequest request);
 
-    OrderResponse updateOrderStatus(Long orderId, String orderStatus);
+    OrderResponse updateOrderStatus(Long orderId, OrderStatusEnum orderStatus);
 
     OrderResponse confirmOrder(Long orderId, Long orderItemId, Long sellerId);
 

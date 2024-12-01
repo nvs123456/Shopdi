@@ -27,7 +27,7 @@ public class PaymentController {
                 .build();
     }
 
-    @GetMapping("/vn-pay-callback")
+    @GetMapping("/vn-pay-return")
     public ApiResponse<?> payCallbackHandler(HttpServletRequest request) {
         String status = request.getParameter("vnp_ResponseCode");
         if(status.equals("00")) {

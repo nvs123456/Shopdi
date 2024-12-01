@@ -26,4 +26,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
 
     @Query("SELECT o FROM Order o WHERE o.orderStatus <> :excludedStatus")
     Page<Order> findAllExcludingStatus(@Param("excludedStatus") OrderStatusEnum excludedStatus, Pageable pageable);
+
+    @Query("SELECT o FROM Order o JOIN o.orderItems oi WHERE oi.product.seller.id = :sellerId")
+    Page<Order> findOrdersBySellerId(@Param("sellerId") Long sellerId, Pageable pageable);
 }
