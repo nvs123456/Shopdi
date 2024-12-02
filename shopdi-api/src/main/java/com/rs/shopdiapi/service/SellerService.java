@@ -8,6 +8,7 @@ import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface SellerService {
@@ -21,7 +22,7 @@ public interface SellerService {
 
     Seller getCurrentSeller();
 
-    String sellerRegister(RegisterSellerRequest request, User user);
+    void sellerRegister(RegisterSellerRequest request, User user);
 
     SellerResponse updateSellerProfile(Long sellerId, UpdateSellerRequest request);
 

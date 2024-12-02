@@ -29,6 +29,7 @@ import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.repository.VariantRepository;
 import com.rs.shopdiapi.service.CartService;
 import com.rs.shopdiapi.service.OrderService;
+import com.rs.shopdiapi.service.RevenueService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
     OrderItemRepository orderItemRepository;
     CartRepository cartRepository;
     VariantRepository variantRepository;
+    RevenueService revenueService;
 
     @Transactional
     @Override
@@ -189,74 +191,88 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponse updateOrderStatus(Long orderId, OrderStatusEnum newStatus) {
+    public OrderResponse updateOrderStatusBySeller(Long orderId, Long sellerId, OrderItemStatusEnum newStatus) {
         var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
+        List<OrderItem> sellerOrderItems = order.getOrderItems().stream()
+                .filter(orderItem -> orderItem.getSeller().getId().equals(sellerId))
+                .toList();
 
-        OrderStatusEnum currentStatus = order.getOrderStatus();
-        if(newStatus.ordinal() < currentStatus.ordinal()) {
-            throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
+        if (sellerOrderItems.isEmpty()) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
         }
-        if (newStatus == OrderStatusEnum.DELIVERED) {
-            if (currentStatus.ordinal() < OrderStatusEnum.PROCESSING.ordinal()) {
+
+        sellerOrderItems.forEach(orderItem -> {
+            OrderItemStatusEnum currentItemStatus = orderItem.getOrderItemStatus();
+            if (newStatus.ordinal() < currentItemStatus.ordinal()) {
                 throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
             }
+            orderItem.setOrderItemStatus(newStatus);
+        });
+
+        if (order.getOrderItems().stream()
+                .allMatch(orderItem -> orderItem.getOrderItemStatus() == OrderItemStatusEnum.CONFIRMED)) {
+            order.setOrderStatus(OrderStatusEnum.CONFIRMED);
+        } else if (order.getOrderItems().stream()
+                .anyMatch(orderItem -> orderItem.getOrderItemStatus() == OrderItemStatusEnum.PROCESSING)) {
+            order.setOrderStatus(OrderStatusEnum.PROCESSING);
+        } else if (order.getOrderItems().stream()
+                    .anyMatch(orderItem -> orderItem.getOrderItemStatus() == OrderItemStatusEnum.DELIVERING)) {
+            order.setOrderStatus(OrderStatusEnum.DELIVERING);
+        } else {
+            order.setOrderStatus(OrderStatusEnum.PENDING);
         }
 
-        order.setOrderStatus(newStatus);
         orderRepository.save(order);
 
         return mapToOrderResponse(order);
     }
 
     @Override
-    public OrderResponse confirmOrder(Long orderId, Long orderItemId, Long sellerId) {
+    @Transactional
+    public OrderResponse updateOrderStatusByBuyer(Long orderId, Long userId, OrderStatusEnum newStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-        OrderItem orderItem = order.getOrderItems().stream()
-                .filter(item -> item.getId().equals(orderItemId))
-                .findFirst()
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-
-        if (!orderItem.getSeller().getId().equals(sellerId)) {
+        if(!order.getUser().getId().equals(userId)) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        orderItem.setOrderItemStatus(OrderItemStatusEnum.CONFIRMED);
+        List<OrderItem> orderItems = order.getOrderItems();
 
-        boolean allItemsConfirmed = order.getOrderItems().stream()
-                .allMatch(item -> item.getSeller().getId().equals(sellerId) || item.getOrderItemStatus() == OrderItemStatusEnum.CONFIRMED);
-
-        if (allItemsConfirmed) {
-            order.setOrderStatus(OrderStatusEnum.PROCESSING);
+        OrderStatusEnum currentStatus = order.getOrderStatus();
+        if (newStatus.ordinal() < currentStatus.ordinal()) {
+            throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
         }
 
+        if(newStatus.equals(OrderStatusEnum.CANCELED)) {
+            if (order.getOrderStatus() == OrderStatusEnum.PENDING || order.getOrderStatus() == OrderStatusEnum.PROCESSING) {
+                order.setOrderStatus(OrderStatusEnum.CANCELED);
+                return mapToOrderResponse(orderRepository.save(order));
+            } else {
+                throw new AppException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
+            }
+        }
+        if (newStatus == OrderStatusEnum.DELIVERED) {
+            orderItems.forEach(orderItem -> {
+                BigDecimal itemRevenue = orderItem.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()));
+                revenueService.updateRevenue(orderItem.getSeller().getId(), itemRevenue);
+            });
+
+        }
+        order.setOrderStatus(newStatus);
         orderRepository.save(order);
-        return mapToOrderResponse(orderRepository.save(order));
+
+        return mapToOrderResponse(order);
     }
+
 
     @Override
     public OrderResponse findOrderById(Long orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         return this.mapToOrderResponse(order);
-    }
-
-    @Transactional
-    @Override
-    public String cancelOrder(Long orderId) {
-        var order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-
-        if (order.getOrderStatus() == OrderStatusEnum.PENDING || order.getOrderStatus() == OrderStatusEnum.PROCESSING) {
-            order.setOrderStatus(OrderStatusEnum.CANCELED);
-            orderRepository.save(order);
-            return "Order cancelled successfully";
-        }
-
-        throw new AppException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
     }
 
     @Override

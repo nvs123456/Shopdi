@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -102,7 +103,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Transactional
     @Override
-    public String sellerRegister(RegisterSellerRequest request, User user) {
+    public void sellerRegister(RegisterSellerRequest request, User user) {
         if(sellerRepository.existsByUser(user)) {
             throw new AppException(ErrorCode.SELLER_ALREADY_REGISTERED);
         }
@@ -134,7 +135,6 @@ public class SellerServiceImpl implements SellerService {
                 .build();
 
         sellerRepository.save(seller);
-        return "Seller registered successfully";
     }
 
     @Transactional
@@ -187,6 +187,8 @@ public class SellerServiceImpl implements SellerService {
                 .build();
     }
 
+
+
     private SimpleSellerResponse toSimpleSellerResponse(Seller seller) {
         return SimpleSellerResponse.builder()
                 .id(seller.getId())
@@ -194,7 +196,7 @@ public class SellerServiceImpl implements SellerService {
                 .profileImage(seller.getProfileImage())
                 .status(seller.getUser().getStatus().toString())
                 .totalProducts(seller.getProducts().size())
-                .totalRevenue(orderItemRepository.calculateRevenueBySeller(seller.getId()))
+                .totalRevenue(seller.getRevenue())
                 .build();
     }
 }

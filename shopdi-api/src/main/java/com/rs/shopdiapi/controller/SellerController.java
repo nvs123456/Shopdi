@@ -9,8 +9,10 @@ import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.SellerResponse;
 import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import com.rs.shopdiapi.domain.enums.PageConstants;
+import com.rs.shopdiapi.service.RevenueService;
 import com.rs.shopdiapi.util.JwtUtil;
 import com.rs.shopdiapi.service.OrderService;
 import com.rs.shopdiapi.service.ProductService;
@@ -43,6 +45,7 @@ public class SellerController {
     UserService userService;
     OrderService orderService;
     JwtUtil jwtUtil;
+    RevenueService revenueService;
 
     @PreAuthorize("hasRole('SELLER')")
     @PostMapping( "/add-product")
@@ -95,15 +98,12 @@ public class SellerController {
 
     @PreAuthorize("hasRole('SELLER')")
     @PutMapping("/{orderId}/update-status")
-    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatusEnum orderStatus) {
-
+    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderItemStatusEnum orderItemStatus) {
+        Seller seller = sellerService.getCurrentSeller();
         return ApiResponse.builder()
-                .result(orderService.updateOrderStatus(orderId, orderStatus))
+                .result(orderService.updateOrderStatusBySeller(orderId, seller.getId(),orderItemStatus))
                 .build();
     }
-
-
-
 
 
     @PostMapping("/register")
@@ -145,6 +145,15 @@ public class SellerController {
                                        @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
         return ApiResponse.builder()
                 .result(sellerService.getAllSeller(pageNo, pageSize))
+                .build();
+    }
+
+    @PreAuthorize("hasRole('SELLER')")
+    @GetMapping("/revenue")
+    public ApiResponse<?> calculateRevenue() {
+        Long sellerId = sellerService.getCurrentSeller().getId();
+        return ApiResponse.builder()
+                .result(revenueService.calculateRevenue(sellerId))
                 .build();
     }
 }

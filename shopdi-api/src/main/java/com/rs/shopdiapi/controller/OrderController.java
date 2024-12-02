@@ -42,15 +42,16 @@ public class OrderController {
     @PutMapping("/cancel/{orderId}")
     public ApiResponse<?> cancelOrder(@PathVariable Long orderId) {
         return ApiResponse.builder()
-                .result(orderService.cancelOrder(orderId))
+                .result(orderService.updateOrderStatusByBuyer(orderId, userService.getCurrentUser().getId(), OrderStatusEnum.CANCELED))
                 .build();
     }
 
-    @PostMapping("/confirm-delivery/{orderId}")
-    public ApiResponse<?> confirmDelivery(@PathVariable Long orderId) {
+    @PutMapping("/confirm-delivery/{orderId}")
+    public ApiResponse<?> confirmDelivered(@PathVariable Long orderId) {
+        User user = userService.getCurrentUser();
         return ApiResponse.builder()
                 .message("Order delivered successfully")
-                .result(orderService.updateOrderStatus(orderId, OrderStatusEnum.DELIVERED))
+                .result(orderService.updateOrderStatusByBuyer(orderId, user.getId(),OrderStatusEnum.DELIVERED))
                 .build();
     }
 
