@@ -1,27 +1,27 @@
-import React from "react";
-import ShopBar from "@/components/buyer/ShopBar";
-import ProductList from "@/components/buyer/ProductList";
+import React, { useEffect } from "react";
+import ShopBar from "@/components/Buyer/ShopBar";
+import ProductList from "@/components/Buyer/ProductList";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
-import Filter from "@/components/buyer/Filter";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
+import Filter from "@/components/Buyer/Filter";
+import { GET } from "../../api/GET";
 export default function ShopView() {
-    let product = {
-        id: 0,
-        name: "Product 1",
-        image: shopdiLogo,
-        rating: 3.5,
-        sold: 100,
-        price: 100
-    };
-    let product_tmp = [];
-    for (let i = 0; i < 10; i++) {
-        let tmp = { ...product };
-        tmp.id = i;
-        tmp.name = "Product " + (i + 1);
-        tmp.rating = Math.random() * 5;
-        tmp.sold = Math.floor(Math.random() * 1000);
-        tmp.price = Math.floor(Math.random() * 1000000);
-        product_tmp.push(tmp);
+    const location = useLocation();
+    const pathname = location.pathname;
+    let sellerId = 0;
+    const [products, setProducts] = useState([]);
+    if(pathname.startsWith("/shop/")){
+        sellerId = pathname.split("/")[2];
     }
+    useEffect(() => {
+        GET("products/seller/" + sellerId+location.search).then((res) => {
+            console.log(res)
+            if (res.code === "OK") {
+                setProducts(res.result?.items)
+            }
+        })
+    })
     const shop_info = {
         name: "Shopdi",
         link: "https://shopdi.com",
@@ -39,7 +39,7 @@ export default function ShopView() {
     return (
         <div>
             <div className="text-center p-4"><ShopBar shop_info={shop_info} /></div>
-            <Filter category={categories} products={product_tmp}/>
+            <ProductList products={products} />
         </div>
     )
 }

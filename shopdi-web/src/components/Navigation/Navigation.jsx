@@ -81,7 +81,7 @@ export default function Navigation(props) {
                                                             <div
                                                                 className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                                                                 {categories.map((section) => (
-                                                                    <a key={section.name} href={`/category/${section.name}`}
+                                                                    <a key={section.name} href={`/category/${section.categoryId}`}
                                                                         >
                                                                         <div key={section.name}>
                                                                             <p id={`${section.name}-heading`}

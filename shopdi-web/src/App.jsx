@@ -34,9 +34,9 @@ function App() {
                             <Route path='seller/signup' element={<SellerSignUp />} />
                             <Route element={<PrivateSellerRoute />}>
                                 <Route path="seller/*" element={
-                                    <div className="flex min-h-screen min-w-screen">
+                                    <div className="flex flex-row min-h-screen ">
                                         <SideBar />
-                                        <div className={'w-full'}>
+                                        <div className="w-[85%] flex flex-col w-full">
                                             <SellerHome />
                                             <SellerFooter />
                                         </div>

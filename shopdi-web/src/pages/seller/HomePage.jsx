@@ -12,7 +12,6 @@ import EditProduct from "./product/EditProduct.jsx";
 
 export default function HomePage() {
     return (
-        <div>
             <Routes>
                 <Route path="/" exact element={<DashBoard/>}/>
                 <Route path="/products/" exact element={<ProductManagement/>}/>
@@ -25,7 +24,6 @@ export default function HomePage() {
                 <Route path="/products/edit-product/:id" exact element={<EditProduct/>}/>
 
             </Routes>
-        </div>
 
 
     )

@@ -9,8 +9,8 @@ export default function SideBar() {
         <div className="w-[15%] h-full-screen bg-yaleBlue gap-4 font-sans flex flex-col">
 
 
-            <div className="">
-                <img src={shopdiLogo} alt="" />
+            <div className="w-full flex flex-col items-center">
+                <img src={shopdiLogo} className="w-1/2" alt="" />
             </div>
             <Link to="">
                 <div className="text-gray-400 hover:text-white text-sm ml-1">

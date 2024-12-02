@@ -72,7 +72,7 @@ export default function Filter({ children, products, setProducts }) {
                                 <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                                     {category.sub_categories.map(item => <li key={item}><a href="#">{item}</a></li>)}
                                 </ul> */}
-                                <FilterSection location={location} type="All" values={sub_categories} buildUrl={(value) => { return buildUrl("category", value, true, false) }} />
+                                <FilterSection location={location} type="category" values={sub_categories} buildUrl={(value) => { return buildUrl("category", value, true, false) }} />
                                 <FilterSection location={location} type="brand" values={["Apple", "Samsung", "Google", "Sony"]} buildUrl={(value) => { return buildUrl("brand", value, false, false) }} />
                                 <PriceFilter />
                                 <FilterSection location={location} type="rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} buildUrl={(value) => { return buildUrl("rating", value, false, false) }} />
@@ -135,9 +135,9 @@ function PriceFilter() {
     )
 }
 function FilterSection({ type, values, buildUrl,location }) {
-    const cate = decodeURIComponent(location.pathname.split("/")[1])
+    // const cate = decodeURIComponent(location.pathname.split("/")[1])
     const params = new URLSearchParams(location.search);
-    console.log(cate)
+    const categoryParam = (decodeURIComponent(params.get("category")))
     let [isOpen, setIsOpen] = useState(true);
     const set = (value) => {
         setIsOpen(!isOpen);
@@ -170,7 +170,7 @@ function FilterSection({ type, values, buildUrl,location }) {
                             <div key={item} className="flex items-center">
                                 <Link to={buildUrl(item)}>
                                     <input id={`${index}`}
-                                        checked={params.get(type) === item || cate === item}
+                                        checked={decodeURIComponent(params.get(type)) === item || categoryParam === item}
                                         name={type} value={item} type="radio" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                     <label htmlFor={`${index}`} className="ml-3 text-sm text-gray-600">{item}</label>
                                 </Link>

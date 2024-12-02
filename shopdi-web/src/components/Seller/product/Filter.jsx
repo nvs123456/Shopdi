@@ -1,47 +1,103 @@
-import React, { useState } from "react";
-import PaginationButton from "@/components/Navigation/Pagination";
+import React, { useEffect, useState, useContext } from "react";
+import ProductList from "./ProductList.jsx";
+import { useLocation } from "react-router-dom";
 import CATEGORIES from '@/data/categories_data';
+import { GET } from '@/api/GET'
+import { Link } from "react-router-dom";
+import { CategoryContext } from "@/pages/buyer/CategoryContext.js";
 const categories = CATEGORIES.CATEGORIES
 
-export default function Filter({ children, products }) {
+export default function Filter({ children, products, setProducts }) {
+    const location = useLocation();
+    const path = location.pathname.split("/");
+    const query = new URLSearchParams(location.search);
+    const currentCategoryId = path[path.length - 1];
 
-    let currentCategory = "Danh muc";
-    let sub_categories = ["May tinh", "Dien thoai", "linh kien"];
-    return (
-        <div className="bg-white grow">
-            <main className="mx-auto  px-4 sm:px-6 lg:px-8">
+    const [loading, setLoading] = useState(true);
+    const [sub_categories, setSubCategories] = useState([])
+    const buildUrl = (name, value, isCategory = false, checked = true) => {
+        const params = new URLSearchParams(location.search);
+        if (params.has(name)) {
+            params.set(name, encodeURI(value))
+            return location.pathname + `?${params.toString()}`
+        }
+        if (location.search === '') {
+            return location.pathname + `?${name}=${encodeURI(value)}`
+        } else {
+            return location.pathname + `${location.search}&${name}=${encodeURI(value)}`
+        }
+    }
+    const isValidCategory = (category) => {
+        for (let i = 0; i < categories.length; i++) {
+            if (categories[i].name === category) {
+                return true
+            }
+        }
+        return false
+    }
+    useEffect(() => {
+        console.log(currentCategoryId)
+        GET(`categories/${currentCategoryId}`).then((res) => {
+            if(res.code === "OK") {
+                setSubCategories(res.result.childCategories.map((item) => item.name))
+                setLoading(false)
+            }
+        })
+        // GET(`categories/child/${currentCategory}`).then((res) => {
+        //     if (res.code === "OK") {
+        //         // console.log(res)
+        //         setSubCategories(res.result.map((item) => item.name))
+        //         setLoading(false)
+        //     } else {
+        //         // console.log(res)
+        //         setLoading(false)
+        //     }
+        // })
+    }, [])
+    if (loading) {
+        return (
+            <div className="bg-white">
+                <main className="mx-auto max-width-20 px-4 ">
 
-                {/* cac loai bo loc */}
 
-                <section aria-labelledby="products-heading" className="pt-6">
-                    <h2 id="products-heading" className="sr-only">Products</h2>
+                    {/* cac loai bo loc */}
 
-                    <div className="flex flex-row w-full">
-                        {/* <!-- Filters --> */}
-                        <form className="hidden lg:block w-1/4 border-r border-gray-200 max-h-screen ">
-                            <FilterSection type={currentCategory} values={sub_categories} />
-                            <FilterSection type="Brand" values={["Apple", "Samsung", "Google", "Sony"]} />
-                            <PriceFilter />
-                            <FilterSection type="Rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} />
-                        </form>
+                    <section aria-labelledby="products-heading">
+                        <h2 id="products-heading" className="sr-only">Products</h2>
 
-                        {/* <!-- Product grid --> */}
-                        <div className="w-3/4 p-4">
-                            <div>{children}</div>
+                        <div className=" min-h-screen">
+                            {/* <!-- Filters --> */}
+                            <form className="hidden lg:block">
+                                {/* <h3 className="sr-only">Categories</h3>
+                                <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                                    {category.sub_categories.map(item => <li key={item}><a href="#">{item}</a></li>)}
+                                </ul> */}
+                                {/* <FilterSection location={location} type="category" values={sub_categories} buildUrl={(value) => { return buildUrl("category", value, true, false) }} /> */}
+                                <FilterSection location={location} type="brand" values={["Apple", "Samsung", "Google", "Sony"]} buildUrl={(value) => { return buildUrl("brand", value, false, false) }} />
+                                <PriceFilter />
+                                <FilterSection location={location} type="rating" values={["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"]} buildUrl={(value) => { return buildUrl("rating", value, false, false) }} />
+                            </form>
+
+                            {/* <!-- Product grid --> */}
+
                         </div>
-                    </div>
+                    </section>
+                </main>
 
-                </section>
-            </main>
+            </div>
 
-        </div>
-
-    )
-
-
+        )
+    }
+    else {
+        return (
+            <div>
+                <h1>Not Found</h1>
+            </div>
+        )
+    }
 }
 function PriceFilter() {
-    let [isOpen, setIsOpen] = useState(false);
+    let [isOpen, setIsOpen] = useState(true);
     const set = (value) => {
         setIsOpen(!isOpen);
         console.log(isOpen)
@@ -78,8 +134,11 @@ function PriceFilter() {
         </div>
     )
 }
-function FilterSection({ type, values }) {
-    let [isOpen, setIsOpen] = useState(false);
+function FilterSection({ type, values, buildUrl,location }) {
+    // const cate = decodeURIComponent(location.pathname.split("/")[1])
+    const params = new URLSearchParams(location.search);
+    const categoryParam = (decodeURIComponent(params.get("category")))
+    let [isOpen, setIsOpen] = useState(true);
     const set = (value) => {
         setIsOpen(!isOpen);
         console.log(isOpen)
@@ -109,8 +168,12 @@ function FilterSection({ type, values }) {
                     <div className="space-y-4">
                         {values.map((item, index) =>
                             <div key={item} className="flex items-center">
-                                <input id={`${index}`} name={item} value="white" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                <label htmlFor={`${index}`} className="ml-3 text-sm text-gray-600">{item}</label>
+                                <Link to={buildUrl(item)}>
+                                    <input id={`${index}`}
+                                        checked={decodeURIComponent(params.get(type)) === item || categoryParam === item}
+                                        name={type} value={item} type="radio" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                    <label htmlFor={`${index}`} className="ml-3 text-sm text-gray-600">{item}</label>
+                                </Link>
                             </div>
                         )}
                     </div>
