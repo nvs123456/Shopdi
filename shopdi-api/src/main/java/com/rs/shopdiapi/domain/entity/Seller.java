@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,9 @@ public class Seller extends BaseEntity<Long> {
     String about;
     String coverImage;
     String profileImage;
+
+    @Column(nullable = false)
+    BigDecimal revenue = BigDecimal.ZERO;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
