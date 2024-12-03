@@ -317,8 +317,12 @@ public class ProductServiceImpl implements ProductService {
                         .productCount(product.getSeller().getProducts().size())
                         .rating(product.getSeller().getProducts().stream()
                                 .mapToInt(p -> {
-                                    int reviewCount = p.getReviews().size();
-                                    return reviewCount > 0 ? p.getReviews().stream().mapToInt(Review::getRating).sum() / reviewCount : 0;
+                                    List<Review> reviews = p.getReviews();
+                                    if (reviews == null || reviews.isEmpty()) {
+                                        return 0;
+                                    }
+                                    int reviewCount = reviews.size();
+                                    return reviews.stream().mapToInt(Review::getRating).sum() / reviewCount;
                                 })
                                 .sum() / product.getSeller().getProducts().size())
                         .build())
