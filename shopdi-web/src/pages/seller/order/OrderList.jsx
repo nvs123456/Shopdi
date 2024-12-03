@@ -21,30 +21,7 @@ const OrderList = () => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const fetchOrders = async () => {
-        await axios.get('http://localhost:8080/seller/orders', {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
-                "Access-Control-Allow-Origin": "http://localhost:5173",
-            },
-        }).then(response => {
-            const data = response.data;
-            if (data.code === "OK") {
-                setOrders(data.result.items);
-                setTotalPages(data.result.totalPages);
-            } else {
-                setError("Failed to fetch order history.");
-            }
-        }).catch(err => {
-            setError("Error while fetching data. Please try again later.");
-        }).finally(() => {
-            setLoading(false);
-        })
-    }
-    useEffect(() => {
-        fetchOrders();
-    }, []);
+
     return (
         <div className="h-full p-6 w-full bg-white shadow-md rounded-lg font-sans text-[16px]">
             <h2 className="text-2xl font-semibold mb-4">Overall Order</h2>
@@ -85,15 +62,13 @@ const OrderList = () => {
                     </TabList>
                 </Box>
                 <TabPanel value="1"><OrderTable type='All products'/></TabPanel>
-                <TabPanel value="2"><OrderTable type='Pending'/></TabPanel>
-                <TabPanel value="3"><OrderTable type='Processing'/></TabPanel>
-                <TabPanel value="4"><OrderTable type='Delivered'/></TabPanel>
-                <TabPanel value="5"><OrderTable type='Cancelled'/></TabPanel>
+                <TabPanel value="2"><OrderTable type='PENDING'/></TabPanel>
+                <TabPanel value="3"><OrderTable type='PROCESSING'/></TabPanel>
+                <TabPanel value="4"><OrderTable type='DELIVERED'/></TabPanel>
+                <TabPanel value="5"><OrderTable type='CANCELLED'/></TabPanel>
 
             </TabContext>
-            <div className="flex justify-center mt-4">
-                <Pagination/>
-            </div>
+
         </div>);
 };
 

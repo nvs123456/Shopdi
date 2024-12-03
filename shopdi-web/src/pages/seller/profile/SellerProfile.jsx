@@ -1,11 +1,20 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import defaultImage from "../../../assets/images/profileDefault.png";
-export default function  SellerProfile() {
+
+export default function SellerProfile() {
     const [sellerInfo, setSellerInfo] = useState({});
     const [infoUpdated, setInfoUpdated] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [previewProfileImage, setPreviewProfileImage] = useState(null);
+    const [previewProfileCoverImage, setPreviewProfileCoverImage] = useState(null);
+    const [coverPopupOpen, setCoverPopupOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedCoverImage, setSelectedCoverImage] = useState(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isSaveChangePopupOpen, setIsSaveChangePopupOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     const fetchSellerInfo = async () => {
         //Fetch seller info from API
@@ -52,22 +61,156 @@ export default function  SellerProfile() {
         })
     }
 
+    function handlePreviewProfileImage(e) {
+        const file = e.target.files[0];
+        if (file) {
+            setPreviewProfileImage(URL.createObjectURL(file)); // Tạo URL preview từ file
+            setSelectedImage(file); // Lưu file đã chọn vào state
+        }
+    }
+
+    function handleUploadProfileImage() {
+        //Upload profile image
+        const formData = new FormData();
+        formData.append("image", selectedImage);
+        axios.put('http://localhost:8080/images/upload-profile-seller-image', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+                'Access-Control-Allow-Origin': 'http://localhost:5173',
+            },
+        }).then(response => {
+            const data = response.data;
+            if (data.code === "OK") {
+                alert("Upload successful");
+            } else {
+                alert("Failed to upload image.");
+            }
+        }).catch(err => {
+            alert("Error while uploading image. Please try again later.");
+        })
+    }
+
+    function handlePreviewProfileCoverImage(e) {
+        const file = e.target.files[0];
+        if (file) {
+            setPreviewProfileCoverImage(URL.createObjectURL(file)); // Tạo URL preview từ file
+            setSelectedCoverImage(file); // Lưu file đã chọn vào state
+        }
+    }
+
+    function handleUploadCoverImage() {
+        //Upload cover image
+        const formData = new FormData();
+        formData.append("image", selectedCoverImage);
+        axios.put('http://localhost:8080/images/upload-cover-image', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+                "Access-Control-Allow-Origin": "http://localhost:5173",
+            },
+        }).then(response => {
+            const data = response.data;
+            if (data.code === "OK") {
+                alert("Upload successful");
+            } else {
+                alert("Failed to upload image.");
+            }
+        }).catch(err => {
+            alert("Error while uploading image. Please try again later.");
+        }).finally(() => {
+            setPreviewProfileCoverImage(null);
+        })
+    }
+
     return (
-        <div className="min-h-screen flex flex-col items-center font-sans text-sm">
-            <h1 className="text-3xl font-semibold mt-10">EditProfile</h1>
-            <div className="bg-white w-full max-w-4xl rounded-lg mb-10 mt-10">
+        <div className="min-h-screen font-sans text-sm">
+            <h1 className="text-xl ml-6 font-semibold">Profile</h1>
+            <div className="bg-white w-full min-w-screen rounded-lg mb-10">
                 {/* EditProfile Picture and Name */}
-                <div className="bg-gradient-to-b from-blue-300 rounded-t-lg to-blue-50 flex flex-col items-center">
-                    <div className="relative mt-2 border-2 rounded-full p-1 w-20 h-20">
-                        <img
-                            src={sellerInfo.profileImage || defaultImage} // replace with actual image path
-                            alt="EditProfile"
-                            className="w-full h-full object-cover rounded-full"
-                        />
+                <div className=" relative group bg-gradient-to-b from-blue-300 rounded-t-lg w-full h-40 to-blue-50">
+                    <img
+                        src={previewProfileCoverImage || sellerInfo.coverImage || `https://i.pinimg.com/originals/be/82/b2/be82b2d8ab44a82f51295751e5ddc395.jpg`} // replace with actual image path
+                        alt="CoverProfile"
+                        className="w-full h-full object-cover"
+                    />
+                    <div
+                        className="absolute w-full h-full inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {previewProfileCoverImage === null ?
+                            <label htmlFor="upload1" className="text-white text-[16px] font-semibold cursor-pointer">
+                                Upload Cover Image
+                            </label> :
+                            <label htmlFor="upload1" className="text-white text-[16px] font-semibold cursor-pointer">
+                                Change Cover Image
+                            </label>
+                        }
+                        <input id="upload1" type="file" className="hidden" accept={`image/*`}
+                               onChange={handlePreviewProfileCoverImage}/>
                     </div>
-                    <h2 className="mt-4 text-2xl font-semibold">{sellerInfo.username}</h2>
-                    <p className="text-gray-500">Owner & Founder</p>
+                    {previewProfileCoverImage && <button className={`absolute bottom-0  right-0 bg-blue-500 text-white px-2 py-1 rounded-lg mr-2 mt-2`}
+                                                    onClick={() => setCoverPopupOpen(true)}>Save</button>}
+                    {coverPopupOpen && <div className={`absolute top-2/3 right-2 bg-white border-2 w-60 border-gray-300 p-4 rounded-lg`}>
+                        <p className={`text-gray-500 text-sm`}>Are you sure you want to save this image?</p>
+                        <div className={`flex justify-end mt-4`}>
+                            <button className={`bg-blue-500 text-white px-2 py-1 rounded-lg mr-2`}
+                                    onClick={() => {
+                                        setCoverPopupOpen(false)
+                                        handleUploadCoverImage();
+                                        //setSellerInfo({...sellerInfo, coverImage: selectedCoverImage});
+                                    }}>Yes
+                            </button>
+                            <button className={`bg-gray-300 text-gray-700 px-2 py-1 rounded-lg`}
+                                    onClick={() => {
+                                        setPreviewProfileCoverImage(null);
+                                        setCoverPopupOpen(false)}}>No
+                            </button>
+                        </div>
+                    </div>}
                 </div>
+                <div className={`absolute top-[23%] left-[15%] group flex mt-2 border-2 rounded-full w-24 h-24`}>
+                    <img
+                        src={previewProfileImage || sellerInfo.profileImage || defaultImage} // replace with actual image path
+                        alt="EditProfile"
+                        className="w-full h-full object-cover rounded-full"
+                    />
+                    <div className={`mt-4 ml-4`}>
+                        <h2 className="mt-4 text-2xl font-semibold">{sellerInfo.username}</h2>
+                        <p className="text-gray-500">Owner & Founder</p>
+                    </div>
+                    <div
+                        className="absolute inset-0 bg-black bg-opacity-50 flex items-center rounded-full justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {previewProfileImage === null ?
+                            <label htmlFor="upload" className="text-white text-[14px] font-semibold cursor-pointer">
+                                Upload Image
+                            </label> :
+                            <label htmlFor="upload" className="text-white text-[14px] font-semibold cursor-pointer">
+                                Change Image
+                            </label>
+                        }
+                        <input id="upload" type="file" className="hidden" accept={`image/*`}
+                               onChange={handlePreviewProfileImage}/>
+                    </div>
+                    {previewProfileImage && <button className={`absolute top-16 left-14 bg-blue-500 text-white px-2 py-1 rounded-lg mr-2 mt-2`}
+                        onClick={() => setIsPopupOpen(true)}>Save</button>}
+                    {isPopupOpen && <div className={`absolute top-16 left-14 bg-white border-2 w-60 border-gray-300 p-4 rounded-lg`}>
+                        <p className={`text-gray-500 text-sm`}>Are you sure you want to save this image?</p>
+                        <div className={`flex justify-end mt-4`}>
+                            <button className={`bg-blue-500 text-white px-2 py-1 rounded-lg mr-2`}
+                                    onClick={() => {
+                                        setIsPopupOpen(false)
+                                        handleUploadProfileImage();
+                                       // setSellerInfo({...sellerInfo, profileImage: selectedImage});
+                                    }}>Yes
+                            </button>
+                            <button className={`bg-gray-300 text-gray-700 px-2 py-1 rounded-lg`}
+                                    onClick={() => {
+                                        setPreviewProfileImage(null);
+                                        setIsPopupOpen(false)}}>No
+                            </button>
+                        </div>
+                    </div>}
+                </div>
+
 
                 {/* Business Info Section */}
                 <div className="mt-8 p-8">
@@ -79,7 +222,12 @@ export default function  SellerProfile() {
                                 type="text"
                                 className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.shopName}
-                                onChange={(e) => setSellerInfo({...sellerInfo, shopName: e.target.value})}
+                                onChange={(e) => {
+                                    setIsEditing(true);
+                                    setSellerInfo({...sellerInfo, shopName: e.target.value})
+                                    setInfoUpdated({...infoUpdated, shopName: e.target.value})
+                                }}
+
                             />
                         </div>
                         <div className="flex flex-col">
@@ -88,7 +236,9 @@ export default function  SellerProfile() {
                                 type="email"
                                 className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.email}
-                                onChange={(e) => setSellerInfo({...sellerInfo, email: e.target.value})}
+                                onChange={(e) => {
+                                    setIsEditing(true);
+                                    setSellerInfo({...sellerInfo, email: e.target.value})}}
                             />
                         </div>
                         <div className="flex flex-col">
@@ -97,7 +247,12 @@ export default function  SellerProfile() {
                                 type="text"
                                 className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.contactNumber}
-                                onChange={(e) => setSellerInfo({...sellerInfo, contactNumber: e.target.value})}
+                                onChange={(e) => {
+                                    setIsEditing(true);
+                                    setSellerInfo({...sellerInfo, contactNumber: e.target.value})
+                                    setInfoUpdated({...infoUpdated, contactNumber: e.target.value})
+                                }}
+
                             />
                         </div>
                         <div className="flex flex-col">
@@ -106,35 +261,52 @@ export default function  SellerProfile() {
                                 type="text"
                                 className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.location}
-                                onChange={(e) => setSellerInfo({...sellerInfo, location: e.target.value})}
+                                onChange={(e) => {
+                                    setIsEditing(true);
+                                    setSellerInfo({...sellerInfo, location: e.target.value})
+                                    setInfoUpdated({...infoUpdated, location: e.target.value})
+                                }}
                             />
                         </div>
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium text-gray-700">Logo</label>
-                            <div
-                                className="h-[300px] border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center mt-1">
-                                <span className="text-gray-500">Logo here</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col col-span-2">
                             <label className="text-sm font-medium text-gray-700">About</label>
                             <textarea
                                 className="h-[300px] border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
                                 rows="3"
                                 defaultValue={sellerInfo.about || ""}
-                                onChange={(e) => setSellerInfo({...sellerInfo, about: e.target.value})}
+                                onChange={(e) =>
+                                {
+                                    setIsEditing(true);
+                                    setSellerInfo({...sellerInfo, about: e.target.value})
+                                    setInfoUpdated({...infoUpdated, about: e.target.value})
+                                }}
                             />
                         </div>
                     </div>
                     {/* Save Changes Button */}
-                    <div className="flex justify-end mt-6">
+                    {isEditing && <div className="flex justify-end mt-6">
                         <button onClick={() => {
-                            handleUpdateInfo();
+                                setIsSaveChangePopupOpen(true);
                         }}
-                            className="bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600">
+                                className="bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600">
                             SAVE CHANGES
                         </button>
-                    </div>
+                    </div>}
+                    {isSaveChangePopupOpen && <div className={`fixed top-[30%] left-[45%] bg-white border-2 w-60 border-gray-300 p-4 rounded-lg`}>
+                        <p className={`text-gray-500 text-sm`}>Are you sure you want to save the changes?</p>
+                        <div className={`flex justify-end mt-4`}>
+                            <button className={`bg-blue-500 text-white px-2 py-1 rounded-lg mr-2`}
+                                    onClick={() => {
+                                        setIsSaveChangePopupOpen(false)
+                                        handleUpdateInfo();
+                                    }}>Yes
+                            </button>
+                            <button className={`bg-gray-300 text-gray-700 px-2 py-1 rounded-lg`}
+                                    onClick={() => {
+                                        setIsSaveChangePopupOpen(false)}}>No
+                            </button>
+                        </div>
+                    </div>}
                 </div>
             </div>
         </div>

@@ -241,7 +241,7 @@ const EditProfile = () => {
     function handleUploadProfileImage() {
         const formData = new FormData();
         formData.append('image', selectedImage);
-        axios.post(`http://localhost:8080/images/upload-profile-image`, formData,
+        axios.post(`http://localhost:8080/images/upload-profile-buyer-image`, formData,
             {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -249,14 +249,16 @@ const EditProfile = () => {
                     'Access-Control-Allow-Origin': 'http://localhost:5173',
                 }
             })
-            .then((respsonse) => {
-                console.log(respsonse);
+            .then((response) => {
+                console.log(response);
+                if(response.code === "OK") {
+                    alert("Upload ảnh thành công");
+                }
             }).catch((error) => {
             console.log(error);
         }).finally(() => {
             setPreview(null);
             setInfo({...info, profileImage: preview});
-            window.alert("Upload ảnh thành công");
         })
 
     }

@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import {Step, StepLabel, Stepper} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import StepConnector, {stepConnectorClasses} from "@mui/material/StepConnector";
+import axios from "axios";
 
 const orders = [
     {
@@ -87,9 +88,39 @@ const steps = ['Order Placed', 'Order processed', 'Packed', 'Shipping','Out for 
 
 export default function OrderDetails() {
     const { id } = useParams();
-    console.log(id);
-    const [order] = useState(orders.find(order => order.id == id));
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [order,setOrder] = useState({});
     const [step, setStep] = useState(-1);
+
+    // Fetch order details from the server
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+            "Access-Control-Allow-Origin": "http://localhost:5173",
+        }
+    }
+    useEffect(() => {
+        axios.get(`http://localhost:8080/orders/${id}/details`, config)
+            .then((response) => {
+                if (response.data.code === 'OK') {
+                    setOrder(response.data.result);
+                    console.log('Order detail:', response.data.result); // Log dữ liệu chi tiết
+                } else {
+                    console.warn('Unexpected response:', response.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching order details:', error.response?.data || error.message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [id]);
+    if(order !== undefined){
+        setLoading(false);
+    }
     if (!order) {
         return <div>Order not found</div>; // Handle case when order is undefined
     }
@@ -97,139 +128,143 @@ export default function OrderDetails() {
     function handleStep(step) {
         setStep(step);
     }
-    return (
-        <div className="p-6 bg-gray-100 min-h-screen font-sans text-sm">
-            <div className="bg-white px-6 py-10 rounded-lg min-h-screen">
-                <h1 className="text-lg bg-gray-50 rounded-lg font-semibold mb-4">Order ID : {order.id}</h1>
+    if(loading) return <div>Loading...</div>;
+    else {
+        return (
+            <div className="p-6 bg-gray-100 min-h-screen font-sans text-sm">
+                <div className="bg-white px-6 py-10 rounded-lg min-h-screen">
+                    <h1 className="text-lg bg-gray-50 rounded-lg font-semibold mb-4">Order ID : {order.orderId}</h1>
 
-                {/* Customer, Shipping and Payment Details */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div>
-                        <h2 className="font-semibold mb-2">Customer details</h2>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                            <p>{order.customer.name}</p>
-                            <p>{order.customer.email}</p>
-                            <p>{order.customer.phone}</p>
+                    {/* Customer, Shipping and Payment Details */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <h2 className="font-semibold mb-2">Customer details</h2>
+                            <div className="p-4 bg-gray-50 rounded-lg">
+                                <p>{order.shippingAddress.firstName || 'None'} {order.shippingAddress.lastName || 'None'}</p>
+                                <p>{order.shippingAddress.email || 'None'}</p>
+                                <p>{order.shippingAddress.phoneNumber || 'None'}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 className="font-semibold mb-2">Shipping address</h2>
+                            <div className="p-4 bg-gray-50 rounded-lg">
+                                <p>{order.shippingAddress.firstName || 'None'} {order.shippingAddress.lastName || 'None'}</p>
+                                <p>{order.shippingAddress.phoneNumber || 'None'}</p>
+                                <p>{order.shippingAddress.address}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 className="font-semibold mb-2">Payment details</h2>
+                            <div className="p-4 bg-gray-50 rounded-lg">
+                                <p>Transaction: {order.payment.transaction || "None"}</p>
+                                <p>Payment Method: {order.paymentMethod || 'None'}</p>
+                                <p>Card Holder: {order.payment.cardHolder || 'None'}</p>
+                                <p>Total amount: {order.price}</p>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <h2 className="font-semibold mb-2">Shipping address</h2>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                            <p>{order.shipping.name}</p>
-                            <p>{order.shipping.receivingPhone}</p>
-                            <p>{order.shipping.address}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h2 className="font-semibold mb-2">Payment details</h2>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                            <p>Transaction: {order.payment.transaction}</p>
-                            <p>Payment Method: {order.payment.method}</p>
-                            <p>Card Holder: {order.payment.cardHolder}</p>
-                            <p>Total amount: {order.payment.transaction}</p>
-                        </div>
-                    </div>
-                </div>
 
-                {/* Product Details */}
-                <div className="mb-6">
-                    <h2 className="font-semibold mb-2">Product details</h2>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <table className="w-full">
-                            <thead>
-                            <tr className={'text-left'}>
-                                <th className="py-2">Product</th>
-                                <th className="py-2">Product ID</th>
-                                <th className="py-2">Price</th>
-                                <th className="py-2">Quantity</th>
-                                <th className="py-2">Total</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {order.productDetails.map((product, index) => (
-                                <tr key={index} className={'border-b-2'}>
-                                    <td className={'py-2'}>{product.productName}</td>
-                                    <td>{product.id}</td>
-                                    <td>₹{product.price}</td>
-                                    <td>{product.quantity}</td>
-                                    <td>₹{product.total}</td>
+                    {/* Product Details */}
+                    <div className="mb-6">
+                        <h2 className="font-semibold mb-2">Product details</h2>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                            <table className="w-full">
+                                <thead>
+                                <tr className={'text-left'}>
+                                    <th className="py-2">Product</th>
+                                    <th className="py-2">Product ID</th>
+                                    <th className="py-2">Price</th>
+                                    <th className="py-2">Quantity</th>
+                                    <th className="py-2">Total</th>
                                 </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* Logistics and Billing Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <h2 className="font-semibold mb-2">Logistics details</h2>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                            <p>{order.logistics.company}</p>
-                            <p>Email: {order.logistics.email}</p>
-                            <p>Amount charged: {order.logistics.amount}</p>
-                            <p>Payment method: {order.logistics.paymentMethod}</p>
+                                </thead>
+                                <tbody>
+                                {order.productDetails.map((product, index) => (
+                                    <tr key={index} className={'border-b-2'}>
+                                        <td className={'py-2'}>{product.productName}</td>
+                                        <td>{product.id}</td>
+                                        <td>₹{product.price}</td>
+                                        <td>{product.quantity}</td>
+                                        <td>₹{product.total}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div>
-                        <h2 className="font-semibold mb-2">Total bill</h2>
-                        <div className="grid grid-cols-2 p-4 bg-gray-50 rounded-lg">
-                            <p>Subtotal: </p> <p>{order.totalBill.subtotal}</p>
-                            <p>Discounts: </p> <p>{order.totalBill.discounts}</p>
-                            <p>Logistics: </p> <p>{order.totalBill.logistics}</p>
-                            <p>Tax: </p> <p>{order.totalBill.tax}</p>
-                            <p className="font-bold">Total Amount: </p> <p>{order.totalBill.totalAmount}</p>
+
+                    {/* Logistics and Billing Details */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h2 className="font-semibold mb-2">Logistics details</h2>
+                            <div className="p-4 bg-gray-50 rounded-lg">
+                                <p>{order.logistics.company}</p>
+                                <p>Email: {order.logistics.email}</p>
+                                <p>Amount charged: {order.logistics.amount}</p>
+                                <p>Payment method: {order.logistics.paymentMethod}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 className="font-semibold mb-2">Total bill</h2>
+                            <div className="grid grid-cols-2 p-4 bg-gray-50 rounded-lg">
+                                <p>Subtotal: </p> <p>{order.totalBill.subtotal}</p>
+                                <p>Discounts: </p> <p>{order.totalBill.discounts}</p>
+                                <p>Logistics: </p> <p>{order.totalBill.logistics}</p>
+                                <p>Tax: </p> <p>{order.totalBill.tax}</p>
+                                <p className="font-bold">Total Amount: </p> <p>{order.totalBill.totalAmount}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Order Status */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h2 className="font-semibold mb-2">Order status</h2>
-                        <Stepper activeStep={step}  orientation={'vertical'} connector={<CustomisedConnector/>}>
-                            {steps.map((label, index) => (
-                                <Step key={label}>
-                                    <StepLabel onClick={() => handleStep(index)}
-                                        StepIconProps={{
-                                            sx: {
-                                                color: index < step ? '#FF731D' : '#FFFFFF', // Color for completed steps
-                                                border: '4px solid #FF731D', // Border color
-                                                borderRadius: '50%', // Optional: make the border circular
-                                                '&.Mui-active': {
-                                                    color: '#FF731D', // Color for the current step
+                    {/* Order Status */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h2 className="font-semibold mb-2">Order status</h2>
+                            <Stepper activeStep={step}  orientation={'vertical'} connector={<CustomisedConnector/>}>
+                                {steps.map((label, index) => (
+                                    <Step key={label}>
+                                        <StepLabel onClick={() => handleStep(index)}
+                                                   StepIconProps={{
+                                                       sx: {
+                                                           color: index < step ? '#FF731D' : '#FFFFFF', // Color for completed steps
+                                                           border: '4px solid #FF731D', // Border color
+                                                           borderRadius: '50%', // Optional: make the border circular
+                                                           '&.Mui-active': {
+                                                               color: '#FF731D', // Color for the current step
 
-                                                },
-                                                '&.Mui-completed': {
-                                                    color: '#FF731D', // Color for completed steps
-                                                },
-                                                '&.Mui-incompleted': {
-                                                    color: '#FF731D', // Color for incompleted steps
-                                                },
-                                                '& .MuiStepIcon-text': {
-                                                    fill: 'transparent', // Change color of the step number text
-                                                },
-                                            },
-                                        }}
+                                                           },
+                                                           '&.Mui-completed': {
+                                                               color: '#FF731D', // Color for completed steps
+                                                           },
+                                                           '&.Mui-incompleted': {
+                                                               color: '#FF731D', // Color for incompleted steps
+                                                           },
+                                                           '& .MuiStepIcon-text': {
+                                                               fill: 'transparent', // Change color of the step number text
+                                                           },
+                                                       },
+                                                   }}
 
-                                    >
-                                        {label}
-                                    </StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
+                                        >
+                                            {label}
+                                        </StepLabel>
+                                    </Step>
+                                ))}
+                            </Stepper>
 
-                    </div>
+                        </div>
 
-                    {/* Previous Orders */}
-                    <div>
-                        <h2 className="font-semibold mb-2">Previous Orders</h2>
-                        <div className="p-4 bg-gray-50 rounded-lg flex items-center justify-center h-full">
-                            <p className="text-gray-500">No previous orders from the customer</p>
+                        {/* Previous Orders */}
+                        <div>
+                            <h2 className="font-semibold mb-2">Previous Orders</h2>
+                            <div className="p-4 bg-gray-50 rounded-lg flex items-center justify-center h-full">
+                                <p className="text-gray-500">No previous orders from the customer</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+
 }
