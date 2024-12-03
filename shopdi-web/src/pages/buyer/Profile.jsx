@@ -172,7 +172,7 @@ function OrderSummary({ orders }) {
 
 function DashboardCard({ title, count, bgColor, iconColor}) {
     return (
-        <div className={`flex mb-3 h-full rounded-sm bg-[${bgColor}]`}>
+        <div className={`flex mb-3 h-full rounded-sm ${title === 'Total Orders' ? 'bg-[#EAF6FE]' : title === "Pending Orders" ? 'bg-[#FFF3EB]' : 'bg-[#EAF7E9]'}`}>
             <div className={`bg-white p-3 m-2 w-12`}>
                 {/* Add SVG or Icon here */}
                 {title === "Total Orders" ? <RocketIcon sx={{ color: iconColor, fontSize: '40px' }} /> : title === "Pending Orders" ? <PendingActionsIcon sx={{ color: iconColor, fontSize: '40px' }}/> : <TaskIcon sx={{ color: iconColor, fontSize: '40px' }}/>}

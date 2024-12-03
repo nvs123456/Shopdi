@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Tab} from "@mui/material";
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
@@ -6,17 +6,45 @@ import Box from "@mui/material/Box";
 import {TabList} from "@mui/lab";
 import OrderTable from "../../../components/Seller/order/OrderTable.jsx";
 import Pagination from "../../../components/Navigation/Pagination.jsx";
+import axios from "axios";
 
 
 const tabHeadings = ['All products', 'Pending', 'Processing', 'Delivered', 'Cancelled'];
 
 const OrderList = () => {
     const [value, setValue] = React.useState('1');
+    const [orders, setOrders] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
+    const fetchOrders = async () => {
+        await axios.get('http://localhost:8080/seller/orders', {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+                "Access-Control-Allow-Origin": "http://localhost:5173",
+            },
+        }).then(response => {
+            const data = response.data;
+            if (data.code === "OK") {
+                setOrders(data.result.items);
+                setTotalPages(data.result.totalPages);
+            } else {
+                setError("Failed to fetch order history.");
+            }
+        }).catch(err => {
+            setError("Error while fetching data. Please try again later.");
+        }).finally(() => {
+            setLoading(false);
+        })
+    }
+    useEffect(() => {
+        fetchOrders();
+    }, []);
     return (
         <div className="h-full p-6 w-full bg-white shadow-md rounded-lg font-sans text-[16px]">
             <h2 className="text-2xl font-semibold mb-4">Overall Order</h2>
