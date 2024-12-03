@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,16 +49,21 @@ public class Order extends BaseEntity<Long> {
 
     @JoinColumn(name = "shipping_address_id", nullable = false)
     Address shippingAddress;
-//    @Embedded
-//    PaymentDetails paymentDetails = new PaymentDetails();
     BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
 
     String orderNotes;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
+    Payment payment;
+
+
     LocalDateTime deliveryDate;
+
     public List<OrderItem> getOrderItems() {
         if(orderItems == null) {            
             orderItems = new ArrayList<>();

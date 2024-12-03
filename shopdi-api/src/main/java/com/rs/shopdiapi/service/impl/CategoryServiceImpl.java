@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.CreateCategoryRequest;
+import com.rs.shopdiapi.domain.dto.request.UpdateCategoryRequest;
 import com.rs.shopdiapi.domain.dto.response.CategoryResponse;
 import com.rs.shopdiapi.domain.dto.response.ChildCategoryResponse;
 import com.rs.shopdiapi.domain.entity.Category;
@@ -33,32 +34,13 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> categories = categoryRepository.findAllByParentCategoryIsNull();
 
         return categories.stream()
-                .map(category -> CategoryResponse.builder()
-                        .categoryId(category.getId())
-                        .name(category.getName())
-                        .parentId(Optional.ofNullable(category.getParentCategory()).map(Category::getId).orElse(null))
-                        .parentName(Optional.ofNullable(category.getParentCategory()).map(Category::getName).orElse(null))
-                        .childCategories(category.getChildCategories().stream()
-                                .map(childCategory -> ChildCategoryResponse.builder()
-                                        .id(childCategory.getId())
-                                        .name(childCategory.getName())
-                                        .build())
-                                .toList())
-                        .build())
+                .map(this::toCategoryResponse)
                 .toList();
     }
 
     @Override
     public CategoryResponse getCategoryById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-        return toCategoryResponse(category);
-
-    }
-
-    @Override
-    public CategoryResponse getCategoryByName(String categoryName) {
-        Category category = categoryRepository.findByName(categoryName)
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         return toCategoryResponse(category);
     }
 
@@ -102,15 +84,36 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public CategoryResponse updateCategory(Category categoryRequest, Long categoryId) {
-        Category categoryToUpdate = categoryRepository.findById(categoryId)
+    public CategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest categoryRequest) {
+        var category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        categoryToUpdate.setName(categoryRequest.getName());
-        categoryToUpdate.setParentCategory(categoryRequest.getParentCategory());
+        if (categoryRequest.getName() != null && !categoryRequest.getName().isBlank()) {
+            category.setName(categoryRequest.getName());
+        }
 
-        Category updatedCategory = categoryRepository.save(categoryToUpdate);
-        return toCategoryResponse(updatedCategory);
+        if (categoryRequest.getParentId() != null) {
+            var parentCategory = categoryRepository.findById(categoryRequest.getParentId())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+
+            if (isCircularReference(category, parentCategory)) {
+                throw new AppException(ErrorCode.UNCATEGORIZED_ERROR);
+            }
+
+            category.setParentCategory(parentCategory);
+        }
+
+        return toCategoryResponse(categoryRepository.save(category));
+    }
+
+    private boolean isCircularReference(Category category, Category parentCategory) {
+        while (parentCategory != null) {
+            if (parentCategory.equals(category)) {
+                return true;
+            }
+            parentCategory = parentCategory.getParentCategory();
+        }
+        return false;
     }
 
     @Transactional
@@ -142,11 +145,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getCategoriesByParent(String parent) {
-        var parentCategory = categoryRepository.findByName(parent).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-        if(parentCategory.getChildCategories().size() == 0) {
+    public List<CategoryResponse> getCategoriesByParent(Long categoryId) {
+        var parentCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        if(parentCategory.getChildCategories().isEmpty()) {
             parentCategory = parentCategory.getParentCategory();
         }
+
         List<Category> categories = categoryRepository.findAllByParentCategory(parentCategory);
         return categories.stream()
                 .map(category -> CategoryResponse.builder()

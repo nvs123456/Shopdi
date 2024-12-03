@@ -1,6 +1,7 @@
 package com.rs.shopdiapi.controller;
 
 import com.rs.shopdiapi.domain.dto.request.CreateCategoryRequest;
+import com.rs.shopdiapi.domain.dto.request.UpdateCategoryRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.entity.Category;
 import com.rs.shopdiapi.service.CategoryService;
@@ -45,16 +46,16 @@ public class CategoryController {
 
     @PutMapping("/update/{categoryId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<?> updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
+    public ApiResponse<?> updateCategory(@PathVariable Long categoryId, @RequestBody @Valid UpdateCategoryRequest request) {
         return ApiResponse.builder()
-                .result(categoryService.updateCategory(category, categoryId))
+                .result(categoryService.updateCategory(categoryId, request))
                 .build();
     }
 
-    @GetMapping("/child/{categoryName}")
-    public ApiResponse<?> getChildCategories(@PathVariable String categoryName) {
+    @GetMapping("/child/{categoryId}")
+    public ApiResponse<?> getChildCategories(@PathVariable Long categoryId) {
         return ApiResponse.builder()
-                .result(categoryService.getCategoriesByParent(categoryName))
+                .result(categoryService.getCategoriesByParent(categoryId))
                 .build();
     }
 
@@ -63,13 +64,6 @@ public class CategoryController {
     public ApiResponse<?> deleteCategory(@PathVariable Long categoryId) {
         return ApiResponse.builder()
                 .result(categoryService.deleteCategory(categoryId))
-                .build();
-    }
-
-    @GetMapping("/name/{categoryName}")
-    public ApiResponse<?> getCategoryByName(@PathVariable String categoryName) {
-        return ApiResponse.builder()
-                .result(categoryService.getCategoryByName(categoryName))
                 .build();
     }
 }

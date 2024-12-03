@@ -9,7 +9,10 @@ import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.SellerResponse;
 import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
+import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import com.rs.shopdiapi.domain.enums.PageConstants;
+import com.rs.shopdiapi.service.RevenueService;
 import com.rs.shopdiapi.util.JwtUtil;
 import com.rs.shopdiapi.service.OrderService;
 import com.rs.shopdiapi.service.ProductService;
@@ -20,6 +23,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +45,7 @@ public class SellerController {
     UserService userService;
     OrderService orderService;
     JwtUtil jwtUtil;
+    RevenueService revenueService;
 
     @PreAuthorize("hasRole('SELLER')")
     @PostMapping( "/add-product")
@@ -84,9 +89,7 @@ public class SellerController {
     @PreAuthorize("hasRole('SELLER')")
     @GetMapping("/orders")
     public ApiResponse<?> getOrders(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize,
-                                   @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
-                                   @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
+                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
         Long sellerId = sellerService.getCurrentSeller().getId();
         return ApiResponse.builder()
                 .result(orderService.getAllOrdersForSeller(sellerId, pageNo, pageSize))
@@ -94,12 +97,11 @@ public class SellerController {
     }
 
     @PreAuthorize("hasRole('SELLER')")
-    @PutMapping("/{orderId}/status")
-    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId,
-                                                           @RequestParam String orderStatus) {
-        OrderResponse updatedOrder = orderService.updateOrderStatus(orderId, orderStatus);
+    @PutMapping("/{orderId}/update-status")
+    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderItemStatusEnum orderItemStatus) {
+        Seller seller = sellerService.getCurrentSeller();
         return ApiResponse.builder()
-                .result(updatedOrder)
+                .result(orderService.updateOrderStatusBySeller(orderId, seller.getId(),orderItemStatus))
                 .build();
     }
 
@@ -143,6 +145,15 @@ public class SellerController {
                                        @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
         return ApiResponse.builder()
                 .result(sellerService.getAllSeller(pageNo, pageSize))
+                .build();
+    }
+
+    @PreAuthorize("hasRole('SELLER')")
+    @GetMapping("/revenue")
+    public ApiResponse<?> calculateRevenue() {
+        Long sellerId = sellerService.getCurrentSeller().getId();
+        return ApiResponse.builder()
+                .result(revenueService.calculateRevenue(sellerId))
                 .build();
     }
 }

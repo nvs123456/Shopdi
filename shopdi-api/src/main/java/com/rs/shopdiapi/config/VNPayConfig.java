@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)

@@ -10,7 +10,17 @@ public interface ImageService {
 
     List<String> uploadProductImage(List<MultipartFile> file, Long productId);
 
+    List<String> updateProductImage(List<MultipartFile> file, Long productId);
+
     void deleteProductImage(String imageUrl);
 
-    String uploadProfileImage(Long userId,MultipartFile file);
+    String uploadProfileImage(Long userId,MultipartFile file, boolean isBuyer);
+
+    String updateProfileImage(Long userId, MultipartFile file, boolean isBuyer);
+
+    String uploadCoverImage(Long sellerId, MultipartFile file);
+
+    String updateCoverImage(Long sellerId, MultipartFile file);
+
+
 }

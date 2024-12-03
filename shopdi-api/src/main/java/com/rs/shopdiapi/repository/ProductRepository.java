@@ -4,6 +4,7 @@ import com.rs.shopdiapi.domain.entity.Category;
 import com.rs.shopdiapi.domain.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{
     @Query("SELECT p FROM Product p JOIN p.category c WHERE c.id = :categoryId OR c.parentCategory.id = :categoryId")    
     Page<Product> findAllByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 
@@ -33,4 +34,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findByProductNameContainingIgnoreCase(String query, Pageable pageable);
 
     List<Product> findByProductNameContainingIgnoreCase(String query);
+
 }

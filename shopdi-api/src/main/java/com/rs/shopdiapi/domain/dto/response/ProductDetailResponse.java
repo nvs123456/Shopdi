@@ -27,9 +27,8 @@ public class ProductDetailResponse {
     List<String> imageUrls;
     String categoryName;
     Set<String> tagNames;
-    Long sellerId;
-    String shopName;
     List<VariantResponse> variants;
+    SellerResponse seller;
 
     @Data
     @NoArgsConstructor
@@ -38,5 +37,17 @@ public class ProductDetailResponse {
     public static class VariantResponse {
         String variantDetail;
         Integer quantity;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SellerResponse {
+        Long sellerId;
+        String shopName;
+        String shopImageUrl;
+        Integer productCount;
+        Integer rating;
     }
 }

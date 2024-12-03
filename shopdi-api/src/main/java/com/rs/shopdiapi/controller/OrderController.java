@@ -4,6 +4,7 @@ import com.rs.shopdiapi.domain.dto.request.BuyNowRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.entity.User;
+import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.service.OrderService;
 import com.rs.shopdiapi.service.UserService;
@@ -41,7 +42,16 @@ public class OrderController {
     @PutMapping("/cancel/{orderId}")
     public ApiResponse<?> cancelOrder(@PathVariable Long orderId) {
         return ApiResponse.builder()
-                .result(orderService. cancelOrder(orderId))
+                .result(orderService.updateOrderStatusByBuyer(orderId, userService.getCurrentUser().getId(), OrderStatusEnum.CANCELED))
+                .build();
+    }
+
+    @PutMapping("/confirm-delivery/{orderId}")
+    public ApiResponse<?> confirmDelivered(@PathVariable Long orderId) {
+        User user = userService.getCurrentUser();
+        return ApiResponse.builder()
+                .message("Order delivered successfully")
+                .result(orderService.updateOrderStatusByBuyer(orderId, user.getId(),OrderStatusEnum.DELIVERED))
                 .build();
     }
 

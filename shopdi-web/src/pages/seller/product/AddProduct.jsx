@@ -49,9 +49,15 @@ export default function AddProduct() {
     const [selectedImage, setSelectedImage] = useState([]);
     const [listVariants, setListVariants] = useState([]);
     const [openPopup, setOpenPopup] = useState(false);
+    const [isUploadingProduct, setIsUploadingProduct] = useState(false);
     if (!loading) return (
         <div className='w-full flex flex-row'>
-            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}><QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup} productForm={productForm} setProductForm={setProductForm} selectedImage={selectedImage} /></div>
+            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}>
+                <QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup}
+                    productForm={productForm} setProductForm={setProductForm}
+                    selectedImage={selectedImage}
+                    isUploadingProduct={isUploadingProduct} setIsUploadingProduct={setIsUploadingProduct} />
+            </div>
             <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
 
             <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
@@ -66,7 +72,7 @@ export default function AddProduct() {
                                 alert('Vui long nhap day du thong tin')
                                 return
                             }
-                            if(!imagesEnough(selectedImage).code){
+                            if (!imagesEnough(selectedImage).code) {
                                 alert(imagesEnough(selectedImage).message)
                                 return
                             }
@@ -90,7 +96,7 @@ export default function AddProduct() {
                         </div>
                         <div>
                             <label> Product description</label>
-                            <textarea onChange={(e) => {
+                            <textarea maxLength={255} onChange={(e) => {
                                 setProductForm({ ...productForm, description: e.target.value })
                             }}
                                 className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product name'></textarea>
@@ -152,15 +158,7 @@ export default function AddProduct() {
                                 }}
                                 type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
-                        <div>
-                            <label className='block'>Discount</label>
-                            <input
-                                onWheel={event => event.currentTarget.blur()}
-                                onChange={(e) => {
-                                    setProductForm({ ...productForm, discountPercent: e.target.value })
-                                }}
-                                type="number" className='required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' placeholder='0 if not available'></input>
-                        </div>
+                        
                         <div>
                             <label className='block'>Brand</label>
                             <input onChange={(e) => {
@@ -251,7 +249,14 @@ const UploadAndDisplayImage = ({ selectedImage, setSelectedImage }) => {
         </div >
     );
 };
-function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductForm, selectedImage }) {
+function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductForm, selectedImage, isUploadingProduct, setIsUploadingProduct }) {
+    if (isUploadingProduct) return (
+        <div className='bg-white p-4'>
+            <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
+                <Loading />
+            </div>
+        </div>
+    );
     const navigate = useNavigate();
     if (variants.length === 0) {
         return (
@@ -259,7 +264,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                 <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
                     <span className='font-bold text-xl'>Enter quantity</span>
                     <input id="quantity" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' type='number' onChange={(e) => {
-                        setProductForm({ ...productForm, quantity: e.target.value })
+                        setProductForm({ ...productForm,variantDetails:[{variantDetail:null,quantity:e.target.value}] })
                     }} />
                     <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Cancel</button>
                     <button onClick={() => {
@@ -268,8 +273,13 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                             return
                         }
                         POST("seller/add-product", productForm).then((res) => {
+                            document.querySelectorAll(".save-product").forEach((item) => {
+                                item.disabled = true
+                                item.innerHTML = "Uploading..."
+                            })
                             if (res.code === "OK") {
                                 uploadImages(res.result.productId, selectedImage).then((res) => {
+                                    console.log(res)
                                     if (res.code === "OK") {
                                         setOpenPopup(false);
                                         navigate("/seller/products");
@@ -278,7 +288,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                             }
 
                         })
-                    }} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
+                    }} className='save-product bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
                 </div>
             </div>
         )
@@ -326,11 +336,16 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                     }
                     POST("seller/add-product", { ...productForm, quantity: tmp }
                     ).then((res) => {
+                        document.querySelectorAll(".save-product").forEach((item) => {
+                            item.disabled = true
+                            item.innerHTML = "Uploading..."
+                        })
                         if (res.code === "OK") {
                             uploadImages(res.result.productId, selectedImage).then((res) => {
                                 if (res.code === "OK") {
                                     navigate("/seller/products");
                                     setOpenPopup(false)
+
                                 }
                             })
 
@@ -341,7 +356,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
 
                 }
 
-                } className='bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
+                } className=' save-product bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
             </div>
 
         </div>
@@ -515,7 +530,7 @@ async function uploadImages(productId, selectedImage) {
             "Authorization": `Bearer ${localStorage.getItem("Authorization")}`
         },
         body: formData
-    });
+    }).then(res => res.json());
 }
 function imagesEnough(selectedImage) {
     let count = 0;
@@ -523,8 +538,8 @@ function imagesEnough(selectedImage) {
         if (selectedImage[i].isChoosed)
             count++;
     }
-    if(count < 5){return{"code" :false,message : "Please upload at least 5 images"}}
-    if(count >10){return{"code" :false,message : "Please upload at most 10 images"}}
-    return {"code" :true,message : "ok"}
+    if (count < 5) { return { "code": false, message: "Please upload at least 5 images" } }
+    if (count > 10) { return { "code": false, message: "Please upload at most 10 images" } }
+    return { "code": true, message: "ok" }
 
 }

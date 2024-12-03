@@ -22,6 +22,7 @@ const HomePage = () => {
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
+    console.log(location.pathname[1])
     if (location.pathname === '/') {
       GET(`products` + pageUrl).then((res) => {
         if (res.code === "OK") {
@@ -30,7 +31,15 @@ const HomePage = () => {
           setIsLoading(false)
         }
       })
-    } 
+    } else if (location.pathname.split("/")[1] === "category") {
+      GET(`products/category/Thiết Bị Điện Tử` + pageUrl).then((res) => {
+        if (res.code === "OK") {
+          setProducts(res.result?.items)
+          setPage({pageNo:res.result.pageNo, totalPage:res.result.totalPages})
+          setIsLoading(false)
+        }
+      })
+    }
   }, [location])
 
 
