@@ -236,7 +236,7 @@ export default function ProductDetail() {
                             </div>
                         </div>
                     </div>
-                    <ShopBar sellerId={product.sellerId} />
+                    <ShopBar sellerId={product.seller.sellerId} />
                     <div className="description  bg-white flex flex-col gap-x-8 border-2 rounded-md p-4">
                         <div className="text-2xl">
                             <h2>Mô tả</h2>

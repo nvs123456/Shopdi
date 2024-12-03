@@ -96,7 +96,7 @@ export default function AddProduct() {
                         </div>
                         <div>
                             <label> Product description</label>
-                            <textarea maxLength={255} onChange={(e) => {
+                            <textarea onChange={(e) => {
                                 setProductForm({ ...productForm, description: e.target.value })
                             }}
                                 className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product name'></textarea>
@@ -273,6 +273,10 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                             return
                         }
                         POST("seller/add-product", productForm).then((res) => {
+                            if(res.code !== "OK") {
+                                alert(res.message)
+                                setOpenPopup(false)
+                            }
                             document.querySelectorAll(".save-product").forEach((item) => {
                                 item.disabled = true
                                 item.innerHTML = "Uploading..."
@@ -336,6 +340,11 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                     }
                     POST("seller/add-product", { ...productForm, quantity: tmp }
                     ).then((res) => {
+                        if(res.code !== "OK"){
+                            setOpenPopup(false)
+                            alert(res.message)
+                            return
+                        }
                         document.querySelectorAll(".save-product").forEach((item) => {
                             item.disabled = true
                             item.innerHTML = "Uploading..."

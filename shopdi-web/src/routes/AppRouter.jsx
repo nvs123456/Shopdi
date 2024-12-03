@@ -12,6 +12,7 @@ import EditProfile from "../pages/buyer/EditProfile.jsx";
 import ShopView from "../pages/buyer/ShopView.jsx";
 import SellerList from "../pages/admin/SellerList.jsx";
 import Profile from "../pages/buyer/Profile.jsx";
+import ProductDetail from "../pages/buyer/ProductDetail.jsx";
 const AppRouter = () => {
     const [category, setCategory] = React.useState("");
     return (
@@ -28,6 +29,8 @@ const AppRouter = () => {
                 <Route path="orders/:id" exact element={<OrderDetails  />} />
                 <Route path="cart" exact element={<CartPage />} />
                 <Route path="buyer/checkout" exact element={<Checkout />} />
+                <Route path='product/:id' element={<ProductDetail />} />
+
                 <Route path='shop/:id' element={<ShopView />} />
                 <Route path="/*" element={<HomePage />} />
                 <Route path={'/sellerlist'} element={<SellerList />} />

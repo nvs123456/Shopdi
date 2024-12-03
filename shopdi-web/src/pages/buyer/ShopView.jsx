@@ -21,7 +21,7 @@ export default function ShopView() {
                 setProducts(res.result?.items)
             }
         })
-    })
+    },[location])
     const shop_info = {
         name: "Shopdi",
         link: "https://shopdi.com",
