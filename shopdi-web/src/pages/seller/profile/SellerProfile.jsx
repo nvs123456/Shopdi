@@ -6,7 +6,7 @@ export default function SellerProfile() {
     const [sellerInfo, setSellerInfo] = useState({});
     const [infoUpdated, setInfoUpdated] = useState({});
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState({});
     const [previewProfileImage, setPreviewProfileImage] = useState(null);
     const [previewProfileCoverImage, setPreviewProfileCoverImage] = useState(null);
     const [coverPopupOpen, setCoverPopupOpen] = useState(false);
@@ -174,7 +174,7 @@ export default function SellerProfile() {
                         className="w-full h-full object-cover rounded-full"
                     />
                     <div className={`mt-4 ml-4`}>
-                        <h2 className="mt-4 text-2xl font-semibold">{sellerInfo.username}</h2>
+                        <h2 className="mt-6 text-2xl font-semibold">{sellerInfo.username}</h2>
                         <p className="text-gray-500">Owner & Founder</p>
                     </div>
                     <div
@@ -229,6 +229,7 @@ export default function SellerProfile() {
                                 }}
 
                             />
+                            {error.shopName && <p className="text-red text-sm">*{error.shopName}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700">Email</label>
@@ -240,6 +241,7 @@ export default function SellerProfile() {
                                     setIsEditing(true);
                                     setSellerInfo({...sellerInfo, email: e.target.value})}}
                             />
+                            {error.email && <p className="text-red text-sm">*{error.email}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700">Contact no.</label>
@@ -254,6 +256,7 @@ export default function SellerProfile() {
                                 }}
 
                             />
+                            {error.contactNumber && <p className="text-red text-sm">*{error.contactNumber}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700">Location</label>
@@ -267,6 +270,7 @@ export default function SellerProfile() {
                                     setInfoUpdated({...infoUpdated, location: e.target.value})
                                 }}
                             />
+                            {error.location && <p className="text-red text-sm">*{error.location}</p>}
                         </div>
                         <div className="flex flex-col col-span-2">
                             <label className="text-sm font-medium text-gray-700">About</label>
@@ -281,12 +285,22 @@ export default function SellerProfile() {
                                     setInfoUpdated({...infoUpdated, about: e.target.value})
                                 }}
                             />
+                            {error.about && <p className="text-red text-sm">*{error.about}</p>}
                         </div>
                     </div>
                     {/* Save Changes Button */}
                     {isEditing && <div className="flex justify-end mt-6">
                         <button onClick={() => {
-                                setIsSaveChangePopupOpen(true);
+                            const newError = {};
+                            if(!sellerInfo.about) newError.about = "About field cannot be empty.";
+                            if(!sellerInfo.contactNumber) newError.contactNumber = "Contact number field cannot be empty.";
+                            if(!sellerInfo.location) newError.location = "Location field cannot be empty.";
+                            if(!sellerInfo.shopName) newError.shopName = "Shop name field cannot be empty.";
+                            if(!sellerInfo.email) newError.email = "Email field cannot be empty.";
+                            setError(newError);
+                            console.log(newError);
+                            console.log(error);
+                            if(Object.keys(newError).length === 0 ) setIsSaveChangePopupOpen(true);
                         }}
                                 className="bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600">
                             SAVE CHANGES

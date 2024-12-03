@@ -1,96 +1,39 @@
 import React, {useEffect, useState} from "react";
-import { useParams } from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {Step, StepLabel, Stepper} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import StepConnector, {stepConnectorClasses} from "@mui/material/StepConnector";
 import axios from "axios";
 
-const orders = [
-    {
-        id: 1,
-        customer: {
-            name: "Jonathan James",
-            email: "JJ@gmail.com",
-            phone: "+91 ********90"
-        },
-        shipping: {
-            name: "Jonathan James",
-            receivingPhone: "+91 ********90",
-            address: "344C, Rocky mount, Chowk",
-        },
-        payment: {
-            transaction: "#MHG**23527160123",
-            method: "Paytm",
-            cardHolder: "Joseph James",
-            total: 1699
-        },
-        productDetails: [
-            {
-                productName: "Adidas Mens Run M Shoe",
-                id: "#3453DR",
-                price: 1699,
-                quantity: 1,
-                total: 1699
-            },
-            {
-                productName: "Adidas Mens Run M Shoe",
-                id: "#3453DR",
-                price: 259,
-                quantity: 2,
-                total: 518
-            },
-            {
-                productName: "Adidas Mens Run M Shoe",
-                id: "#3453DR",
-                price: 4009,
-                quantity: 1,
-                total: 4009
-            }
-        ],
-        logistics: {
-            company: "ABX Logistics",
-            email: "abx@gmail.com",
-            amount: 65,
-            paymentMethod: "Paytm"
-        },
-        totalBill: {
-            subtotal: 6226,
-            discounts: -1382,
-            logistics: 65,
-            tax: 351,
-            totalAmount: 5260
-        },
-        orderStatus: 2
-    }
-];
 const CustomisedConnector = styled(StepConnector)(({theme}) => ({
     [`&.${stepConnectorClasses.active}`]: {
         [`& .${stepConnectorClasses.line}`]: {
             backgroundColor: "#FA8232",
-            height: 40,
+            height: 4,
 
         },
     },
     [`&.${stepConnectorClasses.completed}`]: {
         [`& .${stepConnectorClasses.line}`]: {
-            height: 40,
+            height: 4,
             backgroundColor: "#FA8232",
         },
     },
     [`& .${stepConnectorClasses.line}`]: {
-        height: 20,
-        width: 10,
-        border: "20px",
+        height: 8,
+        width: "100%",
+        paddingBottom: 10,
+        border: 20,
         backgroundColor: "#FFE7D6",
     },
 }));
-const steps = ['Order Placed', 'Order processed', 'Packed', 'Shipping','Out for delivery', 'Delivered'];
+const steps = ['Order Placed', 'Order processed', 'Packaged', 'Out for delivery', 'Delivered'];
 
 export default function OrderDetails() {
-    const { id } = useParams();
+    const {id} = useParams();
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [order,setOrder] = useState({});
+    const [isEditing, setIsEditing] = useState(false);
+    const [order, setOrder] = useState({});
     const [step, setStep] = useState(-1);
 
     // Fetch order details from the server
@@ -98,7 +41,6 @@ export default function OrderDetails() {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
-            "Access-Control-Allow-Origin": "http://localhost:5173",
         }
     }
     useEffect(() => {
@@ -106,6 +48,7 @@ export default function OrderDetails() {
             .then((response) => {
                 if (response.data.code === 'OK') {
                     setOrder(response.data.result);
+                    setStep(orderStatusToStep(response.data.result.orderStatus));
                     console.log('Order detail:', response.data.result); // Log dữ liệu chi tiết
                 } else {
                     console.warn('Unexpected response:', response.data);
@@ -118,74 +61,114 @@ export default function OrderDetails() {
                 setLoading(false);
             });
     }, [id]);
-    if(order !== undefined){
-        setLoading(false);
-    }
     if (!order) {
         return <div>Order not found</div>; // Handle case when order is undefined
     }
 
-    function handleStep(step) {
-        setStep(step);
+    function handleStep(newStep) {
+        if(newStep > step) {
+            setStep(newStep);
+            setIsEditing(true);
+        }
     }
-    if(loading) return <div>Loading...</div>;
+    function orderStatusToStep(status) {
+        switch (status) {
+            case 'PENDING':
+                return 0;
+            case 'CONFIRMED':
+                return 1;
+            case 'PROCESSING':
+                return 2;
+            case 'DELIVERING':
+                return 3;
+            case 'DELIVERED':
+                return 4;
+            default:
+                return -1;
+        }
+    }
+
+    function handleUpdateOrderStatus(orderId) {
+        axios.put(`http://localhost:8080/seller/${orderId}/update-status`, null,
+            {
+                params: { orderStatus: 'DELIVERED' },
+            })
+            .then((response) => {
+                if (response.data.code === 'OK') {
+                    console.log('Order status updated successfully');
+                } else {
+                    console.warn('Unexpected response:', response.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error.response?.data || error.message);
+            })
+            .finally(() => {
+                setIsEditing(false);
+            });
+    }
+
+    if (loading) return <div>Loading...</div>;
     else {
         return (
             <div className="p-6 bg-gray-100 min-h-screen font-sans text-sm">
                 <div className="bg-white px-6 py-10 rounded-lg min-h-screen">
                     <h1 className="text-lg bg-gray-50 rounded-lg font-semibold mb-4">Order ID : {order.orderId}</h1>
-
+                    <h2 className="font-semibold mb-2">Ordered
+                        at {(new Date(order.deliveryDate)).toLocaleDateString()}</h2>
                     {/* Customer, Shipping and Payment Details */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <h2 className="font-semibold mb-2">Customer details</h2>
-                            <div className="p-4 bg-gray-50 rounded-lg">
-                                <p>{order.shippingAddress.firstName || 'None'} {order.shippingAddress.lastName || 'None'}</p>
-                                <p>{order.shippingAddress.email || 'None'}</p>
-                                <p>{order.shippingAddress.phoneNumber || 'None'}</p>
+                            <div className="p-4 bg-gray-50 min-h-full rounded-lg">
+                                <p>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
+                                <p>{order.shippingAddress?.email}</p>
+                                <p>{order.shippingAddress?.phoneNumber}</p>
                             </div>
                         </div>
                         <div>
                             <h2 className="font-semibold mb-2">Shipping address</h2>
-                            <div className="p-4 bg-gray-50 rounded-lg">
-                                <p>{order.shippingAddress.firstName || 'None'} {order.shippingAddress.lastName || 'None'}</p>
-                                <p>{order.shippingAddress.phoneNumber || 'None'}</p>
-                                <p>{order.shippingAddress.address}</p>
+                            <div className="p-4 bg-gray-50 min-h-full rounded-lg">
+                                <p>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
+                                <p>{order.shippingAddress?.phoneNumber}</p>
+                                <p>{order.shippingAddress?.address}</p>
                             </div>
                         </div>
                         <div>
                             <h2 className="font-semibold mb-2">Payment details</h2>
-                            <div className="p-4 bg-gray-50 rounded-lg">
-                                <p>Transaction: {order.payment.transaction || "None"}</p>
-                                <p>Payment Method: {order.paymentMethod || 'None'}</p>
-                                <p>Card Holder: {order.payment.cardHolder || 'None'}</p>
-                                <p>Total amount: {order.price}</p>
+                            <div className="p-4 bg-gray-50 min-h-full rounded-lg">
+                                <p>Transaction: {order?.payment?.transaction}</p>
+                                <p>Payment Method: {order?.paymentMethod}</p>
+                                <p>Card Holder: {order?.payment?.cardHolder}</p>
+                                <p>Total amount: {order?.price}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Product Details */}
-                    <div className="mb-6">
+                    <div className="mb-6 mt-10">
                         <h2 className="font-semibold mb-2">Product details</h2>
                         <div className="bg-gray-50 p-4 rounded-lg">
-                            <table className="w-full">
+                            <table className="w-full text-center">
                                 <thead>
-                                <tr className={'text-left'}>
-                                    <th className="py-2">Product</th>
-                                    <th className="py-2">Product ID</th>
-                                    <th className="py-2">Price</th>
-                                    <th className="py-2">Quantity</th>
-                                    <th className="py-2">Total</th>
+                                <tr className={'text-center border-b-2'}>
+                                    <th className="py-2 text-left w-[40%]">Product</th>
+                                    <th className="py-2 w-[10%]">Product ID</th>
+                                    <th className="py-2 w-[20%]">Price</th>
+                                    <th className="py-2 w-[10%]">Quantity</th>
+                                    <th className="py-2 w-[10%]">Total</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {order.productDetails.map((product, index) => (
+                                {order?.orderItems?.map((item, index) => (
                                     <tr key={index} className={'border-b-2'}>
-                                        <td className={'py-2'}>{product.productName}</td>
-                                        <td>{product.id}</td>
-                                        <td>₹{product.price}</td>
-                                        <td>{product.quantity}</td>
-                                        <td>₹{product.total}</td>
+                                        <td className={'flex items-center py-2'}>
+                                            <img src={item?.productImage} className={`w-20 h-20`}/>
+                                            {item?.productName}</td>
+                                        <td>{item?.orderItemId}</td>
+                                        <td>{item?.price.toLocaleString()}đ</td>
+                                        <td>{item?.quantity}</td>
+                                        <td>{item?.price.toLocaleString()}.đ</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -194,33 +177,17 @@ export default function OrderDetails() {
                     </div>
 
                     {/* Logistics and Billing Details */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <h2 className="font-semibold mb-2">Logistics details</h2>
-                            <div className="p-4 bg-gray-50 rounded-lg">
-                                <p>{order.logistics.company}</p>
-                                <p>Email: {order.logistics.email}</p>
-                                <p>Amount charged: {order.logistics.amount}</p>
-                                <p>Payment method: {order.logistics.paymentMethod}</p>
-                            </div>
-                        </div>
-                        <div>
-                            <h2 className="font-semibold mb-2">Total bill</h2>
-                            <div className="grid grid-cols-2 p-4 bg-gray-50 rounded-lg">
-                                <p>Subtotal: </p> <p>{order.totalBill.subtotal}</p>
-                                <p>Discounts: </p> <p>{order.totalBill.discounts}</p>
-                                <p>Logistics: </p> <p>{order.totalBill.logistics}</p>
-                                <p>Tax: </p> <p>{order.totalBill.tax}</p>
-                                <p className="font-bold">Total Amount: </p> <p>{order.totalBill.totalAmount}</p>
-                            </div>
-                        </div>
+                    <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <h2 className="absolute right-8 font-semibold mb-2">Total
+                            bill: {order?.totalPrice.toLocaleString()}đ</h2>
                     </div>
 
                     {/* Order Status */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className=" w-full mb-10 ">
                         <div>
                             <h2 className="font-semibold mb-2">Order status</h2>
-                            <Stepper activeStep={step}  orientation={'vertical'} connector={<CustomisedConnector/>}>
+                            <Stepper activeStep={step} orientation={'horizontal'} alternativeLabel
+                                     connector={<CustomisedConnector/>}>
                                 {steps.map((label, index) => (
                                     <Step key={label}>
                                         <StepLabel onClick={() => handleStep(index)}
@@ -249,18 +216,15 @@ export default function OrderDetails() {
                                             {label}
                                         </StepLabel>
                                     </Step>
+
                                 ))}
                             </Stepper>
-
                         </div>
-
-                        {/* Previous Orders */}
-                        <div>
-                            <h2 className="font-semibold mb-2">Previous Orders</h2>
-                            <div className="p-4 bg-gray-50 rounded-lg flex items-center justify-center h-full">
-                                <p className="text-gray-500">No previous orders from the customer</p>
-                            </div>
-                        </div>
+                        {isEditing && <button
+                            onClick={() => handleUpdateOrderStatus(order.orderId)}
+                            className={`absolute right-8 bottom-[-150px] bg-metallicOrange w-34 px-2  rounded text-white h-8`}>Save
+                            Changes
+                        </button>}
                     </div>
                 </div>
             </div>
