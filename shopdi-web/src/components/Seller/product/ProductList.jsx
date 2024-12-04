@@ -6,25 +6,25 @@ import PaginationButton from "@/components/Navigation/Pagination.jsx";
 export default function ProductList({ products, page }) {
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col ">
             <div className="flex flex-row justify-between pb-4 border-b-2 border-gray-200">
                 <div>
-                    <input className="w-full h-10 rounded border-2 border-gray-400 outline-none px-4 font-sm" type="text" placeholder="tim kiem san pham"></input>
+                    <input className=" h-10 rounded border-2 border-gray-400 outline-none px-4 font-sm" type="text" placeholder="Tìm kiếm sản phẩm"></input>
                 </div>
                 <div className="w-fit">
                     <Link to='add-product'>
                         <button className="w-full h-10 rounded text-white bg-celticBlue outline-none px-4 ">
-                            <AddIcon />Them san pham</button>
+                            <AddIcon />Thêm sản phẩm</button>
                     </Link>
                 </div>
             </div>
             <div className="header flex flex-row w-full mb-4">
                 <span className="grow pl-12">Tên sản phẩm</span>
-                <span className="w-32 text-center">Đơn giá</span>
-                <span className="w-32 text-center">Trong kho</span>
-                <span className="w-32 text-center">Đặt hàng</span>
-                <span className="w-32 text-center">Ngày đăng</span>
-                <span className="w-32 text-center">Cập nhật </span>
+                <span className="w-24 text-center">Đơn giá</span>
+                <span className="w-24 text-center">Trong kho</span>
+                <span className="w-24 text-center">Đặt hàng</span>
+                <span className="w-24 text-center">Ngày đăng</span>
+                <span className="w-24 text-center">Cập nhật </span>
             </div>
 
             {products && products.map((product) => <div key={product.productId}>

@@ -8,15 +8,10 @@ export default function OrderItem({ item }) {
                 <div className="text-xl font-bold pl-4">{item.productName}</div>
                 <div className='text-sm text-gray-500 pl-4'>{JSONToData(item.variant)}</div>
             </div>
-            {/* <div className="flex flex-row w-1/6 relative" >
-                <div className="">
-                    {item.variant}
-                </div>
-            </div> */}
-            <span className="w-40 text-center">{item.price.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span>
+            <span className="min-w-40 text-center">{item.price.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span>
 
-            <div className="w-40 flex flex-row justify-center">{item.quantity}</div>
-            <span className="w-40 text-center ">{(item.price * item.quantity).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span>
+            <div className="min-w-40 flex flex-row justify-center">{item.quantity}</div>
+            <span className="min-w-40 text-center ">{(item.price * item.quantity).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span>
         </div>
     )
 }

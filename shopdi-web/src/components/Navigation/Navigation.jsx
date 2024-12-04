@@ -3,16 +3,16 @@ import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outlin
 import shopdiLogo from '@/assets/images/Shopdi2.jpg';
 import AccountMenu from './AccountMenu/AccountMenu.jsx';
 import CATEGORIES from '@/data/categories_data';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { useAuth } from '../../routes/AuthProvider.jsx';
 import { useContext, useEffect, useState } from 'react';
 import {CategoryContext} from '../../pages/buyer/CategoryContext';
 import { GET } from '../../api/GET.jsx';
-
 export default function Navigation(props) {
     const [isAdmin, setIsAdmin] = useState(false);
     const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
     useEffect(() => {
         GET("categories").then((res) => {
             if (res.code === "OK") {
@@ -24,6 +24,11 @@ export default function Navigation(props) {
     }, []);
     if(isLoading){
         return <div className="text-center">Loading...</div>
+    }
+    const handleSearch = (e) => {
+        if(e.key === 'Enter'){
+            navigate(`http://localhost:5173/search?query=${e.target.value}`)
+        }
     }
     return (
         <div className={`font-sans`}>
@@ -126,6 +131,7 @@ export default function Navigation(props) {
                                         type="text"
                                         className="p-2 w-full outline-none rounded-xl"
                                         placeholder="Search..."
+                                        onKeyDown={(e) => e.key === 'Enter' && navigate(`/search?query=${e.target.value}`)}
                                     />
                                 </div>
 
@@ -140,10 +146,10 @@ export default function Navigation(props) {
                                         <Link to="cart" className="group -m-2 flex items-center md:p-2">
                                             <ShoppingBagIcon
                                                 aria-hidden="true"
-                                                className="h-3 w-3 md:w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                                className=" md:w-6 flex-shrink-0 text-gray-600 group-hover:text-gray-500"
                                             />
-                                            <span
-                                                className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                                            <span id="cart-quantity"
+                                                className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800"></span>
                                             <span className="sr-only">items in cart, view bag</span>
                                         </Link>
                                     </div>

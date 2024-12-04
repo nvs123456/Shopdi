@@ -246,9 +246,9 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
         }
 
-        if(newStatus.equals(OrderStatusEnum.CANCELED)) {
+        if(newStatus.equals(OrderStatusEnum.CANCELLED)) {
             if (order.getOrderStatus() == OrderStatusEnum.PENDING || order.getOrderStatus() == OrderStatusEnum.PROCESSING) {
-                order.setOrderStatus(OrderStatusEnum.CANCELED);
+                order.setOrderStatus(OrderStatusEnum.CANCELLED);
                 return mapToOrderResponse(orderRepository.save(order));
             } else {
                 throw new AppException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);

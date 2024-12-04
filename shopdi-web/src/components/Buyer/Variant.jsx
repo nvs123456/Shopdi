@@ -1,6 +1,10 @@
 import '@/css/product_detail.css'
 
 export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVariant, currenSelectedVariant }) {
+    if (variantWithQuantity[0].variantDetail === null) {
+        return <></>
+
+    }
     const v = []
     for (let i = 0; i < variantWithQuantity.length; i++) {
         let t = variantWithQuantity[i].variantDetail

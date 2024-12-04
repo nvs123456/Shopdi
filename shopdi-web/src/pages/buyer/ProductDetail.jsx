@@ -61,7 +61,7 @@ export default function ProductDetail() {
             setProduct(data.result)
             setProductImages(data.result.imageUrls)
             setQuantityInStock(tmp_quantityInStock)
-            if (data.result.variants.length > 0) {
+            if (data.result.variants.length > 0 && data.result.variants[0].variantDetail !== null) {
                 let v = []
                 for (let i = 0; i < data.result.variants[0].variantDetail.length; i++) {
                     v.push({ type: data.result.variants[0].variantDetail[i].type, value: null })
@@ -236,7 +236,7 @@ export default function ProductDetail() {
                             </div>
                         </div>
                     </div>
-                    <ShopBar shop_info={shop_info} />
+                    <ShopBar sellerId={product.seller.sellerId} />
                     <div className="description  bg-white flex flex-col gap-x-8 border-2 rounded-md p-4">
                         <div className="text-2xl">
                             <h2>Mô tả</h2>
