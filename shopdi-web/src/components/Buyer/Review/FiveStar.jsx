@@ -1,11 +1,12 @@
 import React, {useState} from "react";
 
-const StarRating = () => {
+const StarRating = ({review, setReview}) => {
     const [rating, setRating] = useState(0); // Lưu số ngôi sao được đánh giá
 
     // Hàm thay đổi số ngôi sao khi nhấp vào
     const handleRating = (index) => {
         setRating(index + 1); // index bắt đầu từ 0, nên cần +1 để đúng số ngôi sao
+        setReview({...review, rating: index + 1}); // Cập nhật lại số ngôi sao trong review
     };
 
     return (
@@ -28,7 +29,8 @@ const StarRating = () => {
                 </svg>
 
             ))}
-            <p className="pl-2 ms-1 text-[14px] md:text-[16px] font-medium text-gray-500 dark:text-gray-400">{rating} Star Rating</p>
+            <p className="pl-2 ms-1 text-[14px] md:text-[16px] font-medium text-gray-500 dark:text-gray-400">{rating} Star
+                Rating</p>
         </div>
 
     );

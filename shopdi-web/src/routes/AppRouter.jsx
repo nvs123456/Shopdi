@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import CartPage from '../pages/buyer/CartPage.jsx';
 import HomePage from "../pages/buyer/HomePage.jsx";
-import OrderDetails from "../components/Buyer/Order/OrderDetails.jsx";
+import OrderDetails from "../pages/buyer/OrderDetails.jsx";
 import Checkout from "../pages/buyer/Checkout.jsx";
 import OrderHistory from "../pages/buyer/OrderHistory.jsx";
 import Review from "../pages/buyer/Review.jsx";
