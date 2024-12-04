@@ -64,7 +64,6 @@ public class ProductServiceImpl implements ProductService {
                 .category(category)
                 .seller(seller)
                 .tags(tags)
-                .status(ProductStatusEnum.valueOf(request.getStatus()))
                 .build();
 
         category.getProducts().add(product);
@@ -227,8 +226,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<?> getAllProducts(int pageNo, int pageSize, String sortBy, String sortOrder) {
-        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNo, pageSize, sortByAndOrder));
+        String[] sortFields = sortBy.split(",");
+
+        Sort sort = Sort.unsorted();
+        for (String field : sortFields) {
+            Sort sortField = sortOrder.equalsIgnoreCase("asc") ? Sort.by(field).ascending() : Sort.by(field).descending();
+            sort = sort.and(sortField);
+        }
+
+        Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNo, pageSize, sort));
 
         List<ProductResponse> products = productPage.stream()
                 .map(this::toProductResponse)
@@ -290,9 +296,11 @@ public class ProductServiceImpl implements ProductService {
                 .productImage(product.getImageUrls().isEmpty() ? null : product.getImageUrls().get(0))
                 .productName(product.getProductName())
                 .price(product.getPrice())
+                .category(product.getCategory().getName())
                 .stock(product.getVariants().stream().mapToInt(Variant::getQuantity).sum())
+                .soldQuantity(product.getSoldQuantity())
                 .publishedOn(product.getCreatedAt())
-                .rating(product.getReviews().isEmpty() ? 0 : product.getReviews().stream().mapToInt(Review::getRating).sum() / product.getReviews().size())
+                .rating(product.getReviews().isEmpty() ? 0.0 : product.getReviews().stream().mapToDouble(Review::getRating).average().orElse(0.0))
                 .reviewCount(product.getReviews().size())
                 .build();
     }
@@ -304,9 +312,9 @@ public class ProductServiceImpl implements ProductService {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .brand(product.getBrand())
-                .status(product.getStatus())
                 .imageUrls(product.getImageUrls())
                 .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
+                .soldQuantity(product.getSoldQuantity())
                 .tagNames(product.getTags() != null
                         ? product.getTags().stream().map(Tag::getName).collect(Collectors.toSet())
                         : Set.of())
@@ -316,15 +324,11 @@ public class ProductServiceImpl implements ProductService {
                         .shopImageUrl(product.getSeller().getProfileImage())
                         .productCount(product.getSeller().getProducts().size())
                         .rating(product.getSeller().getProducts().stream()
-                                .mapToInt(p -> {
-                                    List<Review> reviews = p.getReviews();
-                                    if (reviews == null || reviews.isEmpty()) {
-                                        return 0;
-                                    }
-                                    int reviewCount = reviews.size();
-                                    return reviews.stream().mapToInt(Review::getRating).sum() / reviewCount;
-                                })
-                                .sum() / product.getSeller().getProducts().size())
+                                .filter(p -> p.getReviews() != null && !p.getReviews().isEmpty())
+                                .flatMap(p -> p.getReviews().stream())
+                                .mapToDouble(Review::getRating)
+                                .average()
+                                .orElse(0.0))
                         .build())
                 .variants(product.getVariants() != null
                         ? product.getVariants().stream()

@@ -6,6 +6,7 @@ import com.rs.shopdiapi.domain.dto.response.ReviewResponse;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.service.ReviewService;
 import com.rs.shopdiapi.service.UserService;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,10 +23,12 @@ public class ReviewController {
 
 
     @GetMapping("/product/{productId}")
-    public ApiResponse<?> getReviewsByProduct(@PathVariable Long productId, int pageNo, int pageSize) {
-        Page<ReviewResponse> reviews = reviewService.getReviewsByProduct(productId, pageNo, pageSize);
+    public ApiResponse<?> getReviewsByProduct(@PathVariable Long productId,
+                                              @RequestParam(defaultValue = "0", required = false) int pageNo,
+                                              @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
+
         return ApiResponse.builder()
-                .result(reviews)
+                .result(reviewService.getReviewsByProduct(productId, pageNo, pageSize))
                 .build();
     }
 
@@ -78,14 +81,6 @@ public class ReviewController {
 
         return ApiResponse.builder()
                 .message(reviewService.deleteReview(user.getId(), reviewId))
-                .build();
-    }
-
-    @GetMapping("/user/{userId}")
-    public ApiResponse<?> getReviewsByUser(@PathVariable Long userId, int pageNo, int pageSize) {
-        Page<ReviewResponse> reviews = reviewService.getReviewsByUser(userId, pageNo, pageSize);
-        return ApiResponse.builder()
-                .result(reviews)
                 .build();
     }
 }

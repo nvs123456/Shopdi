@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
@@ -28,10 +30,10 @@ public class Review extends BaseEntity<Long> {
     @Column(columnDefinition = "TEXT")
     String review;
 
-    @Min(1)
-    @Max(5)
-    @Column(nullable = false, columnDefinition = "TINYINT")
-    int rating;
+    @DecimalMin("1.0")
+    @DecimalMax("5.0")
+    @Column(nullable = false, columnDefinition = "DECIMAL(2,1)")
+    double rating;
 
     @Column(columnDefinition = "TEXT")
     String reply;

@@ -1,7 +1,6 @@
 package com.rs.shopdiapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -38,9 +37,6 @@ public class OrderItem extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     Seller seller;
-
-    @Enumerated(EnumType.STRING)
-    OrderItemStatusEnum orderItemStatus = OrderItemStatusEnum.PENDING;
 
     String variant;
     Integer quantity;

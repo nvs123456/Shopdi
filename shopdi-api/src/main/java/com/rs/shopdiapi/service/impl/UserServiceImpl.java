@@ -16,6 +16,7 @@ import com.rs.shopdiapi.domain.enums.RoleEnum;
 import com.rs.shopdiapi.domain.enums.UserStatusEnum;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.mapper.UserMapper;
+import com.rs.shopdiapi.repository.OrderRepository;
 import com.rs.shopdiapi.repository.RoleRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.CartService;
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     CartService cartService;
+    OrderRepository orderRepository;
     EmailService emailService;
 
     private String generateUsernameFromEmail(String email) {
@@ -133,10 +135,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<?> getAllUsers(int pageNo, int pageSize, String sortBy, String sortOrder) {
-        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Page<User> page = userRepository.findAll(PageRequest.of(pageNo, pageSize, sortByAndOrder));
-        List<UserResponse> users = page.map(userMapper::toUserResponse).toList();
+    public PageResponse<?> getAllUsers(int pageNo, int pageSize) {
+        Page<User> page = userRepository.findAll(PageRequest.of(pageNo, pageSize));
+        List<UserResponse> users = page.map(user -> {
+            UserResponse userResponse = userMapper.toUserResponse(user);
+            Long balance = orderRepository.calculateTotalAmountSpentByUser(user.getId());
+            userResponse.setBalance(balance != null ? balance : 0);
+            return userResponse;
+        }).toList();
         return PageResponse.builder()
                 .pageNo(pageNo)
                 .pageSize(pageSize)

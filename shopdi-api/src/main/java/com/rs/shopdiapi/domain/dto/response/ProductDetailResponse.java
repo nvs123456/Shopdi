@@ -23,12 +23,12 @@ public class ProductDetailResponse {
     String description;
     BigDecimal price;
     String brand;
-    ProductStatusEnum status;
     List<String> imageUrls;
     String categoryName;
     Set<String> tagNames;
     List<VariantResponse> variants;
     SellerResponse seller;
+    int soldQuantity;
 
     @Data
     @NoArgsConstructor
@@ -48,6 +48,6 @@ public class ProductDetailResponse {
         String shopName;
         String shopImageUrl;
         Integer productCount;
-        Integer rating;
+        double rating;
     }
 }
