@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UETLogo from "/src/assets/images/UETLogo.png";
-import { GET } from "../../api/GET";
+import {GET, PUT} from "../../api/GET";
 
 const users_temp = [
     {
@@ -190,8 +190,8 @@ export default function userCard({ status }) {
                         <h2 className="text-lg font-medium text-center">{user.name}</h2>
                         <div className={'flex justify-center '}>
                             <div
-                                className={`${user.status === 'Active' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
-                                <p className={`text-center text-sm ${user.status === 'Active' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
+                                className={`${user.status === 'ACTIVE' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
+                                <p className={`text-center text-sm ${user.status === 'ACTIVE' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
                                     {user.status}
                                 </p>
                             </div>

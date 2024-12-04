@@ -11,90 +11,7 @@ import OrderTable from "../../components/Seller/order/OrderTable.jsx";
 import SellerCard from "./SellerCard.jsx";
 import Pagination from "@mui/material/Pagination";
 
-const users_temp = [
-    {
-        id: 1,
-        name: 'Alice',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 10,
-        revenue: 1000,
-    },
-    {
-        id: 2,
-        name: 'Bob',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 5,
-        revenue: 500,
-    },
-    {
-        id: 3,
-        name: 'Charlie',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 15,
-        revenue: 1500,
-    },
-    {
-        id: 4,
-        name: 'David',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 3,
-        revenue: 300,
-    },
-    {
-        id: 5,
-        name: 'Eve',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 20,
-        revenue: 2000,
-    },
-    {
-        id: 6,
-        name: 'Alice',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 10,
-        revenue: 1000,
-    },
-    {
-        id: 7,
-        name: 'Bob',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 5,
-        revenue: 500,
-    },
-    {
-        id: 8,
-        name: 'Charlie',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 15,
-        revenue: 1500,
-    },
-    {
-        id: 9,
-        name: 'David',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 3,
-        revenue: 300,
-    },
-    {
-        id: 10,
-        name: 'Eve',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 20,
-        revenue: 2000,
-    }
-];
 const tabHeadings = ['All', 'Active', 'Blocked'];
-
 
 const SellerList = () => {
     const [users, setUsers] = useState([]);
@@ -105,26 +22,6 @@ const SellerList = () => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
-    useEffect(() => {
-        // Lấy dữ liệu từ API
-        axios.get('http://localhost:8080/users')
-            .then((response) => {
-                setUsers(response.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error('Error fetching users:', error);
-                setLoading(false);
-            });
-    }, []);
-
-    if (loading) {
-        return <p className="text-center text-gray-500">Loading...</p>;
-    }
-
-
-
     return (
         <div>
             <h1 className="text-xl font-bold font-sans mb-4">Customers</h1>
@@ -149,8 +46,8 @@ const SellerList = () => {
                     </TabList>
                 </Box>
                 <TabPanel value="1"><SellerCard status={'All'}/></TabPanel>
-                <TabPanel value="2"><SellerCard status={'Active'}/></TabPanel>
-                <TabPanel value="3"><SellerCard status={'Blocked'}/></TabPanel>
+                <TabPanel value="2"><SellerCard status={'ACTIVE'}/></TabPanel>
+                <TabPanel value="3"><SellerCard status={'BLOCKED'}/></TabPanel>
 
             </TabContext>
             <div className="flex justify-center m-4">

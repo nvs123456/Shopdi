@@ -1,89 +1,7 @@
 import React, { useEffect, useState } from "react";
-import UETLogo from "/src/assets/images/UETLogo.png";
+import defaultImage from "../../assets/images/profileDefault.png";
 import { GET } from "../../api/GET";
 
-// const sellers_temp = [
-//     {
-//         id: 1,
-//         name: 'Alice',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 10,
-//         revenue: 1000,
-//     },
-//     {
-//         id: 2,
-//         name: 'Bob',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 5,
-//         revenue: 500,
-//     },
-//     {
-//         id: 3,
-//         name: 'Charlie',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 15,
-//         revenue: 1500,
-//     },
-//     {
-//         id: 4,
-//         name: 'David',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 3,
-//         revenue: 300,
-//     },
-//     {
-//         id: 5,
-//         name: 'Eve',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 20,
-//         revenue: 2000,
-//     },
-//     {
-//         id: 6,
-//         name: 'Alice',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 10,
-//         revenue: 1000,
-//     },
-//     {
-//         id: 7,
-//         name: 'Bob',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 5,
-//         revenue: 500,
-//     },
-//     {
-//         id: 8,
-//         name: 'Charlie',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 15,
-//         revenue: 1500,
-//     },
-//     {
-//         id: 9,
-//         name: 'David',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 3,
-//         revenue: 300,
-//     },
-//     {
-//         id: 10,
-//         name: 'Eve',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 20,
-//         revenue: 2000,
-//     }
-// ];
 export default function SellerCard({ status }) {
     const [sellers, setSellers] = useState([]);
     const [showMenu, setShowMenu] = useState(false);
@@ -137,7 +55,7 @@ export default function SellerCard({ status }) {
                             </button>
                         </div>
                         <img
-                            src={seller.avatar}
+                            src={seller.profileImage || defaultImage}
                             alt={seller.name}
                             className="w-16 h-16 rounded-full mx-auto"
                         />
@@ -181,8 +99,8 @@ export default function SellerCard({ status }) {
                         <h2 className="text-lg font-medium text-center">{seller.shopName}</h2>
                         <div className={'flex justify-center '}>
                             <div
-                                className={`${seller.status === 'Active' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
-                                <p className={`text-center text-sm ${seller.status === 'Active' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
+                                className={`${seller.status === 'ACTIVE' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
+                                <p className={`text-center text-sm ${seller.status === 'ACTIVE' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
                                     {seller.status}
                                 </p>
                             </div>
@@ -190,7 +108,7 @@ export default function SellerCard({ status }) {
                         <div className={'border-b border-dotted border-gray-300 my-2'}></div>
                         <div className="mt-4 text-center text-gray-600 flex justify-around">
                             <p>Product<br />{seller.totalProducts}</p>
-                            <p>Revenue<br /> ${seller.totalRevenue}</p>
+                            <p>Revenue<br /> {seller.totalRevenue.toLocaleString()}đ</p>
                         </div>
                     </div>
                 ))}
