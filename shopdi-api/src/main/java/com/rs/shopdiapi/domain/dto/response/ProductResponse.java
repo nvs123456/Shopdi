@@ -23,8 +23,10 @@ public class ProductResponse {
     String productImage;
     String productName;
     BigDecimal price;
+    String category;
     int stock;
+    int soldQuantity;
     Date publishedOn ;
-    int rating;
+    double rating;
     int reviewCount;
 }

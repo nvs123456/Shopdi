@@ -5,13 +5,10 @@ import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
 import com.rs.shopdiapi.domain.dto.request.UpdateSellerRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
-import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.SellerResponse;
 import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
-import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
-import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.service.RevenueService;
 import com.rs.shopdiapi.util.JwtUtil;
 import com.rs.shopdiapi.service.OrderService;
@@ -23,7 +20,6 @@ import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,10 +72,10 @@ public class SellerController {
 
     @PreAuthorize("hasRole('SELLER')")
     @GetMapping("/my-products")
-    public ApiResponse<?> getMyProducts(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                        @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize,
-                                        @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
-                                        @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
+    public ApiResponse<?> getMyProducts(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                        @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                        @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
+                                        @RequestParam(defaultValue = "desc", required = false) String sortOrder) {
         Long sellerId = sellerService.getCurrentSeller().getId();
         return ApiResponse.builder()
                 .result(productService.getMyProducts(pageNo, pageSize, sortBy, sortOrder, sellerId))
@@ -88,20 +84,22 @@ public class SellerController {
 
     @PreAuthorize("hasRole('SELLER')")
     @GetMapping("/orders")
-    public ApiResponse<?> getOrders(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                   @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+    public ApiResponse<?> getOrders(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                   @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                    @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
+                                    @RequestParam(defaultValue = "desc", required = false) String sortOrder) {
         Long sellerId = sellerService.getCurrentSeller().getId();
         return ApiResponse.builder()
-                .result(orderService.getAllOrdersForSeller(sellerId, pageNo, pageSize))
+                .result(orderService.getAllOrdersForSeller(sellerId, pageNo, pageSize, sortBy, sortOrder))
                 .build();
     }
 
     @PreAuthorize("hasRole('SELLER')")
     @PutMapping("/{orderId}/update-status")
-    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderItemStatusEnum orderItemStatus) {
+    public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatusEnum orderStatus) {
         Seller seller = sellerService.getCurrentSeller();
         return ApiResponse.builder()
-                .result(orderService.updateOrderStatusBySeller(orderId, seller.getId(),orderItemStatus))
+                .result(orderService.updateOrderStatusBySeller(orderId, seller.getId(),orderStatus))
                 .build();
     }
 

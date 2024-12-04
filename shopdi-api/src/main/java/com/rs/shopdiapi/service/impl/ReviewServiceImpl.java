@@ -1,11 +1,13 @@
 package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.ReviewRequest;
+import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.dto.response.ReviewResponse;
 import com.rs.shopdiapi.domain.entity.Review;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
+import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import com.rs.shopdiapi.exception.AppException;
-import com.rs.shopdiapi.mapper.ReviewMapper;
+import com.rs.shopdiapi.repository.OrderRepository;
 import com.rs.shopdiapi.repository.ProductRepository;
 import com.rs.shopdiapi.repository.ReviewRepository;
 import com.rs.shopdiapi.repository.UserRepository;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -27,12 +31,20 @@ public class ReviewServiceImpl implements ReviewService {
     ReviewRepository reviewRepository;
     ProductRepository productRepository;
     UserRepository userRepository;
-    ReviewMapper reviewMapper;
+    OrderRepository orderRepository;
 
     @Override
-    public Page<ReviewResponse> getReviewsByProduct(Long productId, int pageNo, int pageSize) {
+    public PageResponse<?> getReviewsByProduct(Long productId, int pageNo, int pageSize) {
         Page<Review> reviews = reviewRepository.findAllByProductId(productId, PageRequest.of(pageNo, pageSize));
-        return reviews.map(reviewMapper::toReviewResponse);
+        List<ReviewResponse> reviewResponses = reviews.stream()
+                .map(this::toReviewResponse)
+                .toList();
+        return PageResponse.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPages(reviews.getTotalPages())
+                .items(reviewResponses)
+                .build();
     }
 
     @Override
@@ -50,17 +62,6 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.existsByProductIdAndUserId(productId, userId);
     }
 
-    @Override
-    public int countAllReviews() {
-        return reviewRepository.countByReviewId();
-    }
-
-    @Override
-    public Page<ReviewResponse> getReviewsByUser(Long userId, int pageNo, int pageSize) {
-        Page<Review> reviews = reviewRepository.findAllByUserId(userId, PageRequest.of(pageNo, pageSize));
-        return reviews.map(reviewMapper::toReviewResponse);
-    }
-
     @Transactional
     @Override
     public ReviewResponse addReview(Long userId, Long productId, ReviewRequest reviewRequest) {
@@ -68,6 +69,13 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         var product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        boolean hasPurchasedProduct = orderRepository.existsByUserIdAndProductIdAndOrderStatus(
+                userId, productId, OrderStatusEnum.DELIVERED);
+
+        if (!hasPurchasedProduct) {
+            throw new AppException(ErrorCode.NOT_PURCHASED_PRODUCT);
+        }
 
         if (reviewRepository.existsByProductIdAndUserId(productId, userId)) {
             throw new AppException(ErrorCode.REVIEW_ALREADY_EXISTS);
@@ -81,7 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
 
         Review savedReview = reviewRepository.save(review);
-        return reviewMapper.toReviewResponse(savedReview);
+        return toReviewResponse(savedReview);
     }
 
     @Transactional
@@ -98,7 +106,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setReview(reviewRequest.getReview());
         reviewRepository.save(review);
 
-        return reviewMapper.toReviewResponse(review);
+        return toReviewResponse(review);
     }
 
     @Transactional
@@ -113,5 +121,20 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.delete(review);
         return "Review deleted successfully";
+    }
+
+    private ReviewResponse toReviewResponse(Review review) {
+        if (review == null) {
+            return null;
+        }
+
+        ReviewResponse reviewResponse = new ReviewResponse();
+        reviewResponse.setReviewId(review.getId());
+        reviewResponse.setUserId(review.getUser().getId());
+        reviewResponse.setUsername(review.getUser().getUsername());
+        reviewResponse.setReview(review.getReview());
+        reviewResponse.setRatingScore(review.getRating());
+
+        return reviewResponse;
     }
 }

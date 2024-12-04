@@ -16,10 +16,13 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
+    Long userId;
     String username;
     String firstName;
     String lastName;
+    String profileImage;
     String email;
+    Long balance;
     Set<RoleResponse> roles;
     UserStatusEnum status;
 }

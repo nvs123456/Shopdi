@@ -1,24 +1,18 @@
 package com.rs.shopdiapi.controller;
 
-import com.cloudinary.Api;
-import com.rs.shopdiapi.domain.dto.request.AddressRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateUserRequest;
 import com.rs.shopdiapi.domain.dto.request.UpdateUserRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.UserResponse;
-import com.rs.shopdiapi.domain.entity.Address;
 import com.rs.shopdiapi.domain.entity.User;
-import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,11 +58,9 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<?> getAllUsers(@RequestParam(defaultValue = "0", required = false) int pageNo,
-                                      @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
-                                      @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
-                                      @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
+                                      @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
         return ApiResponse.builder()
-                .result(userService.getAllUsers(pageNo, pageSize, sortBy, sortOrder))
+                .result(userService.getAllUsers(pageNo, pageSize))
                 .build();
     }
 

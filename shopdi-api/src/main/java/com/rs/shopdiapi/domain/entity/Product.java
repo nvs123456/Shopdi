@@ -43,8 +43,9 @@ public class Product extends BaseEntity<Long> {
     BigDecimal price;
     String brand;
 
-    @Enumerated(EnumType.STRING)
-    ProductStatusEnum status;
+    @Column(nullable = false)
+    @Builder.Default
+    int soldQuantity = 0;
 
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)

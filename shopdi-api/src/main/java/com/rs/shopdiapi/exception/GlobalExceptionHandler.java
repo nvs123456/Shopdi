@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
             errorCode = ErrorCode.valueOf(key);
 
             var constraintViolation =
-                    e.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
+                    e.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
 
             attributes = constraintViolation.getConstraintDescriptor().getAttributes();
 

@@ -25,7 +25,7 @@ public interface UserService {
 
     void unbanUser(Long userId);
 
-    PageResponse<?> getAllUsers(int pageNo, int pageSize, String sortBy, String sortOrder);
+    PageResponse<?> getAllUsers(int pageNo, int pageSize);
 
     UserResponse getUser(Long userId);
 

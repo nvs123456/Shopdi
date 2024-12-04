@@ -5,7 +5,6 @@ import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
-import com.rs.shopdiapi.domain.enums.PageConstants;
 import com.rs.shopdiapi.service.OrderService;
 import com.rs.shopdiapi.service.UserService;
 import jakarta.validation.Valid;
@@ -56,11 +55,13 @@ public class OrderController {
     }
 
     @GetMapping("/history")
-    public ApiResponse<?> getOrdersHistory(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                           @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+    public ApiResponse<?> getOrdersHistory(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                           @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                           @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
+                                           @RequestParam(defaultValue = "desc", required = false) String sortOrder){
         User user = userService.getCurrentUser();
         return ApiResponse.builder()
-                .result(orderService.orderHistory(user.getId(), pageNo, pageSize))
+                .result(orderService.orderHistory(user.getId(), pageNo, pageSize, sortBy ,sortOrder))
                 .build();
     }
 

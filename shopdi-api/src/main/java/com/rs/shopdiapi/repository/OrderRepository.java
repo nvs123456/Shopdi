@@ -29,4 +29,14 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
 
     @Query("SELECT o FROM Order o JOIN o.orderItems oi WHERE oi.product.seller.id = :sellerId")
     Page<Order> findOrdersBySellerId(@Param("sellerId") Long sellerId, Pageable pageable);
+
+    @Query("SELECT COUNT(oi) > 0 FROM OrderItem oi JOIN oi.order o " +
+            "WHERE o.user.id = :userId AND oi.product.id = :productId AND o.orderStatus = :orderStatus")
+    boolean existsByUserIdAndProductIdAndOrderStatus(@Param("userId") Long userId,
+                                                     @Param("productId") Long productId,
+                                                     @Param("orderStatus") OrderStatusEnum orderStatus);
+
+
+    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.user.id = :userId")
+    Long calculateTotalAmountSpentByUser(@Param("userId") Long userId);
 }
