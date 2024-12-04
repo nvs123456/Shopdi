@@ -2,6 +2,7 @@ package com.rs.shopdiapi.controller;
 
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.entity.Product;
+import com.rs.shopdiapi.domain.entity.Seller;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.exception.AppException;
@@ -63,9 +64,9 @@ public class ImageController {
     @PreAuthorize("hasRole('SELLER')")
     @PostMapping(value = "/upload-profile-seller-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<?> uploadProfileSellerImage(@RequestParam("image") MultipartFile image) {
-        User user = userService.getCurrentUser();
+        Seller seller = sellerService.getCurrentSeller();
         return ApiResponse.builder()
-                .result(imageService.uploadProfileImage(user.getId(), image, false))
+                .result(imageService.uploadProfileImage(seller.getId(), image, false))
                 .build();
     }
 
@@ -79,9 +80,9 @@ public class ImageController {
 
     @PutMapping(value = "/update-profile-seller-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<?> updateProfileSellerImage(@RequestParam("image") MultipartFile image) {
-        User user = userService.getCurrentUser();
+        Seller seller = sellerService.getCurrentSeller();
         return ApiResponse.builder()
-                .result(imageService.updateProfileImage(user.getId(), image, false))
+                .result(imageService.updateProfileImage(seller.getId(), image, false))
                 .build();
     }
 
