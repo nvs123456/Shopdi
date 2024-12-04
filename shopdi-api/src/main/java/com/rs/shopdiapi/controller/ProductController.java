@@ -1,22 +1,13 @@
 package com.rs.shopdiapi.controller;
 
-import com.cloudinary.Api;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
-import com.rs.shopdiapi.domain.dto.response.ProductResponse;
-import com.rs.shopdiapi.domain.dto.response.ProductSuggestionResponse;
-import com.rs.shopdiapi.domain.enums.PageConstants;
-import com.rs.shopdiapi.repository.ProductRepository;
 import com.rs.shopdiapi.service.ProductService;
-import com.rs.shopdiapi.service.SellerService;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -28,10 +19,10 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping
-    public ApiResponse<?> getAllProducts(@RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                         @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize,
-                                         @RequestParam(defaultValue = PageConstants.SORT_BY_ID, required = false) String sortBy,
-                                         @RequestParam(defaultValue = PageConstants.SORT_DIR, required = false) String sortOrder) {
+    public ApiResponse<?> getAllProducts(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                         @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                         @RequestParam(defaultValue = "soldQuantity", required = false) String sortBy,
+                                         @RequestParam(defaultValue = "desc", required = false) String sortOrder) {
         return ApiResponse.builder()
                 .result(productService.getAllProducts(pageNo, pageSize, sortBy, sortOrder))
                 .build();
@@ -47,8 +38,8 @@ public class ProductController {
 
     @GetMapping("/search")
     public ApiResponse<?> searchProduct(@RequestParam String query,
-                                        @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                        @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+                                        @RequestParam(defaultValue = "0", required = false) int pageNo,
+                                        @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
         return ApiResponse.builder()
                 .result(productService.searchProduct(query, pageNo, pageSize))
                 .build();
@@ -56,8 +47,8 @@ public class ProductController {
 
     @GetMapping("/category/{categoryId}")
     public ApiResponse<?> getProductsByCategoryId(@PathVariable Long categoryId,
-                                                  @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                                  @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+                                                  @RequestParam(defaultValue = "0", required = false) int pageNo,
+                                                  @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
         return ApiResponse.builder()
                 .result(productService.findProductByCategory(categoryId, pageNo, pageSize))
                 .build();
@@ -72,8 +63,8 @@ public class ProductController {
 
     @GetMapping("/seller/{sellerId}")
     public ApiResponse<?> getProductsBySeller(@PathVariable Long sellerId,
-                                              @RequestParam(defaultValue = PageConstants.PAGE_NO, required = false) int pageNo,
-                                              @Min(10) @RequestParam(defaultValue = PageConstants.PAGE_SIZE, required = false) int pageSize) {
+                                              @RequestParam(defaultValue = "0", required = false) int pageNo,
+                                              @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
         return ApiResponse.builder()
                 .result(productService.getSellerProducts(sellerId, pageNo, pageSize))
                 .build();

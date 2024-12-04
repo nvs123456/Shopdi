@@ -17,7 +17,9 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long>, Jpa
     List<OrderItem> findOrderItemsBySeller(@Param("sellerId") Long sellerId, @Param("orderId") Long orderId);
 
     @Query("SELECT SUM(oi.price * oi.quantity) " +
-            "FROM OrderItem oi WHERE oi.seller.id = :sellerId " +
-            "AND oi.orderItemStatus = 'COMPLETED'")
+            "FROM OrderItem oi " +
+            "JOIN oi.order o " +
+            "WHERE oi.seller.id = :sellerId " +
+            "AND o.orderStatus = 'DELIVERED'")
     BigDecimal calculateRevenueBySeller(@Param("sellerId") Long sellerId);
 }

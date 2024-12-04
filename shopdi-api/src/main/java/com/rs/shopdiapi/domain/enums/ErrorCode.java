@@ -74,6 +74,7 @@ public enum ErrorCode {
 
     NOT_ENOUGH_STOCK("NOT_ENOUGH_STOCK", "Not enough stock", HttpStatus.BAD_REQUEST),
 
+    NOT_PURCHASED_PRODUCT("NOT_PURCHASED_PRODUCT", "You have not purchased this product", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {

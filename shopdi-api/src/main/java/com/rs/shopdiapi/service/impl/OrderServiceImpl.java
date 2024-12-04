@@ -16,7 +16,6 @@ import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.entity.Variant;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
-import com.rs.shopdiapi.domain.enums.OrderItemStatusEnum;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.mapper.OrderMapper;
@@ -44,7 +43,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -78,56 +79,65 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.NO_ITEMS_SELECTED);
         }
 
-        BigDecimal totalPrice = calculateTotalPrice(selectedItems);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Address shippingAddress = user.getAddresses().stream()
+                .filter(address -> address.getId().equals(request.getAddressId()))
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
 
-        Order order = Order.builder()
-                .user(user)
-                .shippingAddress(user.getAddresses().get(0))
-                .totalPrice(totalPrice)
-                .orderStatus(OrderStatusEnum.PENDING)
-                .orderItems(new ArrayList<>())
-                .orderNotes(request.getOrderNotes())
-                .build();
+        Map<Long, List<CartItem>> itemsBySeller = selectedItems.stream()
+                .collect(Collectors.groupingBy(item -> item.getProduct().getSeller().getId()));
 
-        selectedItems.forEach(cartItem -> {
-            Variant selectedVariant = cartItem.getProduct().getVariants().stream()
-                    .filter(variant -> {
-                        if (cartItem.getVariant() == null) {
-                            return variant.getVariantDetail() == null;
-                        }
-                        return cartItem.getVariant().equals(variant.getVariantDetail());
-                    })
-                    .findFirst()
-                    .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
+        itemsBySeller.forEach((sellerId, cartItems) -> {
+            BigDecimal totalPrice = calculateTotalPrice(cartItems);
 
-            if (selectedVariant.getQuantity() < cartItem.getQuantity()) {
-                throw new AppException(ErrorCode.NOT_ENOUGH_STOCK);
-            }
-            selectedVariant.decreaseQuantity(cartItem.getQuantity());
-
-            OrderItem orderItem = OrderItem.builder()
-                    .order(order)
-                    .product(cartItem.getProduct())
-                    .seller(cartItem.getProduct().getSeller())
-                    .variant(cartItem.getVariant())
-                    .quantity(cartItem.getQuantity())
-                    .price(cartItem.getPrice())
-                    .orderItemStatus(OrderItemStatusEnum.PENDING)
+            Order order = Order.builder()
+                    .user(user)
+                    .shippingAddress(shippingAddress)
+                    .totalPrice(totalPrice)
+                    .orderStatus(OrderStatusEnum.PENDING)
+                    .orderItems(new ArrayList<>())
+                    .orderNotes(request.getOrderNotes())
                     .build();
-            order.getOrderItems().add(orderItem);
 
-            variantRepository.save(selectedVariant);
+            cartItems.forEach(cartItem -> {
+                Variant selectedVariant = cartItem.getProduct().getVariants().stream()
+                        .filter(variant -> {
+                            if (cartItem.getVariant() == null) {
+                                return variant.getVariantDetail() == null;
+                            }
+                            return cartItem.getVariant().equals(variant.getVariantDetail());
+                        })
+                        .findFirst()
+                        .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
+
+                if (selectedVariant.getQuantity() < cartItem.getQuantity()) {
+                    throw new AppException(ErrorCode.NOT_ENOUGH_STOCK);
+                }
+                selectedVariant.decreaseQuantity(cartItem.getQuantity());
+
+                OrderItem orderItem = OrderItem.builder()
+                        .order(order)
+                        .product(cartItem.getProduct())
+                        .seller(cartItem.getProduct().getSeller())
+                        .variant(cartItem.getVariant())
+                        .quantity(cartItem.getQuantity())
+                        .price(cartItem.getPrice())
+                        .build();
+
+                order.getOrderItems().add(orderItem);
+                variantRepository.save(selectedVariant);
+            });
+
+            orderRepository.save(order);
         });
 
-        selectedItems.forEach(cartItem -> {
-            cart.getCartItems().remove(cartItem);
-        });
-
-        orderRepository.save(order);
+        selectedItems.forEach(cartItem -> cart.getCartItems().remove(cartItem));
         cartService.updateCartSummary(cart.getId());
-        return "Order created successfully";
+
+        return "Order created successfully for all sellers.";
     }
 
     @Override
@@ -155,7 +165,6 @@ public class OrderServiceImpl implements OrderService {
                 .variant(request.getVariant())
                 .quantity(request.getQuantity())
                 .price(product.getPrice())
-                .orderItemStatus(OrderItemStatusEnum.PENDING)
                 .seller(product.getSeller())
                 .build();
 
@@ -191,7 +200,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponse updateOrderStatusBySeller(Long orderId, Long sellerId, OrderItemStatusEnum newStatus) {
+    public OrderResponse updateOrderStatusBySeller(Long orderId, Long sellerId, OrderStatusEnum newStatus) {
         var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
@@ -203,27 +212,7 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        sellerOrderItems.forEach(orderItem -> {
-            OrderItemStatusEnum currentItemStatus = orderItem.getOrderItemStatus();
-            if (newStatus.ordinal() < currentItemStatus.ordinal()) {
-                throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
-            }
-            orderItem.setOrderItemStatus(newStatus);
-        });
-
-        if (order.getOrderItems().stream()
-                .allMatch(orderItem -> orderItem.getOrderItemStatus() == OrderItemStatusEnum.CONFIRMED)) {
-            order.setOrderStatus(OrderStatusEnum.CONFIRMED);
-        } else if (order.getOrderItems().stream()
-                .anyMatch(orderItem -> orderItem.getOrderItemStatus() == OrderItemStatusEnum.PROCESSING)) {
-            order.setOrderStatus(OrderStatusEnum.PROCESSING);
-        } else if (order.getOrderItems().stream()
-                    .anyMatch(orderItem -> orderItem.getOrderItemStatus() == OrderItemStatusEnum.DELIVERING)) {
-            order.setOrderStatus(OrderStatusEnum.DELIVERING);
-        } else {
-            order.setOrderStatus(OrderStatusEnum.PENDING);
-        }
-
+        order.setOrderStatus(newStatus);
         orderRepository.save(order);
 
         return mapToOrderResponse(order);
@@ -258,8 +247,11 @@ public class OrderServiceImpl implements OrderService {
             orderItems.forEach(orderItem -> {
                 BigDecimal itemRevenue = orderItem.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()));
                 revenueService.updateRevenue(orderItem.getSeller().getId(), itemRevenue);
-            });
 
+                Product product = orderItem.getProduct();
+                product.setSoldQuantity(product.getSoldQuantity() + orderItem.getQuantity());
+                productRepository.save(product);
+            });
         }
         order.setOrderStatus(newStatus);
         orderRepository.save(order);
@@ -292,8 +284,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageResponse<?> getAllOrdersForSeller(Long sellerId, int pageNo, int pageSize) {
-        Sort sort = Sort.by(Sort.Order.asc("orderStatus"), Sort.Order.desc("createdAt"));
+    public PageResponse<?> getAllOrdersForSeller(Long sellerId, int pageNo, int pageSize, String sortBy, String sortOrder) {
+        Sort sort = Sort.by(
+                Sort.Order.asc("orderStatus"),
+                sortOrder.equalsIgnoreCase("asc") ? Sort.Order.asc(sortBy) : Sort.Order.desc(sortBy)
+        );
         Page<Order> ordersPage = orderRepository.findOrdersBySellerId(sellerId, PageRequest.of(pageNo, pageSize, sort));
 
         List<OrderResponse> orderResponses = ordersPage.stream()
@@ -323,8 +318,8 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public PageResponse<?> orderHistory(Long userId, int pageNo, int pageSize) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+    public PageResponse<?> orderHistory(Long userId, int pageNo, int pageSize, String sortBy, String sortOrder) {
+        Sort sort = Sort.by(sortOrder, sortBy);
         Page<Order> ordersPage = orderRepository.findAllByUserId(userId, PageRequest.of(pageNo, pageSize, sort));
 
         List<SimpleOrderResponse> orderResponses = ordersPage.getContent().stream()
