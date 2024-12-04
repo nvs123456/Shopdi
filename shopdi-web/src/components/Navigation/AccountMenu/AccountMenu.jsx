@@ -11,9 +11,10 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import ChecklistIcon from '@mui/icons-material/Checklist';
-import {Link} from 'react-router-dom';
-import {useAuth} from '@/routes/AuthProvider';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/routes/AuthProvider';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
+import { GET } from '../../../api/GET';
 
 export default function AccountMenu() {
     const useauth = useAuth();
@@ -31,19 +32,28 @@ export default function AccountMenu() {
         // console.log("logout");
         useauth.logOut();
     }
+    const [avatar, setAvatar] = React.useState(null);
+    const [username, setUsername] = React.useState(null);
+    React.useEffect(() => {
+        GET(`users/my-info`).then((data) => {
+            setAvatar(data.result.profileImage)
+            setUsername(data.result.username)
+        })
+    })
+
     return (
         <React.Fragment>
-            <Box sx={{display: 'flex', alignItems: 'center', textAlign: 'center'}}>
+            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                 <Tooltip title={useauth.user}>
                     <IconButton
                         onClick={handleClick}
                         size="small"
-                        sx={{ml: 2}}
+                        sx={{ ml: 2 }}
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar sx={{width: 30, height: 30}}>M</Avatar>
+                        <Avatar src={avatar} sx={{ width: 30, height: 30 }}>M</Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -81,38 +91,39 @@ export default function AccountMenu() {
                         },
                     },
                 }}
-                transformOrigin={{horizontal: 'right', vertical: 'top'}}
-                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
+                <MenuItem onClick={handleClose}>
+                    <Avatar /> {username}
+                </MenuItem>
                 <MenuItem onClick={handleClose}>
                     <Link to={"/profile"}>
                         <ListItemIcon>
-                            <Avatar/> Profile
+                            <Avatar /> Profile
                         </ListItemIcon>
 
                     </Link>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Avatar/> My account
-                </MenuItem>
-                <Divider/>
+
+                <Divider />
                 <MenuItem onClick={handleClose}>
                     <Link to="/orderhistory">
                         <ListItemIcon>
-                            <LocalMallIcon fontSize="small"/>
+                            <LocalMallIcon fontSize="small" />
                         </ListItemIcon>
                         My Order
                     </Link>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                {/* <MenuItem onClick={handleClose}>
                     <ListItemIcon>
-                        <Settings fontSize="small"/>
+                        <Settings fontSize="small" />
                     </ListItemIcon>
                     Settings
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
-                        <Logout fontSize="small"/>
+                        <Logout fontSize="small" />
                     </ListItemIcon>
                     Logout
                 </MenuItem>

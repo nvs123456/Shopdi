@@ -13,25 +13,43 @@ export default function ProductManagement() {
   const query = new URLSearchParams(location.search);
   const pageParams = query.get('page');
   let pageUrl = ''
-  const [page, setPage] = useState({pageNo:0, totalPage:1})
+  const [page, setPage] = useState({ pageNo: 0, totalPage: 1 })
   if (pageParams !== null) {
-    pageUrl = `?pageNo=${pageParams-1}`
+    pageUrl = `?pageNo=${pageParams - 1}`
   }
+  const [allProducts, setAllProducts] = useState([])
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     GET("seller/my-products" + pageUrl).then((data) => {
       setProducts(data.result?.items)
-      setPage({pageNo:data.result.pageNo, totalPage:data.result.totalPages})
+      setPage({ pageNo: data.result.pageNo, totalPage: data.result.totalPages })
+      loadAllProducts(data.result.totalPages)
       setIsLoading(false)
 
     })
   }, [])
-  return (
-    <div>
-      <Filter>
-        <ProductList products={products} page={page}/>
-      </Filter>
-    </div>
-  )
+  async function loadAllProducts(totalPage) {
+    console.log(allProducts)
+    for (let i = 0; i < totalPage; i++) {
+      await GET("seller/my-products?pageNo=" + i).then((data) => {
+        let tmp = [...allProducts]
+        tmp.push(...data.result?.items)
+        console.log(tmp)
+        setAllProducts(tmp)
+      })
+    }
+  }
+  if (isLoading) return <div className="text-center">Loading...</div>
+  else
+    return (
+      <div className="flex flex-row pt-4 gap-x-8 p-4 bg-cloudBlue">
+        <div className='rounded min-w-[270px] max-w-[270px] bg-white p-4'><Filter allProducts={allProducts}/></div>
+        <div className='rounded grow bg-white p-4'>
+          <ProductList products={products} page={page} />
+        </div>
+
+
+      </div>
+    )
 }

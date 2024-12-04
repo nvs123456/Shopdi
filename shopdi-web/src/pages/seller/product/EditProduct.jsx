@@ -131,7 +131,8 @@ export default function EditProduct() {
                     <div className='media border-2 border-gray-200 p-4'>
                         <div>
                             <span className='font-bold text-xl'>Media</span>
-                            <UploadAndDisplayImage productForm={productForm} setProductForm={setProductForm} />
+                            <DisplayImages imageUrls={productForm.imageUrls} />
+                            {/* <UploadAndDisplayImage productForm={productForm} setProductForm={setProductForm} /> */}
                         </div>
                     </div>
                     <div className='category border-2 border-gray-200 p-4'>
@@ -222,7 +223,20 @@ export default function EditProduct() {
         )
     }
 }
-
+const DisplayImages = ({ imageUrls }) => {
+    return (
+        <div className='flex flex-row gap-4 flex-wrap p-4 w-full min-h-[100px] border-2 border-gray-200 rounded'>
+            {imageUrls.map((item, index) => {
+                return (
+                    <div key={index} className='flex flex-col'>
+                        <img src={item} className='w-24 h-24' />
+                    </div>
+                )
+            })
+        }
+        </div>
+    )
+}
 const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
     // Define a state variable to store the selected image
     const [selectedImage, setSelectedImage] = useState([]);

@@ -123,7 +123,7 @@ export default function DashBoard() {
             <div className="flex flex-row gap-8 p-8">
                 <div className="w-2/3">
                     <div>
-                        <Bar width={600} height={374} data={doanhthu} />
+                        <Bar className="w-[100%]" height={150} data={doanhthu} />
                     </div>
                     <div className="text-2xl font-bold text-celticBlue">Best seller</div>
                     <div className="bg-white p-4 shadow-lg mt-8 rounded">
@@ -146,9 +146,9 @@ export default function DashBoard() {
                         })}
                     </div>
                 </div>
-                <div>
+                <div className="w-1/3">
                     <div className="text-2xl font-bold text-gray-500">Danh gia cua nguoi dung</div>
-                    <Pie width={600} height={374} data={danhgia} />
+                    <Pie className="w-full" data={danhgia} />
                 </div>
             </div>
         </div>

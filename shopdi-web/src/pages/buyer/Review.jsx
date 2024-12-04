@@ -22,7 +22,7 @@ function Review({isModalOpen,setIsModalOpen}) {
                                   placeholder={"Write down your feedback about our product & services"}></Textarea>
                     </div>
                 </div>
-                <div className='flex justify-around  mx-auto'>
+                <div className='flex justify-around '>
                     <button className='bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-28 md:h-8 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
                         PUBLISH REVIEW
                     </button>
