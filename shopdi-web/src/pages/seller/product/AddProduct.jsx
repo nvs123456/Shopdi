@@ -99,7 +99,7 @@ export default function AddProduct() {
                             <textarea onChange={(e) => {
                                 setProductForm({ ...productForm, description: e.target.value })
                             }}
-                                className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product name'></textarea>
+                                className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product description'></textarea>
 
                         </div>
                     </div>

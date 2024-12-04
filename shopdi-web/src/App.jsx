@@ -13,6 +13,8 @@ import PrivateSellerRoute from './routes/PrivateSellerRoute.jsx'
 import SellerSignUp from './pages/seller/SignUp.jsx'
 import PrivateAdminRoute from './routes/PrivateAdminRoute.jsx';
 import CategoryManagement from './pages/admin/CategoryManagement.jsx';
+import AdminSideBar from './components/Admin/Sidebar';
+import AdminHome from './pages/admin/AdminHome.jsx';
 function App() {
 
     return (
@@ -44,7 +46,14 @@ function App() {
                                 } />
                             </Route>
                             <Route element={<PrivateAdminRoute />}>
-                                <Route path="admin/*" element={<CategoryManagement />} />
+                                <Route path="admin/*" element={
+                                    <div className="flex flex-row min-h-screen">
+                                        <AdminSideBar />
+                                        <div className="w-[85%] flex flex-col w-full">
+                                            <AdminHome />
+                                        </div>
+                                    </div>
+                                } />
                             </Route>
                         </Route>
                     </Routes>

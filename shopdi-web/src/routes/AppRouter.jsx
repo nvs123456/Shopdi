@@ -33,7 +33,6 @@ const AppRouter = () => {
 
                 <Route path='shop/:id' element={<ShopView />} />
                 <Route path="/*" element={<HomePage />} />
-                <Route path={'/sellerlist'} element={<SellerList />} />
                 {/* <Route path="*"  element={<><h1 className='text-4xl h-screen flex justify-center items-center'>Page not found!!!</h1></>} /> */}
             </Routes>
             <div>

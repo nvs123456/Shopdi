@@ -17,22 +17,35 @@ export default function ProductManagement() {
   if (pageParams !== null) {
     pageUrl = `?pageNo=${pageParams - 1}`
   }
+  const [allProducts, setAllProducts] = useState([])
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     GET("seller/my-products" + pageUrl).then((data) => {
       setProducts(data.result?.items)
       setPage({ pageNo: data.result.pageNo, totalPage: data.result.totalPages })
+      loadAllProducts(data.result.totalPages)
       setIsLoading(false)
 
     })
   }, [])
+  async function loadAllProducts(totalPage) {
+    console.log(allProducts)
+    for (let i = 0; i < totalPage; i++) {
+      await GET("seller/my-products?pageNo=" + i).then((data) => {
+        let tmp = [...allProducts]
+        tmp.push(...data.result?.items)
+        console.log(tmp)
+        setAllProducts(tmp)
+      })
+    }
+  }
   if (isLoading) return <div className="text-center">Loading...</div>
   else
     return (
-      <div className="flex flex-row pt-4">
-        <div className=' min-w-[270px] max-w-[270px]'><Filter /></div>
-        <div className='grow w-full'>
+      <div className="flex flex-row pt-4 gap-x-8 p-4 bg-cloudBlue">
+        <div className='rounded min-w-[270px] max-w-[270px] bg-white p-4'><Filter allProducts={allProducts}/></div>
+        <div className='rounded grow bg-white p-4'>
           <ProductList products={products} page={page} />
         </div>
 

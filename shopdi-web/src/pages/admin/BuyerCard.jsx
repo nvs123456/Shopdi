@@ -2,90 +2,90 @@ import React, { useEffect, useState } from "react";
 import UETLogo from "/src/assets/images/UETLogo.png";
 import { GET } from "../../api/GET";
 
-// const sellers_temp = [
-//     {
-//         id: 1,
-//         name: 'Alice',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 10,
-//         revenue: 1000,
-//     },
-//     {
-//         id: 2,
-//         name: 'Bob',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 5,
-//         revenue: 500,
-//     },
-//     {
-//         id: 3,
-//         name: 'Charlie',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 15,
-//         revenue: 1500,
-//     },
-//     {
-//         id: 4,
-//         name: 'David',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 3,
-//         revenue: 300,
-//     },
-//     {
-//         id: 5,
-//         name: 'Eve',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 20,
-//         revenue: 2000,
-//     },
-//     {
-//         id: 6,
-//         name: 'Alice',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 10,
-//         revenue: 1000,
-//     },
-//     {
-//         id: 7,
-//         name: 'Bob',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 5,
-//         revenue: 500,
-//     },
-//     {
-//         id: 8,
-//         name: 'Charlie',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 15,
-//         revenue: 1500,
-//     },
-//     {
-//         id: 9,
-//         name: 'David',
-//         avatar: UETLogo,
-//         status: 'Blocked',
-//         products: 3,
-//         revenue: 300,
-//     },
-//     {
-//         id: 10,
-//         name: 'Eve',
-//         avatar: UETLogo,
-//         status: 'Active',
-//         products: 20,
-//         revenue: 2000,
-//     }
-// ];
-export default function SellerCard({ status }) {
-    const [sellers, setSellers] = useState([]);
+const users_temp = [
+    {
+        id: 1,
+        name: 'Alice',
+        avatar: UETLogo,
+        status: 'Active',
+        products: 10,
+        revenue: 1000,
+    },
+    {
+        id: 2,
+        name: 'Bob',
+        avatar: UETLogo,
+        status: 'Blocked',
+        products: 5,
+        revenue: 500,
+    },
+    {
+        id: 3,
+        name: 'Charlie',
+        avatar: UETLogo,
+        status: 'Active',
+        products: 15,
+        revenue: 1500,
+    },
+    {
+        id: 4,
+        name: 'David',
+        avatar: UETLogo,
+        status: 'Blocked',
+        products: 3,
+        revenue: 300,
+    },
+    {
+        id: 5,
+        name: 'Eve',
+        avatar: UETLogo,
+        status: 'Active',
+        products: 20,
+        revenue: 2000,
+    },
+    {
+        id: 6,
+        name: 'Alice',
+        avatar: UETLogo,
+        status: 'Active',
+        products: 10,
+        revenue: 1000,
+    },
+    {
+        id: 7,
+        name: 'Bob',
+        avatar: UETLogo,
+        status: 'Blocked',
+        products: 5,
+        revenue: 500,
+    },
+    {
+        id: 8,
+        name: 'Charlie',
+        avatar: UETLogo,
+        status: 'Active',
+        products: 15,
+        revenue: 1500,
+    },
+    {
+        id: 9,
+        name: 'David',
+        avatar: UETLogo,
+        status: 'Blocked',
+        products: 3,
+        revenue: 300,
+    },
+    {
+        id: 10,
+        name: 'Eve',
+        avatar: UETLogo,
+        status: 'Active',
+        products: 20,
+        revenue: 2000,
+    }
+];
+export default function userCard({ status }) {
+    const [users, setUsers] = useState([]);
     const [showMenu, setShowMenu] = useState(false);
     const [idCard, setIdCard] = useState(null);
 
@@ -93,31 +93,40 @@ export default function SellerCard({ status }) {
         setShowMenu(!showMenu);
         setIdCard(key);
     }
-    function onBlock(sellerId) {
-        sellers[sellerId - 1].status = 'Blocked';
+    function onBlock(userId) {
+        PUT(`users/${userId}/ban`).then(res => {
+            if (res.code === 'OK') {
+                console.log(res)
+                GET('users').then(res => {
+                    if (res.code === 'OK') {
+                        res.result.items.splice(res.result.items.find(item => item.username === "admin"), 1);
+                        setUsers(res.result.items);
+                    }
+                })
+            }
+        })
     }
     useEffect(() => {
-        GET('seller').then(res => {
+        GET('users').then(res => {
             if (res.code === 'OK') {
-                setSellers(res.result.items);
+                res.result.items.splice(res.result.items.find(item => item.username === "admin"), 1);
+                setUsers(res.result.items);
             }
         })
     }, [])
     return (
         <div>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 px-8 py-4 font-sans">
-                {(status === 'All' ? sellers : sellers.filter(seller => seller.status === status)).map((seller) => (
-                    <div onClick={()=>{
-                        console.log(seller)
-                    }}
-                        key={seller.id}
+                {(status === 'All' ? users : users.filter(user => user.status === status)).map((user) => (
+                    <div
+                        key={user.id}
                         className="relative bg-white shadow-md rounded-lg p-2 border hover:border-blue-500 transition"
                     >
                         <div className={'relative'}>
                             <input type={'checkbox'}
                                 className='absolute top-0 left-0 w-4 h-4 focus:ring mr-36 md:mr-28 lg:mr-44 rounded-xl text-darkGray' />
                             <button
-                                onClick={() => handleShowMenu(seller.id)}
+                                onClick={() => handleShowMenu(user.username)}
                                 className="w-6 h-6 top-0 right-0 absolute flex items-center justify-center rounded-full hover:bg-gray-200"
                             >
                                 <svg
@@ -137,12 +146,12 @@ export default function SellerCard({ status }) {
                             </button>
                         </div>
                         <img
-                            src={seller.avatar}
-                            alt={seller.name}
+                            src={user.avatar}
+                            alt={user.name}
                             className="w-16 h-16 rounded-full mx-auto"
                         />
                         {/* Popup menu */}
-                        {showMenu && idCard === seller.id && (
+                        {showMenu && idCard === user.username && (
                             <div
                                 className=" absolute right-0 top-10 mt-2 w-32 bg-white border rounded-md shadow-lg"
                                 onClick={() => setShowMenu(false)}
@@ -150,7 +159,7 @@ export default function SellerCard({ status }) {
                                 <ul>
 
                                     <li
-                                        onClick={() => onBlock(seller.id)}
+                                        onClick={() => onBlock(user.id)}
                                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-red-500"
                                     >
                                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none"
@@ -178,19 +187,19 @@ export default function SellerCard({ status }) {
                             </div>
                         )}
 
-                        <h2 className="text-lg font-medium text-center">{seller.shopName}</h2>
+                        <h2 className="text-lg font-medium text-center">{user.name}</h2>
                         <div className={'flex justify-center '}>
                             <div
-                                className={`${seller.status === 'Active' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
-                                <p className={`text-center text-sm ${seller.status === 'Active' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
-                                    {seller.status}
+                                className={`${user.status === 'Active' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
+                                <p className={`text-center text-sm ${user.status === 'Active' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
+                                    {user.status}
                                 </p>
                             </div>
                         </div>
                         <div className={'border-b border-dotted border-gray-300 my-2'}></div>
                         <div className="mt-4 text-center text-gray-600 flex justify-around">
-                            <p>Product<br />{seller.totalProducts}</p>
-                            <p>Revenue<br /> ${seller.totalRevenue}</p>
+                            <p>Product<br />{user.products}</p>
+                            <p>Revenue<br /> ${user.revenue}</p>
                         </div>
                     </div>
                 ))}

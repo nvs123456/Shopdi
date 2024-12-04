@@ -61,7 +61,7 @@ export default function ProductDetail() {
             setProduct(data.result)
             setProductImages(data.result.imageUrls)
             setQuantityInStock(tmp_quantityInStock)
-            if (data.result.variants.length > 0) {
+            if (data.result.variants.length > 0 && data.result.variants[0].variantDetail !== null) {
                 let v = []
                 for (let i = 0; i < data.result.variants[0].variantDetail.length; i++) {
                     v.push({ type: data.result.variants[0].variantDetail[i].type, value: null })

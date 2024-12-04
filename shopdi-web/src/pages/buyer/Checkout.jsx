@@ -33,7 +33,7 @@ export default function Checkout({ ProductList }) {
     return (
         <div>
             {openAddress && <AddressSelection onClose={onClose} addresses={allAddress} setAllAddress={setAllAddress} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />}
-            <div className={`bg-white ${(openAddress ? "" : "")}`}>
+            <div className={`bg-white ${(openAddress ? "brightness-50" : "")}`}>
                 <div className="flex flex-col gap-4 p-8 bg-gray-100 mr-40 ml-40">
                     <div className='border-b-2 border-gray-400 '>
                         <div className='text-xl text-red font-bold'>Địa chỉ nhận hàng</div>
@@ -120,6 +120,7 @@ export default function Checkout({ ProductList }) {
                                             }).then((res) => {
                                                 if (res.code === "OK") {
                                                     alert("Dat hang thanh cong")
+                                                    navigate("/")
                                                 }
                                             })
                                         }

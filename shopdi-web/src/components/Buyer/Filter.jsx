@@ -1,15 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import ProductList from "./ProductList.jsx";
 import { useLocation } from "react-router-dom";
-import CATEGORIES from '@/data/categories_data';
-import { GET } from '../../api/GET'
 import { Link } from "react-router-dom";
-import { CategoryContext } from "@/pages/buyer/CategoryContext.js";
 
 export default function Filter({ categories }) {
 
     return (
-        <div className="bg-white">
+        <div className="bg-white border-b border-r-2 shadow border-gray-200">
             <div className="hidden lg:block min-h-screen pt-6 px-4">
                 <CategoryFilter categories={categories} />
             </div>
