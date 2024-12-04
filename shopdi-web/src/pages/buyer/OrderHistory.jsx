@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import OrderItem from "../../components/Buyer/Order/OrderItem.jsx";
 import Pagination from "../../components/Navigation/Pagination.jsx";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {useNavigate} from "react-router-dom";

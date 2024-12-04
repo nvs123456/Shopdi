@@ -11,10 +11,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import StepConnector, {stepConnectorClasses,} from "@mui/material/StepConnector";
 import {useParams} from 'react-router-dom';
-import Review from "../../../pages/buyer/Review.jsx";
-import FiveStar from "../Review/FiveStar.jsx";
+import Review from "./Review.jsx";
+import FiveStar from "../../components/Buyer/Review/FiveStar.jsx";
 import {Textarea} from "@headlessui/react";
 import {forEach} from "react-bootstrap/ElementChildren";
+import SpinnerLoading from "../../components/SpinnerLoading/SpinnerLoading.jsx";
 
 const steps = ['Order Placed', 'Packaging', 'On The Road', 'Delivered'];
 const icons = [<InventoryOutlinedIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
@@ -87,31 +88,6 @@ function OrderDetails() {
         }
     }
 
-    async function handleUploadReview() {
-        try {
-            const response = await axios.post(
-                `http://localhost:8080/reviews/product/${productIdToReview}`,
-                {
-                    rating: starRating,
-                    review: review,
-                },
-                config
-            );
-            console.log('Data updated:', response.data);
-        } catch (error) {
-            if (error.response) {
-                console.error('Response error:', error.response.data);
-            } else if (error.request) {
-                console.error('Request error:', error.request);
-            } else {
-                console.error('Error:', error.message);
-            }
-        }
-    }
-
-    const handleRating = (index) => {
-        setStarRating(index + 1); // index bắt đầu từ 0, nên cần +1 để đúng số ngôi sao
-    };
     useEffect(() => {
         axios.get(`http://localhost:8080/orders/${id}/details`, config)
             .then((response) => {
@@ -132,9 +108,8 @@ function OrderDetails() {
 
 
     const status = orderDetail.orderStatus;
-    // const activeStep = status === 'PENDING' ? 1
-    //                     : status === 'PROCESSING' ? 3 : 4;
-    const activeStep = 4;
+    const activeStep = status === 'PENDING' ? 1
+                        : status === 'PROCESSING' ? 2 : status === 'DELIVERING' ? 3 : 4;
     const deliveryDate = orderDetail?.deliveryDate;
     const date = new Date(deliveryDate);
     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
@@ -143,14 +118,14 @@ function OrderDetails() {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <p>Loading...</p>
+                <SpinnerLoading size={3}/>
             </div>
         );
     }
 
     return (
         <div>
-            {isModalOpen && <Review isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>}
+            {isModalOpen && <Review isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} productId={productIdToReview}/>}
             <div className={`${isModalOpen ? "brightness-50" : ''}  bg-[#F7FBFF] flex justify-center font-sans`}>
                 <div className="container md:mt-10 md:mb-10 my-5 h-5/6 border-2 bg-white w-full md:w-5/6 border-collapse">
                     {/* heading section */}
