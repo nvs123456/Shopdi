@@ -43,13 +43,17 @@ public class CartItemServiceImpl implements CartItemService {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        Optional<CartItem> existingCartItem = cartItemRepository.findByCartAndProductAndVariant(cart, product, request.getVariant());
 
-        if (existingCartItem.isPresent()) {
-            return updateExistingCartItem(existingCartItem.get(), request, product, cart);
+        boolean isValidVariant = product.getVariants().stream()
+                    .anyMatch(v -> v.getVariantDetail().equals(request.getVariant()));
+        if (!isValidVariant) {
+            throw new AppException(ErrorCode.VARIANT_NOT_FOUND);
         }
 
-        return createNewCartItem(cart, product, request);
+        Optional<CartItem> existingCartItem = cartItemRepository.findByCartAndProductAndVariant(cart, product, request.getVariant());
+
+        return existingCartItem.map(cartItem -> updateExistingCartItem(cartItem, request, product, cart)).orElseGet(() -> createNewCartItem(cart, product, request));
+
     }
 
     private String updateExistingCartItem(CartItem existingCartItem, CartItemRequest request, Product product, Cart cart) {

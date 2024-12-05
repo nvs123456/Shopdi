@@ -67,10 +67,10 @@ public class OrderController {
 
     @GetMapping("{orderId}/details")
     public ApiResponse<?> getOrderDetails(@PathVariable Long orderId) {
+
         return ApiResponse.builder()
                 .result(orderService.findOrderById(orderId))
                 .build();
     }
-
 
 }

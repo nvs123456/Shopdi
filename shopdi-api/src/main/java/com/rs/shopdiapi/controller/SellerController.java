@@ -95,6 +95,20 @@ public class SellerController {
     }
 
     @PreAuthorize("hasRole('SELLER')")
+    @GetMapping("/orders/status")
+    public ApiResponse<?> getOrdersByStatus(@RequestParam OrderStatusEnum orderStatus,
+                                           @RequestParam(defaultValue = "0", required = false) int pageNo,
+                                           @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                           @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
+                                           @RequestParam(defaultValue = "desc", required = false) String sortOrder) {
+        Long sellerId = sellerService.getCurrentSeller().getId();
+        return ApiResponse.builder()
+                .result(orderService.getOrdersByStatusForSeller(sellerId, orderStatus, pageNo, pageSize, sortBy, sortOrder))
+                .build();
+    }
+
+
+    @PreAuthorize("hasRole('SELLER')")
     @PutMapping("/{orderId}/update-status")
     public ApiResponse<?> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatusEnum orderStatus) {
         Seller seller = sellerService.getCurrentSeller();
@@ -154,4 +168,12 @@ public class SellerController {
                 .result(revenueService.calculateRevenue(sellerId))
                 .build();
     }
+
+    @GetMapping("/seller/{sellerId}")
+    public ApiResponse<?> getSellerProfile(@PathVariable Long sellerId) {
+        return ApiResponse.builder()
+                .result(sellerService.getSellerProfile(sellerId))
+                .build();
+    }
+
 }
