@@ -11,6 +11,10 @@ const getStatusClass = (status) => {
             return 'bg-[#FFFBAA] bg-opacity-[70%] text-[#FF731D]';
         case 'PROCESSING':
             return 'bg-[#74DD7B] bg-opacity-[30%] text-[#4BB543]';
+        case 'CONFIRMED':
+            return 'bg-[#74DD7B] bg-opacity-[30%] text-[#4BB543]';
+        case 'DELIVERING':
+            return 'bg-[#74DD7B] bg-opacity-[30%] text-[#4BB543]';
         case 'CANCELLED':
             return 'bg-[#F57E77] bg-opacity-[12%] text-[#CC5F5F]';
         case 'DELIVERED':
@@ -58,8 +62,29 @@ function OrderTable({type}) {
             setLoading(false);
         })
     }
+    const fetchOrdersByFilter = async (filter) => {
+        await axios.get(`http://localhost:8080/seller/orders/status?orderStatus=${filter}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+                "Access-Control-Allow-Origin": "http://localhost:5173",
+            },
+        }).then(response => {
+            const data = response.data;
+            if (data.code === "OK") {
+                setOrders(data.result.items);
+                setTotalPages(data.result.totalPages);
+            } else {
+                setError("Failed to fetch order history.");
+            }
+        }).catch(err => {
+            setError("Error while fetching data. Please try again later.");
+        }).finally(() => {
+            setLoading(false);
+        })
+    }
     useEffect(() => {
-        fetchOrders();
+        filter === "All products" ? fetchOrders() : fetchOrdersByFilter(type);
     }, []);
     const handleSort = (key) => {
         console.log('sort thanh cong');
@@ -115,8 +140,7 @@ function OrderTable({type}) {
                 </tr>
                 </thead>
                 <tbody>
-                {(filter === 'All products' ? orders :
-                    orders.filter(order => order.orderStatus === filter))
+                {orders
                     .map((order, index) => (
                         <tr key={index} className="border-b hover:bg-gray-100"
                             >
@@ -124,7 +148,7 @@ function OrderTable({type}) {
                             <td className="px-2 py-1">{(order.shippingAddress.firstName + ' ' + order.shippingAddress.lastName) || "None"}</td>
                             <td className="px-2 py-1">${order.totalPrice.toLocaleString()}</td>
                             <td className="px-2 py-1">{new Date(order.deliveryDate).toLocaleDateString()}</td>
-                            <td className="pl-5 py-1">{order.paymentMethod || "none"}</td>
+                            <td className="pl-5 py-1">{order.paymentMethod || "COD"}</td>
                             <td className="px-2 py-1">
                   <span className={`px-2 py-1 m-0 rounded w-full text-[16px] ${getStatusClass(order.orderStatus)}`}>
                     {order.orderStatus}

@@ -67,11 +67,12 @@ export default function OrderDetails() {
     }
 
     function handleStep(newStep) {
-        if(newStep > step) {
+        if (newStep > step) {
             setStep(newStep);
             setIsEditing(true);
         }
     }
+
     function orderStatusToStep(status) {
         switch (status) {
             case 'PENDING':
@@ -83,16 +84,37 @@ export default function OrderDetails() {
             case 'DELIVERING':
                 return 3;
             case 'DELIVERED':
-                return 4;
+                return 5;
             default:
                 return -1;
+        }
+    }
+
+    function stepToOrderStatus(step) {
+        switch (step) {
+            case 0:
+                return 'PENDING';
+            case 1:
+                return 'CONFIRMED';
+            case 2:
+                return 'PROCESSING';
+            case 3:
+                return 'DELIVERING';
+            case 4:
+                return 'DELIVERED';
+            default:
+                return 'CANCELLED';
         }
     }
 
     function handleUpdateOrderStatus(orderId) {
         axios.put(`http://localhost:8080/seller/${orderId}/update-status`, null,
             {
-                params: { orderStatus: 'DELIVERED' },
+                params: {orderStatus: stepToOrderStatus(step)},
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
+                }
             })
             .then((response) => {
                 if (response.data.code === 'OK') {
@@ -184,49 +206,54 @@ export default function OrderDetails() {
                     </div>
 
                     {/* Order Status */}
-                    <div className=" w-full mb-10 ">
-                        <div>
-                            <h2 className="font-semibold mb-2">Order status</h2>
-                            <Stepper activeStep={step} orientation={'horizontal'} alternativeLabel
-                                     connector={<CustomisedConnector/>}>
-                                {steps.map((label, index) => (
-                                    <Step key={label}>
-                                        <StepLabel onClick={() => handleStep(index)}
-                                                   StepIconProps={{
-                                                       sx: {
-                                                           color: index < step ? '#FF731D' : '#FFFFFF', // Color for completed steps
-                                                           border: '4px solid #FF731D', // Border color
-                                                           borderRadius: '50%', // Optional: make the border circular
-                                                           '&.Mui-active': {
-                                                               color: '#FF731D', // Color for the current step
+                    {order.orderStatus === 'CANCELLED' ?
+                        <div
+                            className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-20">Order
+                            Cancelled!</div> :
 
-                                                           },
-                                                           '&.Mui-completed': {
-                                                               color: '#FF731D', // Color for completed steps
-                                                           },
-                                                           '&.Mui-incompleted': {
-                                                               color: '#FF731D', // Color for incompleted steps
-                                                           },
-                                                           '& .MuiStepIcon-text': {
-                                                               fill: 'transparent', // Change color of the step number text
-                                                           },
-                                                       },
-                                                   }}
+                        <div className=" w-full mb-10 ">
+                            <div>
+                                <h2 className="font-semibold mb-2">Order status</h2>
+                                <Stepper activeStep={step} orientation={'horizontal'} alternativeLabel
+                                         connector={<CustomisedConnector/>}>
+                                    {steps.map((label, index) => (
+                                        <Step key={label}>
+                                            <StepLabel onClick={() => handleStep(index)}
+                                                       StepIconProps={{
+                                                           sx: {
+                                                               color: index < step ? '#FF731D' : '#FFFFFF', // Color for completed steps
+                                                               border: '4px solid #FF731D', // Border color
+                                                               borderRadius: '50%', // Optional: make the border circular
+                                                               '&.Mui-active': {
+                                                                   color: '#FF731D', // Color for the current step
 
-                                        >
-                                            {label}
-                                        </StepLabel>
-                                    </Step>
+                                                               },
+                                                               '&.Mui-completed': {
+                                                                   color: '#FF731D', // Color for completed steps
+                                                               },
+                                                               '&.Mui-incompleted': {
+                                                                   color: '#FF731D', // Color for incompleted steps
+                                                               },
+                                                               '& .MuiStepIcon-text': {
+                                                                   fill: 'transparent', // Change color of the step number text
+                                                               },
+                                                           },
+                                                       }}
 
-                                ))}
-                            </Stepper>
-                        </div>
-                        {isEditing && <button
-                            onClick={() => handleUpdateOrderStatus(order.orderId)}
-                            className={`absolute right-8 bottom-[-150px] bg-metallicOrange w-34 px-2  rounded text-white h-8`}>Save
-                            Changes
-                        </button>}
-                    </div>
+                                            >
+                                                {label}
+                                            </StepLabel>
+                                        </Step>
+
+                                    ))}
+                                </Stepper>
+                            </div>
+                            {isEditing && <button
+                                onClick={() => handleUpdateOrderStatus(order.orderId)}
+                                className={`absolute right-8 bottom-[-150px] bg-metallicOrange w-34 px-2  rounded text-white h-8`}>Save
+                                Changes
+                            </button>}
+                        </div>}
                 </div>
             </div>
         );
