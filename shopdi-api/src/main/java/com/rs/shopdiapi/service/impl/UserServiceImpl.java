@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         Page<User> page = userRepository.findAll(PageRequest.of(pageNo, pageSize));
         List<UserResponse> users = page.map(user -> {
             UserResponse userResponse = userMapper.toUserResponse(user);
-            Long balance = orderRepository.calculateTotalAmountSpentByUser(user.getId());
+            Double balance = orderRepository.calculateTotalAmountSpentByUser(user.getId());
             userResponse.setBalance(balance != null ? balance : 0);
             return userResponse;
         }).toList();

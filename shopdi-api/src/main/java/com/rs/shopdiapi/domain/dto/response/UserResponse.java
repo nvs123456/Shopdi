@@ -22,7 +22,7 @@ public class UserResponse {
     String lastName;
     String profileImage;
     String email;
-    Long balance;
+    Double balance;
     Set<RoleResponse> roles;
     UserStatusEnum status;
 }

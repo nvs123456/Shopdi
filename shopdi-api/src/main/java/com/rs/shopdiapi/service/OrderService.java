@@ -23,4 +23,6 @@ public interface OrderService {
     PageResponse<?> getAllOrdersForSeller(Long sellerId, int pageNo, int pageSize, String sortBy, String sortOrder);
 
     PageResponse<?> orderHistory(Long userId, int pageNo, int pageSize, String sortBy, String sortOrder);
+
+    PageResponse<?> getOrdersByStatusForSeller(Long sellerId, OrderStatusEnum orderStatus, int pageNo, int pageSize, String sortBy, String sortOrder);
 }
