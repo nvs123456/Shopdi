@@ -19,19 +19,24 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
     //     })
     // }, [])
     return (
-        <div className="flex flex-row h-20 items-center font-sans">
-            <div className="h-fit"><input className="w-4 h-4" type="checkbox" defaultChecked={isSelected(item)} onChange={(e) => {
-                if (e.target.checked) {
-                    setTotal(total + item.price * quantity);
-                    onSelect(item.cartItemId);
-                } else {
-                    setTotal(total - item.price * quantity);
-                    onSelect(item.cartItemId);
-                }
+        <div className="grid grid-cols-8 h-20 items-center font-sans">
+            <div className='col-span-3 flex flex-row'>
+                <div className="h-fit">
+                    <input className="w-4 h-4" type="checkbox" defaultChecked={isSelected(item)} onChange={(e) => {
+                        if (e.target.checked) {
+                            setTotal(total + item.price * quantity);
+                            onSelect(item.cartItemId);
+                        } else {
+                            setTotal(total - item.price * quantity);
+                            onSelect(item.cartItemId);
+                        }
 
-            }}></input></div>
-            <div onClick={() => { navigate(`/product/${item.productId}`) }}> <img className="w-20 h-20 min-w-20 ml-8" src={item.productImage} alt={item.name} /></div>
-            <span className="h-fit grow pl-4">{item.productName}</span>
+                    }}></input>
+                </div>
+                <div onClick={() => { navigate(`/product/${item.productId}`) }}> <img className="w-20 h-20 min-w-20 ml-8" src={item.productImage} alt={item.name} /></div>
+                {/* <span className="h-fit grow pl-4">{item.productName}</span> */}
+                <div className='overflow-hidden'><p className='break-words overflow-hidden max-h-20'>{item.productName}</p></div>
+            </div>
             <div className="min-w-40 text-center relative" >
                 {JSONToData(item.variant)}
 

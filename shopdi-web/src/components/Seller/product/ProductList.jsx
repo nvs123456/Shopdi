@@ -18,13 +18,13 @@ export default function ProductList({ products, page }) {
                     </Link>
                 </div>
             </div>
-            <div className="header flex flex-row w-full mb-4">
-                <span className="grow pl-12">Tên sản phẩm</span>
-                <span className="w-24 text-center">Đơn giá</span>
-                <span className="w-24 text-center">Trong kho</span>
-                <span className="w-24 text-center">Đặt hàng</span>
-                <span className="w-24 text-center">Ngày đăng</span>
-                <span className="w-24 text-center">Cập nhật </span>
+            <div className="header grid grid-cols-8">
+                <span className="col-span-3">Tên sản phẩm</span>
+                <span className=" text-center">Đơn giá</span>
+                <span className=" text-center">Trong kho</span>
+                <span className=" text-center">Đặt hàng</span>
+                <span className=" text-center">Ngày đăng</span>
+                <span className=" text-center">Cập nhật </span>
             </div>
 
             {products && products.map((product) => <div key={product.productId}>

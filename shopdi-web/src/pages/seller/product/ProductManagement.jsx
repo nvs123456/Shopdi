@@ -45,7 +45,7 @@ export default function ProductManagement() {
     return (
       <div className="flex flex-row pt-4 gap-x-8 p-4 bg-cloudBlue">
         <div className='rounded min-w-[270px] max-w-[270px] bg-white p-4'><Filter allProducts={allProducts}/></div>
-        <div className='rounded grow bg-white p-4'>
+        <div className='rounded bg-white p-4'>
           <ProductList products={products} page={page} />
         </div>
 

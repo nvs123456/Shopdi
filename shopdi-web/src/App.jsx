@@ -38,7 +38,7 @@ function App() {
                                 <Route path="seller/*" element={
                                     <div className="flex flex-row min-h-screen ">
                                         <SideBar />
-                                        <div className="w-[85%] flex flex-col w-full">
+                                        <div className="w-[85%] flex flex-col">
                                             <SellerHome />
                                             <SellerFooter />
                                         </div>

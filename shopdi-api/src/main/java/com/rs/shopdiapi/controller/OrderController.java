@@ -41,7 +41,7 @@ public class OrderController {
     @PutMapping("/cancel/{orderId}")
     public ApiResponse<?> cancelOrder(@PathVariable Long orderId) {
         return ApiResponse.builder()
-                .result(orderService.updateOrderStatusByBuyer(orderId, userService.getCurrentUser().getId(), OrderStatusEnum.CANCELED))
+                .result(orderService.updateOrderStatusByBuyer(orderId, userService.getCurrentUser().getId(), OrderStatusEnum.CANCELLED))
                 .build();
     }
 
