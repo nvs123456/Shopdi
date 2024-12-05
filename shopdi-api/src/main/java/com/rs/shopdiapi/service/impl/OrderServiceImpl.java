@@ -319,7 +319,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageResponse<?> orderHistory(Long userId, int pageNo, int pageSize, String sortBy, String sortOrder) {
-        Sort sort = Sort.by(sortOrder, sortBy);
+        Sort.Direction direction = Sort.Direction.fromOptionalString(sortOrder).orElse(Sort.Direction.DESC);
+
+        Sort sort = Sort.by(direction, sortBy);
         Page<Order> ordersPage = orderRepository.findAllByUserId(userId, PageRequest.of(pageNo, pageSize, sort));
 
         List<SimpleOrderResponse> orderResponses = ordersPage.getContent().stream()
@@ -330,6 +332,21 @@ public class OrderServiceImpl implements OrderService {
                 .pageNo(pageNo)
                 .pageSize(pageSize)
                 .totalPages(ordersPage.getTotalPages())
+                .items(orderResponses)
+                .build();
+    }
+
+    @Override
+    public PageResponse<?> getOrdersByStatusForSeller(Long sellerId, OrderStatusEnum orderStatus, int pageNo, int pageSize, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Page<Order> ordersPage = orderRepository.findAllBySellerIdAndOrderStatus(sellerId, orderStatus, PageRequest.of(pageNo, pageSize, sort));
+
+        List<OrderResponse> orderResponses = ordersPage.stream()
+                .map(this::mapToOrderResponse)
+                .toList();
+        return PageResponse.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
                 .items(orderResponses)
                 .build();
     }

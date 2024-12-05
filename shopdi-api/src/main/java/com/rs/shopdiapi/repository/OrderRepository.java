@@ -14,9 +14,8 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
-
-//    @Query("SELECT o FROM Order o WHERE o.user.email = :email AND o.id = :orderId")
-//    Order findOrderByEmailAndOrderId(String email, Long cartId);
+    @Query("SELECT o FROM Order o WHERE o.id = :orderId AND o.user.id = :userId")
+    Order findOrderByIdAndUserId(@Param("orderId") Long orderId,@Param("userId") Long userId);
 
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.orderStatus ASC, o.createdAt DESC")
     Page<Order> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
@@ -38,5 +37,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
 
 
     @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.user.id = :userId")
-    Long calculateTotalAmountSpentByUser(@Param("userId") Long userId);
+    Double calculateTotalAmountSpentByUser(@Param("userId") Long userId);
+
+    @Query("SELECT o FROM Order o JOIN o.orderItems oi ON oi.order.id = o.id WHERE oi.seller.id = :sellerId AND o.orderStatus = :orderStatus")
+    Page<Order> findAllBySellerIdAndOrderStatus(@Param("sellerId") Long sellerId, @Param("orderStatus") OrderStatusEnum orderStatus, Pageable pageable);
 }
