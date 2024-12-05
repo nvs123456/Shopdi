@@ -8,6 +8,7 @@ import ProductDetail from "./ProductDetail.jsx";
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import Cart from "../../components/Buyer/Cart.jsx";
 import { GET } from "@/api/GET";
+import SpinnerLoading from "../../components/SpinnerLoading/SpinnerLoading.jsx";
 const HomePage = () => {
   const location = useLocation();
 
@@ -107,7 +108,7 @@ const HomePage = () => {
       </div>
     )
   } else {
-    return <div className="text-center">Loading...</div>
+    return <div className="text-center"><SpinnerLoading size={3}/> </div>
   }
 }
 

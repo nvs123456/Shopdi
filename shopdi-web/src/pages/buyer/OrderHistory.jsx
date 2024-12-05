@@ -85,8 +85,12 @@ function OrderHistory() {
                             <td className={`text-left pl-8`}>
                                 {orderItem.orderId}
                             </td>
-                            <td className={`text-left pl-8 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FA8232]' : orderItem.orderStatus === 'DELIVERED' ? 'text-[#2DB224]' : 'text-[#EE5858]'}`}>
-                                {orderItem.orderStatus === 'PENDING' ? 'IN PROGRESS' : orderItem.orderStatus === 'DELIVERED' ? 'COMPLETED' : 'CANCELLED'}
+                            <td className={`text-left pl-8 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
+                                : orderItem.orderStatus === 'CONFIRMED' ? 'text-[#4BB543]' : 
+                                    orderItem.orderStatus === 'PROCESSING' ?'text-[#4BB543]' :
+                                        orderItem.orderStatus === 'DELIVERING' ?'text-[#3A5BFF]]':
+                                            orderItem.orderStatus === 'DELIVERED' ?'text-[#3A5BFF]' :'text-[#EE5858]'}`}>
+                                {orderItem.orderStatus}
                             </td>
                             <td>
                                 {orderItem.deliveryDate.split(' ')[0]}

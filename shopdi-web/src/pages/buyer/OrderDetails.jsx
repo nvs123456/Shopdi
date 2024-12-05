@@ -12,13 +12,11 @@ import CheckIcon from '@mui/icons-material/Check';
 import StepConnector, {stepConnectorClasses,} from "@mui/material/StepConnector";
 import {useParams} from 'react-router-dom';
 import Review from "./Review.jsx";
-import FiveStar from "../../components/Buyer/Review/FiveStar.jsx";
-import {Textarea} from "@headlessui/react";
-import {forEach} from "react-bootstrap/ElementChildren";
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SpinnerLoading from "../../components/SpinnerLoading/SpinnerLoading.jsx";
 
-const steps = ['Order Placed', 'Packaging', 'On The Road', 'Delivered'];
-const icons = [<InventoryOutlinedIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
+const steps = ['Order Placed','Confirmed', 'Packaging', 'On The Road', 'Delivered'];
+const icons = [<InventoryOutlinedIcon/>, <VerifiedUserIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
 const data = [
     ['PRODUCTS', 'PRICE', 'QUANTITY', 'TOTAL'],
 ];
@@ -48,8 +46,6 @@ const CustomisedConnector = styled(StepConnector)(({theme}) => ({
 function OrderDetails() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productIdToReview, setProductIdToReview] = useState('');
-    const [starRating, setStarRating] = useState(0);
-    const [review, setReview] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const {id} = useParams();
     const [orderDetail, setOrderDetail] = useState({});
@@ -68,28 +64,8 @@ function OrderDetails() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-
-    async function handleCancelOrder(orderId) {
-        try {
-            const response = await axios.put(
-                `http://localhost:8080/orders/cancel/${orderId}`,
-                null,
-                config
-            );
-            console.log('Data updated:', response.data);
-        } catch (error) {
-            if (error.response) {
-                console.error('Response error:', error.response.data);
-            } else if (error.request) {
-                console.error('Request error:', error.request);
-            } else {
-                console.error('Error:', error.message);
-            }
-        }
-    }
-
-    useEffect(() => {
-        axios.get(`http://localhost:8080/orders/${id}/details`, config)
+    const fetchOrderDetail = async () => {
+        await axios.get(`http://localhost:8080/orders/${id}/details`, config)
             .then((response) => {
                 if (response.data.code === 'OK') {
                     setOrderDetail(response.data.result);
@@ -104,12 +80,52 @@ function OrderDetails() {
             .finally(() => {
                 setIsLoading(false);
             });
+    }
+    async function handleCancelOrder(orderId) {
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/orders/cancel/${orderId}`,
+                null,
+                config
+            );
+            if(response.data.code === 'OK') {
+                console.log('Data updated:', response.data);
+                fetchOrderDetail();
+            }
+            console.log('Data updated:', response.data);
+        } catch (error) {
+            if (error.response) {
+                console.error('Response error:', error.response.data);
+            } else if (error.request) {
+                console.error('Request error:', error.request);
+            } else {
+                console.error('Error:', error.message);
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchOrderDetail();
     }, [id]);
 
-
+    function statusToStep(status) {
+        switch (status) {
+            case 'PENDING':
+                return 0;
+            case 'CONFIRMED':
+                return 1;
+            case 'PROCESSING':
+                return 2;
+            case 'DELIVERING':
+                return 3;
+            case 'DELIVERED':
+                return 5;
+            default:
+                return -1;
+        }
+    }
     const status = orderDetail.orderStatus;
-    const activeStep = status === 'PENDING' ? 1
-                        : status === 'PROCESSING' ? 2 : status === 'DELIVERING' ? 3 : 4;
+    const activeStep = statusToStep(status);
     const deliveryDate = orderDetail?.deliveryDate;
     const date = new Date(deliveryDate);
     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
@@ -222,11 +238,11 @@ function OrderDetails() {
 
                             {/* Step Icons */}
                             <div
-                                className={`flex border-b-2 justify-around pr-5 md:pr-10 xl:pl-2 xl:mx-12 pl-3 md:pl-5 pb-2 `}>
+                                className={`flex border-b-2 justify-around pr-5 md:pr-8 xl:pl-4 xl:mx-12 pl-3 md:pl-5 pb-2 `}>
                                 {steps.map((label, index) => (
                                     <span className="flex justify-center mt-2">
                               {React.cloneElement(icons[index], {
-                                  className: `text-[24px] sm:text-[28px] md:text-[32px] lg:text-[36px] xl:text-[40px] 
+                                  className: `text-[24px] ml-6 
                   ${
                                       index === activeStep
                                           ? 'text-[#FF731D]' // Active step color
@@ -314,7 +330,7 @@ function OrderDetails() {
                         </div>
                     </div>
                     <div className={`relative lg:h-20`}>
-                        {activeStep === 1 && <button disabled={status === 'CANCELLED'}
+                        {activeStep < 1 && <button disabled={status === 'CANCELLED'}
                                                      onClick={() => {
                                                          handleCancelOrder(orderDetail.orderId)
                                                      }}
