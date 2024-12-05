@@ -88,17 +88,15 @@ function OrderTable({type}) {
     };
     const navigate = useNavigate();
 
-    const handleRowClick = (id) => {
-        // Navigate to the order details page for the clicked order
-        navigate(`/seller/orders/${id}`);
-    };
+
+
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
                 <thead>
                 <tr className="border-b">
                     {tableHeadings.map((heading, index) => (
-                        <th key={index} className="px-4 py-2 text-left font-semibold cursor-pointer"
+                        <th key={index} className="pl-4 py-2 text-left font-semibold cursor-pointer"
                             onClick={() => handleSort(heading)}>
                             <div className={'flex items-center'}>
                                 {heading.charAt(0).toUpperCase() + heading.slice(1)}
@@ -121,8 +119,7 @@ function OrderTable({type}) {
                     orders.filter(order => order.orderStatus === filter))
                     .map((order, index) => (
                         <tr key={index} className="border-b hover:bg-gray-100"
-                            onClick={() => navigate(`/seller/orders/${order.orderId}`)
-                            }>
+                            >
                             <td className="pl-4 py-1">{order.orderId}</td>
                             <td className="px-2 py-1">{(order.shippingAddress.firstName + ' ' + order.shippingAddress.lastName) || "None"}</td>
                             <td className="px-2 py-1">${order.totalPrice.toLocaleString()}</td>
@@ -134,16 +131,8 @@ function OrderTable({type}) {
                   </span>
                             </td>
                             <td className="px-4 py-2">
-                                {order.orderStatus === 'PENDING' ? <button
-                                        className="text-white rounded px-2 py-1 font-medium bg-[#3F81E0]">Confirm</button> :
-                                    <div>
-                                        <ModeEditIcon
-                                            className='cursor-pointer hover:text-[#555555] text-[#A3A9B6]'
-                                            fontSize='small'/>
-                                        <DeleteIcon
-                                            className='cursor-pointer hover:text-[#555555] text-[#A3A9B6]'
-                                            fontSize='small'/>
-                                    </div>}
+                                     <button   onClick={() => navigate(`/seller/orders/${order.orderId}`)
+                                     }className="text-white rounded px-2 py-1 font-medium bg-[#3F81E0]">View Details</button>
                             </td>
                         </tr>
                     ))}

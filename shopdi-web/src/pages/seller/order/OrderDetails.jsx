@@ -4,6 +4,7 @@ import {Step, StepLabel, Stepper} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import StepConnector, {stepConnectorClasses} from "@mui/material/StepConnector";
 import axios from "axios";
+import SpinnerLoading from "../../../components/SpinnerLoading/SpinnerLoading.jsx";
 
 const CustomisedConnector = styled(StepConnector)(({theme}) => ({
     [`&.${stepConnectorClasses.active}`]: {
@@ -108,7 +109,7 @@ export default function OrderDetails() {
             });
     }
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div><SpinnerLoading/></div>;
     else {
         return (
             <div className="p-6 bg-gray-100 min-h-screen font-sans text-sm">
