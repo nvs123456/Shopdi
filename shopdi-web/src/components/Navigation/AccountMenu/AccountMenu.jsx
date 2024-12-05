@@ -11,7 +11,7 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import ChecklistIcon from '@mui/icons-material/Checklist';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { useAuth } from '@/routes/AuthProvider';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { GET } from '../../../api/GET';
@@ -32,6 +32,7 @@ export default function AccountMenu() {
         // console.log("logout");
         useauth.logOut();
     }
+    const navigate = useNavigate();
     const [avatar, setAvatar] = React.useState(null);
     const [username, setUsername] = React.useState(null);
     React.useEffect(() => {
@@ -95,12 +96,9 @@ export default function AccountMenu() {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem onClick={handleClose}>
-                    <Avatar /> {username}
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
                     <Link to={"/profile"}>
                         <ListItemIcon>
-                            <Avatar /> Profile
+                            <Avatar /> {username}
                         </ListItemIcon>
 
                     </Link>
@@ -108,12 +106,10 @@ export default function AccountMenu() {
 
                 <Divider />
                 <MenuItem onClick={handleClose}>
-                    <Link to="/orderhistory">
-                        <ListItemIcon>
-                            <LocalMallIcon fontSize="small" />
-                        </ListItemIcon>
-                        My Order
-                    </Link>
+                        <div onClick={() => navigate('/orderhistory')}>
+                            <LocalMallIcon fontSize="small"/>
+                            <span className={`mb-3`}> My Order </span>
+                        </div>
                 </MenuItem>
                 {/* <MenuItem onClick={handleClose}>
                     <ListItemIcon>
@@ -122,10 +118,8 @@ export default function AccountMenu() {
                     Settings
                 </MenuItem> */}
                 <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                        <Logout fontSize="small" />
-                    </ListItemIcon>
-                    Logout
+                    <Logout fontSize="small" />
+                   <span> Logout </span>
                 </MenuItem>
             </Menu>
         </React.Fragment>
