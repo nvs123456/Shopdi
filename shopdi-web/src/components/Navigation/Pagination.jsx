@@ -26,6 +26,7 @@ function PaginationButton({pageObject}) {
                         fontSize: { xs: '12px', sm: '14px', md: '16px', lg: '18px', xl: '20px' }, // Responsive font size
                         width: { xs: '20px', sm: '25px', md: '30px', lg: '35px', xl: '40px' }, // Responsive width
                         height: { xs: '20px', sm: '25px', md: '30px', lg: '35px', xl: '40px' }, // Responsive height
+                        marginBottom: '30px', // Thêm margin bottom
 
                         '&.Mui-selected': {
                             backgroundColor: '#FA8232', // Màu nền khi được chọn
