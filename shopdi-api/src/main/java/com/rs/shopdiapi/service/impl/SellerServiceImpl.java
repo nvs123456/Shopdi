@@ -131,7 +131,7 @@ public class SellerServiceImpl implements SellerService {
                 .email(request.getEmail())
                 .location(request.getAddress() + ", " + request.getCityOrTown() + ", " + request.getStateOrDistrict())
                 .contactNumber(request.getContactNumber())
-                .user(user)
+                .user(user).revenue(BigDecimal.ZERO)
                 .build();
 
         sellerRepository.save(seller);

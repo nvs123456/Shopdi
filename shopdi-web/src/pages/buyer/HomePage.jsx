@@ -38,7 +38,7 @@ const HomePage = () => {
         if (res.code === "OK") {
           setCategories(res.result)
           if (currentCategory !== null) {
-            GET(`products/category/` + decodeURIComponent(currentCategory) + pageUrl).then((res) => {
+            GET(`products/category/` + decodeURIComponent(currentCategory) + location.search).then((res) => {
               if (res.code === "OK") {
                 setProducts(res.result?.items)
                 setPage({ pageNo: res.result.pageNo, totalPage: res.result.totalPages })
@@ -46,7 +46,7 @@ const HomePage = () => {
               }
             })
           } else {
-            GET(`products/category/${location.pathname.split("/")[2]}`).then((res) => {
+            GET(`products/category/${location.pathname.split("/")[2]}${location.search}`).then((res) => {
               if (res.code === "OK") {
                 setProducts(res.result?.items)
                 setPage({ pageNo: res.result.pageNo, totalPage: res.result.totalPages })

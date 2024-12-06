@@ -20,7 +20,11 @@ const SellerSignUp = () => {
         e.preventDefault();
         POST(`seller/register`, form).then((res) => {
             if(res.code === 'OK'){
+                localStorage.removeItem("Authorization");
+                localStorage.removeItem("roles");
                 navigate("/login")
+            }else {
+                setMessage(res.message)
             }
         })
     }

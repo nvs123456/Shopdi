@@ -161,10 +161,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageResponse<?> findProductByCategory(Long categoryId, int pageNo, int pageSize) {
+    public PageResponse<?> findProductByCategory(Long categoryId, int pageNo, int pageSize, String sortBy, String sortOrder) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        String[] sortFields = sortBy.split(",");
 
-        Page<Product> productPage = productRepository.findAllByCategoryId(category.getId(), PageRequest.of(pageNo, pageSize));
+        Sort sort = Sort.unsorted();
+        for (String field : sortFields) {
+            Sort sortField = sortOrder.equalsIgnoreCase("asc") ? Sort.by(field).ascending() : Sort.by(field).descending();
+            sort = sort.and(sortField);
+        }
+        Page<Product> productPage = productRepository.findAllByCategoryId(category.getId(), PageRequest.of(pageNo, pageSize, sort));
 
         List<ProductResponse> products = productPage.map(this::toProductResponse).toList();
 
@@ -297,6 +303,7 @@ public class ProductServiceImpl implements ProductService {
                 .productName(product.getProductName())
                 .price(product.getPrice())
                 .category(product.getCategory().getName())
+                .categoryId(product.getCategory().getId())
                 .stock(product.getVariants().stream().mapToInt(Variant::getQuantity).sum())
                 .soldQuantity(product.getSoldQuantity())
                 .publishedOn(product.getCreatedAt())
@@ -314,6 +321,7 @@ public class ProductServiceImpl implements ProductService {
                 .brand(product.getBrand())
                 .imageUrls(product.getImageUrls())
                 .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
+                .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)
                 .soldQuantity(product.getSoldQuantity())
                 .tagNames(product.getTags() != null
                         ? product.getTags().stream().map(Tag::getName).collect(Collectors.toSet())

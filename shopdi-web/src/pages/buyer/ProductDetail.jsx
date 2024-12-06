@@ -260,7 +260,7 @@ export default function ProductDetail() {
                             </button>
                             <div className="flex flex-col gap-y-2 items-center">
                                 <div className=''>
-                                    {[1, 2, 3, 4, 5].map((i) => i < Math.round(review.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "30px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "30px" }} />)}
+                                    {[1, 2, 3, 4, 5].map((i) => i <= Math.round(review.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "30px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "30px" }} />)}
                                 </div>
                                 <div className=' text-xl font-bold'>
                                     {review.count} đánh giá
