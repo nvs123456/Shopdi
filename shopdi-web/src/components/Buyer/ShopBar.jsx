@@ -5,7 +5,7 @@ const ShopBar = ({ sellerId }) => {
     const [shop_info, setShop_info] = useState({});
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        GET(`seller/profile/${sellerId}`).then((data) => {
+        GET(`seller/seller/${sellerId}`).then((data) => {
             if (data.code == "OK") {
                 console.log(data.result);
                 setShop_info(data.result);

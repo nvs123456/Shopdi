@@ -48,9 +48,11 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ApiResponse<?> getProductsByCategoryId(@PathVariable Long categoryId,
                                                   @RequestParam(defaultValue = "0", required = false) int pageNo,
-                                                  @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize) {
+                                                  @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                                  @RequestParam(defaultValue = "soldQuantity", required = false) String sortBy,
+                                                  @RequestParam(defaultValue = "desc", required = false) String sortOrder) {
         return ApiResponse.builder()
-                .result(productService.findProductByCategory(categoryId, pageNo, pageSize))
+                .result(productService.findProductByCategory(categoryId, pageNo, pageSize, sortBy, sortOrder))
                 .build();
     }
 

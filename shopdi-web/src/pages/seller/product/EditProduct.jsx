@@ -43,14 +43,12 @@ export default function EditProduct() {
             if (data.code === 'OK') {
                 setCategories(data.result)
                 const tmpCategories = data.result
-                console.log(tmpCategories)
                 GET(`products/${productId}`).then((data) => {
                     if (data.code === 'OK') {
-                        let parent = tmpCategories.find((item) => item.childCategories.find((i) => i.name === data.result.categoryName)!==undefined)
+                        let parent = tmpCategories.find((item) => item.childCategories.find((i) => i.name === data.result.categoryName) !== undefined)
                         setCurrentCategory({ parent: parent.name, child: data.result.categoryName })
                         setProductForm({ ...data.result, variantDetails: data.result.variants })
                         setLoading(false)
-                        console.log({ parent: parent.name, child: data.result.categoryName })
 
                     }
                 })
@@ -64,7 +62,7 @@ export default function EditProduct() {
         child: '',
     });
     const [variants, setVariants] = useState([]);
-
+    const [selectedImage, setSelectedImage] = useState([]);
     const [listVariants, setListVariants] = useState([]);
     const [openPopup, setOpenPopup] = useState(false);
     if (!loading && currentCategory.child !== '') return (
@@ -80,7 +78,6 @@ export default function EditProduct() {
                     <span onClick={() => {
                         let tmp = 0
                         for (let i = 0; i < productForm.variantDetails.length; i++) {
-                            console.log(productForm.variantDetails[i].quantity)
                             tmp += parseInt(productForm.variantDetails[i].quantity)
                         }
                         const listQuantity = document.getElementsByClassName("list-quantity")
@@ -90,19 +87,38 @@ export default function EditProduct() {
                                 return
                             }
                         }
-                        PUT(`seller/update-product/${productId}`, { ...productForm, quantity: tmp }
-                        ).then((res) => {
-                            console.log(res.code)
-                            if (res.code === "OK") {
-                                navigate("/seller/products");
-                                setOpenPopup(false)
-                            } else {
-                                alert(res.message)
+                        if (!document.getElementById("uploadAndDisplayImage").classList.contains("hidden")) {
+                            let count = 0
+                            for (let i = 0; i < selectedImage.length; i++) {
+                                if (selectedImage[i].isChoosed === true) {
+                                    count++
+                                }
                             }
-                        })
+                            if (count < 5) {
+                                alert("Please upload at least 5 images")
+                                return
+                            } if (count > 10) {
+                                alert("Please upload at most 10 images")
+                                return
+                            }
+                            PUT(`seller/update-product/${productId}`, { ...productForm, quantity: tmp }
+                            ).then((res) => {
+                                if (res.code === "OK") {
+                                    updateImages(productId, selectedImage).then((res) => {
+                                        if (res.code === "OK") {
+                                            alert("Update product successfully")
+                                            navigate(`/seller/products`)
+                                        }
+                                    })
+
+                                } else {
+                                    alert(res.message)
+                                }
+                            })
+
+                        }
 
                     }
-
                     }
                         className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
                 </div>
@@ -130,9 +146,20 @@ export default function EditProduct() {
                     </div>
                     <div className='media border-2 border-gray-200 p-4'>
                         <div>
-                            <span className='font-bold text-xl'>Media</span>
-                            <DisplayImages imageUrls={productForm.imageUrls} />
-                            {/* <UploadAndDisplayImage productForm={productForm} setProductForm={setProductForm} /> */}
+                            <span className='font-bold text-xl'>Media<span className='text-red float-right underline hover:text-celticBlue' onClick={
+                                () => {
+                                    document.getElementById("displayImages").style.display = "none"
+                                    document.getElementById("uploadAndDisplayImage").classList.remove("hidden")
+                                    setProductForm({ ...productForm, imageUrls: [] })
+                                }
+                            }>Replace images</span></span>
+                            <div id="displayImages">
+                                <DisplayImages imageUrls={productForm.imageUrls} />
+
+                            </div>
+                            <div className='hidden' id='uploadAndDisplayImage'>
+                                <UploadAndDisplayImage selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
+                            </div>
                         </div>
                     </div>
                     <div className='category border-2 border-gray-200 p-4'>
@@ -159,10 +186,11 @@ export default function EditProduct() {
 
                             <div className=' flex flex-col'>
                                 <label>Sub Category</label>
-                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.child} 
-                                onChange={(e) => { 
-                                    setCurrentCategory({ parent: currentCategory.parent, child: e.target.value })
-                                    setProductForm({ ...productForm, categoryName: e.target.value }) }}>
+                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.child}
+                                    onChange={(e) => {
+                                        setCurrentCategory({ parent: currentCategory.parent, child: e.target.value })
+                                        setProductForm({ ...productForm, categoryName: e.target.value })
+                                    }}>
                                     {categories.find((i) => i.name === currentCategory.parent).childCategories.map((item, index) => {
                                         return <option key={index} value={item.name}>{item.name}</option>
                                     })}
@@ -181,7 +209,7 @@ export default function EditProduct() {
                             }}
                                 type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
                         </div>
-                        
+
                         <div>
                             <label className='block'>Brand</label>
                             <input defaultValue={productForm.brand} onChange={(e) => {
@@ -233,13 +261,12 @@ const DisplayImages = ({ imageUrls }) => {
                     </div>
                 )
             })
-        }
+            }
         </div>
     )
 }
-const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
+const UploadAndDisplayImage = ({ selectedImage, setSelectedImage }) => {
     // Define a state variable to store the selected image
-    const [selectedImage, setSelectedImage] = useState([]);
 
     // Return the JSX for rendering
     return (
@@ -261,7 +288,6 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
                         }
                         setSelectedImage(tmp);
 
-                        setProductForm({ ...productForm, images: event.target.files })
                     }}
                 />
                 {selectedImage.length > 0 && (
@@ -294,12 +320,12 @@ const UploadAndDisplayImage = ({ productForm, setProductForm }) => {
     );
 };
 function QuantityOfVariants({ productForm, setProductForm }) {
-    if ((productForm.variantDetails.length === 1 && productForm.variantDetails[0].variantDetail === null) || (productForm.variantDetails.length === 0)){
+    if ((productForm.variantDetails.length === 1 && productForm.variantDetails[0].variantDetail === null) || (productForm.variantDetails.length === 0)) {
         return (
             <div className='bg-white p-4'>
                 <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
                     <span className='font-bold text-xl'>Enter quantity</span>
-                    <input defaultValue={productForm.quantity} id="quantity" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' type='number' onChange={(e) => {
+                    <input defaultValue={productForm.variantDetails[0].quantity} id="quantity" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' type='number' onChange={(e) => {
                         setProductForm({ ...productForm, variantDetails: [{ variantDetail: null, quantity: e.target.value }] })
                     }} />
                 </div>
@@ -333,4 +359,20 @@ function QuantityOfVariants({ productForm, setProductForm }) {
             </div>
         </div>
     )
+}
+async function updateImages(productId, selectedImage) {
+    const formData = new FormData();
+    for (let i = 0; i < selectedImage.length; i++) {
+        if (selectedImage[i].isChoosed) {
+            formData.append('images', selectedImage[i].path);
+        }
+    }
+    return await fetch(`http://localhost:8080/images/update-product-images/${productId}`, {
+        method: "PUT",
+        headers: {
+            // 'Content-Type': 'multipart/form-data',
+            "Authorization": `Bearer ${localStorage.getItem("Authorization")}`
+        },
+        body: formData
+    }).then(res => res.json());
 }
