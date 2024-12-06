@@ -16,7 +16,7 @@ export default function Product({ product }) {
             </div>
             <span className="min-w-24 text-center">{product.price.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span>
             <span className="min-w-24 text-center">{product.stock}</span>
-            <span className="min-w-24 text-center ">{product.order}</span>
+            <span className="min-w-24 text-center ">{product.soldQuantity}</span>
             <span className="min-w-24 text-center">{new Date(product.publishedOn).toLocaleString('vi', { day: 'numeric', month: 'numeric', year: 'numeric' })}</span>
             <div className='min-w-24 text-center'>
                 <Link to={`edit-product/${product.productId}`}>

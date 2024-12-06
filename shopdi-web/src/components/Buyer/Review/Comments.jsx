@@ -6,25 +6,25 @@ export default function Comments({ productId }) {
     const [comments, setComments] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
-        GET(`reviews/product/${productId}?pageNo=1&pageSize=10`).then((res) => {
+        GET(`reviews/product/${productId}`).then((res) => {
             if (res.code === "OK") {
-                res.result.content = [
-                    {
-                        userName: "user1",
-                        review: "this is a review",
-                        ratingScore: 5
-                    },
-                    {
-                        userName: "user2",
-                        review: "this is an another review",
-                        ratingScore: 4
-                    }
-                ]
-                setComments(res.result.content)
+                // res.result.content = [
+                //     {
+                //         userName: "user1",
+                //         review: "this is a review",
+                //         ratingScore: 5
+                //     },
+                //     {
+                //         userName: "user2",
+                //         review: "this is an another review",
+                //         ratingScore: 4
+                //     }
+                // ]
+                setComments(res.result.items)
                 setIsLoading(false)
             }
         })
-    }, [isLoading])
+    }, [])
 
     if (!isLoading) return (
         <div >
@@ -38,7 +38,7 @@ export default function Comments({ productId }) {
                                 className="w-8 h-8 rounded-full mr-2"
                             /> */}
                             <div>
-                                <p className="font-semibold">{comment.userName}
+                                <p className="font-semibold">{comment.username}
                                     <span>{stars(comment.ratingScore)}</span>
                                 </p>
                                 <p className="mt-4 text-gray-600">&emsp;&emsp;{comment.review}</p>

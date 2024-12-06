@@ -54,7 +54,7 @@ export default function Navigation(props) {
                                 </div>
 
                                 {/* Flyout menus */}
-                                <PopoverGroup className="hidden sm:ml-8 sm:block sm:self-stretch">
+                                <PopoverGroup className="hidden sm:ml-8 sm:block sm:self-stretch z-10">
                                     <div className="flex h-full space-x-8">
                                         <Popover className="flex">
                                             <div className="relative flex">
@@ -75,7 +75,7 @@ export default function Navigation(props) {
 
                                             <PopoverPanel
                                                 transition
-                                                className="absolute z-15 inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+                                                className="border-b shadow-lg border-gray-200 absolute z-15 inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
                                             >
                                                 {/* <div aria-hidden="true" className="absolute inset-0 top-1/2 bg-white shadow" /> */}
 
@@ -90,7 +90,7 @@ export default function Navigation(props) {
                                                                         >
                                                                         <div key={section.name}>
                                                                             <p id={`${section.name}-heading`}
-                                                                                className="font-medium hover:text-gray-800">
+                                                                                className="font-medium hover:text-indigo-600">
                                                                                 {section.name}
                                                                                 
                                                                             </p>
