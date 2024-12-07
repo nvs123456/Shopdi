@@ -37,7 +37,7 @@ export default function Navigation(props) {
             </div>
             <div className="bg-white">
                 <header className="relative">
-                    <nav aria-label="Top" className=" max-w-7xl lg:px-8">
+                    <nav aria-label="Top" className=" max-w-8px lg:px-32">
                         <div className=" border-gray-200">
                             <div className="flex h-16 items-center">
 
