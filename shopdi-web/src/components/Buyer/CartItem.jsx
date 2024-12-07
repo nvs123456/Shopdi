@@ -41,7 +41,7 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
                 {JSONToData(item.variant)}
 
             </div>
-            <span className="min-w-40 text-center">{item.price.toLocaleString()}</span>
+            <span className="min-w-40 text-center">{item.price.toLocaleString()} đ</span>
 
             <div className="min-w-40 flex flex-row justify-center">
                 <div className='flex flex-row max-h-8 w-fit'>
@@ -50,7 +50,7 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
                     <button className='bg-white  border-gray-300  px-2 border-x-2 border-y-2' onClick={() => { setQuantity(quantity + 1); isSelected(item) && setTotal(total + item.price) }}>+</button>
                 </div>
             </div>
-            <span className="min-w-40 text-center ">{(item.price * quantity).toLocaleString()}</span>
+            <span className="min-w-40 text-center ">{(item.price * quantity).toLocaleString()} đ</span>
             <div className='min-w-40 text-center'><button onClick={() => { onDelete(item.cartItemId); isSelected(item) && setTotal(total - item.price * quantity) }} className="text-center color-black hover:text-red">Delete</button></div>
         </div>
     )
