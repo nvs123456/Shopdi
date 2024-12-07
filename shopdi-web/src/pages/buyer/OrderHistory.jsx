@@ -63,14 +63,14 @@ function OrderHistory() {
 
     return (
         <div className="font-sans flex justify-center bg-[#F7FBFF] min-h-screen">
-            <div className="bg-white w-[70%] mt-10 mb-10 border-2 border-paleGray relative">
-                <div className="absolute left-[5%] top-2 font-bold text-[12px] md:text-[14px] lg:text-lg pb-1">
+            <div className="bg-white w-[70%] mt-10 mb-10 border-2 relative">
+                <div className="absolute left-[5%] top-6 font-bold text-[12px] md:text-[14px] lg:text-lg">
                     ORDER HISTORY
                 </div>
 
                 {/* Header Table */}
-                <table className={`absolute left-[5%] top-10 table-fixed w-[90%] text-center  border-collapse`}>
-                    <thead className={`text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] h-[30px] md:h-[40px] border-2 border-[#E4E7E9] bg-[#F2F4F5]`}>
+                <table className={`absolute left-[5%] top-20 table-fixed w-[90%] text-center  border-collapse`}>
+                    <thead className={`text-[12px] sm:text-[14px] md:text-[16px] h-[30px] md:h-[40px] border-2 border-[#E4E7E9] bg-[#F2F4F5]`}>
                     <tr>
                         <th className="w-[10%]">ID</th>
                         <th className="w-[20%]">STATUS</th>
@@ -79,24 +79,24 @@ function OrderHistory() {
                         <th className="w-[20%]">ACTION</th>
                     </tr>
                     </thead>
-                    <tbody className={`text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]`}>
+                    <tbody className={`text-[12px] sm:text-[14px] md:text-[16px]`}>
                     {orders.map((orderItem) => (
-                        <tr>
-                            <td className={`text-left pl-8`}>
+                        <tr className={"h-12 align-bottom"}>
+                            <td className={`text-left pl-10`}>
                                 {orderItem.orderId}
                             </td>
-                            <td className={`text-left pl-8 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
+                            <td className={`text-left pl-14 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
                                 : orderItem.orderStatus === 'CONFIRMED' ? 'text-[#4BB543]' : 
                                     orderItem.orderStatus === 'PROCESSING' ?'text-[#4BB543]' :
                                         orderItem.orderStatus === 'DELIVERING' ?'text-[#3A5BFF]]':
                                             orderItem.orderStatus === 'DELIVERED' ?'text-[#3A5BFF]' :'text-[#EE5858]'}`}>
                                 {orderItem.orderStatus}
                             </td>
-                            <td>
+                            <td className={"text-gray-600"}>
                                 {orderItem.deliveryDate.split(' ')[0]}
                             </td>
-                            <td className={`text-left pl-16`}>
-                                {orderItem.totalPrice.toLocaleString()}đ ({orderItem.totalItems} products)
+                            <td className={`text-left pl-16 text-gray-600`}>
+                                {orderItem.totalPrice.toLocaleString()} đ ({orderItem.totalItems} products)
                             </td>
                             <td onClick={() => {navigate(`/orders/${orderItem.orderId}`)}}
                                 className={`font-semibold cursor-pointer text-[#2DA5F3]`}>
@@ -109,7 +109,7 @@ function OrderHistory() {
                 </table>
 
                 {/* Pagination */}
-                <div className="flex justify-center absolute bottom-0 left-[45%] mt-5 mb-5">
+                <div className="flex justify-center absolute bottom-0 left-[45%] mb-3">
                     <Pagination totalPage={totalPages}/>
                 </div>
             </div>
