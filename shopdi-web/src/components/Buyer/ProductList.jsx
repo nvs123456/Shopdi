@@ -6,7 +6,7 @@ export default function ProductList({ products,page }) {
     const [isSortOpen, setSortOpen] = useState(false);
 
     return (
-        <div className="flex flex-col w-full items-center gap-y-4">
+        <div className="flex flex-col w-full items-center gap-y-4 bg-cloudBlue">
             {/* <div className="flex items-center justify-end mr-0">
                 <div className=" inline-block text-left">
                     <div>
@@ -30,7 +30,7 @@ export default function ProductList({ products,page }) {
 <<<<<<< HEAD
             </div> */}
 
-            <div className="self-center inline-grid grid-cols-4 gap-x-1 gap-y-1 font-sans min-h-screen">
+            <div className="self-center inline-grid grid-cols-4 gap-x-5 gap-y-5 font-sans min-h-screen p-5">
                 {products.map(product => <Product key={product.productId + product.productName} product={product} />)}
             </div>
             <Pagination pageObject={page}/>

@@ -45,7 +45,7 @@ public class CartItemServiceImpl implements CartItemService {
 
 
         boolean isValidVariant = product.getVariants().stream()
-                    .anyMatch(v -> v.getVariantDetail().equals(request.getVariant()));
+                    .anyMatch(v -> v.getVariantDetail() == null) || product.getVariants().stream().anyMatch(v -> v.getVariantDetail().equals(request.getVariant()));
         if (!isValidVariant) {
             throw new AppException(ErrorCode.VARIANT_NOT_FOUND);
         }
