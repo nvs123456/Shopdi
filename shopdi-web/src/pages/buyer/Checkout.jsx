@@ -8,6 +8,7 @@ import { GET, POST } from '../../api/GET'
 export default function Checkout({ ProductList }) {
     let location = useLocation()
     let tmp = location.state.selectedProducts;
+    console.log(tmp)
     let isBuyNow = location.state.isBuyNow;
     const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
@@ -115,7 +116,7 @@ export default function Checkout({ ProductList }) {
                                         } else {
                                             POST('orders/place-order', {
                                                 "addressId": currentAddress.addressId,
-                                                "selectedCartItemIds": tmp[i].cartItems.map((item) => item.cartItemId),
+                                                "selectedCartItemIds": tmp[i].cartItems.filter((item) => item.isSelected).map((item) => item.cartItemId),
                                                 orderNotes: document.getElementById("note").value
                                             }).then((res) => {
                                                 if (res.code === "OK") {

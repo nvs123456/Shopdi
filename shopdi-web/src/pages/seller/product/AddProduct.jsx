@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { POST, GET } from '@/api/GET';
 import { JSONToData } from '@/utils/todo';
+import SpinnerLoading from '@/components/SpinnerLoading/SpinnerLoading';
 export default function AddProduct() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -51,145 +52,150 @@ export default function AddProduct() {
     const [openPopup, setOpenPopup] = useState(false);
     const [isUploadingProduct, setIsUploadingProduct] = useState(false);
     if (!loading) return (
-        <div className='w-full flex flex-row'>
-            <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}>
-                <QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup}
-                    productForm={productForm} setProductForm={setProductForm}
-                    selectedImage={selectedImage}
-                    isUploadingProduct={isUploadingProduct} setIsUploadingProduct={setIsUploadingProduct} />
+        <div className='relative'>
+            <div className={` ${isUploadingProduct ? '' : 'hidden'} justify-center items-center place-content-center text-2xl text-center bg-white z-10 fixed p-8 rounded-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}>
+                Uploading images...<SpinnerLoading size={2} />
             </div>
-            <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
-
-            <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
-
-                <div>
-                    <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
-                    <span className="inline-block font-bold text-xl ml-4 p-2">Add Product</span>
-                    <span onClick={() => {
-                        const allInput = document.querySelectorAll('.required-field');
-                        for (let i = 0; i < allInput.length; i++) {
-                            if (allInput[i].value === '') {
-                                alert('Vui long nhap day du thong tin')
-                                return
-                            }
-                            if (!imagesEnough(selectedImage).code) {
-                                alert(imagesEnough(selectedImage).message)
-                                return
-                            }
-                        }
-                        onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm)
-                    }}
-                        className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
+            <div className={`${isUploadingProduct ? 'brightness-50' : ''} w-full flex flex-row`}>
+                <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}>
+                    <QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup}
+                        productForm={productForm} setProductForm={setProductForm}
+                        selectedImage={selectedImage}
+                        isUploadingProduct={isUploadingProduct} setIsUploadingProduct={setIsUploadingProduct} />
                 </div>
-                <div className='flex flex-col gap-4'>
-                    <div className='general-infor border-2 border-gray-200 p-4'>
-                        <div>
-                            <span className='font-bold text-xl'>General information</span>
-                        </div>
-                        <div>
-                            <label> Product name</label>
-                            <input onChange={(e) => {
-                                setProductForm({ ...productForm, productName: e.target.value })
+                <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
 
-                            }}
-                                type="text" required className='required-field outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
-                        </div>
-                        <div>
-                            <label> Product description</label>
-                            <textarea onChange={(e) => {
-                                setProductForm({ ...productForm, description: e.target.value })
-                            }}
-                                className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product description'></textarea>
+                <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
 
-                        </div>
-                    </div>
-                    <div className='media border-2 border-gray-200 p-4'>
-                        <div>
-                            <span className='font-bold text-xl'>Media (from 5 to 10 images)</span>
-                            <UploadAndDisplayImage selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
-                        </div>
-                    </div>
-                    <div className='category border-2 border-gray-200 p-4'>
-
-                        <div>
-                            <span className='font-bold text-xl'>Category</span>
-                        </div>
-                        <div className="flex flex-row gap-4">
-                            <div className=' flex flex-col'>
-                                <label> Category</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.parent} onChange={(e) => {
-
-                                    const tmp = categories.find((i) => i.name === e.target.value)
-                                    setCurrentCategory({ parent: e.target.value, child: tmp.childCategories[0].name })
-                                }}>
-                                    {categories.map((item, index) => {
-                                        return (
-                                            <option key={index} value={item.name}>{item.name}</option>
-                                        )
-                                    })}
-                                </select>
-                            </div>
-
-
-                            <div className=' flex flex-col'>
-                                <label>Sub Category</label>
-                                <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.child} onChange={(e) => {
-                                    setProductForm({ ...productForm, categoryName: e.target.value })
-                                    setCurrentCategory({ ...currentCategory, child: e.target.value })
+                    <div>
+                        <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
+                        <span className="inline-block font-bold text-xl ml-4 p-2">Add Product</span>
+                        <span onClick={() => {
+                            const allInput = document.querySelectorAll('.required-field');
+                            for (let i = 0; i < allInput.length; i++) {
+                                if (allInput[i].value === '') {
+                                    alert('Vui long nhap day du thong tin')
+                                    return
                                 }
-                                }>
-                                    {categories.find((i) => i.name === currentCategory.parent).childCategories.map((item, index) => {
-                                        return <option key={index} value={item.name}>{item.name}</option>
-                                    })}
+                                if (!imagesEnough(selectedImage).code) {
+                                    alert(imagesEnough(selectedImage).message)
+                                    return
+                                }
+                            }
+                            onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm)
+                        }}
+                            className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
+                    </div>
+                    <div className='flex flex-col gap-4'>
+                        <div className='general-infor border-2 border-gray-200 p-4'>
+                            <div>
+                                <span className='font-bold text-xl'>General information</span>
+                            </div>
+                            <div>
+                                <label> Product name</label>
+                                <input onChange={(e) => {
+                                    setProductForm({ ...productForm, productName: e.target.value })
+
+                                }}
+                                    type="text" required className='required-field outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
+                            </div>
+                            <div>
+                                <label> Product description</label>
+                                <textarea onChange={(e) => {
+                                    setProductForm({ ...productForm, description: e.target.value })
+                                }}
+                                    className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product description'></textarea>
+
+                            </div>
+                        </div>
+                        <div className='media border-2 border-gray-200 p-4'>
+                            <div>
+                                <span className='font-bold text-xl'>Media (from 5 to 10 images)</span>
+                                <UploadAndDisplayImage selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
+                            </div>
+                        </div>
+                        <div className='category border-2 border-gray-200 p-4'>
+
+                            <div>
+                                <span className='font-bold text-xl'>Category</span>
+                            </div>
+                            <div className="flex flex-row gap-4">
+                                <div className=' flex flex-col'>
+                                    <label> Category</label>
+                                    <select className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.parent} onChange={(e) => {
+
+                                        const tmp = categories.find((i) => i.name === e.target.value)
+                                        setCurrentCategory({ parent: e.target.value, child: tmp.childCategories[0].name })
+                                    }}>
+                                        {categories.map((item, index) => {
+                                            return (
+                                                <option key={index} value={item.name}>{item.name}</option>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
+
+
+                                <div className=' flex flex-col'>
+                                    <label>Sub Category</label>
+                                    <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.child} onChange={(e) => {
+                                        setProductForm({ ...productForm, categoryName: e.target.value })
+                                        setCurrentCategory({ ...currentCategory, child: e.target.value })
+                                    }
+                                    }>
+                                        {categories.find((i) => i.name === currentCategory.parent).childCategories.map((item, index) => {
+                                            return <option key={index} value={item.name}>{item.name}</option>
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="pricing border-2 border-gray-200 p-4 flex flex-col gap-2">
+                            <div>
+                                <span className='font-bold text-xl'>Pricing</span>
+                            </div>
+                            <div>
+                                <label className='block'>Price</label>
+                                <input
+                                    onWheel={event => event.currentTarget.blur()}
+                                    onChange={(e) => {
+                                        setProductForm({ ...productForm, price: e.target.value })
+                                    }}
+                                    type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                            </div>
+
+                            <div>
+                                <label className='block'>Brand</label>
+                                <input onChange={(e) => {
+                                    setProductForm({ ...productForm, brand: e.target.value })
+                                }}
+                                    type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                            </div>
+                            <div>
+                                <label className='block'>Status</label>
+                                <select className='border-2 border-gray-400 w-60 h-10 rounded' onChange={(e) => {
+                                    setProductForm({ ...productForm, status: e.target.value })
+                                }}>
+                                    <option value={"PUBLISHED"}>PUBLISHED</option>
+                                    <option value={"DRAFT"}>DRAFT</option>
+                                    <option value={"DELETED"}>DELETED</option>
+
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div className="pricing border-2 border-gray-200 p-4 flex flex-col gap-2">
-                        <div>
-                            <span className='font-bold text-xl'>Pricing</span>
-                        </div>
-                        <div>
-                            <label className='block'>Price</label>
-                            <input
-                                onWheel={event => event.currentTarget.blur()}
-                                onChange={(e) => {
-                                    setProductForm({ ...productForm, price: e.target.value })
-                                }}
-                                type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
-                        </div>
-                        
-                        <div>
-                            <label className='block'>Brand</label>
-                            <input onChange={(e) => {
-                                setProductForm({ ...productForm, brand: e.target.value })
-                            }}
-                                type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
-                        </div>
-                        <div>
-                            <label className='block'>Status</label>
-                            <select className='border-2 border-gray-400 w-60 h-10 rounded' onChange={(e) => {
-                                setProductForm({ ...productForm, status: e.target.value })
-                            }}>
-                                <option value={"PUBLISHED"}>PUBLISHED</option>
-                                <option value={"DRAFT"}>DRAFT</option>
-                                <option value={"DELETED"}>DELETED</option>
-
-                            </select>
-                        </div>
-                    </div>
-                    <div className="variant">
-                        <div>
-                            <span className='font-bold text-xl'>Variant<span className='text-gray-400'>  (Ex: Type: Color, Values: green, red,..)</span></span>
-                        </div>
-                        <div>
-                            <VariantsForm variants={variants} setVariants={setVariants} />
+                        <div className="variant">
+                            <div>
+                                <span className='font-bold text-xl'>Variant<span className='text-gray-400'>  (Ex: Type: Color, Values: green, red,..)</span></span>
+                            </div>
+                            <div>
+                                <VariantsForm variants={variants} setVariants={setVariants} />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
+                <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
 
+            </div>
         </div>
     )
     else return (<div>Loading...</div>)
@@ -250,13 +256,13 @@ const UploadAndDisplayImage = ({ selectedImage, setSelectedImage }) => {
     );
 };
 function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductForm, selectedImage, isUploadingProduct, setIsUploadingProduct }) {
-    if (isUploadingProduct) return (
-        <div className='bg-white p-4'>
-            <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
-                <Loading />
-            </div>
-        </div>
-    );
+    // if (isUploadingProduct) return (
+    //     <div className='bg-white p-4'>
+    //         <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
+    //             <Loading />
+    //         </div>
+    //     </div>
+    // );
     const navigate = useNavigate();
     if (variants.length === 0) {
         return (
@@ -264,7 +270,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                 <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
                     <span className='font-bold text-xl'>Enter quantity</span>
                     <input id="quantity" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' type='number' onChange={(e) => {
-                        setProductForm({ ...productForm,variantDetails:[{variantDetail:null,quantity:e.target.value}] })
+                        setProductForm({ ...productForm, variantDetails: [{ variantDetail: null, quantity: e.target.value }] })
                     }} />
                     <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Cancel</button>
                     <button onClick={() => {
@@ -273,15 +279,16 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                             return
                         }
                         POST("seller/add-product", productForm).then((res) => {
-                            if(res.code !== "OK") {
+                            if (res.code !== "OK") {
                                 alert(res.message)
                                 setOpenPopup(false)
                             }
-                            document.querySelectorAll(".save-product").forEach((item) => {
-                                item.disabled = true
-                                item.innerHTML = "Uploading..."
-                            })
+                            // document.querySelectorAll(".save-product").forEach((item) => {
+                            //     item.disabled = true
+                            //     item.innerHTML = "Uploading..."
+                            // })
                             if (res.code === "OK") {
+                                setIsUploadingProduct(true)
                                 uploadImages(res.result.productId, selectedImage).then((res) => {
                                     console.log(res)
                                     if (res.code === "OK") {
@@ -340,16 +347,14 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                     }
                     POST("seller/add-product", { ...productForm, quantity: tmp }
                     ).then((res) => {
-                        if(res.code !== "OK"){
+                        if (res.code !== "OK") {
                             setOpenPopup(false)
                             alert(res.message)
                             return
                         }
-                        document.querySelectorAll(".save-product").forEach((item) => {
-                            item.disabled = true
-                            item.innerHTML = "Uploading..."
-                        })
+
                         if (res.code === "OK") {
+                            setIsUploadingProduct(true)
                             uploadImages(res.result.productId, selectedImage).then((res) => {
                                 if (res.code === "OK") {
                                     navigate("/seller/products");

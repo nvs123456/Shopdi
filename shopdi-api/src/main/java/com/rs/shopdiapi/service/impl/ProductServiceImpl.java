@@ -64,6 +64,7 @@ public class ProductServiceImpl implements ProductService {
                 .category(category)
                 .seller(seller)
                 .tags(tags)
+                .status(ProductStatusEnum.valueOf(request.getStatus()))
                 .build();
 
         category.getProducts().add(product);
@@ -113,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setBrand(productRequest.getBrand());
-
+        product.setStatus(ProductStatusEnum.valueOf(productRequest.getStatus()));
         Category category = categoryRepository.findByName(productRequest.getCategoryName()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         product.setCategory(category);
 
@@ -302,6 +303,7 @@ public class ProductServiceImpl implements ProductService {
                 .productImage(product.getImageUrls().isEmpty() ? null : product.getImageUrls().get(0))
                 .productName(product.getProductName())
                 .price(product.getPrice())
+                .status(product.getStatus().name())
                 .category(product.getCategory().getName())
                 .categoryId(product.getCategory().getId())
                 .stock(product.getVariants().stream().mapToInt(Variant::getQuantity).sum())
@@ -319,6 +321,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .brand(product.getBrand())
+                .status(product.getStatus().name())
                 .imageUrls(product.getImageUrls())
                 .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
                 .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)

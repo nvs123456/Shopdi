@@ -30,7 +30,7 @@ public class ProductDetailResponse {
     List<VariantResponse> variants;
     SellerResponse seller;
     int soldQuantity;
-
+    String status;
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

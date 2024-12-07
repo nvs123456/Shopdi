@@ -109,6 +109,7 @@ export default function CartPage({ CartId }) {
                 }
             }
         }
+        console.log(tmp)
         setSelectedProducts(tmp)
     }
     return (
