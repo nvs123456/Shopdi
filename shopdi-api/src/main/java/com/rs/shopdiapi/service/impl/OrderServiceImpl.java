@@ -2,6 +2,7 @@ package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.BuyNowRequest;
 import com.rs.shopdiapi.domain.dto.request.CreateOrderRequest;
+import com.rs.shopdiapi.domain.dto.request.PaymentRequest;
 import com.rs.shopdiapi.domain.dto.response.AddressResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderItemResponse;
 import com.rs.shopdiapi.domain.dto.response.OrderResponse;
@@ -12,23 +13,29 @@ import com.rs.shopdiapi.domain.entity.Cart;
 import com.rs.shopdiapi.domain.entity.CartItem;
 import com.rs.shopdiapi.domain.entity.Order;
 import com.rs.shopdiapi.domain.entity.OrderItem;
+import com.rs.shopdiapi.domain.entity.Payment;
 import com.rs.shopdiapi.domain.entity.Product;
 import com.rs.shopdiapi.domain.entity.User;
 import com.rs.shopdiapi.domain.entity.Variant;
 import com.rs.shopdiapi.domain.enums.ErrorCode;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
+import com.rs.shopdiapi.domain.enums.PaymentMethodEnum;
+import com.rs.shopdiapi.domain.enums.PaymentStatusEnum;
 import com.rs.shopdiapi.exception.AppException;
 import com.rs.shopdiapi.mapper.OrderMapper;
 import com.rs.shopdiapi.repository.AddressRepository;
 import com.rs.shopdiapi.repository.CartRepository;
 import com.rs.shopdiapi.repository.OrderItemRepository;
 import com.rs.shopdiapi.repository.OrderRepository;
+import com.rs.shopdiapi.repository.PaymentRepository;
 import com.rs.shopdiapi.repository.ProductRepository;
 import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.repository.VariantRepository;
 import com.rs.shopdiapi.service.CartService;
 import com.rs.shopdiapi.service.OrderService;
+import com.rs.shopdiapi.service.PaymentService;
 import com.rs.shopdiapi.service.RevenueService;
+import com.rs.shopdiapi.util.VNPayUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public String createOrder(Long userId, CreateOrderRequest request) {
+    public List<OrderResponse> createOrder(Long userId, CreateOrderRequest request) {
         Cart cart = cartRepository.findByUserId(userId);
         if (cart.getCartItems().isEmpty()) {
             throw new AppException(ErrorCode.CART_EMPTY);
@@ -90,6 +98,7 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, List<CartItem>> itemsBySeller = selectedItems.stream()
                 .collect(Collectors.groupingBy(item -> item.getProduct().getSeller().getId()));
 
+        List<OrderResponse> orderResponses = new ArrayList<>();
         itemsBySeller.forEach((sellerId, cartItems) -> {
             BigDecimal totalPrice = calculateTotalPrice(cartItems);
 
@@ -130,19 +139,29 @@ public class OrderServiceImpl implements OrderService {
                 order.getOrderItems().add(orderItem);
                 variantRepository.save(selectedVariant);
             });
+            Payment payment = Payment.builder()
+                    .order(order)
+                    .amount(totalPrice)
+                    .method(request.getPaymentMethod())
+                    .status(PaymentStatusEnum.PENDING)
+                    .build();
+            order.getPayments().add(payment);
 
             orderRepository.save(order);
+            OrderResponse orderResponse = mapToOrderResponse(order);
+            orderResponses.add(orderResponse);
         });
+
 
         selectedItems.forEach(cartItem -> cart.getCartItems().remove(cartItem));
         cartService.updateCartSummary(cart.getId());
 
-        return "Order created successfully for all sellers.";
+        return orderResponses;
     }
 
     @Override
     @Transactional
-    public String buyNow(Long userId, Long productId, BuyNowRequest request) {
+    public OrderResponse buyNow(Long userId, Long productId, BuyNowRequest request) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
@@ -181,22 +200,29 @@ public class OrderServiceImpl implements OrderService {
                 .orderNotes(request.getOrderNotes())
                 .orderItems(List.of(orderItem))
                 .build();
+        Payment payment = Payment.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .order(order)
+                .amount(totalPrice)
+                .method(request.getPaymentMethod())
+                .status(PaymentStatusEnum.PENDING)
+                .build();
+        order.getPayments().add(payment);
 
         orderRepository.save(order);
         orderItem.setOrder(order);
         orderItemRepository.save(orderItem);
         variantRepository.save(selectedVariant);
 
-        return "Order created successfully";
-    }
 
+        return mapToOrderResponse(order);
+    }
 
     private BigDecimal calculateTotalPrice(List<CartItem> items) {
         return items.stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
 
     @Transactional
     @Override
@@ -362,6 +388,9 @@ public class OrderServiceImpl implements OrderService {
                 .orderItems(order.getOrderItems().stream()
                         .map(this::mapToOrderItemResponse)
                         .toList())
+                .paymentMethod(order.getPayments().get(0).getMethod().name())
+                .paymentStatus(order.getPayments().get(0).getStatus().name())
+                .transactionId(order.getPayments().get(0).getTransactionId())
                 .orderNotes(order.getOrderNotes())
                 .build();
     }

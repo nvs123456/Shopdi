@@ -75,6 +75,12 @@ public enum ErrorCode {
     NOT_ENOUGH_STOCK("NOT_ENOUGH_STOCK", "Not enough stock", HttpStatus.BAD_REQUEST),
 
     NOT_PURCHASED_PRODUCT("NOT_PURCHASED_PRODUCT", "You have not purchased this product", HttpStatus.BAD_REQUEST),
+
+    INVALID_SIGNATURE("INVALID_SIGNATURE", "Invalid signature", HttpStatus.BAD_REQUEST),
+
+    PAYMENT_FAILED("PAYMENT_FAILED", "Payment failed", HttpStatus.BAD_REQUEST),
+
+    PAYMENT_NOT_FOUND("PAYMENT_NOT_FOUND", "Payment not found", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {

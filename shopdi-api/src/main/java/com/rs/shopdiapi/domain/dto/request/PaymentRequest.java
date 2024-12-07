@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentRequest {
     BigDecimal amount;
-    String bankCode;
-    Long orderId;
+    String transactionRef;
+    String ipAddress;
+    String orderInfo;
 }

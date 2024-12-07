@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.domain.entity;
 
+import com.rs.shopdiapi.domain.enums.PaymentMethodEnum;
 import com.rs.shopdiapi.domain.enums.PaymentStatusEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,29 +28,21 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Payment extends BaseEntity<Long> {
+    @Column(nullable = true)
+    String transactionId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     Order order;
 
-    @Column(name = "amount", nullable = false)
+    @Column(nullable = false)
     BigDecimal amount;
 
-    @Column(name = "transaction_ref", unique = true, nullable = false)
-    String transactionRef;
-
-    @JoinColumn(name = "payment_method_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    PaymentMethod paymentMethod;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     PaymentStatusEnum status;
 
-    @Column(name = "response_code")
-    String responseCode;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    PaymentMethodEnum method;
 }

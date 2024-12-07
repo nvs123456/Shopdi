@@ -59,7 +59,9 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/auth/verify-email"
+                                "/auth/verify-email",
+                                "/auth/reset-password",
+                                "/payment/vn-pay-return/**"
                         ).permitAll(
                         )
                         .anyRequest()
