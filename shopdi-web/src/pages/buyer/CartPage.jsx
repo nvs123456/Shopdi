@@ -114,12 +114,12 @@ export default function CartPage({ CartId }) {
     }
     return (
         <>
-            <div className="mt-8 ml-32 mr-32">
+            <div className="py-12 px-32 bg-cloudBlue">
                 <Cart sellerGroups={productsInCart.sellerGroups} selectedProducts={selectedProducts} onSelect={onSelect} setTotal={setTotal} total={total} onDelete={onDelete} />
 
-                <div className="bg-gray-200 h-20 sticky w-full mr-32 bottom-0 p-4 right-0 left-0 mt-8 mb-8 flex flex-row justify-end gap-4">
-                    <div className="text-2xl">Total : {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
-                    <Link to="/buyer/checkout" onClick={
+                <div className="bg-gray-200 h-20 sticky w-full bottom-5 p-4 flex flex-row justify-end gap-10 ">
+                    <div className="text-2xl my-auto font-bold font-sans">TOTAL: {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
+                    <Link className={"bg-[#FA8232] rounded-sm hover:bg-orangeRed"} to="/buyer/checkout" onClick={
                         (e) => {
                             let isSelected = false
                             for(let i = 0; i < selectedProducts.length; i++){
@@ -136,7 +136,7 @@ export default function CartPage({ CartId }) {
                                 alert("Please select at least one product");
                             }
                         }
-                    } state={{isBuyNow: false, selectedProducts: selectedProducts }}><button className="bg-red text-white p-2">Checkout</button></Link>
+                    } state={{isBuyNow: false, selectedProducts: selectedProducts }}><button className=" text-white px-5 flex items-center justify-center h-full font-bold font-sans">PROCEED TO CHECKOUT</button></Link>
                 </div>
 
             </div>

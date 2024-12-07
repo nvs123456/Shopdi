@@ -21,7 +21,7 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
     return (
         <div className="grid grid-cols-8 h-20 items-center font-sans">
             <div className='col-span-3 flex flex-row'>
-                <div className="h-fit">
+                <div className="h-fit my-auto ml-1 ">
                     <input className="w-4 h-4" type="checkbox" defaultChecked={isSelected(item)} onChange={(e) => {
                         if (e.target.checked) {
                             setTotal(total + item.price * quantity);
@@ -33,9 +33,9 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
 
                     }}></input>
                 </div>
-                <div onClick={() => { navigate(`/product/${item.productId}`) }}> <img className="w-20 h-20 min-w-20 ml-8" src={item.productImage} alt={item.name} /></div>
+                <div onClick={() => { navigate(`/product/${item.productId}`) }}> <img className="w-20 h-20 min-w-20 ml-4" src={item.productImage} alt={item.name} /></div>
                 {/* <span className="h-fit grow pl-4">{item.productName}</span> */}
-                <div className='overflow-hidden'><p className='break-words overflow-hidden max-h-20'>{item.productName}</p></div>
+                <div className='overflow-hidden my-auto ml-4'><p className='break-words overflow-hidden max-h-20'>{item.productName}</p></div>
             </div>
             <div className="min-w-40 text-center relative" >
                 {JSONToData(item.variant)}
@@ -51,7 +51,7 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
                 </div>
             </div>
             <span className="min-w-40 text-center ">{(item.price * quantity).toLocaleString()}</span>
-            <div className='min-w-40 text-center'><button onClick={() => { onDelete(item.cartItemId); isSelected(item) && setTotal(total - item.price * quantity) }} className="text-center color-black hover:text-red">Xóa</button></div>
+            <div className='min-w-40 text-center'><button onClick={() => { onDelete(item.cartItemId); isSelected(item) && setTotal(total - item.price * quantity) }} className="text-center color-black hover:text-red">Delete</button></div>
         </div>
     )
 }
