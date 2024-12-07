@@ -300,8 +300,8 @@ function OrderDetails() {
                     </div>
 
                     {/* Billing and Shipping Section */}
-                    <div className=" bg-white p-2 md:p-6 mb-0">
-                        <div className="md:grid md:grid-cols-3 md:gap-6">
+                    <div className=" bg-white p-2 md:p-6 mb-0 ml-6">
+                        <div className="md:grid md:grid-cols-3 md:gap-8">
                             <div className={`border-r-2`}>
                                 <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Billing Address</div>
                                 <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
