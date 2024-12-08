@@ -28,8 +28,8 @@ export default function ShopView() {
     return (
         <div className={"bg-cloudBlue pt-12"}>
             <div className="text-center mx-12"><ShopBar sellerId={sellerId} /></div>
-            <div className="flex flex-row">
-                <div className="w-1/4">
+            <div className="flex flex-row mr-4">
+                <div className="w-64 ml-12 mt-12 ">
                     <Filter allProducts={allProducts} setProducts={setProducts} />
 
                 </div>
