@@ -67,7 +67,7 @@ function Address({ address, currentAddress, setCurrentAddress }) {
             </div>
             <div>
                 <div htmlFor={`address${address.addressId}`} className="flex flex-row">
-                    <div className="pr-2 font-bold">{address.firstName} {address.lastName}</div>
+                    <div className="pr-2 font-semibold">{address.firstName} {address.lastName}</div>
                     <div className="text-gray-600">(Phone number:){address.phone}</div>
                 </div>
                 <div className="text-gray-600">{address.address}</div>

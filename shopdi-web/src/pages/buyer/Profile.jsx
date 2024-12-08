@@ -107,7 +107,7 @@ function AccountInfo({ info }) {
             <p className="text-gray-500 mb-2 ml-4">Phone: {info.mobileNo}</p>
             <button
                 onClick={() => (window.location.href = "/editprofile")}
-                className="xl:absolute xl:bottom-5 px-1 py-0.5 text-[14px] lg:mt-4 lg:px-4 lg:py-2 lg:text-sm ml-4 bg-[#FA8232] rounded text-white font-bold font-sans hover:bg-orangeRed"
+                className="xl:absolute xl:bottom-5 px-1 py-0.5 text-[14px] lg:mt-4 lg:px-4 lg:py-2 lg:text-sm ml-4 bg-[#FA8232] rounded text-white font-semibold font-sans hover:bg-orangeRed"
             >
                 Edit Account
             </button>
@@ -133,7 +133,7 @@ function BillingAddress({ address }) {
             )}
             <button
                 onClick={() => (window.location.href = "/editprofile")}
-                className="xl:absolute xl:bottom-5 px-1 py-0.5 text-[14px] lg:mt-4 lg:px-4 lg:py-2 lg:text-sm ml-4 bg-[#FA8232] rounded text-white font-bold font-sans hover:bg-orangeRed"
+                className="xl:absolute xl:bottom-5 px-1 py-0.5 text-[14px] lg:mt-4 lg:px-4 lg:py-2 lg:text-sm ml-4 bg-[#FA8232] rounded text-white font-semibold font-sans hover:bg-orangeRed"
             >
                 Edit Address
             </button>
@@ -200,11 +200,11 @@ function RecentOrders({orders}) {
             {orders.length > 0 ? <table className="table-fixed mt-4 w-full text-center text-[10px] lg:text-[16px] text-black ">
                 <thead>
                 <tr className={`bg-[#F2F4F5] border-2 border-[#E4E7E9]`}>
-                    <th className="xl:w-[10%] py-3 border-b">ORDER ID</th>
-                    <th className="xl:w-[20%] py-2 border-b">STATUS</th>
-                    <th className="xl:w-[20%] py-2 border-b">DATE</th>
-                    <th className="xl:w-[30%] py-2 border-b">TOTAL</th>
-                    <th className="xl:w-[20%] py-2 border-b">ACTION</th>
+                    <th className="xl:w-[10%] py-3 border-b font-semibold">ORDER ID</th>
+                    <th className="xl:w-[20%] py-2 border-b font-semibold">STATUS</th>
+                    <th className="xl:w-[20%] py-2 border-b font-semibold">DATE</th>
+                    <th className="xl:w-[30%] py-2 border-b font-semibold">TOTAL</th>
+                    <th className="xl:w-[20%] py-2 border-b font-semibold">ACTION</th>
                 </tr>
                 </thead>
                 <tbody>

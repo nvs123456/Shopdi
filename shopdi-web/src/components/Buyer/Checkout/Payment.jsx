@@ -6,7 +6,7 @@ export default function Payment() {
     return (
         <div className="flex flex-col gap-4 px-8 pt-5 pb-8 border-2 border-[#E4E7E9] mx-10 mb-8">
             <div>
-                <label className="text-xl font-bold">Payment Method</label>
+                <label className="text-xl font-semibold">Payment Method</label>
                 <div className="flex flex-row justify-center mt-6">
                     <div className="flex flex-row">
                         

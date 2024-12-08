@@ -118,7 +118,7 @@ export default function CartPage({ CartId }) {
                 <Cart sellerGroups={productsInCart.sellerGroups} selectedProducts={selectedProducts} onSelect={onSelect} setTotal={setTotal} total={total} onDelete={onDelete} />
 
                 <div className="bg-[#F2F4F5] h-20 sticky w-full bottom-0 p-4 flex flex-row justify-end gap-10 ">
-                    <div className="text-2xl my-auto font-bold font-sans">TOTAL: {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
+                    <div className="text-2xl my-auto font-semibold font-sans">TOTAL: {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
                     <Link className={"bg-[#FA8232] rounded hover:bg-orangeRed"} to="/buyer/checkout" onClick={
                         (e) => {
                             let isSelected = false
@@ -136,7 +136,7 @@ export default function CartPage({ CartId }) {
                                 alert("Please select at least one product");
                             }
                         }
-                    } state={{isBuyNow: false, selectedProducts: selectedProducts }}><button className=" text-white px-5 flex items-center justify-center h-full font-bold font-sans">PROCEED TO CHECKOUT</button></Link>
+                    } state={{isBuyNow: false, selectedProducts: selectedProducts }}><button className=" text-white px-5 flex items-center justify-center h-full font-semibold font-sans">PROCEED TO CHECKOUT</button></Link>
                 </div>
 
             </div>

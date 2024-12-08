@@ -72,11 +72,11 @@ function OrderHistory() {
                 <table className={`absolute left-[5%] top-20 table-fixed w-[90%] text-center  border-collapse`}>
                     <thead className={`text-[12px] sm:text-[14px] md:text-[16px] h-[30px] md:h-[40px] border-2 border-[#E4E7E9] bg-[#F2F4F5]`}>
                     <tr>
-                        <th className="w-[10%]">ID</th>
-                        <th className="w-[20%]">STATUS</th>
-                        <th className="w-[20%]">DATE</th>
-                        <th className="w-[30%]">TOTAL</th>
-                        <th className="w-[20%]">ACTION</th>
+                        <th className="w-[10%] font-semibold">ID</th>
+                        <th className="w-[20%] font-semibold">STATUS</th>
+                        <th className="w-[20%] font-semibold">DATE</th>
+                        <th className="w-[30%] font-semibold">TOTAL</th>
+                        <th className="w-[20%] font-semibold">ACTION</th>
                     </tr>
                     </thead>
                     <tbody className={`text-[12px] sm:text-[14px] md:text-[16px]`}>
@@ -85,7 +85,7 @@ function OrderHistory() {
                             <td className={`text-left pl-12`}>
                                 {orderItem.orderId}
                             </td>
-                            <td className={`text-left pl-14 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
+                            <td className={`text-left pl-16 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
                                 : orderItem.orderStatus === 'CONFIRMED' ? 'text-[#4BB543]' : 
                                     orderItem.orderStatus === 'PROCESSING' ?'text-[#4BB543]' :
                                         orderItem.orderStatus === 'DELIVERING' ?'text-[#3A5BFF]]':
@@ -95,7 +95,7 @@ function OrderHistory() {
                             <td className={"text-gray-600"}>
                                 {orderItem.deliveryDate.split(' ')[0]}
                             </td>
-                            <td className={`text-left pl-16 text-gray-600`}>
+                            <td className={`text-left pl-20 text-gray-600`}>
                                 {orderItem.totalPrice.toLocaleString()} đ ({orderItem.totalItems} products)
                             </td>
                             <td onClick={() => {navigate(`/orders/${orderItem.orderId}`)}}

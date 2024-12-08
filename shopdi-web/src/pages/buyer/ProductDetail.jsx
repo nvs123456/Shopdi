@@ -191,11 +191,11 @@ export default function ProductDetail() {
                             </div>
                             {isBuyNowWithoutAttribute ? <div className='text-red message'></div> : null}
                             <div className='flex flex-row mt-2'>
-                                <button className='bg-[#FA8232] font-sans text-white rounded cursor-pointer px-4 hover:bg-orangeRed font-bold'
+                                <button className='bg-[#FA8232] font-sans text-white rounded cursor-pointer px-4 hover:bg-orangeRed font-semibold'
                                     onClick={handleAddToCart}>Add to cart
                                 </button>
                                 <button
-                                    className='ml-6 bg-white font-sans text-[#FA8232] rounded cursor-pointer  border-[#FA8232]  p-2 px-4 border-2 font-bold hover:bg-orangeRed hover:text-white hover:border-orangeRed'
+                                    className='ml-6 bg-white font-sans text-[#FA8232] rounded cursor-pointer  border-[#FA8232]  p-2 px-4 border-2 font-semibold hover:bg-orangeRed hover:text-white hover:border-orangeRed'
                                     onClick={handleBuyNow}>Buy now
                                 </button>
                             </div>
@@ -203,7 +203,7 @@ export default function ProductDetail() {
                     </div>
                     <ShopBar sellerId={product.seller.sellerId} />
                     <div className="description  bg-white flex flex-col gap-x-8 border-[1px] p-6">
-                        <div className="text-2xl mb-2 font-bold font-sans">
+                        <div className="text-2xl mb-2 font-semibold font-sans">
                             <h2>Description</h2>
                         </div>
                         <div>
@@ -212,7 +212,7 @@ export default function ProductDetail() {
                     </div>
                     <div className="description bg-white flex flex-row gap-x-8 border-[1px] p-6 mb-12">
                         <div className="w-full">
-                            <div className="text-2xl mb-2 font-bold font-sans">
+                            <div className="text-2xl mb-2 font-semibold font-sans">
                                 <h2>Bình luận</h2>
                             </div>
                             <div className="font-sans white-space-pre">
@@ -227,7 +227,7 @@ export default function ProductDetail() {
                                 <div className=''>
                                     {[1, 2, 3, 4, 5].map((i) => i <= Math.round(review.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "30px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "30px" }} />)}
                                 </div>
-                                <div className=' text-xl font-bold'>
+                                <div className=' text-xl font-semibold'>
                                     {review.count} Reviews
                                 </div>
                             </div>
