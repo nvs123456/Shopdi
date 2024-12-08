@@ -213,7 +213,7 @@ export default function ProductDetail() {
                     <div className="description bg-white flex flex-row gap-x-8 border-[1px] p-6 mb-12">
                         <div className="w-full">
                             <div className="text-2xl mb-2 font-semibold font-sans">
-                                <h2>Bình luận</h2>
+                                <h2>Comment</h2>
                             </div>
                             <div className="font-sans white-space-pre">
                                 <Comments productId={product.productId} />
