@@ -57,11 +57,11 @@ function Review({isModalOpen,setIsModalOpen, productId}) {
                 </div>
                 <div className='flex justify-between'>
                     <button onClick={() => handlePublishReview()}
-                        className='flex bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-36 md:h-10 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
+                        className='flex bg-[#FA8232] rounded text-white h-6 w-24 md:w-36 md:h-10 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
                         {isAPICalling && <SpinnerLoading size={1}/>}
                         <span className="mx-auto my-auto">PUBLISH REVIEW</span>
                     </button>
-                    <button onClick={() => setIsModalOpen(false)} className='bg-[#FA8232] rounded-sm text-white h-6 w-24 md:w-36 md:h-10 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
+                    <button onClick={() => setIsModalOpen(false)} className='bg-[#FA8232] rounded text-white h-6 w-24 md:w-36 md:h-10 text-[14px] p-1 md:p-2 font-bold font-sans hover:bg-orangeRed'>
                         REVIEW LATER
                     </button>
                 </div>

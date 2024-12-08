@@ -29,7 +29,7 @@ export default function AddressSelection({ onClose, addresses, setAllAddress, cu
                             <div className="flex flex-row justify-end">
                                 <button onClick={() => {
                                     setIsAdding(false)
-                                }} className="bg-[#FA8232] rounded-sm font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 mb-8 mr-5">Cancel</button>
+                                }} className="bg-red rounded font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 mb-8 mr-5">Cancel</button>
                                 <button onClick={() => {
                                     POST(`address/shipping`, newAddress).then((data) => {
                                         if (data.code === "OK") {
@@ -40,7 +40,7 @@ export default function AddressSelection({ onClose, addresses, setAllAddress, cu
                                     // setAllAddress([...addresses, newAddress]);
                                     // console.log(addresses)
                                     setIsAdding(false)
-                                }} className="bg-[#FA8232] rounded-sm font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 mb-8 mr-6">Confirm</button>
+                                }} className="bg-[#FA8232] rounded font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 mb-8 mr-6">Confirm</button>
                             </div>
                         </>
                     ) : (<>
@@ -50,9 +50,9 @@ export default function AddressSelection({ onClose, addresses, setAllAddress, cu
 
                         </div>
                         <div className="flex flex-row justify-end ">
-                            <button onClick={() => setIsAdding(true)} className="bg-[#FA8232] rounded-sm font-sans hover:bg-orangeRed cursor-pointer text-white h-12 p-2 px-4 my-4 mr-5">Add New Address</button>
-                            <button onClick={() => onClose()} className="bg-[#FA8232] rounded-sm font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 my-4 mr-5">Cancel</button>
-                            <button onClick={() => onClose()} className="bg-[#FA8232] rounded-sm font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 my-4 mr-6">Confirm</button>
+                            <button onClick={() => setIsAdding(true)} className="bg-[#FA8232] rounded font-sans hover:bg-orangeRed cursor-pointer text-white h-12 p-2 px-4 my-4 mr-5">Add New Address</button>
+                            <button onClick={() => onClose()} className="bg-red rounded font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 my-4 mr-5">Cancel</button>
+                            <button onClick={() => onClose()} className="bg-[#FA8232] rounded font-sans hover:bg-orangeRed cursor-pointer text-white w-24 p-2 px-4 my-4 mr-6">Confirm</button>
                         </div>
                     </>)
             }
@@ -100,7 +100,7 @@ function AddAddress({newAddress, setNewAddress}) {
                         </label>
                         <input
                             type="text"
-                            className="w-full border-[#E4E7E9] border-2 rounded-sm p-2"
+                            className="w-full border-[#E4E7E9] border-2 rounded p-2"
                             placeholder={field.placeholder}
                             onChange={(e) => {
                                 setNewAddress({ ...newAddress, [field.label]: e.target.value })

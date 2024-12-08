@@ -349,7 +349,7 @@ const EditProfile = () => {
                                             setIsEdit(true);
                                             setForm({...form, firstName: e.target.value});
                                         }}
-                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
+                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded p-2 col-span-2"
                                     />
                                 </div>
                                 <div>
@@ -364,7 +364,7 @@ const EditProfile = () => {
                                             setIsEdit(true);
                                             setForm({...form, lastName: e.target.value});
                                         }}
-                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
+                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded p-2 col-span-2"
                                     />
                                 </div>
                                 <div>
@@ -376,7 +376,7 @@ const EditProfile = () => {
                                         type="text"
                                         defaultValue={info.email}
                                         onChange={handleEmailChange}
-                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
+                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded p-2 col-span-2"
                                     />
                                     {errorEmail &&
                                         <p className="text-[10px] md:text-[12px] lg:text-[14px] text-red">Email
@@ -392,7 +392,7 @@ const EditProfile = () => {
                                         type="number"
                                         defaultValue={info.mobileNo}
                                         onChange={handleNumberChange}
-                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded-sm p-2 col-span-2"
+                                        className="w-full border-[#E4E7E9] text-[12px] lg:text[16px] h-[40px] border-2 rounded p-2 col-span-2"
                                     />
                                     {errorNo &&
                                         <p className=" text-[10px] md:text-[12px] lg:text-[14px] text-red">Số điện
@@ -403,7 +403,7 @@ const EditProfile = () => {
                             {isEdit && <button onClick={() => {
                                 openPopup();
                             }}
-                                               className="bg-[#FA8232] text-[14px] text-white py-1 px-1 mt-1 md:py-2 md:px-4 md:mt-4 rounded-sm hover:bg-orange-600">
+                                               className="bg-[#FA8232] text-[14px] text-white py-1 px-1 mt-1 md:py-2 md:px-4 md:mt-4 rounded hover:bg-orange-600">
                                 Save Changes
                             </button>
                             }
@@ -472,7 +472,7 @@ const EditProfile = () => {
                                                         });
                                                     }}
                                                     required={true}
-                                                    className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded-sm p-2"
+                                                    className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded p-2"
                                                     placeholder={field.placeholder}
                                                 />
                                             </div>
@@ -487,11 +487,11 @@ const EditProfile = () => {
                                         </div>
                                     </div>
                                     <button onClick={handleAddAddress}
-                                            className="bg-[#FA8232] text-white py-2 px-4 mt-2 rounded-sm hover:bg-orange-600">
+                                            className="bg-[#FA8232] text-white py-2 px-4 mt-2 rounded hover:bg-orange-600">
                                         Save Changes
                                     </button>
                                     <button onClick={closeAddressPopup}
-                                            className="bg-gray-500 mx-2 text-white py-2 px-4 mt-2 rounded-sm hover:bg-gray-600">
+                                            className="bg-gray-500 mx-2 text-white py-2 px-4 mt-2 rounded hover:bg-gray-600">
                                         Cancel
                                     </button>
                                 </div>
@@ -570,7 +570,7 @@ const EditProfile = () => {
                                                                             });
                                                                         }}
                                                                         required={true}
-                                                                        className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded-sm p-2"
+                                                                        className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded p-2"
                                                                         placeholder={field.placeholder}
                                                                     />
                                                                 </div>
@@ -578,14 +578,14 @@ const EditProfile = () => {
 
                                                         </div>
                                                         <button onClick={() => handleUpdateAddress(address.addressId)}
-                                                                className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded-sm hover:bg-orange-600">
+                                                                className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded hover:bg-orange-600">
                                                             Save Changes
                                                         </button>
                                                         <button onClick={() => {
                                                             setIsUpdatingAddress(false);
                                                             setAddressUpdateForm({});
                                                         }}
-                                                                className="bg-gray-500 mx-2 text-white py-2 px-4 mt-4 rounded-sm hover:bg-gray-600">
+                                                                className="bg-gray-500 mx-2 text-white py-2 px-4 mt-4 rounded hover:bg-gray-600">
                                                             Cancel
                                                         </button>
                                                     </div>
@@ -638,14 +638,14 @@ const EditProfile = () => {
                                         onChange={(e) => {
                                             setPasswordForm({...passwordForm, [field.labelForm]: e.target.value});
                                         }}
-                                        className="w-full md:h-[50px] border-[#E4E7E9] border-2 rounded-sm p-2"
+                                        className="w-full md:h-[50px] border-[#E4E7E9] border-2 rounded p-2"
                                         placeholder="••••••••"
                                     />
                                 </div>
                             ))}
                         </div>
                         <button onClick={() => handleChangePassword()}
-                                className="bg-[#FA8232] text-white flex h-[30px] xl:h-[40px] xl:my-2 items-center px-1 mb-1 rounded-sm hover:bg-orange-600">
+                                className="bg-[#FA8232] text-white flex h-[30px] xl:h-[40px] xl:my-2 items-center px-1 mb-1 rounded hover:bg-orange-600">
                             <span className={`text-[12px] md:text-[16px] `}> Change Password </span>
                         </button>
                     </section>

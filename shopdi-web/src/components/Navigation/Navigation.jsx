@@ -32,10 +32,10 @@ export default function Navigation(props) {
     }
     return (
         <div className={`font-sans`}>
-            <div className={'bg-yaleBlue text-yaleBlue text-[18px]'}>
+            <div className={'bg-yaleBlue text-yaleBlue text-[18px] p-1'}>
                 header
             </div>
-            <div className="bg-white">
+            <div className="bg-white py-2">
                 <header className="relative">
                     <nav aria-label="Top" className=" max-w-8px lg:px-32">
                         <div className=" border-gray-200">
@@ -48,7 +48,7 @@ export default function Navigation(props) {
                                         <img
                                             alt="Logo"
                                             src={shopdiLogo}
-                                            className="h-[50px] w-[50px] md:h-14 md:w-auto"
+                                            className="h-[50px] w-[50px] md:h-16 md:w-auto"
                                         />
                                     </a>
                                 </div>
@@ -59,7 +59,7 @@ export default function Navigation(props) {
                                         <Popover className="flex">
                                             <div className="relative flex">
                                                 <PopoverButton
-                                                    className="relative z-10 -mb-px outline-none flex items-center border-b-2  border-transparent pt-px text-sm font-medium text-gray-700 transition-colors duration-200 ease-out hover:text-gray-800 data-[open]:border-indigo-600 data-[open]:text-indigo-600">
+                                                    className="relative z-10 -mb-px outline-none flex items-center border-b-2  border-transparent pt-px font-medium text-gray-700 transition-colors duration-200 ease-out hover:text-gray-800 data-[open]:border-indigo-600 data-[open]:text-indigo-600">
                                                     Categories
                                                     <svg
                                                         className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -75,7 +75,7 @@ export default function Navigation(props) {
 
                                             <PopoverPanel
                                                 transition
-                                                className="border-b shadow-lg border-gray-200 absolute z-15 inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+                                                className="border-b shadow-lg border-gray-200 absolute z-15 inset-x-0 top-full text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
                                             >
                                                 {/* <div aria-hidden="true" className="absolute inset-0 top-1/2 bg-white shadow" /> */}
 
@@ -106,13 +106,13 @@ export default function Navigation(props) {
 
                                         {!isAdmin ? (<button
                                             onClick={() => window.open('http://localhost:5173/seller', '_blank')}
-                                            className="flex items-center text-[12px] text-sm font-medium text-gray-700 hover:text-gray-800"
+                                            className="flex items-center text-[16px] font-medium text-gray-700 hover:text-gray-800"
                                         >
                                             Become a Seller
                                         </button>) : (
                                             <button
                                                 onClick={() => window.open('http://localhost:5173/admin', '_blank')}
-                                                className="flex items-center text-[12px] text-sm font-medium text-gray-700 hover:text-gray-800"
+                                                className="flex items-center text-[16px] text-sm font-medium text-gray-700 hover:text-gray-800"
                                             >
                                                 Admin page
                                             </button>)}
@@ -125,7 +125,7 @@ export default function Navigation(props) {
                                     className="flex ml-0 lg:ml-6 border border-gray-200 rounded-xl w-[50%] md:w-[40%] h-1/2 mx-2 shadow-md">
                                     <a href="#" className=" py-2 pl-1 md:px-1 md:py-[6px] text-gray-400 hover:text-gray-500">
                                         <span className="sr-only">Search</span>
-                                        <MagnifyingGlassIcon aria-hidden="true" className="h-4 w-4 md:h-6 md:w-6" />
+                                        <MagnifyingGlassIcon aria-hidden="true" className="h-4 w-4 md:h-6 md:w-6 pl-2 pb-1" />
                                     </a>
                                     <input
                                         type="text"
@@ -136,17 +136,17 @@ export default function Navigation(props) {
                                 </div>
 
                                 <div className="ml-1  md:ml-auto flex items-center">
-                                    <a href='#' className="hidden md:flex text-sm font-medium text-gray-700 hover:text-gray-800">
+                                    <a href='#' className="hidden md:flex font-medium text-gray-700 hover:text-gray-800 mr-2">
                                         Support
                                     </a>
                                     <AccountMenu />
                                     {/* <ModeSelect />*/}
                                     {/* Cart */}
                                     <div className="ml-4 flow-root lg:ml-6">
-                                        <Link to="cart" className="group -m-2 flex items-center md:p-2">
+                                        <Link to="cart" className="group m-2 flex items-center md:p-2">
                                             <ShoppingBagIcon
                                                 aria-hidden="true"
-                                                className=" md:w-6 flex-shrink-0 text-gray-600 group-hover:text-gray-500"
+                                                className=" md:w-8 flex-shrink-0 text-gray-600 group-hover:text-gray-500"
                                             />
                                             <span id="cart-quantity"
                                                 className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800"></span>

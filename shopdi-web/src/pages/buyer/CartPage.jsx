@@ -114,12 +114,12 @@ export default function CartPage({ CartId }) {
     }
     return (
         <>
-            <div className="py-12 px-32 bg-cloudBlue">
+            <div className="py-12 px-40 bg-cloudBlue">
                 <Cart sellerGroups={productsInCart.sellerGroups} selectedProducts={selectedProducts} onSelect={onSelect} setTotal={setTotal} total={total} onDelete={onDelete} />
 
-                <div className="bg-gray-200 h-20 sticky w-full bottom-5 p-4 flex flex-row justify-end gap-10 ">
+                <div className="bg-[#F2F4F5] h-20 sticky w-full bottom-0 p-4 flex flex-row justify-end gap-10 ">
                     <div className="text-2xl my-auto font-bold font-sans">TOTAL: {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
-                    <Link className={"bg-[#FA8232] rounded-sm hover:bg-orangeRed"} to="/buyer/checkout" onClick={
+                    <Link className={"bg-[#FA8232] rounded hover:bg-orangeRed"} to="/buyer/checkout" onClick={
                         (e) => {
                             let isSelected = false
                             for(let i = 0; i < selectedProducts.length; i++){

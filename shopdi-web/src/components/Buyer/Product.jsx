@@ -14,7 +14,7 @@ export default function Product({product}) {
     }
     return (
         <Link to={`/product/${product.productId}`}>
-            <div className="bg-white p-3 w-[300px] h-[420px] hover:shadow-lg hover:scale-105 hover:border-2 hover:border-blue-600 transition duration-300">
+            <div className="bg-white p-3 w-[280px] h-[400px] border-[1px] hover:shadow-lg hover:scale-105 hover:border-2 hover:border-blue-600 transition duration-300">
                 <div className="h-full flex flex-col ">
                     <div className=" bg-white min-w-full min-h-[224px]">
                         <img className="rounded-md" src={product.productImage}  style={{aspectRatio: "1/1"}} alt={product.name}/>

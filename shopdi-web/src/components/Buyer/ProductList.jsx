@@ -6,7 +6,7 @@ export default function ProductList({ products,page }) {
     const [isSortOpen, setSortOpen] = useState(false);
 
     return (
-        <div className="flex flex-col w-full items-center gap-y-4 bg-cloudBlue">
+        <div className="flex flex-col w-full items-center gap-y-4 bg-cloudBlue pt-8">
             {/* <div className="flex items-center justify-end mr-0">
                 <div className=" inline-block text-left">
                     <div>

@@ -63,8 +63,8 @@ function OrderHistory() {
 
     return (
         <div className="font-sans flex justify-center bg-[#F7FBFF] min-h-screen">
-            <div className="bg-white w-[70%] mt-10 mb-10 border-2 relative">
-                <div className="absolute left-[5%] top-6 font-bold text-[12px] md:text-[14px] lg:text-lg">
+            <div className="bg-white w-[80%] mt-12 mb-10 border-[1px] relative">
+                <div className="absolute left-[5%] top-6 font-bold text-[12px] md:text-[14px] lg:text-2xl font-sans text-yaleBlue">
                     ORDER HISTORY
                 </div>
 

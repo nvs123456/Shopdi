@@ -24,17 +24,17 @@ export const AddressForm = ({addressForm, setAddressForm, title, isAddressPopupO
                                 setAddressForm({...addressForm, [field.label]: e.target.value});
                             }}
                                 required={true}
-                                className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded-sm p-2"
+                                className="w-full border-[#E4E7E9] md:text-[12px] border-2 rounded p-2"
                                 placeholder={field.placeholder}
                             />
                         </div>
                     ))}
                 </div>
-                <button className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded-sm hover:bg-orange-600">
+                <button className="bg-[#FA8232] text-white py-2 px-4 mt-4 rounded hover:bg-orange-600">
                     Save Changes
                 </button>
                 <button onClick={setIsAddressPopupOpen(false)}
-                        className="bg-gray-400 mx-2 text-white py-2 px-4 mt-4 rounded-sm hover:bg-gray-600">
+                        className="bg-gray-400 mx-2 text-white py-2 px-4 mt-4 rounded hover:bg-gray-600">
                     Cancel
                 </button>
             </div>

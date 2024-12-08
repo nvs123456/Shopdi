@@ -42,16 +42,16 @@ export default function Checkout({ ProductList }) {
                          ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}, ${currentAddress.city}, ${currentAddress.state}, ${currentAddress.country}`}</div>
                         <div className="pl-8 py-4 text-blue-500 hover:underline border-b-[1px] border-[#E4E7E9] " onClick={() => setOpenAddress(!openAddress)}>{currentAddress === null ? "Add address" : "Change address"}</div>
                     </div>
-                    <div className="header flex flex-row w-full py-4 bg-[#E4E7E9]">
+                    <div className="header flex flex-row w-full py-4 pr-4 bg-[#F2F4F5] border-[#E4E7E9] border-[1px]">
                         <span className="grow pl-12 text-xl">Products Ordered</span>
-                        <span className="w-40 text-center text-xl pr-10">Unit Price</span>
-                        <span className="w-40 text-center text-xl pr-10">Quantity</span>
-                        <span className="w-40 text-center text-xl pr-14">Subtotal</span>
+                        <span className="w-40 text-center text-xl pr-16">Unit Price</span>
+                        <span className="w-40 text-center text-xl pr-16">Quantity</span>
+                        <span className="w-40 text-center text-xl pr-16">Subtotal</span>
                     </div>
                     <div className={"border-b-[20px] border-b-cloudBlue border-t-[1px] border-l-[1px] border-r-[1px] border-t-[#E4E7E9] border-l-[#E4E7E9] border-r-[#E4E7E9] pb-4"}>
                         {tmp.map((item) =>
                             <div key={item.sellerId}>
-                                <div className="text-xl font-bold mx-8 py-4 border-b-2 border-[#E4E7E9] ">SHOP: {item.sellerName}</div>
+                                <div className="text-[18x] font-bold mx-8 py-4 border-b-2 border-[#E4E7E9] ">SHOP - {item.sellerName}</div>
                                 {item.cartItems.map((item) => {
                                     if (item.isSelected) return <OrderItem key={item.cartItemId} item={item} />
                                 })}
@@ -127,7 +127,7 @@ export default function Checkout({ ProductList }) {
                                         }
                                     }
 
-                                }} className="text-white font-bold py-2 px-4 bg-[#FA8232] rounded-sm font-sans hover:bg-orangeRed">
+                                }} className="text-white font-bold py-2 px-4 bg-[#FA8232] rounded font-sans hover:bg-orangeRed">
                                     CHECK OUT
                                 </button>
                             </div>

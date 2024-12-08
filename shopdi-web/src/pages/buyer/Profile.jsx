@@ -92,7 +92,7 @@ export default function Profile() {
 
 function AccountInfo({ info }) {
     return (
-        <div className="relative bg-white border-[#E4E7E9] border-2 rounded-sm p-4">
+        <div className="relative bg-white border-[#E4E7E9] border-2 rounded p-4">
             <h2 className="text-sm font-medium text-gray-600 border-b-2">ACCOUNT INFO</h2>
             <div className="flex flex-row lg:py-2">
                 <img
@@ -117,7 +117,7 @@ function AccountInfo({ info }) {
 
 function BillingAddress({ address }) {
     return (
-        <div className="relative bg-white border-[#E4E7E9] border-2 rounded-sm p-4">
+        <div className="relative bg-white border-[#E4E7E9] border-2 rounded p-4">
             <h2 className="text-sm font-medium text-gray-600 border-b-2">BILLING ADDRESS</h2>
             {address ? (
                 <div>
@@ -172,7 +172,7 @@ function OrderSummary({ orders }) {
 
 function DashboardCard({ title, count, bgColor, iconColor}) {
     return (
-        <div className={`flex mb-3 h-full rounded-sm ${title === 'Total Orders' ? 'bg-[#EAF6FE]' : title === "Pending Orders" ? 'bg-[#FFF3EB]' : 'bg-[#EAF7E9]'}`}>
+        <div className={`flex mb-3 h-full rounded ${title === 'Total Orders' ? 'bg-[#EAF6FE]' : title === "Pending Orders" ? 'bg-[#FFF3EB]' : 'bg-[#EAF7E9]'}`}>
             <div className={`bg-white p-3 m-2 w-12`}>
                 {/* Add SVG or Icon here */}
                 {title === "Total Orders" ? <RocketIcon sx={{ color: iconColor, fontSize: '40px' }} /> : title === "Pending Orders" ? <PendingActionsIcon sx={{ color: iconColor, fontSize: '40px' }}/> : <TaskIcon sx={{ color: iconColor, fontSize: '40px' }}/>}
