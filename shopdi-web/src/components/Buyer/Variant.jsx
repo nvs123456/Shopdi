@@ -1,8 +1,11 @@
 import '@/css/product_detail.css'
 
 export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVariant, currenSelectedVariant }) {
+    if (variantWithQuantity[0].variantDetail === null) {
+        return <></>
+
+    }
     const v = []
-    console.log(variantWithQuantity)
     for (let i = 0; i < variantWithQuantity.length; i++) {
         let t = variantWithQuantity[i].variantDetail
         for (let j = 0; j < t.length; j++) {
@@ -16,13 +19,12 @@ export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVa
             }
         }
     }
-    console.log(v)
     return (
         <>
             {v.map((item) => (
                 <div key={item.type} className='mt-2 flex flex-row'>
                     <div className='text-base align-middle text-gray-600 min-w-20  text-left'>{item.type}</div>
-                    <div className='flex flex-row gap-x-2 gap-y-2 flex-wrap'>
+                    <div className='flex flex-row gap-x-1 gap-y-1 flex-wrap'>
                         {item.value.map((i) =>
                         (<div key={i}>
                             <input type="radio" name={`${item.type}`} id={`${item.type}-${i}`}
@@ -32,7 +34,7 @@ export default function Variant({ variantWithQuantity, onChangeCurrentSelectedVa
                                     onChangeCurrentSelectedVariant(item.type, e.target.value)
                                 }} />
                             < label htmlFor={`${item.type}-${i}`}
-                                className=' inline-block text-center min-w-20 min-h-10 border-2 pt-1 pb-1 border-gray-300 cursor-pointer'>{i}</label>
+                                className=' inline-block text-center min-w-16 min-h-8 border-2 py-1 border-gray-300 cursor-pointer'>{i}</label>
                         </div>))}
                     </div>
                 </div>

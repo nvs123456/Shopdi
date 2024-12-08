@@ -25,11 +25,12 @@ public class ProductDetailResponse {
     String brand;
     List<String> imageUrls;
     String categoryName;
+    Long categoryId;
     Set<String> tagNames;
     List<VariantResponse> variants;
     SellerResponse seller;
     int soldQuantity;
-
+    String status;
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

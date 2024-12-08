@@ -5,16 +5,10 @@ import { useState, useEffect } from "react";
 import { POST } from "../api/GET";
 import { useAuth } from "./AuthProvider";
 const PrivateSellerRoute = () => {
-  // if ( localStorage.getItem("Authorization") === null) return <Navigate to="/login" />;
-  // let roles = JSON.parse(localStorage.getItem("roles"));
-  // if(!roles.find(role => role.name === "SELLER")){
-  //   return <Navigate to="seller/signup" />;
-  // }
-  // return <Outlet />;
+
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    console.log(localStorage.getItem("Authorization"))
     POST(`auth/introspect`, {
       token: localStorage.getItem("Authorization")
     }).then((res) => {
@@ -32,6 +26,10 @@ const PrivateSellerRoute = () => {
   }
   else {
     if (auth.isAuthenticated) {
+      let roles = JSON.parse(localStorage.getItem("roles"));
+      if (!roles.find(role => role.name === "SELLER")) {
+        return <Navigate to="seller/signup" />;
+      }
       return <Outlet />;
     } else {
       return <Navigate to="/login" />;

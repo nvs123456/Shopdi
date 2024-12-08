@@ -3,20 +3,35 @@ import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outlin
 import shopdiLogo from '@/assets/images/Shopdi2.jpg';
 import AccountMenu from './AccountMenu/AccountMenu.jsx';
 import CATEGORIES from '@/data/categories_data';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { useAuth } from '../../routes/AuthProvider.jsx';
 import { useContext, useEffect, useState } from 'react';
 import {CategoryContext} from '../../pages/buyer/CategoryContext';
-const categories = CATEGORIES.CATEGORIES
-
+import { GET } from '../../api/GET.jsx';
 export default function Navigation(props) {
     const [isAdmin, setIsAdmin] = useState(false);
-    const { category, setCategory } = useContext(CategoryContext)
+    const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
     useEffect(() => {
+        GET("categories").then((res) => {
+            if (res.code === "OK") {
+                setCategories(res.result)
+                setIsLoading(false)
+            }
+        });
         JSON.parse(localStorage.getItem('roles')).find(role => role.name === 'ADMIN') ? setIsAdmin(true) : setIsAdmin(false);
     }, []);
+    if(isLoading){
+        return <div className="text-center">Loading...</div>
+    }
+    const handleSearch = (e) => {
+        if(e.key === 'Enter'){
+            navigate(`http://localhost:5173/search?query=${e.target.value}`)
+        }
+    }
     return (
-        <div>
+        <div className={`font-sans`}>
             <div className={'bg-yaleBlue text-yaleBlue text-[18px]'}>
                 header
             </div>
@@ -39,7 +54,7 @@ export default function Navigation(props) {
                                 </div>
 
                                 {/* Flyout menus */}
-                                <PopoverGroup className="hidden sm:ml-8 sm:block sm:self-stretch">
+                                <PopoverGroup className="hidden sm:ml-8 sm:block sm:self-stretch z-10">
                                     <div className="flex h-full space-x-8">
                                         <Popover className="flex">
                                             <div className="relative flex">
@@ -60,7 +75,7 @@ export default function Navigation(props) {
 
                                             <PopoverPanel
                                                 transition
-                                                className="absolute z-15 inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+                                                className="border-b shadow-lg border-gray-200 absolute z-15 inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
                                             >
                                                 {/* <div aria-hidden="true" className="absolute inset-0 top-1/2 bg-white shadow" /> */}
 
@@ -71,11 +86,11 @@ export default function Navigation(props) {
                                                             <div
                                                                 className="row-start-1 grid grid-cols-6 gap-x-8 gap-y-10 text-sm">
                                                                 {categories.map((section) => (
-                                                                    <a key={section.name} href={`/${section.name}`}
+                                                                    <a key={section.name} href={`/category/${section.categoryId}`}
                                                                         >
                                                                         <div key={section.name}>
                                                                             <p id={`${section.name}-heading`}
-                                                                                className="font-medium hover:text-gray-800">
+                                                                                className="font-medium hover:text-indigo-600">
                                                                                 {section.name}
                                                                                 
                                                                             </p>
@@ -116,6 +131,7 @@ export default function Navigation(props) {
                                         type="text"
                                         className="p-2 w-full outline-none rounded-xl"
                                         placeholder="Search..."
+                                        onKeyDown={(e) => e.key === 'Enter' && navigate(`/search?query=${e.target.value}`)}
                                     />
                                 </div>
 
@@ -130,10 +146,10 @@ export default function Navigation(props) {
                                         <Link to="cart" className="group -m-2 flex items-center md:p-2">
                                             <ShoppingBagIcon
                                                 aria-hidden="true"
-                                                className="h-3 w-3 md:w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                                className=" md:w-6 flex-shrink-0 text-gray-600 group-hover:text-gray-500"
                                             />
-                                            <span
-                                                className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                                            <span id="cart-quantity"
+                                                className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800"></span>
                                             <span className="sr-only">items in cart, view bag</span>
                                         </Link>
                                     </div>

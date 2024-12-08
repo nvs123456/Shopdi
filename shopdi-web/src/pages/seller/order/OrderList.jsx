@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Tab} from "@mui/material";
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
@@ -6,12 +6,17 @@ import Box from "@mui/material/Box";
 import {TabList} from "@mui/lab";
 import OrderTable from "../../../components/Seller/order/OrderTable.jsx";
 import Pagination from "../../../components/Navigation/Pagination.jsx";
+import axios from "axios";
 
 
 const tabHeadings = ['All products', 'Pending', 'Processing', 'Delivered', 'Cancelled'];
 
 const OrderList = () => {
     const [value, setValue] = React.useState('1');
+    const [orders, setOrders] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -57,15 +62,13 @@ const OrderList = () => {
                     </TabList>
                 </Box>
                 <TabPanel value="1"><OrderTable type='All products'/></TabPanel>
-                <TabPanel value="2"><OrderTable type='Pending'/></TabPanel>
-                <TabPanel value="3"><OrderTable type='Processing'/></TabPanel>
-                <TabPanel value="4"><OrderTable type='Delivered'/></TabPanel>
-                <TabPanel value="5"><OrderTable type='Cancelled'/></TabPanel>
+                <TabPanel value="2"><OrderTable type='PENDING'/></TabPanel>
+                <TabPanel value="3"><OrderTable type='PROCESSING'/></TabPanel>
+                <TabPanel value="4"><OrderTable type='DELIVERED'/></TabPanel>
+                <TabPanel value="5"><OrderTable type='CANCELLED'/></TabPanel>
 
             </TabContext>
-            <div className="flex justify-center mt-4">
-                <Pagination/>
-            </div>
+
         </div>);
 };
 

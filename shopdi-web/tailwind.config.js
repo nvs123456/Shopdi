@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['open-sans']
+      },
       colors: {
         // Primary Colors
         pumpkin: '#FF731D',

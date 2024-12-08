@@ -21,7 +21,7 @@ public interface ProductService {
 
     PageResponse<?> searchProduct(String query, int pageNo, int pageSize);
 
-    PageResponse<?> findProductByCategory(Long categoryId, int pageNo, int pageSize);
+    PageResponse<?> findProductByCategory(Long categoryId, int pageNo, int pageSize,String sortBy, String sortOrder);
 
     PageResponse<?> filterProducts(ProductFilterRequest filterRequest, int pageNo, int pageSize);
 

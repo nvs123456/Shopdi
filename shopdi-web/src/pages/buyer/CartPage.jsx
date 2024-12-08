@@ -80,11 +80,19 @@ export default function CartPage({ CartId }) {
     const onDelete = (cartItemId) => {
         DELETE("cart/items/" + cartItemId).then((res) => {
             if (res.code === "OK") {
-                // GET("cart").then((res) => {
-                //     if (res.code === "OK") {
-                //         setProductsInCart(res.result)
-                //     }
-                // })
+                let tmp = [...productsInCart.sellerGroups]
+                for(let i = 0; i < tmp.length; i++){
+                    for(let j = 0; j < tmp[i].cartItems.length; j++){
+                        if(tmp[i].cartItems[j].cartItemId === cartItemId){
+                            tmp[i].cartItems.splice(j, 1)
+                            break
+                        }
+                    }
+                    if(tmp[i].cartItems.length === 0){
+                        tmp.splice(i, 1)
+                    }
+                }
+                setProductsInCart({ ...productsInCart, sellerGroups: tmp })
             }
         })
 
@@ -101,6 +109,7 @@ export default function CartPage({ CartId }) {
                 }
             }
         }
+        console.log(tmp)
         setSelectedProducts(tmp)
     }
     return (
@@ -112,13 +121,22 @@ export default function CartPage({ CartId }) {
                     <div className="text-2xl">Total : {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
                     <Link to="/buyer/checkout" onClick={
                         (e) => {
-                            if (selectedProducts.length === 0) {
+                            let isSelected = false
+                            for(let i = 0; i < selectedProducts.length; i++){
+                                for(let j = 0; j < selectedProducts[i].cartItems.length; j++){
+                                    if(selectedProducts[i].cartItems[j].isSelected){
+                                        isSelected = true
+                                        break
+                                    }
+                                }
+                            }
+                            if (!isSelected) {
                                 e.preventDefault();
 
                                 alert("Please select at least one product");
                             }
                         }
-                    } state={{ selectedProducts: selectedProducts }}><button className="bg-red text-white p-2">Checkout</button></Link>
+                    } state={{isBuyNow: false, selectedProducts: selectedProducts }}><button className="bg-red text-white p-2">Checkout</button></Link>
                 </div>
 
             </div>

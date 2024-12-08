@@ -114,7 +114,8 @@ public class OrderServiceImpl implements OrderService {
             cartItems.forEach(cartItem -> {
                 Variant selectedVariant = cartItem.getProduct().getVariants().stream()
                         .filter(variant -> {
-                            if (cartItem.getVariant() == null) {
+
+                            if (cartItem.getVariant() == null || cartItem.getVariant().equals("[]")) {
                                 return variant.getVariantDetail() == null;
                             }
                             return cartItem.getVariant().equals(variant.getVariantDetail());
@@ -166,7 +167,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         Variant selectedVariant = product.getVariants().stream()
-                .filter(v -> v.getVariantDetail().equals(request.getVariant()))
+                .filter(v -> v.getVariantDetail() == null || v.getVariantDetail().equals(request.getVariant()))
                 .findFirst()
                 .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
 
@@ -214,7 +215,6 @@ public class OrderServiceImpl implements OrderService {
         orderItemRepository.save(orderItem);
         variantRepository.save(selectedVariant);
 
-
         return mapToOrderResponse(order);
     }
 
@@ -250,7 +250,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-        if(!order.getUser().getId().equals(userId)) {
+        if (!order.getUser().getId().equals(userId)) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
@@ -261,9 +261,10 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
         }
 
-        if(newStatus.equals(OrderStatusEnum.CANCELED)) {
-            if (order.getOrderStatus() == OrderStatusEnum.PENDING || order.getOrderStatus() == OrderStatusEnum.PROCESSING) {
-                order.setOrderStatus(OrderStatusEnum.CANCELED);
+        if (newStatus.equals(OrderStatusEnum.CANCELLED)) {
+            if (order.getOrderStatus() == OrderStatusEnum.PENDING
+                    || order.getOrderStatus() == OrderStatusEnum.PROCESSING) {
+                order.setOrderStatus(OrderStatusEnum.CANCELLED);
                 return mapToOrderResponse(orderRepository.save(order));
             } else {
                 throw new AppException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
@@ -284,7 +285,6 @@ public class OrderServiceImpl implements OrderService {
 
         return mapToOrderResponse(order);
     }
-
 
     @Override
     public OrderResponse findOrderById(Long orderId) {
@@ -310,11 +310,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageResponse<?> getAllOrdersForSeller(Long sellerId, int pageNo, int pageSize, String sortBy, String sortOrder) {
+    public PageResponse<?> getAllOrdersForSeller(Long sellerId, int pageNo, int pageSize, String sortBy,
+            String sortOrder) {
         Sort sort = Sort.by(
                 Sort.Order.asc("orderStatus"),
-                sortOrder.equalsIgnoreCase("asc") ? Sort.Order.asc(sortBy) : Sort.Order.desc(sortBy)
-        );
+                sortOrder.equalsIgnoreCase("asc") ? Sort.Order.asc(sortBy) : Sort.Order.desc(sortBy));
         Page<Order> ordersPage = orderRepository.findOrdersBySellerId(sellerId, PageRequest.of(pageNo, pageSize, sort));
 
         List<OrderResponse> orderResponses = ordersPage.stream()
@@ -342,7 +342,6 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-
     @Override
     public PageResponse<?> orderHistory(Long userId, int pageNo, int pageSize, String sortBy, String sortOrder) {
         Sort.Direction direction = Sort.Direction.fromOptionalString(sortOrder).orElse(Sort.Direction.DESC);
@@ -363,9 +362,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageResponse<?> getOrdersByStatusForSeller(Long sellerId, OrderStatusEnum orderStatus, int pageNo, int pageSize, String sortBy, String sortOrder) {
-        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Page<Order> ordersPage = orderRepository.findAllBySellerIdAndOrderStatus(sellerId, orderStatus, PageRequest.of(pageNo, pageSize, sort));
+    public PageResponse<?> getOrdersByStatusForSeller(Long sellerId, OrderStatusEnum orderStatus, int pageNo,
+            int pageSize, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Page<Order> ordersPage = orderRepository.findAllBySellerIdAndOrderStatus(sellerId, orderStatus,
+                PageRequest.of(pageNo, pageSize, sort));
 
         List<OrderResponse> orderResponses = ordersPage.stream()
                 .map(this::mapToOrderResponse)
@@ -376,7 +378,6 @@ public class OrderServiceImpl implements OrderService {
                 .items(orderResponses)
                 .build();
     }
-
 
     public OrderResponse mapToOrderResponse(Order order) {
         return OrderResponse.builder()
@@ -396,7 +397,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private AddressResponse mapToAddressResponse(Address address) {
-        if (address == null) return null;
+        if (address == null)
+            return null;
         return AddressResponse.builder()
                 .addressId(address.getId())
                 .firstName(address.getFirstName())
@@ -414,9 +416,10 @@ public class OrderServiceImpl implements OrderService {
         return OrderItemResponse.builder()
                 .orderItemId(orderItem.getId())
                 .productId(orderItem.getProduct().getId())
-                .productImage(orderItem.getProduct().getImageUrls() != null && !orderItem.getProduct().getImageUrls().isEmpty()
-                        ? orderItem.getProduct().getImageUrls().get(0)
-                        : null)
+                .productImage(orderItem.getProduct().getImageUrls() != null
+                        && !orderItem.getProduct().getImageUrls().isEmpty()
+                                ? orderItem.getProduct().getImageUrls().get(0)
+                                : null)
                 .productName(orderItem.getProduct().getProductName())
                 .variant(orderItem.getVariant())
                 .quantity(orderItem.getQuantity())

@@ -51,6 +51,8 @@ public class Product extends BaseEntity<Long> {
     @JoinColumn(name = "seller_id", nullable = false)
     @JsonBackReference
     Seller seller;
+    @Enumerated(EnumType.STRING)
+    ProductStatusEnum status;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

@@ -24,6 +24,8 @@ public class ProductResponse {
     String productName;
     BigDecimal price;
     String category;
+    String status;
+    Long categoryId;
     int stock;
     int soldQuantity;
     Date publishedOn ;

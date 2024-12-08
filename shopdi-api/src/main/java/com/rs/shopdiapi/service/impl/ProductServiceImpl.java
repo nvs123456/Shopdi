@@ -64,6 +64,7 @@ public class ProductServiceImpl implements ProductService {
                 .category(category)
                 .seller(seller)
                 .tags(tags)
+                .status(ProductStatusEnum.valueOf(request.getStatus()))
                 .build();
 
         category.getProducts().add(product);
@@ -113,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setBrand(productRequest.getBrand());
-
+        product.setStatus(ProductStatusEnum.valueOf(productRequest.getStatus()));
         Category category = categoryRepository.findByName(productRequest.getCategoryName()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         product.setCategory(category);
 
@@ -161,10 +162,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageResponse<?> findProductByCategory(Long categoryId, int pageNo, int pageSize) {
+    public PageResponse<?> findProductByCategory(Long categoryId, int pageNo, int pageSize, String sortBy, String sortOrder) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        String[] sortFields = sortBy.split(",");
 
-        Page<Product> productPage = productRepository.findAllByCategoryId(category.getId(), PageRequest.of(pageNo, pageSize));
+        Sort sort = Sort.unsorted();
+        for (String field : sortFields) {
+            Sort sortField = sortOrder.equalsIgnoreCase("asc") ? Sort.by(field).ascending() : Sort.by(field).descending();
+            sort = sort.and(sortField);
+        }
+        Page<Product> productPage = productRepository.findAllByCategoryId(category.getId(), PageRequest.of(pageNo, pageSize, sort));
 
         List<ProductResponse> products = productPage.map(this::toProductResponse).toList();
 
@@ -296,7 +303,9 @@ public class ProductServiceImpl implements ProductService {
                 .productImage(product.getImageUrls().isEmpty() ? null : product.getImageUrls().get(0))
                 .productName(product.getProductName())
                 .price(product.getPrice())
+                .status(product.getStatus().name())
                 .category(product.getCategory().getName())
+                .categoryId(product.getCategory().getId())
                 .stock(product.getVariants().stream().mapToInt(Variant::getQuantity).sum())
                 .soldQuantity(product.getSoldQuantity())
                 .publishedOn(product.getCreatedAt())
@@ -312,8 +321,10 @@ public class ProductServiceImpl implements ProductService {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .brand(product.getBrand())
+                .status(product.getStatus().name())
                 .imageUrls(product.getImageUrls())
                 .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
+                .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)
                 .soldQuantity(product.getSoldQuantity())
                 .tagNames(product.getTags() != null
                         ? product.getTags().stream().map(Tag::getName).collect(Collectors.toSet())

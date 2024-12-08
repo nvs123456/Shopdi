@@ -8,10 +8,11 @@ import {TabList} from "@mui/lab";
 import {Tab} from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
 import OrderTable from "../../components/Seller/order/OrderTable.jsx";
-import SellerCard from "./SellerCard.jsx";
 import Pagination from "@mui/material/Pagination";
+import BuyerCard from "./BuyerCard.jsx";
 
 const tabHeadings = ['All', 'Active', 'Blocked'];
+
 
 const SellerList = () => {
     const [users, setUsers] = useState([]);
@@ -22,6 +23,26 @@ const SellerList = () => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    useEffect(() => {
+        // Lấy dữ liệu từ API
+        axios.get('http://localhost:8080/users')
+            .then((response) => {
+                setUsers(response.data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error fetching users:', error);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) {
+        return <p className="text-center text-gray-500">Loading...</p>;
+    }
+
+
+
     return (
         <div>
             <h1 className="text-xl font-bold font-sans mb-4">Customers</h1>
@@ -45,9 +66,9 @@ const SellerList = () => {
 
                     </TabList>
                 </Box>
-                <TabPanel value="1"><SellerCard status={'All'}/></TabPanel>
-                <TabPanel value="2"><SellerCard status={'ACTIVE'}/></TabPanel>
-                <TabPanel value="3"><SellerCard status={'BLOCKED'}/></TabPanel>
+                <TabPanel value="1"><BuyerCard status={'All'}/></TabPanel>
+                <TabPanel value="2"><BuyerCard status={'ACTIVE'}/></TabPanel>
+                <TabPanel value="3"><BuyerCard status={'BLOCKED'}/></TabPanel>
 
             </TabContext>
             <div className="flex justify-center m-4">
