@@ -82,7 +82,7 @@ function OrderHistory() {
                     <tbody className={`text-[12px] sm:text-[14px] md:text-[16px]`}>
                     {orders.map((orderItem) => (
                         <tr className={"h-12 align-bottom"}>
-                            <td className={`text-left pl-10`}>
+                            <td className={`text-left pl-12`}>
                                 {orderItem.orderId}
                             </td>
                             <td className={`text-left pl-14 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
