@@ -6,11 +6,13 @@ import com.rs.shopdiapi.domain.dto.response.OrderResponse;
 import com.rs.shopdiapi.domain.dto.response.PageResponse;
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
 
+import java.util.List;
+
 public interface OrderService {
 
-    String createOrder(Long userId, CreateOrderRequest request);
+    List<OrderResponse> createOrder(Long userId, CreateOrderRequest request);
 
-    String buyNow(Long userId, Long productId, BuyNowRequest request);
+    OrderResponse buyNow(Long userId, Long productId, BuyNowRequest request);
 
     OrderResponse updateOrderStatusBySeller(Long orderId, Long sellerId, OrderStatusEnum newStatus);
 

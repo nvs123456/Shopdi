@@ -23,4 +23,8 @@ public class OrderResponse {
     AddressResponse shippingAddress;
 
     String orderNotes;
+
+    String paymentMethod;
+    String paymentStatus;
+    String transactionId;
 }

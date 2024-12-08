@@ -1,5 +1,6 @@
 package com.rs.shopdiapi.domain.dto.request;
 
+import com.rs.shopdiapi.domain.enums.PaymentMethodEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,7 @@ public class BuyNowRequest {
     Long addressId;
 
     String orderNotes;
+
+    @NotNull(message = "Payment method is required")
+    PaymentMethodEnum paymentMethod;
 }

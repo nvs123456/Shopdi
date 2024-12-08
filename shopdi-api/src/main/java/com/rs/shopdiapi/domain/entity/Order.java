@@ -1,6 +1,8 @@
 package com.rs.shopdiapi.domain.entity;
 
 import com.rs.shopdiapi.domain.enums.OrderStatusEnum;
+import com.rs.shopdiapi.domain.enums.PaymentMethodEnum;
+import com.rs.shopdiapi.domain.enums.PaymentStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,10 +59,8 @@ public class Order extends BaseEntity<Long> {
 
     String orderNotes;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "payment_id")
-    Payment payment;
-
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Payment> payments = new ArrayList<>();
 
     LocalDateTime deliveryDate;
 
@@ -69,5 +69,12 @@ public class Order extends BaseEntity<Long> {
             orderItems = new ArrayList<>();
         }
         return orderItems;
+    }
+
+    public List<Payment> getPayments() {
+        if (payments == null) {
+            payments = new ArrayList<>();
+        }
+        return payments;
     }
 }
