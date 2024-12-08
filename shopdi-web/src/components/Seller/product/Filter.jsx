@@ -48,6 +48,7 @@ function CategoryFilter({ allProducts, filterByCategory, setFilterByCategory }) 
     let [isOpen, setIsOpen] = useState(true);
     const categories = []
     for (let i = 0; i < allProducts.length; i++) {
+        if(categories.find((item) => item.id === allProducts[i].categoryId) === undefined)
         categories.push({ name: allProducts[i].category, id: allProducts[i].categoryId })
     }
     const set = (value) => {
