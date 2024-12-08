@@ -261,16 +261,16 @@ function OrderDetails() {
 
                     {/* Product Section */}
                     <div className=" bg-white border-y-2 md:py-8 px-12 font-sans">
-                        <div className={'text-[18px] font-bold md:text-xl mb-6'}>
+                        <div className={'text-[18px] font-semibold md:text-2xl mb-6'}>
                             Product ({orderDetail.orderItems?.length})
                         </div>
                         <table className="xl:table-fixed min-w-full border border-gray-200 mb-6">
                             <thead>
                             <tr className={"h-12"}>
-                                <th className="xl:w-[40%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] pl-4 text-left text-[12px] md:text-[18px]">PRODUCTS</th>
-                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px]">PRICE</th>
-                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px]">QUANTITY </th>
-                                <th className="xl:w-[30%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px]">TOTAL</th>
+                                <th className="xl:w-[40%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] pl-4 text-left text-[12px] md:text-[18px] font-medium">PRODUCTS</th>
+                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">PRICE</th>
+                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">QUANTITY </th>
+                                <th className="xl:w-[30%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">TOTAL</th>
 
                             </tr>
 
@@ -303,7 +303,7 @@ function OrderDetails() {
                     <div className=" bg-white p-2 md:p-6 mb-0 ml-6">
                         <div className="md:grid md:grid-cols-3 md:gap-8">
                             <div className={`border-r-2`}>
-                                <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-2'>Billing Address</div>
+                                <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Billing Address</div>
                                 <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
                                 <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
                                     {address} <br/>
@@ -312,7 +312,7 @@ function OrderDetails() {
                                 </div>
                             </div>
                             <div className={`border-r-2`}>
-                                <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-2'>Shipping Address
+                                <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Shipping Address
                                 </div>
                                 <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
                                 <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
@@ -322,7 +322,7 @@ function OrderDetails() {
                                 </div>
                             </div>
                             <div>
-                                <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-2'>Order Notes</div>
+                                <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Order Notes</div>
                                 <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
                                     {orderDetail.orderNotes !== null ? orderDetail.orderNotes : "None"}
                                 </div>
