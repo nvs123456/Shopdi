@@ -31,15 +31,15 @@ export default function Comments({ productId }) {
             {comments.map((comment) => {
                 return (
                     <div key={`${comment.userName}`} className="flex flex-col bg-white p-4 ">
-                        <div className="flex items-center mb-4 border-b border-gray-200">
+                        <div className="flex items-center mb-4 border-b border-gray-200 pb-2">
                             {/* <img
                                 src={comment.user.avatar}
                                 alt="User Avatar"
                                 className="w-8 h-8 rounded-full mr-2"
                             /> */}
                             <div>
-                                <p className="font-semibold">{comment.username}
-                                    <span>{stars(comment.ratingScore)}</span>
+                                <p className="font-semibold text-[18px]">{comment.username}
+                                    <span className={"ml-2"}>{stars(comment.ratingScore)}</span>
                                 </p>
                                 <p className="mt-4 text-gray-600">&emsp;&emsp;{comment.review}</p>
                             </div>

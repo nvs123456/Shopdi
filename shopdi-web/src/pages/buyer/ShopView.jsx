@@ -26,8 +26,8 @@ export default function ShopView() {
     }, [location])
 
     return (
-        <div>
-            <div className="text-center p-4"><ShopBar sellerId={sellerId} /></div>
+        <div className={"bg-cloudBlue pt-12"}>
+            <div className="text-center mx-12"><ShopBar sellerId={sellerId} /></div>
             <div className="flex flex-row">
                 <div className="w-1/4">
                     <Filter allProducts={allProducts} setProducts={setProducts} />

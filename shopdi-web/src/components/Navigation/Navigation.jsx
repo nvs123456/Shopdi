@@ -135,14 +135,14 @@ export default function Navigation(props) {
                                     />
                                 </div>
 
-                                <div className="ml-1  md:ml-auto flex items-center">
+                                <div className="  md:ml-auto flex items-center">
                                     <a href='#' className="hidden md:flex font-medium text-gray-700 hover:text-gray-800 mr-2">
                                         Support
                                     </a>
                                     <AccountMenu />
                                     {/* <ModeSelect />*/}
                                     {/* Cart */}
-                                    <div className="ml-4 flow-root lg:ml-6">
+                                    <div className="ml-4 flow-root lg:ml-4">
                                         <Link to="cart" className="group m-2 flex items-center md:p-2">
                                             <ShoppingBagIcon
                                                 aria-hidden="true"
