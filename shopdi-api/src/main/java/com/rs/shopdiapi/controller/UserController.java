@@ -26,7 +26,7 @@ import java.io.UnsupportedEncodingException;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     @Autowired

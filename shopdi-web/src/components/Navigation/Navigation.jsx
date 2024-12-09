@@ -2,11 +2,8 @@ import { Popover, PopoverButton, PopoverGroup, PopoverPanel, } from '@headlessui
 import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import shopdiLogo from '@/assets/images/Shopdi2.jpg';
 import AccountMenu from './AccountMenu/AccountMenu.jsx';
-import CATEGORIES from '@/data/categories_data';
 import { Link,useNavigate } from 'react-router-dom';
-import { useAuth } from '../../routes/AuthProvider.jsx';
-import { useContext, useEffect, useState } from 'react';
-import {CategoryContext} from '../../pages/buyer/CategoryContext';
+import { useEffect, useState } from 'react';
 import { GET } from '../../api/GET.jsx';
 export default function Navigation(props) {
     const [isAdmin, setIsAdmin] = useState(false);

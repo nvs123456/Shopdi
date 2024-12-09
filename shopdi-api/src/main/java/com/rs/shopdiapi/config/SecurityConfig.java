@@ -46,11 +46,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "auth/login",
-                                "users/signup",
-                                "auth/logout",
-                                "auth/introspect",
-                                "auth/refresh"
+                                "api/v1/auth/login",
+                                "api/v1/users/signup",
+                                "api/v1/auth/logout",
+                                "api/v1/auth/introspect",
+                                "api/v1/auth/refresh"
                         ).permitAll()
                         .requestMatchers(
                                 "v3/api-docs/**",
@@ -59,12 +59,13 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/auth/verify-email",
-                                "/auth/reset-password",
-                                "/payment/vn-pay-return/**"
+                                "api/v1/auth/verify-email",
+                                "api/v1/auth/reset-password",
+                                "api/v1/payment/vn-pay-return/**",
+                                "/**"
                         ).permitAll(
                         )
-                        .anyRequest()
+                        .requestMatchers("api/v1/**")
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
