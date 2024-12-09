@@ -1,15 +1,14 @@
 import { useState, useContext, createContext } from "react";
 const AuthContext = createContext();
 import { useNavigate } from "react-router-dom";
-import { useCookies } from 'react-cookie'
-import { GET } from "../api/GET";
+import { GET ,baseUrl} from "../api/GET";
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
     const loginAction = async (data) => {
         try {
-            const response = await fetch("http://localhost:8080/auth/login", {
+            const response = await fetch(baseUrl + "auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

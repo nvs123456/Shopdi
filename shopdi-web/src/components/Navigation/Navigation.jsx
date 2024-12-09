@@ -2,12 +2,9 @@ import { Popover, PopoverButton, PopoverGroup, PopoverPanel, } from '@headlessui
 import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import shopdiLogo from '@/assets/images/Shopdi2.jpg';
 import AccountMenu from './AccountMenu/AccountMenu.jsx';
-import CATEGORIES from '@/data/categories_data';
 import { Link,useNavigate } from 'react-router-dom';
-import { useAuth } from '../../routes/AuthProvider.jsx';
-import { useContext, useEffect, useState } from 'react';
-import {CategoryContext} from '../../pages/buyer/CategoryContext';
-import { GET } from '../../api/GET.jsx';
+import { useEffect, useState } from 'react';
+import { baseUrl, baseUrlForFrontEnd, GET } from '../../api/GET.jsx';
 export default function Navigation(props) {
     const [isAdmin, setIsAdmin] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -27,7 +24,7 @@ export default function Navigation(props) {
     }
     const handleSearch = (e) => {
         if(e.key === 'Enter'){
-            navigate(`http://localhost:5173/search?query=${e.target.value}`)
+            navigate(`${baseUrlForFrontEnd}search?query=${e.target.value}`)
         }
     }
     return (
@@ -105,13 +102,13 @@ export default function Navigation(props) {
                                         </Popover>
 
                                         {!isAdmin ? (<button
-                                            onClick={() => window.open('http://localhost:5173/seller', '_blank')}
+                                            onClick={() => window.open(baseUrlForFrontEnd + 'seller', '_blank')}
                                             className="flex items-center text-[16px] font-medium text-gray-700 hover:text-gray-800"
                                         >
                                             Become a Seller
                                         </button>) : (
                                             <button
-                                                onClick={() => window.open('http://localhost:5173/admin', '_blank')}
+                                                onClick={() => window.open(baseUrlForFrontEnd + 'admin', '_blank')}
                                                 className="flex items-center text-[16px] text-sm font-medium text-gray-700 hover:text-gray-800"
                                             >
                                                 Admin page

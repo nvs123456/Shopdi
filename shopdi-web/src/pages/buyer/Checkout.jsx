@@ -11,6 +11,7 @@ export default function Checkout({ ProductList }) {
     console.log(tmp)
     let isBuyNow = location.state.isBuyNow;
     const [isLoading, setIsLoading] = useState(true)
+    const [payment,setPayment] = useState("COD")
     useEffect(() => {
         GET("address/shipping").then((data) => {
             if (data.code === "OK") {
@@ -59,7 +60,7 @@ export default function Checkout({ ProductList }) {
                     </div>
                     <div className="flex flex-row border-[1px] border-[#E4E7E9] pt-8" >
                         <div className="w-4/6">
-                            <Payment />
+                            <Payment payment={payment} setPayment={setPayment} />
                             <div className={"mx-10"}>
                                 <div>Message for Sellers:</div>
                                 <textarea id="note" className="w-full h-20 border-2 border-[#E4E7E9] rounded mt-2 mb-6 p-2" placeholder="(Optional)"></textarea>
@@ -106,7 +107,8 @@ export default function Checkout({ ProductList }) {
                                                 "variant": tmp[i].cartItems[0].variant,
                                                 "quantity": tmp[i].cartItems[0].quantity,
                                                 "addressId": currentAddress.addressId,
-                                                "orderNotes": document.getElementById("note").value
+                                                "orderNotes": document.getElementById("note").value,
+                                                'paymentMethod': payment
 
                                             }).then((res) => {
                                                 if (res.code === "OK") {
@@ -117,7 +119,8 @@ export default function Checkout({ ProductList }) {
                                             POST('orders/place-order', {
                                                 "addressId": currentAddress.addressId,
                                                 "selectedCartItemIds": tmp[i].cartItems.filter((item) => item.isSelected).map((item) => item.cartItemId),
-                                                orderNotes: document.getElementById("note").value
+                                                orderNotes: document.getElementById("note").value,
+                                                'paymentMethod': payment
                                             }).then((res) => {
                                                 if (res.code === "OK") {
                                                     alert("Đặt hàng thành công")
