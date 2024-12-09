@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { POST, GET } from '@/api/GET';
 import { JSONToData } from '@/utils/todo';
 import SpinnerLoading from '@/components/SpinnerLoading/SpinnerLoading';
+import { baseUrl } from '@/api/GET';
 export default function AddProduct() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -537,7 +538,7 @@ async function uploadImages(productId, selectedImage) {
             formData.append('images', selectedImage[i].path);
         }
     }
-    return await fetch(`http://localhost:8080/images/upload-product-images/${productId}`, {
+    return await fetch(baseUrl + `images/upload-product-images/${productId}`, {
         method: "POST",
         headers: {
             // 'Content-Type': 'multipart/form-data',

@@ -1,5 +1,6 @@
 
-const baseUrl = "http://localhost:8080/";
+export const baseUrl = "http://localhost:8080/";
+export const baseUrlForFrontEnd = "http://localhost:5173/";
 export const GET = async (url) => {
     
     const response = await fetch(baseUrl+url, {
