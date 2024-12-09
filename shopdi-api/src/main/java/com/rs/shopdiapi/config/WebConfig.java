@@ -16,6 +16,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver(){
                     @Override
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                        System.out.println("resourcePath: " + resourcePath);
+                        System.out.println("location: " + location);
                         if (resourcePath.equals("/")) {
                             return new ClassPathResource("dist/index.html");
                         }
