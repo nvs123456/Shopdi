@@ -142,14 +142,14 @@ export default function ProductDetail() {
 
     if (!isLoading) {
         return (
-            <div className="pr-40 pl-40 bg-cloudBlue font-sans">
-                <div className="pt-10 flex flex-col gap-y-2">
-                    <div className="product-info bg-white flex flex-row gap-x-8 border-2 rounded-md">
-                        <div className="product-image w-2/5 p-2">
+            <div className="px-40 bg-cloudBlue font-sans">
+                <div className="pt-12 flex flex-col gap-y-6">
+                    <div className="product-info bg-white flex flex-row gap-x-8 border-[1px]">
+                        <div className="product-image w-2/5 p-8">
                             <div className=" main-image w-full min-h-96">
-                                <img src={productImages[curImage]} alt={`image ${curImage}`} className="w-100 h-100 rounded-md" style={{ aspectRatio: "1/1" }} />
+                                <img src={productImages[curImage]} alt={`image ${curImage}`} className="w-100 h-100 rounded-md border-2" style={{ aspectRatio: "1/1" }} />
                             </div>
-                            <div className="sub-image w-full min-h-12 bg-white flex flex-row gap-x-2 mt-2">
+                            <div className="sub-image w-full min-h-12 bg-white flex flex-row gap-x-2 mt-6">
                                 <button onClick={() => {
                                     if (subImages[0] === 0) return
                                     let tmp = subImages.map((i) => i - 1)
@@ -158,7 +158,7 @@ export default function ProductDetail() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
                                     </svg>
                                 </button>
-                                {subImages.map((i) => <div className="w-16 h-16 stretch border-2 border-gray-400 rounded-lg " key={i} onClick={() => setCurImage(i)}><img src={productImages[i]} className={`rounded-lg`} style={{ aspectRatio: "1/1" }} alt={`image ${i}`} /></div>)}
+                                {subImages.map((i) => <div className="w-16 h-16 stretch " key={i} onClick={() => setCurImage(i)}><img src={productImages[i]} className={`rounded-lg`} style={{ aspectRatio: "1/1" }} alt={`image ${i}`} /></div>)}
                                 <button onClick={() => {
                                     if (subImages[4] === productImages.length - 1) return
                                     let tmp = subImages.map((i) => i + 1)
@@ -170,50 +170,50 @@ export default function ProductDetail() {
                             </div>
                         </div>
                         <div className="product-description flex flex-col gap-y-4">
-                            <div className="mt-8 text-3xl text-wrap">
+                            <div className="mt-12 text-4xl text-wrap">
                                 <p>{product.productName}</p>
                             </div>
 
                             <div>
                                 <span
-                                    className='text-4xl text-[#2DA5F3]'>&#8363; {product.price.toLocaleString()}</span>
+                                    className='text-3xl text-[#2DA5F3] mt-2'>&#8363; {product.price.toLocaleString()}</span>
                             </div>
                             <Variant variantWithQuantity={product.variants}
                                 onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant}
                                 currenSelectedVariant={currentSelectedVariant} />
-                            <div className='flex flex-row'>
-                                <div className='text-base align-middle text-gray-600 min-w-20 text-left'>Số lượng</div>
+                            <div className='flex flex-row mt-4'>
+                                <div className='text-base align-middle text-gray-600 min-w-20 text-left'>Quantity</div>
                                 <div className='flex flex-row flex-wrap'>
                                     <Quantity quantity={quantity} setQuantity={setQuantity}
                                         quantityInStock={quantityInStock} />
-                                    <div className='ml-4'> Còn lại {quantityInStock} sản phẩm</div>
+                                    <div className='ml-6'> {quantityInStock} products remain</div>
                                 </div>
                             </div>
                             {isBuyNowWithoutAttribute ? <div className='text-red message'></div> : null}
-                            <div className='flex flex-row ml-4'>
-                                <button className='bg-pumpkin font-sans text-white rounded-md cursor-pointer px-6'
-                                    onClick={handleAddToCart}>Thêm vào giỏ hàng
+                            <div className='flex flex-row mt-2'>
+                                <button className='bg-[#FA8232] font-sans text-white rounded cursor-pointer px-4 hover:bg-orangeRed font-semibold'
+                                    onClick={handleAddToCart}>Add to cart
                                 </button>
                                 <button
-                                    className='ml-2 bg-white font-sans text-pumpkin rounded-md cursor-pointer  border-pumpkin  p-2 border-2'
-                                    onClick={handleBuyNow}>Mua ngay
+                                    className='ml-6 bg-white font-sans text-[#FA8232] rounded cursor-pointer  border-[#FA8232]  p-2 px-4 border-2 font-semibold hover:bg-orangeRed hover:text-white hover:border-orangeRed'
+                                    onClick={handleBuyNow}>Buy now
                                 </button>
                             </div>
                         </div>
                     </div>
                     <ShopBar sellerId={product.seller.sellerId} />
-                    <div className="description  bg-white flex flex-col gap-x-8 border-2 rounded-md p-4">
-                        <div className="text-2xl">
-                            <h2>Mô tả</h2>
+                    <div className="description  bg-white flex flex-col gap-x-8 border-[1px] p-6">
+                        <div className="text-2xl mb-2 font-semibold font-sans">
+                            <h2>Description</h2>
                         </div>
                         <div>
                             <p className="font-publicSans white-space-pre" dangerouslySetInnerHTML={{ __html: product.description.replace(/\n/g, "<br>") }}></p>
                         </div>
                     </div>
-                    <div className="description bg-white flex flex-row gap-x-8 border-2 rounded-md p-4">
+                    <div className="description bg-white flex flex-row gap-x-8 border-[1px] p-6 mb-12">
                         <div className="w-full">
-                            <div className="text-2xl">
-                                <h2>Bình luận</h2>
+                            <div className="text-2xl mb-2 font-semibold font-sans">
+                                <h2>Comment</h2>
                             </div>
                             <div className="font-sans white-space-pre">
                                 <Comments productId={product.productId} />
@@ -227,8 +227,8 @@ export default function ProductDetail() {
                                 <div className=''>
                                     {[1, 2, 3, 4, 5].map((i) => i <= Math.round(review.rating) ? <StarIcon key={i} style={{ color: "yellow", fontSize: "30px" }} /> : <StarIcon key={i} style={{ color: "grey", fontSize: "30px" }} />)}
                                 </div>
-                                <div className=' text-xl font-bold'>
-                                    {review.count} đánh giá
+                                <div className=' text-xl font-semibold'>
+                                    {review.count} Reviews
                                 </div>
                             </div>
                         </div>

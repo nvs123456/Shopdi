@@ -58,13 +58,13 @@ export default function Profile() {
     }
 
     return (
-        <div className="bg-[#EAF6FE] bg-opacity-20 font-sans min-h-screen p-4">
+        <div className="bg-cloudBlue font-sans min-h-screen py-12">
             {/* Header */}
-            <div className="max-w-5xl mx-auto p-6">
-                <h1 className="text-xl font-semibold text-gray-800">
+            <div className="max-w-6xl mx-auto px-6 pb-6">
+                <h1 className="text-2xl font-semibold text-gray-800">
                     Hello, {info.username || "User"}
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-[16px] text-gray-500">
                     From your account dashboard, you can easily check & view your{" "}
                     <br />
                     <span className="text-blue-500 cursor-pointer">Recent Orders</span>, manage your{" "}
@@ -78,7 +78,7 @@ export default function Profile() {
             </div>
 
             {/* Dashboard Cards */}
-            <div className="max-w-5xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="max-w-6xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                 <AccountInfo info={info} />
                 <BillingAddress info={info} address={defaultAddress} />
                 <OrderSummary orders={orders} />
@@ -92,22 +92,22 @@ export default function Profile() {
 
 function AccountInfo({ info }) {
     return (
-        <div className="relative bg-white border-[#E4E7E9] border-2 rounded-sm p-4">
-            <h2 className="text-sm font-medium text-gray-600 border-b-2">ACCOUNT INFO</h2>
-            <div className="flex flex-row lg:py-2">
+        <div className="relative bg-white border-[#E4E7E9] border-[1px] rounded p-5 h-80">
+            <h2 className="text-[18px] font-medium text-gray-600 border-b-2 pb-3 mx-3">ACCOUNT INFO</h2>
+            <div className="flex flex-row lg:py-4 pl-3">
                 <img
                     src={info.profileImage || profileDefault}
                     alt="profile"
-                    className="lg:w-12 lg:h-12 p-1 mr-2 border-2 border-gray-400 rounded-full"
+                    className="lg:w-16 lg:h-16 p-1 mr-2 border-[1px] rounded-full"
                 />
-                <p className="text-gray-800 font-semibold mt-2 mb-4">{info.username}</p>
+                <p className="text-gray-800 font-semibold mt-5 mb-4 ml-2 text-xl">{info.username}</p>
             </div>
-            <p className="text-gray-500 text-sm">{`${info.firstName} ${info.lastName}`}</p>
-            <p className="text-gray-500 text-sm">Email: {info.email}</p>
-            <p className="text-gray-500 text-sm mb-4">Phone: {info.mobileNo}</p>
+            <p className="text-gray-500 mb-2 ml-4">{`${info.firstName} ${info.lastName}`}</p>
+            <p className="text-gray-500 mb-2 ml-4">Email: {info.email}</p>
+            <p className="text-gray-500 mb-2 ml-4">Phone: {info.mobileNo}</p>
             <button
                 onClick={() => (window.location.href = "/editprofile")}
-                className="xl:absolute xl:bottom-4 px-1 py-0.5 text-[14px] lg:mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] lg:px-4 lg:py-2 lg:text-sm"
+                className="xl:absolute xl:bottom-5 px-1 py-0.5 text-[14px] lg:mt-4 lg:px-4 lg:py-2 lg:text-sm ml-4 bg-[#FA8232] rounded text-white font-semibold font-sans hover:bg-orangeRed"
             >
                 Edit Account
             </button>
@@ -117,14 +117,14 @@ function AccountInfo({ info }) {
 
 function BillingAddress({ address }) {
     return (
-        <div className="relative bg-white border-[#E4E7E9] border-2 rounded-sm p-4">
-            <h2 className="text-sm font-medium text-gray-600 border-b-2">BILLING ADDRESS</h2>
+        <div className="relative bg-white border-[#E4E7E9] border-[1px] rounded p-5 h-80">
+            <h2 className="text-[18px] font-medium text-gray-600 border-b-2 pb-3 mx-3">BILLING ADDRESS</h2>
             {address ? (
                 <div>
-                    <p className="text-gray-800 font-semibold mt-2 mb-4">{address.firstName} {address.lastName}</p>
-                    <p className="text-gray-500 text-sm">{address.address}</p>
-                    <p className="text-gray-500 text-sm">Phone: {address.phoneNumber}</p>
-                    <p className="text-gray-500 text-sm mb-4">Email: {address.email}</p>
+                    <p className="text-gray-800 font-semibold mt-5 mb-4 ml-4 text-xl">{address.firstName} {address.lastName}</p>
+                    <p className="text-gray-500 mb-2 ml-4">{address.address}</p>
+                    <p className="text-gray-500 mb-2 ml-4">Phone: {address.phoneNumber}</p>
+                    <p className="text-gray-500 mb-2 ml-4">Email: {address.email}</p>
                 </div>
             ) : (
                 <div>
@@ -133,7 +133,7 @@ function BillingAddress({ address }) {
             )}
             <button
                 onClick={() => (window.location.href = "/editprofile")}
-                className="xl:absolute xl:bottom-4 px-1 py-0.5 text-[14px] lg:mt-4 text-[#2DA5F3] border-2 border-[#D5EDFD] lg:px-4 lg:py-2 lg:text-sm"
+                className="xl:absolute xl:bottom-5 px-1 py-0.5 text-[14px] lg:mt-4 lg:px-4 lg:py-2 lg:text-sm ml-4 bg-[#FA8232] rounded text-white font-semibold font-sans hover:bg-orangeRed"
             >
                 Edit Address
             </button>
@@ -172,14 +172,14 @@ function OrderSummary({ orders }) {
 
 function DashboardCard({ title, count, bgColor, iconColor}) {
     return (
-        <div className={`flex mb-3 h-full rounded-sm ${title === 'Total Orders' ? 'bg-[#EAF6FE]' : title === "Pending Orders" ? 'bg-[#FFF3EB]' : 'bg-[#EAF7E9]'}`}>
-            <div className={`bg-white p-3 m-2 w-12`}>
+        <div className={`flex mb-3 h-full border-[1px] rounded ${title === 'Total Orders' ? 'bg-[#EAF6FE]' : title === "Pending Orders" ? 'bg-[#FFF3EB]' : 'bg-[#EAF7E9]'}`}>
+            <div className={`bg-white p-3 m-4 w-16`}>
                 {/* Add SVG or Icon here */}
                 {title === "Total Orders" ? <RocketIcon sx={{ color: iconColor, fontSize: '40px' }} /> : title === "Pending Orders" ? <PendingActionsIcon sx={{ color: iconColor, fontSize: '40px' }}/> : <TaskIcon sx={{ color: iconColor, fontSize: '40px' }}/>}
             </div>
             <div>
-                <p className="text-gray-800 text-lg font-semibold mt-2">{count}</p>
-                <p className="text-gray-500 text-sm">{title}</p>
+                <p className="text-gray-800 text-2xl font-semibold mt-4">{count}</p>
+                <p className="text-gray-500">{title}</p>
             </div>
         </div>
     );
@@ -187,31 +187,31 @@ function DashboardCard({ title, count, bgColor, iconColor}) {
 
 function RecentOrders({orders}) {
     return (
-        <div className="max-w-5xl mx-auto mt-6 p-4 bg-white border-2 border-[#E4E7E9]">
-            <div className="relative">
-                <h2 className="text-gray-800 font-semibold text-lg">Recent Orders</h2>
+        <div className="max-w-6xl mx-auto mt-6 py-6 px-8 bg-white border-2 border-[#E4E7E9]">
+            <div className="relative mb-5">
+                <h2 className="text-gray-800 font-semibold text-2xl">Recent Orders</h2>
                 <button
                     onClick={() => (window.location.href = "/orderhistory")}
-                    className="absolute right-4 top-0 text-blue-500"
+                    className="absolute right-4 top-2 text-blue-500 hover:underline text-[18px]"
                 >
                     View All
                 </button>
             </div>
-            {orders.length > 0 ? <table className="table-fixed mt-4 w-full text-center text-[10px] lg:text-sm text-black ">
+            {orders.length > 0 ? <table className="table-fixed mt-4 w-full text-center text-[10px] lg:text-[16px] text-black ">
                 <thead>
                 <tr className={`bg-[#F2F4F5] border-2 border-[#E4E7E9]`}>
-                    <th className="xl:w-[10%] pb-2 border-b">ORDER ID</th>
-                    <th className="xl:w-[20%] pb-2 border-b">STATUS</th>
-                    <th className="xl:w-[20%] pb-2 border-b">DATE</th>
-                    <th className="xl:w-[30%] pb-2 border-b">TOTAL</th>
-                    <th className="xl:w-[20%] pb-2 border-b">ACTION</th>
+                    <th className="xl:w-[10%] py-3 border-b font-semibold">ORDER ID</th>
+                    <th className="xl:w-[20%] py-2 border-b font-semibold">STATUS</th>
+                    <th className="xl:w-[20%] py-2 border-b font-semibold">DATE</th>
+                    <th className="xl:w-[30%] py-2 border-b font-semibold">TOTAL</th>
+                    <th className="xl:w-[20%] py-2 border-b font-semibold">ACTION</th>
                 </tr>
                 </thead>
                 <tbody>
                 {
                     orders.map((orderItem) => (
                         <tr key={orderItem.orderId}>
-                            <td className="py-2 xl:pl-4">{orderItem.orderId}</td>
+                            <td className="py-4 xl:pl-4">{orderItem.orderId}</td>
                             {orderItem.orderStatus === 'DELIVERED' ? <td className='text-[#2DB224]'>COMPLETED</td> :
                                 orderItem.orderStatus === 'PENDING' ?
                                     <td className='text-[#FA8232]'>IN PROGRESS</td> :

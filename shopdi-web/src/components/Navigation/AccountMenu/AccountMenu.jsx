@@ -54,7 +54,7 @@ export default function AccountMenu() {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar src={avatar} sx={{ width: 30, height: 30 }}>M</Avatar>
+                        <Avatar src={avatar} sx={{ width: 40, height: 40 }}>M</Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -107,8 +107,8 @@ export default function AccountMenu() {
                 <Divider />
                 <MenuItem onClick={handleClose}>
                         <div onClick={() => navigate('/orderhistory')}>
-                            <LocalMallIcon fontSize="small"/>
-                            <span className={`mb-3`}> My Order </span>
+                            <LocalMallIcon className={`mb-1`} fontSize="small"/>
+                            <span className={`ml-1`}> My Order </span>
                         </div>
                 </MenuItem>
                 {/* <MenuItem onClick={handleClose}>
@@ -119,7 +119,7 @@ export default function AccountMenu() {
                 </MenuItem> */}
                 <MenuItem onClick={handleLogout}>
                     <Logout fontSize="small" />
-                   <span> Logout </span>
+                   <span className={`ml-2`}> Logout </span>
                 </MenuItem>
             </Menu>
         </React.Fragment>

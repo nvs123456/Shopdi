@@ -34,8 +34,8 @@ export default function Filter({ allProducts, setProducts }) {
         filterAndSort(filterByCategory, filterByRating, sortBy)
     }
     return (
-        <div className="bg-white">
-            <div className="hidden lg:block min-h-screen pt-6 px-4">
+        <div className="bg-white border-[1px]">
+            <div className="hidden lg:block min-h-screen pt-4 px-4">
                 <SortFilter sortBy={sortBy} setSortBy={onSetSortBy} />
                 <CategoryFilter allProducts={allProducts} filterByCategory={filterByCategory} setFilterByCategory={onSetFilterByCategory} />
                 <StarFilter filterByRating={filterByRating} setFilterByRating={onSetFilterByRating} />
@@ -48,6 +48,7 @@ function CategoryFilter({ allProducts, filterByCategory, setFilterByCategory }) 
     let [isOpen, setIsOpen] = useState(true);
     const categories = []
     for (let i = 0; i < allProducts.length; i++) {
+        if(categories.find((item) => item.id === allProducts[i].categoryId) === undefined)
         categories.push({ name: allProducts[i].category, id: allProducts[i].categoryId })
     }
     const set = (value) => {
@@ -59,13 +60,13 @@ function CategoryFilter({ allProducts, filterByCategory, setFilterByCategory }) 
             <h3 className="-my-3 flow-root">
                 {/* <!-- Expand/collapse section button --> */}
                 <button onClick={set} type="button" className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-0" aria-expanded="false">
-                    <span className="font-medium text-gray-900">Categories</span>
+                    <span className="font-medium text-gray-900 text-[18px]">Categories</span>
                     <span className="ml-6 flex items-center">
                         {isOpen ?
-                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                            (<svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                                 <path fillRule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clipRule="evenodd" />
                             </svg>) :
-                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                            (<svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                                 <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
                             </svg>)}
                     </span>
@@ -104,13 +105,13 @@ function StarFilter({ filterByRating, setFilterByRating }) {
             <h3 className="-my-3 flow-root">
                 {/* <!-- Expand/collapse section button --> */}
                 <button onClick={set} type="button" className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-0" aria-expanded="false">
-                    <span className="font-medium text-gray-900">Rating</span>
+                    <span className="font-medium text-gray-900  text-[18px]">Rating</span>
                     <span className="ml-6 flex items-center">
                         {isOpen ?
-                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                            (<svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                                 <path fillRule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clipRule="evenodd" />
                             </svg>) :
-                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                            (<svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                                 <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
                             </svg>)}
                     </span>
@@ -118,7 +119,7 @@ function StarFilter({ filterByRating, setFilterByRating }) {
             </h3>
             {/* <!-- Filter section, show/hide based on section state. --> */}
             {isOpen &&
-                (<div className="" id="filter-section-0">
+                (<div className="mt-4" id="filter-section-0">
                     <div className="">
                         {[1, 2, 3, 4, 5].map((item, index) =>
                             <div key={item} className="flex items-center">
@@ -189,13 +190,13 @@ function SortFilter({ sortBy, setSortBy }) {
             <h3 className="-my-3 flow-root">
                 {/* <!-- Expand/collapse section button --> */}
                 <button onClick={set} type="button" className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-0" aria-expanded="false">
-                    <span className="font-medium text-gray-900">Sort</span>
+                    <span className="font-medium text-gray-900 text-[18px]">Sort</span>
                     <span className="ml-6 flex items-center">
                         {isOpen ?
-                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                            (<svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                                 <path fillRule="evenodd" d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clipRule="evenodd" />
                             </svg>) :
-                            (<svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                            (<svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                                 <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
                             </svg>)}
                     </span>
@@ -203,7 +204,7 @@ function SortFilter({ sortBy, setSortBy }) {
             </h3>
             {/* <!-- Filter section, show/hide based on section state. --> */}
             {isOpen &&
-                (<div className="space-y-4" id="filter-section-0">
+                (<div className="space-y-4 mt-6" id="filter-section-0">
                     <div className="space-y-4">
                         {
                             data.map((item, index) =>

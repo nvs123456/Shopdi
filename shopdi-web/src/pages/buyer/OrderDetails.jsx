@@ -143,27 +143,27 @@ function OrderDetails() {
         <div>
             {isModalOpen && <Review isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} productId={productIdToReview}/>}
             <div className={`${isModalOpen ? "brightness-50" : ''}  bg-[#F7FBFF] flex justify-center font-sans`}>
-                <div className="container md:mt-10 md:mb-10 my-5 h-5/6 border-2 bg-white w-full md:w-5/6 border-collapse">
+                <div className="container md:mt-12 md:mb-12 my-5 h-5/6 border-[1px] bg-white w-full md:w-4/5 border-collapse">
                     {/* heading section */}
-                    <div className="flex justify-between items-center border-b-2 h-6 md:h-10 mb-6 px-0 md:px-4">
+                    <div className="flex justify-between items-center border-b-2 h-8 md:h-14 mb-6 px-0 md:px-4">
                         <div className="flex items-center rounded hover:bg-gray-100 lg:h-[80%] hover:shadow-sm" >
                             <ArrowBackIcon className="text-black" fontSize={'inherit'}/>
-                            <button className={`text-black text-[14px] md:text-[16px] px-1 `} disabled={isModalOpen} onClick={() => window.location.href ='/orderhistory'}>
-                                Order Details</button>
+                            <button className={`text-black text-[14px] md:text-[18px] pl-2 text-yaleBlue font-bold`} disabled={isModalOpen} onClick={() => window.location.href ='/orderhistory'}>
+                                ORDER DETAILS</button>
                         </div>
                     </div>
                     {/* Order Details Section */}
                     <div
-                        className=" bg-[#FDFAE7] border-2 border-[#F7E99E] p-3 md:p-6 w-5/6 mb-3 md:mb-6 ml-6 md:ml-10 lg:ml-20 border-collapse">
+                        className=" bg-[#FDFAE7] border-2 border-[#F7E99E] p-3 md:p-6 w-5/6 mt-10 mb-3 md:mb-10 mx-auto border-collapse rounded">
                         <div className="flex justify-between items-center">
-                            <div className={'text-[16px]'}>
+                            <div className={'text-[20px] pb-4'}>
                                 Order #{orderDetail.orderId}
                             </div>
                             <div className={'text-[18px] md:text-[26px] xl:text-[32px] font-bold text-celticBlue'}>
-                                {orderDetail.totalPrice.toLocaleString()}đ
+                                {orderDetail.totalPrice.toLocaleString()} đ
                             </div>
                         </div>
-                        <div className={'text-[14px] text-darkGray pt-1.5'}>
+                        <div className={'text-[14px] text-darkGray'}>
                             Order placed on {formattedDate.split(" ")[0]} at {formattedDate.split(" ")[1]}
                         </div>
                     </div>
@@ -177,13 +177,13 @@ function OrderDetails() {
                     {/* Order Progress Section */}
                     {status === 'CANCELLED' ?
                         <div
-                            className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-20">Order
+                            className="text-[14px] md:text-[18px] xl:text-[24px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-24 mb-8">Order
                             Cancelled!</div>
                         :
                         <div className={`relative md:relative lg:relative`}>
                             {/* Mở tab review */}
                             {/* Progress bar */}
-                            <div className=" pl-8 md:pl-16 xl:pl-36  bg-white  mb-3 md:mb-6">
+                            <div className=" pl-8 md:pl-16 xl:pl-40  bg-white  mb-3 md:mb-6">
                                 <div className="flex justify-between items-center w-full">
                                     {steps.map((label, index) => (
                                         <div key={label} className="flex items-center w-full">
@@ -227,7 +227,7 @@ function OrderDetails() {
 
                             </div>
                             {/* Step Labels */}
-                            <div className={`flex px-2 lg:px-2.5 ml-4 md:ml-12 xl:ml-[180px]`}>
+                            <div className={`flex px-2 lg:px-5 ml-4 md:ml-12 xl:ml-[115px] mb-3`}>
                                 {steps.map((label, index) => (
                                     <div key={label}
                                          className="text-[12px] md:text-[18px] mt-0 flex items-center w-full"> {/* Step Label */}
@@ -238,7 +238,7 @@ function OrderDetails() {
 
                             {/* Step Icons */}
                             <div
-                                className={`flex border-b-2 justify-around pr-5 md:pr-8 xl:pl-4 xl:mx-12 pl-3 md:pl-5 pb-2 `}>
+                                className={`flex justify-around pr-5 md:pr-14 xl:pl-3 xl:mx-12 pl-3 md:pl-5 pb-2 mb-10`}>
                                 {steps.map((label, index) => (
                                     <span className="flex justify-center mt-2">
                               {React.cloneElement(icons[index], {
@@ -260,37 +260,37 @@ function OrderDetails() {
 
 
                     {/* Product Section */}
-                    <div className=" bg-white border-b-2 md:p-6 p-2 font-sans">
-                        <div className={'text-[14px] font-bold md:text-xl'}>
+                    <div className=" bg-white border-y-2 md:py-8 px-12 font-sans">
+                        <div className={'text-[18px] font-semibold md:text-2xl mb-6'}>
                             Product ({orderDetail.orderItems?.length})
                         </div>
-                        <table className="xl:table-fixed min-w-full border border-gray-200">
+                        <table className="xl:table-fixed min-w-full border border-gray-200 mb-6">
                             <thead>
-                            <tr>
-                                <th className="xl:w-[50%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Products</th>
-                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Price</th>
-                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Quantity </th>
-                                <th className="xl:w-[20%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] p-1 text-left text-[12px] md:text-[18px]">Total</th>
+                            <tr className={"h-12"}>
+                                <th className="xl:w-[40%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] pl-4 text-left text-[12px] md:text-[18px] font-medium">PRODUCTS</th>
+                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">PRICE</th>
+                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">QUANTITY </th>
+                                <th className="xl:w-[30%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">TOTAL</th>
 
                             </tr>
 
                             </thead>
                             <tbody>
                             {orderDetail.orderItems.map((row, rowIndex) => (
-                                <tr key={rowIndex}>
-                                    <td className='flex md:w-[90%] items-center text-[12px] md:text-[18px]'>
-                                        <img className="md:w-20 md:h-20 w-8 h-8 " src={row.productImage} alt="temp"/>
+                                <tr key={rowIndex} className={"border-b-2 h-20"}>
+                                    <td className='flex md:w-[90%] items-center text-[12px] md:text-[16px]'>
+                                        <img className="md:w-20 md:h-20 w-8 h-8 pl-4 py-2.5 mr-4" src={row.productImage} alt="temp"/>
                                         {row.productName}
                                     </td>
-                                    <td className='pl-0 text-[12px] md:text-[18px]'>{row.price.toLocaleString()}đ</td>
-                                    <td className='pl-0 md:pl-3 text-[12px] md:text-[18px]'>x{row.quantity}</td>
-                                    <td className='pl-0 relative md:pl-3 text-[12px] md:text-[18px]'>
-                                        <span className={`font-semibold`}>{row.price.toLocaleString()}đ</span>
+                                    <td className=' text-[12px] md:text-[16px]'>{row.price.toLocaleString()} đ</td>
+                                    <td className='pl-2 text-[12px] md:text-[16px]'>x {row.quantity}</td>
+                                    <td className=' relative text-[12px] md:text-[16px]'>
+                                        <span className={`font-semibold`}>{row.price.toLocaleString()} đ</span>
 
                                         {activeStep > 3 && <button className={`pl-0`} disabled={isModalOpen} onClick={(productId) => {
                                             handleOpenModal(row.productId)
                                         }}><span
-                                            className=' absolute lg:top-8 lg:right-10 text-[#FA8232] hover:text-orangeRed text-[14px] md:text-[16px]'>Leave a Rating</span>
+                                            className=' absolute lg:top-7 lg:right-16 text-[#FA8232] hover:text-orangeRed text-[14px] md:text-[16px]'>Leave a Rating</span>
                                         </button>}
                                     </td>
                                 </tr>
@@ -300,29 +300,29 @@ function OrderDetails() {
                     </div>
 
                     {/* Billing and Shipping Section */}
-                    <div className=" bg-white border-b-2 p-2 md:p-6 mb-0">
-                        <div className="md:grid md:grid-cols-3 md:gap-4">
+                    <div className=" bg-white p-2 md:p-6 mb-0 ml-6">
+                        <div className="md:grid md:grid-cols-3 md:gap-8">
                             <div className={`border-r-2`}>
-                                <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Billing Address</div>
-                                <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
-                                <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
+                                <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Billing Address</div>
+                                <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
+                                <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
                                     {address} <br/>
                                     Phone Number: {shippingAddress.phone} <br/>
                                     Email: {shippingAddress.email}
                                 </div>
                             </div>
                             <div className={`border-r-2`}>
-                                <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Shipping Address
+                                <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Shipping Address
                                 </div>
-                                <div className='text-[14px] md:text-[18px]'>{firstName + " " + lastName} </div>
-                                <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
+                                <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
+                                <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
                                     {address} <br/>
                                     Phone Number: {shippingAddress.phone} <br/>
                                     Email: {shippingAddress.email}
                                 </div>
                             </div>
                             <div>
-                                <div className='text-[16px] md:text-[20px] font-bold mt-2 md:pb-4'>Order Notes</div>
+                                <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Order Notes</div>
                                 <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
                                     {orderDetail.orderNotes !== null ? orderDetail.orderNotes : "None"}
                                 </div>
@@ -334,7 +334,7 @@ function OrderDetails() {
                                                      onClick={() => {
                                                          handleCancelOrder(orderDetail.orderId)
                                                      }}
-                                                     className={`absolute rounded hover: bg-orangeRed right-0 md:right-2 lg:right-4 
+                                                     className={`absolute rounded hover:bg-orangeRed right-0 md:right-2 lg:right-4 
                         top-0 md:top-2  lg:top-5 ${status === 'CANCELLED' ? ' bg-gray-300' : ' bg-red'} text-white text-[12px] md:text-[18px] w-1/4 md:w-[160px] 
                         h-5 md:h-8 lg:h-10 lg:mb-3 mb-4 md:mb-6`}>{status === 'CANCELLED' ? 'Cancelled' : 'Cancel'}</button>}
                     </div>
