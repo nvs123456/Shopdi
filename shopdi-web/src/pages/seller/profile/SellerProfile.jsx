@@ -20,7 +20,7 @@ export default function SellerProfile() {
 
     const fetchSellerInfo = async () => {
         //Fetch seller info from API
-        const response = await axios.get('http://localhost:8080/seller/profile', {
+        const response = await axios.get(baseUrl  + 'seller/profile', {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
@@ -43,7 +43,7 @@ export default function SellerProfile() {
     function handleUpdateInfo() {
         //Update seller info
         setIsAPICalling(true);
-        axios.put('http://localhost:8080/seller/profile', sellerInfo, {
+        axios.put(baseUrl  + 'seller/profile', sellerInfo, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
@@ -77,7 +77,7 @@ export default function SellerProfile() {
         //Upload profile image
         const formData = new FormData();
         formData.append("image", selectedImage);
-        axios.put('http://localhost:8080/images/update-profile-seller-image', formData, {
+        axios.put(baseUrl  + 'images/update-profile-seller-image', formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
@@ -110,7 +110,7 @@ export default function SellerProfile() {
         //Upload cover image
         const formData = new FormData();
         formData.append("image", selectedCoverImage);
-        axios.put('http://localhost:8080/images/update-cover-image', formData, {
+        axios.put(baseUrl  + 'images/update-cover-image', formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${localStorage.getItem("Authorization")}`,

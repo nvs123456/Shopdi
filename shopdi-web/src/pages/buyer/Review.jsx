@@ -4,12 +4,13 @@ import FiveStar from '../../components/Buyer/Review/FiveStar.jsx'
 import hiddenCssClasses from "@mui/material/Hidden/hiddenCssClasses.js";
 import axios from "axios";
 import SpinnerLoading from "../../components/SpinnerLoading/SpinnerLoading.jsx";
+import { baseUrl } from '../../api/GET.jsx';
 
 function Review({isModalOpen,setIsModalOpen, productId}) {
     const [review, setReview] = React.useState({rating: 5, review: ''});
     const [isAPICalling, setIsAPICalling] = React.useState(false);
     const postReview = async () => {
-        await axios.post(`http://localhost:8080/reviews/product/${productId}`,
+        await axios.post(`${baseUrl}reviews/product/${productId}`,
             {
                 rating: review.rating,
                 review: review.review

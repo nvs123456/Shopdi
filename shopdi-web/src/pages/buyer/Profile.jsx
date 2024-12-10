@@ -5,6 +5,7 @@ import profileDefault from "../../assets/images/profileDefault.png";
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import TaskIcon from '@mui/icons-material/Task';
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { baseUrl } from "../../api/GET";
 export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const [orders, setOrders] = useState([]);
@@ -22,8 +23,8 @@ export default function Profile() {
         const fetchData = async () => {
             try {
                 const [ordersResponse, infoResponse] = await Promise.all([
-                    axios.get("http://localhost:8080/orders/history", API_CONFIG),
-                    axios.get("http://localhost:8080/users/my-info", API_CONFIG),
+                    axios.get(baseUrl + "orders/history", API_CONFIG),
+                    axios.get(baseUrl + "users/my-info", API_CONFIG),
                 ]);
 
                 if (ordersResponse.data.code === "OK") {

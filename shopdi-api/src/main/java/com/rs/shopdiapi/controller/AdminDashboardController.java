@@ -11,7 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class AdminDashboardController {
-    @GetMapping(value="{path:^(?!assets).*}/**")
+    // @GetMapping(value="{path:^(?!assets).*}/**")
+    @GetMapping(value="/{path:login|forget|buyer|"+
+    "register|seller|admin|"+
+    "profile|editprofile|orderhistory|orders|cart|product|shop|search|review|category}/**")
     public Resource index() {
 
         return new ClassPathResource("dist/index.html");

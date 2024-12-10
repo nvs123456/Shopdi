@@ -42,14 +42,6 @@ export default function ProductDetail() {
         })
 
     }, [isLoading])
-    const shop_info = {
-        name: "Shopdi",
-        link: "https://shopdi.com",
-        image: shopdiLogo,
-        review: "3,1tr",
-        "san_pham": "100",
-        "tham_gia": " 2 năm trước"
-    }
 
     const [quantity, setQuantity] = useState(1);
     const [currentSelectedVariant, setCurrentSelectedVariant] = useState([]);
