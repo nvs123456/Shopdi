@@ -12,7 +12,7 @@ export default function Checkout({ ProductList }) {
     console.log(tmp)
     let isBuyNow = location.state.isBuyNow;
     const [isLoading, setIsLoading] = useState(true)
-    const [payment,setPayment] = useState("COD")
+    const [payment, setPayment] = useState("COD")
     useEffect(() => {
         GET("address/shipping").then((data) => {
             if (data.code === "OK") {
@@ -31,18 +31,20 @@ export default function Checkout({ ProductList }) {
     const [allAddress, setAllAddress] = useState([])
     const [openAddress, setOpenAddress] = useState(false)
     const [openCheckoutSuccess, setOpenCheckoutSuccess] = useState(false)
+    const [orderId, setOrderId] = useState(null)
     const onClose = () => {
         setOpenAddress(!openAddress)
     }
+
     return (
         <div>
-            {openCheckoutSuccess && <CheckoutPopup />}
+            {openCheckoutSuccess && <CheckoutPopup orderId={orderId} paymentMethod={payment} />}
             {openAddress && <AddressSelection onClose={onClose} addresses={allAddress} setAllAddress={setAllAddress} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />}
             <div className={`bg-cloudBlue py-12 px-40 ${(openAddress || openCheckoutSuccess ? "brightness-50" : "")}`}>
                 <div className="flex flex-col bg-white font-sans">
                     <div className='border-b-[20px] border-b-cloudBlue border-t-[1px] border-l-[1px] border-r-[1px] border-t-[#E4E7E9] border-l-[#E4E7E9] border-r-[#E4E7E9]'>
                         <div className='text-2xl text-yaleBlue font-bold ml-8 mt-6'>DELIVERY ADDRESS</div>
-                        <div className={"ml-8 mt-2 text-xl"}>{currentAddress === null ? "No address available": `
+                        <div className={"ml-8 mt-2 text-xl"}>{currentAddress === null ? "No address available" : `
                          ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}, ${currentAddress.city}, ${currentAddress.state}, ${currentAddress.country}`}</div>
                         <div className="pl-8 py-4 text-blue-500 hover:underline border-b-[1px] border-[#E4E7E9] w-fit" onClick={() => setOpenAddress(!openAddress)}>{currentAddress === null ? "Add address" : "Change address"}</div>
                     </div>
@@ -115,7 +117,17 @@ export default function Checkout({ ProductList }) {
 
                                             }).then((res) => {
                                                 if (res.code === "OK") {
-                                                    setOpenCheckoutSuccess(true)
+                                                    if (res.result.paymentMethod === "VNPAY") {
+                                                        GET(`payment/vn-pay?amount=${res.result.totalPrice}&orderId=${res.result.orderId}`).then((res) => {
+                                                            if (res.code === "OK") {
+                                                                window.location.href = res.result
+                                                            }
+                                                        })
+                                                    } else {
+                                                        setOrderId(res.result.orderId)
+                                                        setOpenCheckoutSuccess(true)
+                                                    }
+
                                                 }
                                             })
                                         } else {
@@ -126,14 +138,24 @@ export default function Checkout({ ProductList }) {
                                                 'paymentMethod': payment
                                             }).then((res) => {
                                                 if (res.code === "OK") {
-                                                    setOpenCheckoutSuccess(true)
+                                                    if (res.result.paymentMethod === "VNPAY") {
+                                                        GET(`payment/vn-pay?amount=${res.result.totalPrice}&orderId=${res.result.orderId}`).then((res) => {
+                                                            if (res.code === "OK") {
+                                                                window.location.href = res.result
+                                                            }
+                                                        })
+                                                    } else {
+                                                        setOrderId(res.result.orderId)
+                                                        setOpenCheckoutSuccess(true)
+                                                    }
+
                                                 }
                                             })
                                         }
                                     }
 
                                 }} className="text-white font-semibold py-2 px-4 bg-[#FA8232] rounded font-sans hover:bg-orangeRed">
-                                    CHECK OUT
+                                    {payment==="COD"?"PLACE ORDER":"CHECK OUT"}
                                 </button>
                             </div>
                         </div>

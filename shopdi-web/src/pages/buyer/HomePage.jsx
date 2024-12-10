@@ -9,6 +9,7 @@ import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
 import Cart from "../../components/Buyer/Cart.jsx";
 import { GET } from "@/api/GET";
 import SpinnerLoading from "../../components/SpinnerLoading/SpinnerLoading.jsx";
+import CheckoutPopup from "../../components/Buyer/Checkout/CheckoutPopup.jsx";
 const HomePage = () => {
   const location = useLocation();
 
@@ -17,6 +18,7 @@ const HomePage = () => {
   const currentCategory = query.get('category');
   const [categories, setCategories] = useState({})
   const pageParams = query.get('page');
+  const path = location.pathname.split("/");
   let pageUrl = ''
   if (pageParams !== null) {
     pageUrl = `?pageNo=${pageParams - 1}`
@@ -67,6 +69,8 @@ const HomePage = () => {
           setIsLoading(false)
         }
       })
+    } else if (location.pathname.split("/")[path.length - 1] === "vn-pay-return") {
+      setIsLoading(false)
     }
   }, [location])
 
@@ -102,13 +106,21 @@ const HomePage = () => {
 
           } />
           <Route path="/product/:id" exact element={<ProductDetail />} />
+          <Route path="/api/v1/payment/vn-pay-return" exact element={
+            <div className="relative w-full min-h-screen">
+              <CheckoutPopup orderId={query.get("vnp_TxnRef")} paymentMethod={"VNPAY"} />
+              <div className="brightness-50 bg-white w-full min-h-screen">
+              </div>
+            </div>
+
+          } />
         </Routes>
 
 
       </div>
     )
   } else {
-    return <div className="text-center"><SpinnerLoading size={3}/> </div>
+    return <div className="text-center"><SpinnerLoading size={3} /> </div>
   }
 }
 
