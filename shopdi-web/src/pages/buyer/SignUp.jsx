@@ -1,15 +1,16 @@
 import React from 'react'
 import { useState } from 'react'
-import { POST } from '../../api/GET'
+import { baseUrl, POST } from '../../api/GET'
 const SignUpForm = () => {
     const [input, setInput] = useState({
         email: "",
         password: ""
     })
+    const [openPopup, setOpenPopup] = useState(false);
     const [message, setMessage] = useState("");
     const handleSubmitEvent = (e) => {
         e.preventDefault();
-        fetch(`http://localhost:8080/users/signup`, {
+        fetch(`${baseUrl}users/signup`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -17,7 +18,7 @@ const SignUpForm = () => {
             body: JSON.stringify(input)
         }).then(res => res.json()).then((res) => {
             if (res.code === 'OK') {
-                setMessage("Create account successfully !");
+                setOpenPopup(true);
             } else {
                 setMessage(res.message);
             }
@@ -26,15 +27,8 @@ const SignUpForm = () => {
     }
     return (
         <>
-            {/*
-            This example requires updating your template:
-
-            ```
-            <html class="h-full bg-white">
-            <body class="h-full">
-            ```
-          */}
-            <div className="flex min-h-full flex-1 flex-col justify-center py-24">
+            {openPopup && <PopUp />}
+            <div className={`flex min-h-full flex-1 flex-col justify-center py-24 ${openPopup ? "brightness-50" : ""}`}>
                 <div className="sm:mx-auto sm:w-full sm:max-w-lg bg-cloudBlue px-12 py-6 border-t-[1px] border-x-[1px] rounded">
                     <h2 className="mt-4 text-left text-5xl font-bold leading-9 tracking-tight text-gray-900 font-size ">
                         Create an Account
@@ -110,3 +104,27 @@ const SignUpForm = () => {
 }
 
 export default SignUpForm
+import { useNavigate } from "react-router-dom";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+function PopUp({ orderId }) {
+    const navigate = useNavigate();
+    return (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-white rounded flex gap-4 flex-col items-center justify-center z-50 border-[1px] border-gray-400">
+            <div className='text-[24px] font-bold'>
+                You have successfully signed up
+            </div>
+            <div>
+                Please active your account by clicking the link sent to your email
+            </div>
+            <div>
+                <CheckCircleOutlineIcon style={{ "fontSize": "60px", "color": "green" }} />
+            </div>
+            <div className='flex gap-4 flex-row pl-4 pr-4 w-full'>
+                <button onClick={() => { navigate("/") }} className="bg-white border-[1px] border-pumpkin text-pumpkin rounded px-4 py-2 w-full h-[40px]">
+                    OK
+                </button>
+
+            </div>
+        </div>
+    );
+}

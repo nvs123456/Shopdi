@@ -5,6 +5,7 @@ import AddressSelection from '@/components/Buyer/Checkout/AddressSelection'
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { GET, POST } from '../../api/GET'
+import CheckoutPopup from '../../components/Buyer/Checkout/CheckoutPopup'
 export default function Checkout({ ProductList }) {
     let location = useLocation()
     let tmp = location.state.selectedProducts;
@@ -29,19 +30,21 @@ export default function Checkout({ ProductList }) {
     const [currentAddress, setCurrentAddress] = useState(null)
     const [allAddress, setAllAddress] = useState([])
     const [openAddress, setOpenAddress] = useState(false)
+    const [openCheckoutSuccess, setOpenCheckoutSuccess] = useState(false)
     const onClose = () => {
         setOpenAddress(!openAddress)
     }
     return (
         <div>
+            {openCheckoutSuccess && <CheckoutPopup />}
             {openAddress && <AddressSelection onClose={onClose} addresses={allAddress} setAllAddress={setAllAddress} currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />}
-            <div className={`bg-cloudBlue py-12 px-40 ${(openAddress ? "brightness-50" : "")}`}>
+            <div className={`bg-cloudBlue py-12 px-40 ${(openAddress || openCheckoutSuccess ? "brightness-50" : "")}`}>
                 <div className="flex flex-col bg-white font-sans">
                     <div className='border-b-[20px] border-b-cloudBlue border-t-[1px] border-l-[1px] border-r-[1px] border-t-[#E4E7E9] border-l-[#E4E7E9] border-r-[#E4E7E9]'>
                         <div className='text-2xl text-yaleBlue font-bold ml-8 mt-6'>DELIVERY ADDRESS</div>
                         <div className={"ml-8 mt-2 text-xl"}>{currentAddress === null ? "No address available": `
                          ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}, ${currentAddress.city}, ${currentAddress.state}, ${currentAddress.country}`}</div>
-                        <div className="pl-8 py-4 text-blue-500 hover:underline border-b-[1px] border-[#E4E7E9] " onClick={() => setOpenAddress(!openAddress)}>{currentAddress === null ? "Add address" : "Change address"}</div>
+                        <div className="pl-8 py-4 text-blue-500 hover:underline border-b-[1px] border-[#E4E7E9] w-fit" onClick={() => setOpenAddress(!openAddress)}>{currentAddress === null ? "Add address" : "Change address"}</div>
                     </div>
                     <div className="header flex flex-row w-full py-4 pr-4 bg-[#F2F4F5] border-[#E4E7E9] border-[1px]">
                         <span className="grow pl-12 text-xl font-semibold">Products Ordered</span>
@@ -112,7 +115,7 @@ export default function Checkout({ ProductList }) {
 
                                             }).then((res) => {
                                                 if (res.code === "OK") {
-                                                    alert("Đặt hàng thành công")
+                                                    setOpenCheckoutSuccess(true)
                                                 }
                                             })
                                         } else {
@@ -123,8 +126,7 @@ export default function Checkout({ ProductList }) {
                                                 'paymentMethod': payment
                                             }).then((res) => {
                                                 if (res.code === "OK") {
-                                                    alert("Đặt hàng thành công")
-                                                    navigate("/")
+                                                    setOpenCheckoutSuccess(true)
                                                 }
                                             })
                                         }

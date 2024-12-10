@@ -33,6 +33,7 @@ public class AppInitConfig {
             havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
         log.info("Application initialization...");
+        System.out.println(System.getProperty("java.class.path"));
         return args -> {
             if (userRepository.findByUsername(ADMIN_USERNAME).isEmpty()) {
                 log.info("Create admin user");

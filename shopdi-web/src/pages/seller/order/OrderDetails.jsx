@@ -5,6 +5,7 @@ import {styled} from "@mui/material/styles";
 import StepConnector, {stepConnectorClasses} from "@mui/material/StepConnector";
 import axios from "axios";
 import SpinnerLoading from "../../../components/SpinnerLoading/SpinnerLoading.jsx";
+import { baseUrl } from "../../../api/GET.jsx";
 
 const CustomisedConnector = styled(StepConnector)(({theme}) => ({
     [`&.${stepConnectorClasses.active}`]: {
@@ -45,7 +46,7 @@ export default function OrderDetails() {
         }
     }
     useEffect(() => {
-        axios.get(`http://localhost:8080/orders/${id}/details`, config)
+        axios.get(`${baseUrl}orders/${id}/details`, config)
             .then((response) => {
                 if (response.data.code === 'OK') {
                     setOrder(response.data.result);
@@ -108,7 +109,7 @@ export default function OrderDetails() {
     }
 
     function handleUpdateOrderStatus(orderId) {
-        axios.put(`http://localhost:8080/seller/${orderId}/update-status`, null,
+        axios.put(`${baseUrl}seller/${orderId}/update-status`, null,
             {
                 params: {orderStatus: stepToOrderStatus(step)},
                 headers: {

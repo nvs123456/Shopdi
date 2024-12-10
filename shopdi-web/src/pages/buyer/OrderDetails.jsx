@@ -14,6 +14,7 @@ import {useParams} from 'react-router-dom';
 import Review from "./Review.jsx";
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SpinnerLoading from "../../components/SpinnerLoading/SpinnerLoading.jsx";
+import { baseUrl } from '../../api/GET.jsx';
 
 const steps = ['Order Placed','Confirmed', 'Packaging', 'On The Road', 'Delivered'];
 const icons = [<InventoryOutlinedIcon/>, <VerifiedUserIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
@@ -65,7 +66,7 @@ function OrderDetails() {
         setIsModalOpen(false);
     };
     const fetchOrderDetail = async () => {
-        await axios.get(`http://localhost:8080/orders/${id}/details`, config)
+        await axios.get(`${baseUrl}orders/${id}/details`, config)
             .then((response) => {
                 if (response.data.code === 'OK') {
                     setOrderDetail(response.data.result);
@@ -84,7 +85,7 @@ function OrderDetails() {
     async function handleCancelOrder(orderId) {
         try {
             const response = await axios.put(
-                `http://localhost:8080/orders/cancel/${orderId}`,
+                `${baseUrl}orders/cancel/${orderId}`,
                 null,
                 config
             );

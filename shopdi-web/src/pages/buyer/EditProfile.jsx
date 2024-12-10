@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import profileDefault from "../../assets/images/profileDefault.png";
 import axios from "axios";
-
+import { baseUrl } from "../../api/GET";
 const EditProfile = () => {
     const [addressList, setAddressList] = useState({});
     const [info, setInfo] = useState([]);
@@ -41,12 +41,12 @@ const EditProfile = () => {
         }
     }
     useEffect(() => {
-        axios.get(`http://localhost:8080/users/my-info`, config)
+        axios.get(`${baseUrl}users/my-info`, config)
             .then((respsonse) => {
                 const data = respsonse.data;
                 setInfo(data.result);
             })
-        axios.get(`http://localhost:8080/address/shipping`, config)
+        axios.get(`${baseUrl}address/shipping`, config)
             .then((respsonse) => {
                 const data = respsonse.data;
                 setAddressList(data.result);
@@ -68,7 +68,7 @@ const EditProfile = () => {
         console.log(form);
         const newForm = Object.fromEntries(Object.entries(form).filter(([key, value]) => value !== ""));
         if (errorNo === "" && errorEmail === "") {
-            axios.put(`http://localhost:8080/users/update-profile`,
+            axios.put(`${baseUrl}users/update-profile`,
                 {
                     firstName: form.firstName === "" ? info.firstName : form.firstName,
                     lastName: form.lastName === "" ? info.lastName : form.lastName,
@@ -164,7 +164,7 @@ const EditProfile = () => {
 
     function handleUpdateAddress(addressId) {
         setAddressIdToBeUpdated(addressId);
-        axios.put(`http://localhost:8080/address/${addressId}`,
+        axios.put(`${baseUrl}address/${addressId}`,
             addressUpdateForm,
             config
         ).then(r => {
@@ -173,7 +173,7 @@ const EditProfile = () => {
             .finally(() => {
                     setIsUpdatingAddress(false);
                     setAddressUpdateForm({});
-                    axios.get(`http://localhost:8080/address/shipping`, config)
+                    axios.get(`${baseUrl}address/shipping`, config)
                         .then((respsonse) => {
                             const data = respsonse.data;
                             setAddressList(data.result);
@@ -185,7 +185,7 @@ const EditProfile = () => {
     }
 
     function handleDeleteAddress(id) {
-        axios.delete(`http://localhost:8080/address/${id}`,
+        axios.delete(`${baseUrl}address/${id}`,
             config
         ).then(r => {
             console.log(r);
@@ -196,14 +196,14 @@ const EditProfile = () => {
 
     function handleAddAddress() {
         console.log(addressForm);
-        axios.post(`http://localhost:8080/address/shipping`,
+        axios.post(`${baseUrl}address/shipping`,
             addressForm,
             config)
             .then((respsonse) => {
 
                 window.alert("Thêm địa chỉ thành công");
                 setIsAddressPopupOpen(false);
-                axios.get(`http://localhost:8080/address/shipping`, config)
+                axios.get(`${baseUrl}address/shipping`, config)
                     .then((respsonse) => {
                         const data = respsonse.data;
                         setAddressList(data.result);
@@ -212,9 +212,9 @@ const EditProfile = () => {
     }
 
     function handleSetAddressAsDefault(addressId) {
-        axios.put(`http://localhost:8080/address/${addressId}/default`, {}, config
+        axios.put(`${baseUrl}address/${addressId}/default`, {}, config
         ).then(r => {
-            axios.get(`http://localhost:8080/address/shipping`, config)
+            axios.get(`${baseUrl}address/shipping`, config)
                 .then((respsonse) => {
                     const data = respsonse.data;
                     setAddressList(data.result);
@@ -223,7 +223,7 @@ const EditProfile = () => {
     }
 
     function handleChangePassword() {
-        axios.post(`http://localhost:8080/auth/change-password`,
+        axios.post(`${baseUrl}auth/change-password`,
             passwordForm, config)
             .then((respsonse) => {
                 window.alert("Đổi mật khẩu thành công");
@@ -241,7 +241,7 @@ const EditProfile = () => {
     function handleUploadProfileImage() {
         const formData = new FormData();
         formData.append('image', selectedImage);
-        axios.post(`http://localhost:8080/images/upload-profile-buyer-image`, formData,
+        axios.post(`${baseUrl}images/upload-profile-buyer-image`, formData,
             {
                 headers: {
                     "Content-Type": "multipart/form-data",

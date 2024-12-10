@@ -3,6 +3,7 @@ import axios from "axios";
 import Pagination from "../../components/Navigation/Pagination.jsx";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {useNavigate} from "react-router-dom";
+import { baseUrl } from "../../api/GET.jsx";
 
 function OrderHistory() {
     const [orders, setOrders] = useState([]);
@@ -22,7 +23,7 @@ function OrderHistory() {
 
         try {
             const response = await axios.get(
-                "http://localhost:8080/orders/history",
+                baseUrl + "orders/history",
                 config
             );
             const data = response.data;

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import { baseUrl } from '../api/GET';
 
-const API_URL = 'http://localhost:8080/orders/history';
+const API_URL = baseUrl + 'orders/history';
 
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', async (_, { getState }) => {
     const config = {
