@@ -1,11 +1,12 @@
 import React from 'react'
 import { useState } from 'react'
+import { baseUrl } from '../../api/GET';
 export default function VerifyEmail() {
     const [token, setToken] = useState("");
     const [message, setMessage] = useState("");
     const handleSubmitEvent = (e) => {
         e.preventDefault();
-        fetch(`http://localhost:8080/auth/verify-email?token=${token}`, {
+        fetch(`${baseUrl}auth/verify-email?token=${token}`, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json'

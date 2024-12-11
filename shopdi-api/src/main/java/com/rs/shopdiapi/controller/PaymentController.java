@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/api/v1/payment")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentController {

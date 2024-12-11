@@ -5,8 +5,8 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { JSONToData } from '@/utils/todo';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { PUT, GET, POST } from '@/api/GET';
-import SpinnerLoading from '../../../components/SpinnerLoading/SpinnerLoading';
+import { PUT, GET, POST,baseUrl } from '@/api/GET';
+import SpinnerLoading from '@/components/SpinnerLoading/SpinnerLoading';
 
 export default function EditProduct() {
     const navigate = useNavigate();
@@ -377,7 +377,7 @@ async function updateImages(productId, selectedImage) {
             formData.append('images', selectedImage[i].path);
         }
     }
-    return await fetch(`http://localhost:8080/images/update-product-images/${productId}`, {
+    return await fetch(`${baseUrl}images/update-product-images/${productId}`, {
         method: "PUT",
         headers: {
             // 'Content-Type': 'multipart/form-data',

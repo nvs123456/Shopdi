@@ -4,6 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import Pagination from "../../Navigation/Pagination.jsx";
+import { baseUrl } from '../../../api/GET.jsx';
 
 const getStatusClass = (status) => {
     switch (status) {
@@ -42,7 +43,7 @@ function OrderTable({type}) {
     const [sortConfig, setSortConfig] = useState({key: '', direction: ''});
     const [filter, setFilter] = useState(type);
     const fetchOrders = async () => {
-        await axios.get('http://localhost:8080/seller/orders', {
+        await axios.get(baseUrl + 'seller/orders', {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
@@ -63,7 +64,7 @@ function OrderTable({type}) {
         })
     }
     const fetchOrdersByFilter = async (filter) => {
-        await axios.get(`http://localhost:8080/seller/orders/status?orderStatus=${filter}`, {
+        await axios.get(`${baseUrl}seller/orders/status?orderStatus=${filter}`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("Authorization")}`,

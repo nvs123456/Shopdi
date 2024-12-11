@@ -17,14 +17,6 @@ export default function ProductDetail() {
             console.log(data.result)
         })
     }, [])
-    const shop_info = {
-        name: "Shopdi",
-        link: "https://shopdi.com",
-        image: shopdiLogo,
-        review: "3,1tr",
-        "san_pham": "100",
-        "tham_gia": " 2 nam truoc"
-    }
     
     const [quantity, setQuantity] = useState(1);
     const product_subImages = ["link-main-image", "link-image-1", "link-image-2", "link-image-3", "link-image-4", "link-image-5", "link-image-6", "link-image-7", "link-image-8", "link-image-9", "link-image-10"]

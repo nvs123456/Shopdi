@@ -114,7 +114,6 @@ public class OrderServiceImpl implements OrderService {
             cartItems.forEach(cartItem -> {
                 Variant selectedVariant = cartItem.getProduct().getVariants().stream()
                         .filter(variant -> {
-
                             if (cartItem.getVariant() == null || cartItem.getVariant().equals("[]")) {
                                 return variant.getVariantDetail() == null;
                             }
@@ -218,11 +217,13 @@ public class OrderServiceImpl implements OrderService {
         return mapToOrderResponse(order);
     }
 
+
     private BigDecimal calculateTotalPrice(List<CartItem> items) {
         return items.stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
 
     @Transactional
     @Override
@@ -286,6 +287,7 @@ public class OrderServiceImpl implements OrderService {
         return mapToOrderResponse(order);
     }
 
+
     @Override
     public OrderResponse findOrderById(Long orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
@@ -341,6 +343,7 @@ public class OrderServiceImpl implements OrderService {
                 .items(orderResponses)
                 .build();
     }
+
 
     @Override
     public PageResponse<?> orderHistory(Long userId, int pageNo, int pageSize, String sortBy, String sortOrder) {

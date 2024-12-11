@@ -37,7 +37,7 @@ const OrderList = () => {
                         </svg>
                     </div>
                     <input type="text" id="table-search"
-                           className="block ps-8 text-[16px] text-gray-900 border rounded-sm w-60 h-6 bg-gray-50 focus:border-gray-400 "
+                           className="block ps-8 text-[16px] text-gray-900 border rounded w-60 h-6 bg-gray-50 focus:border-gray-400 "
                            placeholder="Search for items"/>
                 </div>
             </div>
