@@ -35,7 +35,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setSubject(subject);
 
         content = content.replace("[[name]]", user.getUsername());
-        String verifyURL = siteURL + "/auth/verify-email?token=" + user.getVerificationCode();
+        String verifyURL = siteURL + "/api/v1/auth/verify-email?token=" + user.getVerificationCode();
 
         content = content.replace("[[URL]]", verifyURL);
 

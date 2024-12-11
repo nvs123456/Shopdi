@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GET } from "../../api/GET";
+import defaultImage from "../../assets/images/profileDefault.png";
 const ShopBar = ({ sellerId }) => {
     const [shop_info, setShop_info] = useState({});
     const [loading, setLoading] = useState(true);
@@ -16,7 +17,7 @@ const ShopBar = ({ sellerId }) => {
         <div className="shop-info bg-white border-[1px] p-6">
             <div className=" flex flex-row gap-x-4 items-center">
                 <div>
-                    <img src={shop_info.profileImage} alt="Logo" className="h-20 w-20 rounded-full" />
+                    <img src={shop_info.profileImage || defaultImage} alt="Logo" className="h-20 w-20 rounded-full" />
                 </div>
                 <div>
                     <div className="text-2xl mb-2 font-semibold">{shop_info.shopName}</div>

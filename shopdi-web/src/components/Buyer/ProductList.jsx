@@ -31,7 +31,7 @@ export default function ProductList({ products,page }) {
             </div> */}
 
             <div className="self-center inline-grid grid-cols-4 gap-x-5 gap-y-5 font-sans min-h-screen ">
-                {products.map(product => <Product key={product.productId + product.productName} product={product} />)}
+                {products.filter(product => product.status !== 'DELETED').map(product => <Product key={product.productId + product.productName} product={product} />)}
             </div>
             <Pagination pageObject={page}/>
         </div >
