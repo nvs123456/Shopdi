@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { GET, PUT } from "../../api/GET";
+import { GET, PUT, POST } from "../../api/GET";
 import CATEGORIES from "@/data/categories_data";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -15,7 +15,15 @@ export default function CategoryManagement() {
             setbefore(JSON.parse(JSON.stringify(data.result)))
             setIsLoading(false)
         })
-
+        // const categoriese = CATEGORIES.CATEGORIES;
+        // for (let i = 0; i < categoriese.length; i++) {
+        //     POST("categories/create", { name: categoriese[i].name, parentName: null }).then(res => {
+        //         for(let j = 0; j < categoriese[i].sub_categories.length; j++){
+        //             POST("categories/create", { name: categoriese[i].sub_categories[j], parentName: categoriese[i].name }).then(res => {
+        //             })
+        //         }
+        //     })
+        // }
     }, [])
     const [currentParentSelected, setCurrentParentSelected] = useState(0)
     const [currentInputSelected, setCurrentInputSelected] = useState(null)

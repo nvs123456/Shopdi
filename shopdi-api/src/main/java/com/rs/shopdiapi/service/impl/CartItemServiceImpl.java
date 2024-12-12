@@ -112,8 +112,8 @@ public class CartItemServiceImpl implements CartItemService {
                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        BigDecimal updatedPrice = cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(quantity));
-        cartItem.setPrice(updatedPrice);
+//        BigDecimal updatedPrice = cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(quantity));
+//        cartItem.setPrice(updatedPrice);
 
         cartItemRepository.save(cartItem);
         cartService.updateCartSummary(cart.getId());
