@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
+import org.springframework.beans.factory.annotation.Value;
 import java.io.UnsupportedEncodingException;
 
 
@@ -45,12 +45,21 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendResetPasswordLink(String toEmail, String resetToken) {
-        String link = "https://example.com/api/reset-password?token=" + resetToken;
-        String emailContent = "<p>Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng click vào link dưới đây để thiết lập lại mật khẩu của bạn:</p>"
-                + "<a href=\"" + link + "\">Đặt lại mật khẩu</a>";
+    public void sendResetPasswordLink(String toEmail, String resetToken, String siteURL) {
+        try {
+            String link = siteURL + "/api/v1/auth/reset-password?token=" + resetToken;
 
-        sendEmail(toEmail, "[Shopdi] Đặt lại mật khẩu", emailContent);
+            String emailContent = "<p>Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng click vào link dưới đây để thiết lập lại mật khẩu của bạn:</p>"
+                    + "<a href=\"" + link + "\">Đặt lại mật khẩu</a>"
+                    + "<p>Nếu bạn không yêu cầu, vui lòng bỏ qua email này.</p>";
+
+            sendEmail(toEmail, "[Shopdi] Đặt lại mật khẩu", emailContent);
+
+        } catch (Exception e) {
+            System.err.println("Failed to send reset password email to " + toEmail);
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send reset password email", e);
+        }
     }
 
     private void sendEmail(String to, String subject, String text) {

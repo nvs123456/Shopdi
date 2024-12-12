@@ -97,7 +97,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + (15 * 60 * 1000)))
                 .signWith(SignatureAlgorithm.HS256, RESET_KEY)
                 .compact();
     }
@@ -140,6 +140,11 @@ public class JwtUtil {
         if (invalidatedTokenRepository.existsById(claims.getId())) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         return claims;
+    }
+
+    public boolean verifyResetToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(RESET_KEY).parseClaimsJws(token).getBody();
+        return !claims.getExpiration().before(new Date());
     }
 
     public boolean isTokenInvalidated(String token) {

@@ -9,10 +9,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResetPasswordRequest {
     @NotBlank(message = "secretKey must be not blank")
-    String secretToken;
+    String token;
 
     @NotBlank(message = "password must be not blank")
-    String password;
+    String newPassword;
 
     @NotBlank(message = "confirmPassword must be not blank")
     String confirmPassword;

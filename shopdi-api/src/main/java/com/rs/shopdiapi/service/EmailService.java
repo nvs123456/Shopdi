@@ -9,5 +9,5 @@ import java.util.Map;
 public interface EmailService {
     void sendVerificationLink(User user, String siteURL) throws MessagingException, UnsupportedEncodingException;
 
-    void sendResetPasswordLink(String toEmail, String resetToken);
+    void sendResetPasswordLink(String toEmail, String resetToken, String siteUrl);
 }
