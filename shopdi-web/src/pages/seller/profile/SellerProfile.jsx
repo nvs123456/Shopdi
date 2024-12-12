@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import defaultImage from "../../../assets/images/profileDefault.png";
 import SpinnerLoading from "../../../components/SpinnerLoading/SpinnerLoading.jsx";
+import {baseUrl} from "../../../api/GET.jsx";
 
 export default function SellerProfile() {
     const [sellerInfo, setSellerInfo] = useState({});
@@ -24,7 +25,6 @@ export default function SellerProfile() {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
-                "Access-Control-Allow-Origin": "http://localhost:5173",
             },
         });
         const data = response.data;

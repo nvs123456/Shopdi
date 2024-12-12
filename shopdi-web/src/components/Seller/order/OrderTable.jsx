@@ -37,7 +37,7 @@ const tableHeadings = ['id', 'customer', 'price', 'date', 'payment', 'status', '
 function OrderTable({type}) {
 
     const [orders, setOrders] = useState([]);
-    const [totalPages, setTotalPages] = useState(1);
+    const [page, setPage] = useState({pageNo: 0, totalPage: 1});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sortConfig, setSortConfig] = useState({key: '', direction: ''});
@@ -53,7 +53,7 @@ function OrderTable({type}) {
             const data = response.data;
             if (data.code === "OK") {
                 setOrders(data.result.items);
-                setTotalPages(data.result.totalPages);
+                setPage({pageNo: data.result.pageNo, totalPage: data.result.totalPages});
             } else {
                 setError("Failed to fetch order history.");
             }
@@ -74,7 +74,7 @@ function OrderTable({type}) {
             const data = response.data;
             if (data.code === "OK") {
                 setOrders(data.result.items);
-                setTotalPages(data.result.totalPages);
+                setPage({pageNo: data.result.pageNo, totalPage: data.result.totalPages});
             } else {
                 setError("Failed to fetch order history.");
             }
@@ -164,7 +164,7 @@ function OrderTable({type}) {
                 </tbody>
             </table>
             <div className="flex justify-center mt-4">
-                <Pagination totalPage={totalPages}/>
+                <Pagination pageObject={page}/>
             </div>
         </div>
     );

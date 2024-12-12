@@ -7,7 +7,7 @@ import { baseUrl } from "../../api/GET.jsx";
 
 function OrderHistory() {
     const [orders, setOrders] = useState([]);
-    const [totalPages, setTotalPages] = useState(1);
+    const [pages, setPages] = useState({pageNo: 0, totalPage: 1});
     const [loading, setLoading] = useState(true); // Trạng thái loading
     const [error, setError] = useState(null); // Trạng thái lỗi
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ function OrderHistory() {
             const data = response.data;
             if (data.code === "OK") {
                 setOrders(data.result.items);
-                setTotalPages(data.result.totalPages);
+                setPages({pageNo: data.result.pageNo, totalPage: data.result.totalPages});
             } else {
                 setError("Failed to fetch order history."); // Xử lý lỗi từ server
             }

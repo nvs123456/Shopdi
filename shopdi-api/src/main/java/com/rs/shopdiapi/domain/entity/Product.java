@@ -84,4 +84,7 @@ public class Product extends BaseEntity<Long> {
         this.variants.clear();
         this.variants.addAll(variants);
     }
+    public void increaseSoldQuantity(int quantity) {
+        this.soldQuantity += quantity;
+    }
 }

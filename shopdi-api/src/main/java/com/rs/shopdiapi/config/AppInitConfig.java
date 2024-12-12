@@ -47,8 +47,20 @@ public class AppInitConfig {
                         .description("Admin role")
                         .build());
 
+                Role userRole = roleRepository.save(Role.builder()
+                        .name(RoleEnum.USER.getName())
+                        .description("User role")
+                        .build());
+
+                Role sellerRole = roleRepository.save(Role.builder()
+                        .name(RoleEnum.SELLER.getName())
+                        .description("Seller role")
+                        .build());
+
                 var roles = new HashSet<Role>();
                 roles.add(adminRole);
+                roles.add(userRole);
+                roles.add(sellerRole);
 
                 User user = User.builder()
                         .username(ADMIN_USERNAME)

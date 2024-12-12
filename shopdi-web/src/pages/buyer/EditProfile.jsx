@@ -138,13 +138,15 @@ const EditProfile = () => {
                 </h2>
                 <div className="flex justify-end gap-4 mt-4">
                     <button
-                        onClick={handleConfirm}
+                        onClick={() => {
+                            handleConfirm();
+                        }}
                         className="bg-orange-400 text-white xl:px-4 xl:py-2 rounded hover:bg-orange-600"
                     >
                         Yes
                     </button>
                     <button
-                        onClick={closePopup}
+                        onClick={() => {closePopup()}}
                         className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-400"
                     >
                         Cancel
@@ -184,15 +186,15 @@ const EditProfile = () => {
 
     }
 
-    function handleDeleteAddress(id) {
-        axios.delete(`${baseUrl}address/${id}`,
-            config
-        ).then(r => {
-            console.log(r);
-        })
-        setAddressList(addressList.filter((address) => address.addressId !== id));
-
-    }
+    // function handleDeleteAddress(id) {
+    //     axios.delete(`${baseUrl}address/${id}`,
+    //         config
+    //     ).then(r => {
+    //         console.log(r);
+    //     })
+    //     setAddressList(addressList.filter((address) => address.addressId !== id));
+    //
+    // }
 
     function handleAddAddress() {
         console.log(addressForm);
@@ -299,6 +301,7 @@ const EditProfile = () => {
             <div className={`xl:w-[65%]`}>
 
                 {/* Account EditProfile Edit Section */}
+                {isPopupOpen && <AskAgainNotification/>}
                 {activeTab === 'profile' && <section
                     className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} md:ml-[60px] xl:w-4xl mx-auto bg-white p-2 md:p-6 rounded-s mb-4 md:mb-8 border-[1px] border-[#E4E7E9]`}>
                     <h2 className="text-[16px] md:text-2xl mb-6 border-b-2 text-yaleBlue font-semibold pb-6">ACCOUNT PROFILE EDIT</h2>
@@ -329,7 +332,6 @@ const EditProfile = () => {
                             />
                         </div>
                         {/* EditProfile Information */}
-                        {isPopupOpen && <AskAgainNotification/>}
                         <div className="w-full md:w-3/4 pr-10 pb-8">
                             <div className="grid grid-cols-1 gap-2">
                                 <div>
@@ -373,9 +375,8 @@ const EditProfile = () => {
                                     </label>
                                     <input
                                         id={"email"}
-                                        type="text"
+                                        disabled={true}
                                         defaultValue={info.email}
-                                        onChange={handleEmailChange}
                                         className="w-full border-[#E4E7E9] text-[14px] lg:text[16px] h-[40px] border-2 rounded p-2 col-span-2 mb-2"
                                     />
                                     {errorEmail &&
@@ -397,7 +398,8 @@ const EditProfile = () => {
                                 </div>
                             </div>
                             {isEdit && <button onClick={() => {
-                                openPopup();
+                                 openPopup();
+                                // handleUpdateProfile();
                             }}
                                                className="bg-[#FA8232] text-[14px] text-white py-1 px-1 mt-1 md:py-2 md:px-4 md:mt-6 rounded hover:bg-orangeRed">
                                 Save Changes
@@ -590,11 +592,11 @@ const EditProfile = () => {
                                                     className={`xl:ml-[400px] text-[14px] lg:text-[16px] xl:text-[18px]`}>
                                                     <button
                                                         onClick={() => handleOpenUpdateAddressPopup(address.addressId)}
-                                                        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} text-yaleBlue hover:underline py-2 px-3 mr-1 xl:mr-16 xl:absolute xl:top-2 xl:right-8`}>Edit
+                                                        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} text-yaleBlue hover:underline py-2 px-3 mr-1 xl:mr-16 xl:absolute xl:top-2 xl:right-0`}>Edit
                                                     </button>
-                                                    <button onClick={() => handleDeleteAddress(address.addressId)}
-                                                            className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''}  text-yaleBlue hover:underline py-2 px-3  mr-1 xl:absolute xl:top-2 xl:right-0`}>Delete
-                                                    </button>
+                                                    {/*<button onClick={() => handleDeleteAddress(address.addressId)}*/}
+                                                    {/*        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''}  text-yaleBlue hover:underline py-2 px-3  mr-1 xl:absolute xl:top-2 xl:right-0`}>Delete*/}
+                                                    {/*</button>*/}
                                                     {address.default === false && <button onClick={() =>
                                                         handleSetAddressAsDefault(address.addressId)
                                                     }
