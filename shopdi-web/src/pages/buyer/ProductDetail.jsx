@@ -139,7 +139,7 @@ export default function ProductDetail() {
                     <div className="product-info bg-white flex flex-row gap-x-8 border-[1px]">
                         <div className="product-image w-2/5 p-8">
                             <div className=" main-image w-full min-h-96">
-                                <img src={productImages[curImage]} alt={`image ${curImage}`} className="w-100 h-100 rounded-md border-2" style={{ aspectRatio: "1/1" }} />
+                                <img src={productImages[curImage]} alt={`image ${curImage}`} className="w-full h-full rounded-md border-2" style={{ aspectRatio: "1/1" }} />
                             </div>
                             <div className="sub-image w-full min-h-12 bg-white flex flex-row gap-x-2 mt-6">
                                 <button onClick={() => {

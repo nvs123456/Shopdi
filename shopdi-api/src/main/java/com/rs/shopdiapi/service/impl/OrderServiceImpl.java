@@ -240,6 +240,17 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setOrderStatus(newStatus);
+        sellerOrderItems.forEach(orderItem -> {
+            if (newStatus == OrderStatusEnum.DELIVERED) {
+                BigDecimal itemRevenue = orderItem.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()));
+                revenueService.updateRevenue(sellerId, itemRevenue);
+                
+
+                Product product = orderItem.getProduct();
+                product.setSoldQuantity(product.getSoldQuantity() + orderItem.getQuantity());
+                productRepository.save(product);
+            }
+        });
         orderRepository.save(order);
 
         return mapToOrderResponse(order);
