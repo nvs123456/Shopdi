@@ -81,6 +81,8 @@ public enum ErrorCode {
     PAYMENT_FAILED("PAYMENT_FAILED", "Payment failed", HttpStatus.BAD_REQUEST),
 
     PAYMENT_NOT_FOUND("PAYMENT_NOT_FOUND", "Payment not found", HttpStatus.NOT_FOUND),
+
+    INVALID_RESET_TOKEN("INVALID_RESET_TOKEN", "Invalid reset token", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(String code, String message, HttpStatusCode statusCode) {

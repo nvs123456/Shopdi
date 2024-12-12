@@ -50,7 +50,9 @@ public class SecurityConfig {
                                 "api/v1/users/signup",
                                 "api/v1/auth/logout",
                                 "api/v1/auth/introspect",
-                                "api/v1/auth/refresh"
+                                "api/v1/auth/refresh",
+                                "api/v1/auth/forgot-password",
+                                "api/v1/auth/reset-password"
                         ).permitAll()
                         .requestMatchers(
                                 "v3/api-docs/**",
@@ -62,6 +64,7 @@ public class SecurityConfig {
                                 "api/v1/auth/verify-email",
                                 "api/v1/auth/reset-password",
                                 "api/v1/payment/vn-pay-return/**",
+                                "api/v1/auth/**",
                                 "/**"
                         ).permitAll(
                         )

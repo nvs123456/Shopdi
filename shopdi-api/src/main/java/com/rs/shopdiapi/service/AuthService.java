@@ -2,7 +2,6 @@ package com.rs.shopdiapi.service;
 
 import com.rs.shopdiapi.domain.dto.request.AuthRequest;
 import com.rs.shopdiapi.domain.dto.request.ChangePasswordRequest;
-import com.rs.shopdiapi.domain.dto.request.RegisterSellerRequest;
 import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.TokenRequest;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
@@ -19,10 +18,11 @@ public interface AuthService {
 
     void logout(TokenRequest logoutRequest) throws ParseException;
 
-    String resetPassword(String email);
+    void forgotPassword(String email, String siteUrl);
 
-    String forgotPassword(String email);
+    void changePassword(Long userId, ChangePasswordRequest request);
 
-    String changePassword(Long userId,ChangePasswordRequest request);
+    void resetPasswordWithToken(ResetPasswordRequest request);
 
+    boolean verifyResetToken(String token);
 }

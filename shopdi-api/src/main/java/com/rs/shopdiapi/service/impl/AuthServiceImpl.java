@@ -2,6 +2,7 @@ package com.rs.shopdiapi.service.impl;
 
 import com.rs.shopdiapi.domain.dto.request.AuthRequest;
 import com.rs.shopdiapi.domain.dto.request.ChangePasswordRequest;
+import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.TokenRequest;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
 import com.rs.shopdiapi.domain.dto.response.IntrospectResponse;
@@ -13,6 +14,7 @@ import com.rs.shopdiapi.repository.UserRepository;
 import com.rs.shopdiapi.service.AuthService;
 import com.rs.shopdiapi.util.JwtUtil;
 import com.rs.shopdiapi.service.EmailService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -110,23 +113,21 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String forgotPassword(String email) {
+    public void forgotPassword(String email, String siteURL) {
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         String resetToken = jwtUtil.generateResetToken(user);
 
-        String confirmLink =String.format("curl --location 'http://localhost:80/auth/reset-password' \\\n" +
-                "--header 'accept: */*' \\\n" +
-                "--header 'Content-Type: application/json' \\\n" +
-                "--data '%s'", resetToken);
-        log.info("--> confirmLink: {}", confirmLink);
+        user.setResetPasswordToken(resetToken);
+        userRepository.save(user);
 
-        return resetToken;
+        emailSenderService.sendResetPasswordLink(user.getEmail(), resetToken, siteURL);
     }
 
+
     @Override
-    public String changePassword(Long userId,ChangePasswordRequest request) {
+    public void changePassword(Long userId, ChangePasswordRequest request) {
         if(!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
         }
@@ -136,19 +137,36 @@ public class AuthServiceImpl implements AuthService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
-        return "Changed password";
     }
 
 
     @Override
-    public String resetPassword(String secretKey) {
-        var claims = jwtUtil.verifyToken(secretKey, false);
+    public void resetPasswordWithToken(ResetPasswordRequest request) {
+        if (!jwtUtil.verifyResetToken(request.getToken())) {
+            throw new AppException(ErrorCode.INVALID_RESET_TOKEN);
+        }
 
-        String username = claims.getSubject();
+        var user = userRepository.findByResetPasswordToken(request.getToken())
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_RESET_TOKEN));
 
-        var user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if(!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
 
-        return "Reset";
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean verifyResetToken(String token) {
+        if (!jwtUtil.verifyResetToken(token)) {
+            throw new AppException(ErrorCode.INVALID_RESET_TOKEN);
+        }
+
+        userRepository.findByResetPasswordToken(token)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_RESET_TOKEN));
+
+        return true;
     }
 }

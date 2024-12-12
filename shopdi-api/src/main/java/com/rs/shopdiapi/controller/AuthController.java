@@ -2,12 +2,16 @@ package com.rs.shopdiapi.controller;
 
 import com.rs.shopdiapi.domain.dto.request.AuthRequest;
 import com.rs.shopdiapi.domain.dto.request.ChangePasswordRequest;
+import com.rs.shopdiapi.domain.dto.request.ForgotPasswordRequest;
+import com.rs.shopdiapi.domain.dto.request.ResetPasswordRequest;
 import com.rs.shopdiapi.domain.dto.request.TokenRequest;
 import com.rs.shopdiapi.domain.dto.response.ApiResponse;
 import com.rs.shopdiapi.domain.dto.response.AuthResponse;
 import com.rs.shopdiapi.domain.dto.response.IntrospectResponse;
 import com.rs.shopdiapi.service.AuthService;
 import com.rs.shopdiapi.service.UserService;
+import com.rs.shopdiapi.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -29,6 +33,8 @@ public class AuthController {
     private AuthService authenticationService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/login")
     ApiResponse<AuthResponse> authenticate(@RequestBody AuthRequest request) {
@@ -73,26 +79,47 @@ public class AuthController {
                 .build();
     }
 
+
+
+    @PostMapping("/change-password")
+    public ApiResponse<?> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        Long userId = userService.getCurrentUser().getId();
+        authenticationService.changePassword(userId,request);
+        return ApiResponse.builder()
+                .message("Password has been changed successfully")
+                .build();
+    }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
+
+
     @PostMapping("/forgot-password")
-    ApiResponse<String> forgotPassword(@RequestBody String email) {
-        return ApiResponse.<String>builder()
-                .message(authenticationService.forgotPassword(email))
+    ApiResponse<?> forgotPassword(@RequestBody ForgotPasswordRequest request, HttpServletRequest httpServletRequest) {
+        authenticationService.forgotPassword(request.getEmail(), getSiteURL(httpServletRequest));
+        return ApiResponse.builder()
+                .message("Reset password link has been sent to your email")
                 .build();
     }
 
     @PostMapping("/reset-password")
-    ApiResponse<String> resetPassword(@RequestBody String secretKey) {
-        return ApiResponse.<String>builder()
-                .message(authenticationService.resetPassword(secretKey))
+    ApiResponse<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        authenticationService.resetPasswordWithToken(request);
+        return ApiResponse.builder()
+                .message("Password has been reset successfully")
                 .build();
     }
 
+    @GetMapping("/reset-password")
+    public ResponseEntity<?> verifyResetToken(@RequestParam("token") String token) {
+        boolean isValid = authenticationService.verifyResetToken(token);
 
-    @PostMapping("/change-password")
-    public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
-        Long userId = userService.getCurrentUser().getId();
-        return ApiResponse.<String>builder()
-                .message(authenticationService.changePassword(userId,request))
-                .build();
+        if (isValid) {
+            return ResponseEntity.ok("Reset token is valid. Please proceed to reset your password.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired token.");
+        }
     }
 }
