@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { JSONToData } from '@/utils/todo.js';
-import { GET, POST } from '../../api/GET.jsx';
-import { useNavigate } from 'react-router-dom';
-export default function CartItem({ onSelect, selectedProducts, onDelete, item, setTotal, total }) {
+import React, {useEffect, useState} from 'react'
+import {JSONToData} from '@/utils/todo.js';
+import {GET, PUT, POST} from '../../api/GET.jsx';
+import {useNavigate} from 'react-router-dom';
+
+export default function CartItem({onSelect, selectedProducts, onDelete, item, setTotal, total}) {
     const [quantity, setQuantity] = useState(item.quantity);
     const [variant, setVariant] = useState(item);
     const [isOpen, setIsOpen] = useState(false);
@@ -33,11 +34,14 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
 
                     }}></input>
                 </div>
-                <div onClick={() => { navigate(`/product/${item.productId}`) }}> <img className="w-20 h-20 min-w-20 ml-4" src={item.productImage} alt={item.name} /></div>
+                <div onClick={() => {
+                    navigate(`/product/${item.productId}`)
+                }}><img className="w-20 h-20 min-w-20 ml-4" src={item.productImage} alt={item.name}/></div>
                 {/* <span className="h-fit grow pl-4">{item.productName}</span> */}
-                <div className='overflow-hidden my-auto ml-4'><p className='break-words overflow-hidden max-h-20'>{item.productName}</p></div>
+                <div className='overflow-hidden my-auto ml-4'><p
+                    className='break-words overflow-hidden max-h-20'>{item.productName}</p></div>
             </div>
-            <div className="min-w-40 text-center relative" >
+            <div className="min-w-40 text-center relative">
                 {JSONToData(item.variant)}
 
             </div>
@@ -45,13 +49,43 @@ export default function CartItem({ onSelect, selectedProducts, onDelete, item, s
 
             <div className="min-w-40 flex flex-row justify-center">
                 <div className='flex flex-row max-h-8 w-fit'>
-                    <button className='bg-white  border-gray-300  px-2 border-x-2 border-y-2' onClick={() => { quantity > 1 ? setQuantity(quantity - 1) : setQuantity(1); isSelected(item) && setTotal(total - item.price) }}>-</button>
-                    <div className='min-w-16 text-center border-gray-300 border-y-2'><span >{quantity}</span></div>
-                    <button className='bg-white  border-gray-300  px-2 border-x-2 border-y-2' onClick={() => { setQuantity(quantity + 1); isSelected(item) && setTotal(total + item.price) }}>+</button>
+                    <button className='bg-white  border-gray-300  px-2 border-x-2 border-y-2' onClick={() => {
+                        if (quantity > 1) {
+                            PUT(`cart/items/${item.cartItemId}?quantity=${- 1}`).
+                            then((data) => {
+                                if (data.code === "OK") {
+                                    setQuantity(quantity - 1);
+                                    if (item.isSelected) {
+                                        setTotal(total - item.price);
+                                    }
+
+                                }
+                            })
+
+                        }
+                    }
+                    }>-
+                    </button>
+                    <div className='min-w-16 text-center border-gray-300 border-y-2'><span>{quantity}</span></div>
+                    <button className='bg-white  border-gray-300  px-2 border-x-2 border-y-2' onClick={() => {
+                        PUT(`cart/items/${item.cartItemId}?quantity=${ 1}`).
+                        then((data) => {
+                            setQuantity(quantity + 1);
+                            if (item.isSelected) setTotal(total + item.price);
+
+                        })
+                    }}>+
+                    </button>
                 </div>
             </div>
             <span className="min-w-40 text-center ">{(item.price * quantity).toLocaleString()} đ</span>
-            <div className='min-w-40 text-center'><button onClick={() => { onDelete(item.cartItemId); isSelected(item) && setTotal(total - item.price * quantity) }} className="text-center color-black hover:text-red">Delete</button></div>
+            <div className='min-w-40 text-center'>
+                <button onClick={() => {
+                    onDelete(item.cartItemId);
+                    isSelected(item) && setTotal(total - item.price * quantity)
+                }} className="text-center color-black hover:text-red">Delete
+                </button>
+            </div>
         </div>
     )
 }

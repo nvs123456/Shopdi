@@ -16,7 +16,7 @@ export default function CheckoutPopup({orderId,paymentMethod}) {
                 <button onClick={() => {navigate("/")}} className="bg-white border-[1px] border-pumpkin text-pumpkin rounded px-4 py-2 w-full ">
                     <HomeIcon /> Go to Home page
                 </button>
-                <button onClick={() => {navigate(`/orders/${orderId}`)}} className="bg-pumpkin text-white rounded px-4 py-2 w-full ">
+                <button onClick={() => {navigate(`/orderhistory`)}} className="bg-pumpkin text-white rounded px-4 py-2 w-full ">
                     View order
                     <ArrowForwardIcon />
                 </button>
