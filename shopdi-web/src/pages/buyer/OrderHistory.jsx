@@ -1,13 +1,18 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "../../components/Navigation/Pagination.jsx";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../api/GET.jsx";
-
+import { useLocation } from "react-router-dom";
 function OrderHistory() {
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
     const [orders, setOrders] = useState([]);
-    const [pages, setPages] = useState({pageNo: 0, totalPage: 1});
+    const [pages, setPages] = useState({
+        pageNo: (query.get('pageNo') === null ? 0 : query.get('pageNo')),
+        totalPage: 1
+    });
     const [loading, setLoading] = useState(true); // Trạng thái loading
     const [error, setError] = useState(null); // Trạng thái lỗi
     const navigate = useNavigate();
@@ -23,13 +28,13 @@ function OrderHistory() {
 
         try {
             const response = await axios.get(
-                baseUrl + "orders/history",
+                baseUrl + "orders/history?pageNo=" + pages.pageNo+"&pageSize="+(query.get('pageSize') === null ? 20 : query.get('pageSize')),
                 config
             );
             const data = response.data;
             if (data.code === "OK") {
                 setOrders(data.result.items);
-                setPages({pageNo: data.result.pageNo, totalPage: data.result.totalPages});
+                setPages({ pageNo: data.result.pageNo, totalPage: data.result.totalPages });
             } else {
                 setError("Failed to fetch order history."); // Xử lý lỗi từ server
             }
@@ -70,49 +75,49 @@ function OrderHistory() {
                 </div>
 
                 <div className="place-items-center">
-                <table className={` left-[5%] top-20  w-[90%] text-center  border-collapse`}>
-                    <thead className={`text-[12px] sm:text-[14px] md:text-[16px] h-[30px] md:h-[40px] border-2 border-[#E4E7E9] bg-[#F2F4F5]`}>
-                    <tr>
-                        <th className="w-[10%] font-semibold">ID</th>
-                        <th className="w-[20%] font-semibold">STATUS</th>
-                        <th className="w-[20%] font-semibold">DATE</th>
-                        <th className="w-[30%] font-semibold">TOTAL</th>
-                        <th className="w-[20%] font-semibold">ACTION</th>
-                    </tr>
-                    </thead>
-                    <tbody className={`text-[12px] sm:text-[14px] md:text-[16px]`}>
-                    {orders.map((orderItem) => (
-                        <tr className={"h-12 align-bottom"}>
-                            <td className={`text-left pl-12`}>
-                                {orderItem.orderId}
-                            </td>
-                            <td className={`text-left pl-16 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
-                                : orderItem.orderStatus === 'CONFIRMED' ? 'text-[#4BB543]' : 
-                                    orderItem.orderStatus === 'PROCESSING' ?'text-[#4BB543]' :
-                                        orderItem.orderStatus === 'DELIVERING' ?'text-[#3A5BFF]]':
-                                            orderItem.orderStatus === 'DELIVERED' ?'text-[#3A5BFF]' :'text-[#EE5858]'}`}>
-                                {orderItem.orderStatus}
-                            </td>
-                            <td className={"text-gray-600"}>
-                                {orderItem.deliveryDate.split(' ')[0]}
-                            </td>
-                            <td className={`text-left pl-20 text-gray-600`}>
-                                {orderItem.totalPrice.toLocaleString()} đ ({orderItem.totalItems} products)
-                            </td>
-                            <td onClick={() => {navigate(`/orders/${orderItem.orderId}`)}}
-                                className={`font-semibold cursor-pointer text-[#2DA5F3]`}>
-                                <button className='pr-1'>View details</button>
-                                <ArrowForwardIcon fontSize={'inherit'}/>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                    <table className={` left-[5%] top-20  w-[90%] text-center  border-collapse`}>
+                        <thead className={`text-[12px] sm:text-[14px] md:text-[16px] h-[30px] md:h-[40px] border-2 border-[#E4E7E9] bg-[#F2F4F5]`}>
+                            <tr>
+                                <th className="w-[10%] font-semibold">ID</th>
+                                <th className="w-[20%] font-semibold">STATUS</th>
+                                <th className="w-[20%] font-semibold">DATE</th>
+                                <th className="w-[30%] font-semibold">TOTAL</th>
+                                <th className="w-[20%] font-semibold">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody className={`text-[12px] sm:text-[14px] md:text-[16px]`}>
+                            {orders.map((orderItem) => (
+                                <tr className={"h-12 align-bottom"}>
+                                    <td className={`text-left pl-12`}>
+                                        {orderItem.orderId}
+                                    </td>
+                                    <td className={`text-left pl-16 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
+                                        : orderItem.orderStatus === 'CONFIRMED' ? 'text-[#4BB543]' :
+                                            orderItem.orderStatus === 'PROCESSING' ? 'text-[#4BB543]' :
+                                                orderItem.orderStatus === 'DELIVERING' ? 'text-[#3A5BFF]]' :
+                                                    orderItem.orderStatus === 'DELIVERED' ? 'text-[#3A5BFF]' : 'text-[#EE5858]'}`}>
+                                        {orderItem.orderStatus}
+                                    </td>
+                                    <td className={"text-gray-600"}>
+                                        {orderItem.deliveryDate.split(' ')[0]}
+                                    </td>
+                                    <td className={`text-left pl-20 text-gray-600`}>
+                                        {orderItem.totalPrice.toLocaleString()} đ ({orderItem.totalItems} products)
+                                    </td>
+                                    <td onClick={() => { navigate(`/orders/${orderItem.orderId}`) }}
+                                        className={`font-semibold cursor-pointer text-[#2DA5F3]`}>
+                                        <button className='pr-1'>View details</button>
+                                        <ArrowForwardIcon fontSize={'inherit'} />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
 
                 {/* Pagination */}
                 <div className="flex justify-center bottom-0 left-[45%] mb-3">
-                    <Pagination pages={pages}/>
+                    <Pagination pageObject={pages} />
                 </div>
             </div>
         </div>

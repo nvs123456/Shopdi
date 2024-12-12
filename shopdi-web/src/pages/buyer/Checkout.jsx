@@ -20,7 +20,11 @@ export default function Checkout({ ProductList }) {
                 if (data.result.length === 0) {
                     setCurrentAddress(null)
                 } else {
-                    setCurrentAddress(data.result[0])
+                    for(let i = 0; i < data.result.length; i++){
+                        if(data.result[i].default === true){
+                            setCurrentAddress(data.result[i])
+                        }
+                    }
                 }
                 setAllAddress(data.result)
             }
@@ -51,7 +55,7 @@ export default function Checkout({ ProductList }) {
                     <div className='border-b-[20px] border-b-cloudBlue border-t-[1px] border-l-[1px] border-r-[1px] border-t-[#E4E7E9] border-l-[#E4E7E9] border-r-[#E4E7E9]'>
                         <div className='text-2xl text-yaleBlue font-bold ml-8 mt-6'>DELIVERY ADDRESS</div>
                         <div className={"ml-8 mt-2 text-xl"}>{currentAddress === null ? "No address available" : `
-                         ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phone} , ${currentAddress.address}, ${currentAddress.city}, ${currentAddress.state}, ${currentAddress.country}`}</div>
+                         ${currentAddress.firstName} ${currentAddress.lastName} (+84) ${currentAddress.phoneNumber} , ${currentAddress.address}, ${currentAddress.city}, ${currentAddress.state}, ${currentAddress.country}`}</div>
                         <div className="pl-8 py-4 text-blue-500 hover:underline border-b-[1px] border-[#E4E7E9] w-fit" onClick={() => setOpenAddress(!openAddress)}>{currentAddress === null ? "Add address" : "Change address"}</div>
                     </div>
                     <div className="header flex flex-row w-full py-4 pr-4 bg-[#F2F4F5] border-[#E4E7E9] border-[1px]">
