@@ -32,6 +32,12 @@ export default function Checkout({ ProductList }) {
     const [openAddress, setOpenAddress] = useState(false)
     const [openCheckoutSuccess, setOpenCheckoutSuccess] = useState(false)
     const [orderId, setOrderId] = useState(null)
+    useEffect(() => {
+        if (orderId !== null) {
+            setOpenCheckoutSuccess(true)
+        }
+    }, [orderId])
+
     const onClose = () => {
         setOpenAddress(!openAddress)
     }
@@ -155,7 +161,7 @@ export default function Checkout({ ProductList }) {
                                     }
 
                                 }} className="text-white font-semibold py-2 px-4 bg-[#FA8232] rounded font-sans hover:bg-orangeRed">
-                                    {payment==="COD"?"PLACE ORDER":"CHECK OUT"}
+                                    {payment === "COD" ? "PLACE ORDER" : "CHECK OUT"}
                                 </button>
                             </div>
                         </div>

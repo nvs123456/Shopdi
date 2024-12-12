@@ -64,16 +64,13 @@ function OrderHistory() {
 
     return (
         <div className="font-sans flex justify-center bg-[#F7FBFF] min-h-screen">
-            <div className="min-h-screen bg-white w-[80%] mt-12 mb-10 border-[1px]">
-                <div className="pl-10 pb-2 font-bold text-[12px] md:text-[14px] lg:text-2xl font-sans text-yaleBlue">
+            <div className="bg-white w-[80%] mt-12 mb-10 border-[1px] relative">
+                <div className="p-5 left-[5%] top-6 font-bold text-[12px] md:text-[14px] lg:text-2xl font-sans text-yaleBlue">
                     ORDER HISTORY
                 </div>
 
-                {/* Header Table */}
-                <div className={`place-items-center`}>
-
-
-                <table className={` place-items-center table-fixed w-[90%] text-center  border-collapse`}>
+                <div className="place-items-center">
+                <table className={` left-[5%] top-20  w-[90%] text-center  border-collapse`}>
                     <thead className={`text-[12px] sm:text-[14px] md:text-[16px] h-[30px] md:h-[40px] border-2 border-[#E4E7E9] bg-[#F2F4F5]`}>
                     <tr>
                         <th className="w-[10%] font-semibold">ID</th>
@@ -112,9 +109,10 @@ function OrderHistory() {
                     </tbody>
                 </table>
                 </div>
+
                 {/* Pagination */}
-                <div className="flex justify-center mt-10 mb-3">
-                    <Pagination totalPage={pages}/>
+                <div className="flex justify-center bottom-0 left-[45%] mb-3">
+                    <Pagination totalPage={totalPages}/>
                 </div>
             </div>
         </div>

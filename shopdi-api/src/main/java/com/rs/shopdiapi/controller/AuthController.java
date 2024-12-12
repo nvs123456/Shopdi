@@ -14,8 +14,12 @@ import com.rs.shopdiapi.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 @RestController
@@ -107,17 +112,25 @@ public class AuthController {
     @PostMapping("/reset-password")
     ApiResponse<?> resetPassword(@RequestBody ResetPasswordRequest request) {
         authenticationService.resetPasswordWithToken(request);
-        return ApiResponse.builder()
+        return ApiResponse.builder().code("OK")
                 .message("Password has been reset successfully")
                 .build();
     }
 
     @GetMapping("/reset-password")
-    public ResponseEntity<?> verifyResetToken(@RequestParam("token") String token) {
+    public ResponseEntity<?> verifyResetToken(@RequestParam("token") String token) throws IOException {
         boolean isValid = authenticationService.verifyResetToken(token);
 
         if (isValid) {
-            return ResponseEntity.ok("Reset token is valid. Please proceed to reset your password.");
+            Resource resource = new ClassPathResource("dist/index.html");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.TEXT_HTML);
+            headers.set("Message-Code", "200");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(resource.contentLength())
+                    .body(resource);
+            // return ResponseEntity.ok("Reset token is valid. Please proceed to reset your password.");
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired token.");
         }

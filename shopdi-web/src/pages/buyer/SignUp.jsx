@@ -9,7 +9,22 @@ const SignUpForm = () => {
     const [openPopup, setOpenPopup] = useState(false);
     const [message, setMessage] = useState("");
     const handleSubmitEvent = (e) => {
+
+        if (input.email === "" || input.password === "") {
+            alert("Please provide email and password");
+            return
+        } else if (!input.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
+            alert("Pleae provide a valid email");
+            return
+        } else if (input.password.length < 8) {
+            alert("Password must be at least 8 characters long.");
+            return
+        } else if (!input.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/)) {
+            alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+            return
+        }
         e.preventDefault();
+
         fetch(`${baseUrl}users/signup`, {
             method: "POST",
             headers: {
@@ -26,9 +41,9 @@ const SignUpForm = () => {
         })
     }
     return (
-        <>
+        <div className='w-full'>
             {openPopup && <PopUp />}
-            <div className={`flex min-h-full flex-1 flex-col justify-center py-24 ${openPopup ? "brightness-50" : ""}`}>
+            <div className={`flex min-h-full flex-1 flex-col justify-center py-24 ${openPopup ? "brightness-50" : ""} bg-white`}>
                 <div className="sm:mx-auto sm:w-full sm:max-w-lg bg-cloudBlue px-12 py-6 border-t-[1px] border-x-[1px] rounded">
                     <h2 className="mt-4 text-left text-5xl font-bold leading-9 tracking-tight text-gray-900 font-size ">
                         Create an Account
@@ -39,7 +54,7 @@ const SignUpForm = () => {
                     <div className="space-y-6">
                         <div>
                             <label htmlFor="email" className="text-xl block font-medium leading-6 text-gray-900">
-                                Username/Email address
+                                Email address
                             </label>
                             <div className="mt-2 mb-5">
                                 <input
@@ -61,7 +76,6 @@ const SignUpForm = () => {
                             <label htmlFor="password" className="block text-xl font-medium leading-6 text-gray-900">
                                 Password
                             </label>
-
                         </div>
                         <div className="mt-2 mb-8">
                             <input
@@ -75,6 +89,9 @@ const SignUpForm = () => {
                                 className="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 placeholder={"Password"}
                             />
+                        </div>
+                        <div className='text-left text-sm text-red'>
+                            *Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                         </div>
                     </div>
 
@@ -99,7 +116,7 @@ const SignUpForm = () => {
                     </p>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
