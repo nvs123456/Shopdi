@@ -15,6 +15,7 @@ import PrivateAdminRoute from './routes/PrivateAdminRoute.jsx';
 import CategoryManagement from './pages/admin/CategoryManagement.jsx';
 import AdminSideBar from './components/Admin/Sidebar';
 import AdminHome from './pages/admin/AdminHome.jsx';
+import ResetPassword from './pages/buyer/ResetPassWord.jsx';
 function App() {
 
     return (
@@ -25,6 +26,7 @@ function App() {
                         <Route path="/login" exact element={<LoginForm />} />
                         <Route path="/forget" exact element={<ForgetPassword />} />
                         <Route path='buyer/signup' exact element={< SignUpForm />} />
+                        <Route path='api/v1/auth/reset-password' exact element={<ResetPassword />} />
                         <Route element={<PrivateRoute />}>
                             <Route path="/*" element={
                                 <div className='flex flex-col min-h-screen w-full'>
