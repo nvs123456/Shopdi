@@ -13,10 +13,10 @@ export default function CheckoutPopup({orderId,paymentMethod}) {
                 <CheckCircleOutlineIcon style={{"fontSize": "60px", "color": "green"}}/>
             </div>
             <div className='flex gap-4 flex-row pl-4 pr-4 w-full'>
-                <button onClick={() => {navigate("/")}} className="bg-white border-[1px] border-pumpkin text-pumpkin rounded px-4 py-2 w-full h-[40px]">
+                <button onClick={() => {navigate("/")}} className="bg-white border-[1px] border-pumpkin text-pumpkin rounded px-4 py-2 w-full ">
                     <HomeIcon /> Go to Home page
                 </button>
-                <button onClick={() => {navigate(`/orders/${orderId}`)}} className="bg-pumpkin text-white rounded px-4 py-2 w-full h-[40px]">
+                <button onClick={() => {navigate(`/orders/${orderId}`)}} className="bg-pumpkin text-white rounded px-4 py-2 w-full ">
                     View order
                     <ArrowForwardIcon />
                 </button>

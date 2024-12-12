@@ -26,7 +26,7 @@ const SignUpForm = () => {
         })
     }
     return (
-        <>
+        <div className='w-full'>
             {openPopup && <PopUp />}
             <div className={`flex min-h-full flex-1 flex-col justify-center py-24 ${openPopup ? "brightness-50" : ""}`}>
                 <div className="sm:mx-auto sm:w-full sm:max-w-lg bg-cloudBlue px-12 py-6 border-t-[1px] border-x-[1px] rounded">
@@ -99,7 +99,7 @@ const SignUpForm = () => {
                     </p>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
