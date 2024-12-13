@@ -135,64 +135,64 @@ export default function OrderDetails() {
     if (loading) return <div><SpinnerLoading/></div>;
     else {
         return (
-            <div className="p-6 bg-gray-100 min-h-screen font-sans text-sm">
-                <div className="bg-white px-6 py-10 rounded-lg min-h-screen">
-                    <h1 className="text-lg bg-gray-50 rounded-lg font-semibold mb-4">Order ID : {order.orderId}</h1>
-                    <h2 className="font-semibold mb-2">Ordered
+            <div className="py-16 px-32 bg-cloudBlue min-h-screen font-sans ">
+                <div className="bg-cloudBlue min-h-screen">
+                    <h1 className="text-2xl bg-white font-bold pt-4 pb-2 pl-8 border-t-[1px] border-x-[1px] text-yaleBlue">Order ID: {order.orderId}</h1>
+                    <h2 className="text-xl font-semibold bg-white pl-8 pb-4 border-b-[1px] border-x-[1px]">Ordered
                         at {(new Date(order.deliveryDate)).toLocaleDateString()}</h2>
                     {/* Customer, Shipping and Payment Details */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 my-12">
                         <div>
-                            <h2 className="font-semibold mb-2">Customer details</h2>
-                            <div className="p-4 bg-gray-50 min-h-full rounded-lg">
-                                <p>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
-                                <p>{order.shippingAddress?.email}</p>
+                            <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Customer details</h2>
+                            <div className="bg-white px-8 pb-14 border-b-[1px] border-x-[1px] text-[16px]">
+                                <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
+                                <p className={"py-2"}>{order.shippingAddress?.email}</p>
                                 <p>{order.shippingAddress?.phoneNumber}</p>
                             </div>
                         </div>
                         <div>
-                            <h2 className="font-semibold mb-2">Shipping address</h2>
-                            <div className="p-4 bg-gray-50 min-h-full rounded-lg">
-                                <p>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
-                                <p>{order.shippingAddress?.phoneNumber}</p>
+                            <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Shipping address</h2>
+                            <div className="bg-white px-8 pb-14 border-b-[1px] border-x-[1px] text-[16px]">
+                                <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
+                                <p className={"py-2"}>{order.shippingAddress?.phoneNumber}</p>
                                 <p>{order.shippingAddress?.address}</p>
                             </div>
                         </div>
                         <div>
-                            <h2 className="font-semibold mb-2">Payment details</h2>
-                            <div className="p-4 bg-gray-50 min-h-full rounded-lg">
-                                <p>Transaction: {order?.payment?.transaction}</p>
-                                <p>Payment Method: {order?.paymentMethod}</p>
+                            <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Payment details</h2>
+                            <div className="bg-white px-8 pb-6 border-b-[1px] border-x-[1px] text-[16px]">
+                                <p className={"border-t-2 pt-4 border-gray-300"}>Transaction: {order?.payment?.transaction}</p>
+                                <p className={"py-2"}>Payment Method: {order?.paymentMethod}</p>
                                 <p>Card Holder: {order?.payment?.cardHolder}</p>
-                                <p>Total amount: {order?.price}</p>
+                                <p className={"pt-2"}>Total amount: {order?.price}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Product Details */}
-                    <div className="mb-6 mt-10">
-                        <h2 className="font-semibold mb-2">Product details</h2>
-                        <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="border-[1px] bg-white">
+                        <h2 className="font-semibold text-2xl text-yaleBlue  pt-4 pb-4 px-8">Product details</h2>
+                        <div className="">
                             <table className="w-full text-center">
                                 <thead>
-                                <tr className={'text-center border-b-2'}>
-                                    <th className="py-2 text-left w-[40%]">Product</th>
-                                    <th className="py-2 w-[10%]">Product ID</th>
-                                    <th className="py-2 w-[20%]">Price</th>
-                                    <th className="py-2 w-[10%]">Quantity</th>
-                                    <th className="py-2 w-[10%]">Total</th>
+                                <tr className={' text-xl text-center border-y-2 bg-[#F2F4F5]'}>
+                                    <th className="pl-12 py-3 text-left w-[35%] font-semibold">Product</th>
+                                    <th className=" w-[20%] font-semibold">Product ID</th>
+                                    <th className="pr-8 w-[20%] font-semibold">Price</th>
+                                    <th className="pr-8 w-[10%] font-semibold">Quantity</th>
+                                    <th className="pr-8 w-[25%] font-semibold">Total</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {order?.orderItems?.map((item, index) => (
-                                    <tr key={index} className={'border-b-2'}>
-                                        <td className={'flex items-center py-2'}>
-                                            <img src={item?.productImage} className={`w-20 h-20`}/>
+                                    <tr key={index} className={'border-b-[1px]'}>
+                                        <td className={'flex items-center py-4 ml-12 '}>
+                                            <img src={item?.productImage} className={`w-20 h-20 mr-4`}/>
                                             {item?.productName}</td>
-                                        <td>{item?.orderItemId}</td>
-                                        <td>{item?.price.toLocaleString()}đ</td>
-                                        <td>{item?.quantity}</td>
-                                        <td>{item?.price.toLocaleString()}.đ</td>
+                                        <td className="pr-8">{item?.orderItemId}</td>
+                                        <td className="pr-8">{item?.price.toLocaleString()} &#8363;</td>
+                                        <td className="pr-8">{item?.quantity}</td>
+                                        <td className="pr-8">{item?.price.toLocaleString()} &#8363;</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -201,20 +201,19 @@ export default function OrderDetails() {
                     </div>
 
                     {/* Logistics and Billing Details */}
-                    <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <h2 className="absolute right-8 font-semibold mb-2">Total
-                            bill: {order?.totalPrice.toLocaleString()}đ</h2>
+                    <div className=" bg-white border-x-[1px] border-b-[1px] pr-16 pt-6 pb-4">
+                        <h2 className="text-right font-bold mb-2 text-2xl">Total bill:  {order?.totalPrice.toLocaleString()} &#8363;</h2>
                     </div>
 
                     {/* Order Status */}
                     {order.orderStatus === 'CANCELLED' ?
                         <div
-                            className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-20">Order
+                            className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-20 bg-white">Order
                             Cancelled!</div> :
 
-                        <div className=" w-full mb-10 ">
+                        <div className=" w-full my-12 font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-8 px-8">
                             <div>
-                                <h2 className="font-semibold mb-2">Order status</h2>
+                                <h2 className="font-semibold mb-8 border-b-2 pb-2 text-2xl">Order status</h2>
                                 <Stepper activeStep={step} orientation={'horizontal'} alternativeLabel
                                          connector={<CustomisedConnector/>}>
                                     {steps.map((label, index) => (

@@ -119,10 +119,10 @@ function OrderTable({type}) {
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
-                <thead>
-                <tr className="border-b-2">
+                <thead >
+                <tr className="border-b-[1px]">
                     {tableHeadings.map((heading, index) => (
-                        <th key={index} className="pl-10 py-3 text-left text-xl font-medium cursor-pointer"
+                        <th key={index} className="pl-10 py-4 text-left text-xl font-medium cursor-pointer"
                             onClick={() => handleSort(heading)}>
                             <div className={'flex items-center'}>
                                 {heading.charAt(0).toUpperCase() + heading.slice(1)}
