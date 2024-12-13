@@ -79,10 +79,10 @@ export default function ProductManagement() {
   if (isLoading) return <div className="text-center">Loading...</div>
   else {
     return (
-      <div className="flex flex-row pt-4 gap-x-8 p-4 bg-cloudBlue">
-        <div className='rounded min-w-[270px] max-w-[270px] bg-white p-4'><Filter allProducts={allProducts} setProducts={setProducts}
+      <div className="flex flex-row gap-x-12 p-12 bg-cloudBlue">
+        <div className='rounded min-w-[210px] max-w-[210px] '><Filter allProducts={allProducts} setProducts={setProducts}
         /></div>
-        <div className='rounded bg-white p-4 grow'>
+        <div className=' bg-white p-6 mr-2 grow border-[1px]'>
           <ProductList products={products} page={page} />
         </div>
 

@@ -85,7 +85,7 @@ function CategoryFilter({ allProducts, filterByCategory, setFilterByCategory }) 
                                     }
                                     }
                                     name={"category"} value={item.id} type="radio" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                <label htmlFor={`${item.id}`} className="ml-3 text-sm text-gray-600">{item.name}</label>
+                                <label htmlFor={`${item.id}`} className="ml-3 text-sm text-gray-600 pr-4">{item.name}</label>
                             </div>
                         )}
                     </div>
@@ -186,7 +186,7 @@ function SortFilter({ sortBy, setSortBy }) {
     }
 
     return (
-        <div className="border-b border-gray-200 py-6">
+        <div className="border-b border-gray-200 pb-6 pt-2">
             <h3 className="-my-3 flow-root">
                 {/* <!-- Expand/collapse section button --> */}
                 <button onClick={set} type="button" className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500" aria-controls="filter-section-0" aria-expanded="false">
@@ -215,7 +215,7 @@ function SortFilter({ sortBy, setSortBy }) {
                                             setSortBy({ sortBy: item.sortBy, order: item.order })
                                         }}
                                         name={"sort"} value={item.id} type="radio" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                    <label htmlFor={`${item.id}`} className="ml-3 text-sm text-gray-600">
+                                    <label htmlFor={`${item.id}`} className="ml-3 text-sm text-gray-600 pr-4">
                                         {item.name}
                                     </label>
                                 </div>

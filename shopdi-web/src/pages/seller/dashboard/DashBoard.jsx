@@ -85,11 +85,11 @@ export default function DashBoard() {
                 <div className="content-center text-3xl font-medium"><span >Hello, Username</span></div>
             </div>
             <div className="text-xl mt-4">Date: <span>{new Date().toISOString().slice(0, 10)}</span></div>
-            <div className="flex flex-row gap-12 py-8 pl-2 pr-8">
+            <div className="flex flex-row gap-12 pt-8 pb-4 pl-2 pr-8">
                 <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px] '>
                     <h1 className="text-2xl text-gray-600 font-medium">Total Earnings</h1>
                     <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-bold pb-2">{data.todayEarning.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</span>
+                        <span className="text-3xl font-semibold pb-2">{data.todayEarning.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</span>
                         <span>
                             <span className={data.increaseEarning > 0 ? "text-green" : "text-red"}>{data.increaseEarning > 0 ? "+" : ""}{data.increaseEarning}</span>
                             <span className={data.increaseEarning > 0 ? "text-green" : "text-red"}>{data.increaseEarning > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
@@ -100,7 +100,7 @@ export default function DashBoard() {
                 <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
                     <h1 className="text-2xl text-gray-600 font-medium">Total Orders</h1>
                     <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-bold pb-2">{data.todayOrder.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                        <span className="text-3xl font-semibold pb-2">{data.todayOrder.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
                         <span>
                             <span className={data.increaseOrder > 0 ? "text-green" : "text-red"}>{data.increaseOrder > 0 ? "+" : ""}{data.increaseOrder}</span>
                             <span className={data.increaseOrder > 0 ? "text-green" : "text-red"}>{data.increaseOrder > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
@@ -111,7 +111,7 @@ export default function DashBoard() {
                 <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
                     <h1 className="text-2xl text-gray-600 font-medium">New customers</h1>
                     <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-bold pb-2">{data.todayCustomer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                        <span className="text-3xl font-semibold pb-2">{data.todayCustomer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
                         <span>
                             <span className={data.increaseCustomer > 0 ? "text-green" : "text-red"}>{data.increaseCustomer > 0 ? "+" : ""}{data.increaseCustomer}</span>
                             <span className={data.increaseCustomer > 0 ? "text-green" : "text-red"}>{data.increaseCustomer > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>

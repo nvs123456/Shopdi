@@ -57,20 +57,20 @@ export default function AddProduct() {
             <div className={` ${isUploadingProduct ? '' : 'hidden'} justify-center items-center place-content-center text-2xl text-center bg-white z-10 fixed p-8 rounded-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}>
                 Uploading images...<SpinnerLoading size={2} />
             </div>
-            <div className={`${isUploadingProduct ? 'brightness-50' : ''} w-full flex flex-row`}>
+            <div className={`${isUploadingProduct ? 'brightness-50' : ''} w-full flex flex-row bg-cloudBlue`}>
                 <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}>
                     <QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup}
                         productForm={productForm} setProductForm={setProductForm}
                         selectedImage={selectedImage}
                         isUploadingProduct={isUploadingProduct} setIsUploadingProduct={setIsUploadingProduct} />
                 </div>
-                <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
+                <div className={`add-product w-1/12  bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}></div>
 
-                <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
+                <div className={` add-product my-12  pb-8 w-5/6 flex flex-col gap-8 m-auto bg-cloudBlue  ${openPopup ? 'brightness-50' : ''}`}>
 
-                    <div>
-                        <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
-                        <span className="inline-block font-bold text-xl ml-4 p-2">Add Product</span>
+                    <div className={"bg-white pt-6 pb-2 px-6 border-[1px]"}>
+                        <span className='text-yaleBlue hover:text-black cursor-pointers' onClick={() => window.history.back()}><ArrowBackIcon className={"mb-4"} style={{ fontSize: '45px' }} /></span>
+                        <span className="inline-block font-bold text-3xl ml-2 ">Add Product</span>
                         <span onClick={() => {
                             const allInput = document.querySelectorAll('.required-field');
                             for (let i = 0; i < allInput.length; i++) {
@@ -85,10 +85,10 @@ export default function AddProduct() {
                             }
                             onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm)
                         }}
-                            className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
+                            className="inline-block font-bold text-xl float-right hover:bg-celticBlue text-white py-2 px-4 rounded cursor-pointer bg-yaleBlue">Save product</span>
                     </div>
-                    <div className='flex flex-col gap-4'>
-                        <div className='general-infor border-2 border-gray-200 p-4'>
+                    <div className='flex flex-col gap-8 bg-cloudBlue'>
+                        <div className='general-infor border-[1px] p-4 bg-white'>
                             <div>
                                 <span className='font-bold text-xl'>General information</span>
                             </div>
@@ -109,13 +109,13 @@ export default function AddProduct() {
 
                             </div>
                         </div>
-                        <div className='media border-2 border-gray-200 p-4'>
+                        <div className='media border-[1px] p-4 bg-white'>
                             <div>
                                 <span className='font-bold text-xl'>Media (from 5 to 10 images)</span>
                                 <UploadAndDisplayImage selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
                             </div>
                         </div>
-                        <div className='category border-2 border-gray-200 p-4'>
+                        <div className='category border-[1px] p-4 bg-white'>
 
                             <div>
                                 <span className='font-bold text-xl'>Category</span>
@@ -151,7 +151,7 @@ export default function AddProduct() {
                                 </div>
                             </div>
                         </div>
-                        <div className="pricing border-2 border-gray-200 p-4 flex flex-col gap-2">
+                        <div className="pricing flex flex-col gap-2 border-[1px] p-4 bg-white">
                             <div>
                                 <span className='font-bold text-xl'>Pricing</span>
                             </div>
@@ -184,7 +184,7 @@ export default function AddProduct() {
                                 </select>
                             </div>
                         </div>
-                        <div className="variant">
+                        <div className="variant border-[1px] p-4 bg-white">
                             <div>
                                 <span className='font-bold text-xl'>Variant<span className='text-gray-400'>  (Ex: Type: Color, Values: green, red,..)</span></span>
                             </div>
@@ -194,7 +194,7 @@ export default function AddProduct() {
                         </div>
                     </div>
                 </div>
-                <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
+                <div className={`add-product w-1/12  bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}></div>
 
             </div>
         </div>
