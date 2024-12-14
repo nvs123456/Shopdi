@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import {Step, StepLabel, Stepper} from "@mui/material";
-import {styled} from "@mui/material/styles";
-import StepConnector, {stepConnectorClasses} from "@mui/material/StepConnector";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Step, StepLabel, Stepper } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import StepConnector, { stepConnectorClasses } from "@mui/material/StepConnector";
 import axios from "axios";
 import SpinnerLoading from "../../../components/SpinnerLoading/SpinnerLoading.jsx";
 import { baseUrl } from "../../../api/GET.jsx";
 
-const CustomisedConnector = styled(StepConnector)(({theme}) => ({
+const CustomisedConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.active}`]: {
         [`& .${stepConnectorClasses.line}`]: {
             backgroundColor: "#FA8232",
@@ -32,7 +32,7 @@ const CustomisedConnector = styled(StepConnector)(({theme}) => ({
 const steps = ['Order Placed', 'Order processed', 'Packaged', 'Out for delivery', 'Delivered'];
 
 export default function OrderDetails() {
-    const {id} = useParams();
+    const { id } = useParams();
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [order, setOrder] = useState({});
@@ -111,7 +111,7 @@ export default function OrderDetails() {
     function handleUpdateOrderStatus(orderId) {
         axios.put(`${baseUrl}seller/${orderId}/update-status`, null,
             {
-                params: {orderStatus: stepToOrderStatus(step)},
+                params: { orderStatus: stepToOrderStatus(step) },
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("Authorization")}`,
@@ -132,7 +132,7 @@ export default function OrderDetails() {
             });
     }
 
-    if (loading) return <div><SpinnerLoading/></div>;
+    if (loading) return <div><SpinnerLoading /></div>;
     else {
         return (
             <div className="py-16 px-32 bg-cloudBlue min-h-screen font-sans ">
@@ -175,26 +175,26 @@ export default function OrderDetails() {
                         <div className="">
                             <table className="w-full text-center">
                                 <thead>
-                                <tr className={' text-xl text-center border-y-2 bg-[#F2F4F5]'}>
-                                    <th className="pl-12 py-3 text-left w-[35%] font-semibold">Product</th>
-                                    <th className=" w-[20%] font-semibold">Product ID</th>
-                                    <th className="pr-8 w-[20%] font-semibold">Price</th>
-                                    <th className="pr-8 w-[10%] font-semibold">Quantity</th>
-                                    <th className="pr-8 w-[25%] font-semibold">Total</th>
-                                </tr>
+                                    <tr className={' text-xl text-center border-y-2 bg-[#F2F4F5]'}>
+                                        <th className="pl-12 py-3 text-left w-[35%] font-semibold">Product</th>
+                                        <th className=" w-[20%] font-semibold">Product ID</th>
+                                        <th className="pr-8 w-[20%] font-semibold">Price</th>
+                                        <th className="pr-8 w-[10%] font-semibold">Quantity</th>
+                                        <th className="pr-8 w-[25%] font-semibold">Total</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {order?.orderItems?.map((item, index) => (
-                                    <tr key={index} className={'border-b-[1px]'}>
-                                        <td className={'flex items-center py-4 ml-12 '}>
-                                            <img src={item?.productImage} className={`w-20 h-20 mr-4`}/>
-                                            {item?.productName}</td>
-                                        <td className="pr-8">{item?.orderItemId}</td>
-                                        <td className="pr-8">{item?.price.toLocaleString()} &#8363;</td>
-                                        <td className="pr-8">{item?.quantity}</td>
-                                        <td className="pr-8">{item?.price.toLocaleString()} &#8363;</td>
-                                    </tr>
-                                ))}
+                                    {order?.orderItems?.map((item, index) => (
+                                        <tr key={index} className={'border-b-[1px]'}>
+                                            <td className={'flex items-center py-4 ml-12 '}>
+                                                <img src={item?.productImage} className={`w-20 h-20 mr-4`} />
+                                                {item?.productName}</td>
+                                            <td className="pr-8">{item?.orderItemId}</td>
+                                            <td className="pr-8">{item?.price.toLocaleString()} &#8363;</td>
+                                            <td className="pr-8">{item?.quantity}</td>
+                                            <td className="pr-8">{item?.price.toLocaleString()} &#8363;</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
@@ -211,34 +211,34 @@ export default function OrderDetails() {
                             className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-20 bg-white">Order
                             Cancelled!</div> :
 
-                        <div className=" w-full my-12 font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-8 px-8">
+                        <div className=" relative w-full my-12 font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-8 px-8">
                             <div>
                                 <h2 className="font-semibold mb-8 border-b-2 pb-2 text-2xl">Order status</h2>
                                 <Stepper activeStep={step} orientation={'horizontal'} alternativeLabel
-                                         connector={<CustomisedConnector/>}>
+                                    connector={<CustomisedConnector />}>
                                     {steps.map((label, index) => (
                                         <Step key={label}>
                                             <StepLabel onClick={() => handleStep(index)}
-                                                       StepIconProps={{
-                                                           sx: {
-                                                               color: index < step ? '#FF731D' : '#FFFFFF', // Color for completed steps
-                                                               border: '4px solid #FF731D', // Border color
-                                                               borderRadius: '50%', // Optional: make the border circular
-                                                               '&.Mui-active': {
-                                                                   color: '#FF731D', // Color for the current step
+                                                StepIconProps={{
+                                                    sx: {
+                                                        color: index < step ? '#FF731D' : '#FFFFFF', // Color for completed steps
+                                                        border: '4px solid #FF731D', // Border color
+                                                        borderRadius: '50%', // Optional: make the border circular
+                                                        '&.Mui-active': {
+                                                            color: '#FF731D', // Color for the current step
 
-                                                               },
-                                                               '&.Mui-completed': {
-                                                                   color: '#FF731D', // Color for completed steps
-                                                               },
-                                                               '&.Mui-incompleted': {
-                                                                   color: '#FF731D', // Color for incompleted steps
-                                                               },
-                                                               '& .MuiStepIcon-text': {
-                                                                   fill: 'transparent', // Change color of the step number text
-                                                               },
-                                                           },
-                                                       }}
+                                                        },
+                                                        '&.Mui-completed': {
+                                                            color: '#FF731D', // Color for completed steps
+                                                        },
+                                                        '&.Mui-incompleted': {
+                                                            color: '#FF731D', // Color for incompleted steps
+                                                        },
+                                                        '& .MuiStepIcon-text': {
+                                                            fill: 'transparent', // Change color of the step number text
+                                                        },
+                                                    },
+                                                }}
 
                                             >
                                                 {label}
@@ -247,12 +247,13 @@ export default function OrderDetails() {
 
                                     ))}
                                 </Stepper>
+                                {isEditing && <button
+                                    onClick={() => handleUpdateOrderStatus(order.orderId)}
+                                    className={`absolute right-8 top-4 bg-metallicOrange w-34 px-2  rounded text-white h-8`}>Save
+                                    Changes
+                                </button>}
                             </div>
-                            {isEditing && <button
-                                onClick={() => handleUpdateOrderStatus(order.orderId)}
-                                className={`absolute right-8 bottom-[-150px] bg-metallicOrange w-34 px-2  rounded text-white h-8`}>Save
-                                Changes
-                            </button>}
+
                         </div>}
                 </div>
             </div>

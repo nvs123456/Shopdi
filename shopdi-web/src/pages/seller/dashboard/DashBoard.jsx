@@ -1,11 +1,13 @@
 import shopdiLogo from "@/assets/images/shopdi_logo.jpeg";
-import NorthEastIcon from '@mui/icons-material/NorthEast';
-import SouthEastIcon from '@mui/icons-material/SouthEast';
+import SpinnerLoading from "../../../components/SpinnerLoading/SpinnerLoading";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import defaultImage from "@/assets/images/profileDefault.png";
 import {
     Chart as ChartJS,
     CategoryScale
 } from 'chart.js/auto';
+import { useEffect, useState } from "react";
+import { GET } from "@/api/GET";
 ChartJS.register(
     CategoryScale
 );
@@ -14,48 +16,16 @@ function formatNumber(number) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
 }
 export default function DashBoard() {
-    let data = {
-        increaseEarning: 0.034,
-        todayEarning: 2000000,
-        increaseOrder: -0.025,
-        todayOrder: 200,
-        increaseCustomer: -0.095,
-        todayCustomer: 200,
-        summaryInWeek: [100, 200, 50, 169, 124, 23, 89],
-        bestSeller: [
-            {
-                name: "Product 1",
-                image: shopdiLogo,
-                amount: 1000000,
-                order: 100,
-                rating: 3.5,
-            },
-            {
-                name: "Product 2",
-                image: shopdiLogo,
-                amount: 1000000,
-                order: 100,
-                rating: 3.5,
-            }, {
-                name: "Product 3",
-                image: shopdiLogo,
-                amount: 1000000,
-                order: 100,
-                rating: 3.5,
-            }
-
-        ]
-
-    }
+    const [data, setData] = useState({})
     let today = new Date();
     let week = []
     for (let i = 0; i < 7; i++) {
-        week.unshift(`${today.getDate()}-${today.toLocaleDateString('en-US', { month: 'short' })}`)
+        // week.unshift(`${today.getDate()}-${today.toLocaleDateString('en-US', { month: 'short' })}`)
+        week.unshift(today.toDateString())
         today.setDate(today.getDate() - 1)
 
     }
-    console.log(week)
-    const doanhthu = {
+    const [doanhthu, setDoanhthu] = useState({
         labels: week,
         // datasets is an array of objects where each object represents a set of data to display corresponding to the labels above. for brevity, we'll keep it at one object
         datasets: [
@@ -66,91 +36,141 @@ export default function DashBoard() {
                 borderWidth: 2,
             }
         ]
+    })
+    const [products, setProducts] = useState([])
+    const [profile, setProfile] = useState({})
+    const [orders, setOrders] = useState([])
+    const [loadding, setLoadding] = useState(true)
+    const [currentSort, setCurrentSort] = useState("revenue")
+    const sortBy = (sortBy, products) => {
+        if (sortBy === "revenue") {
+            products.sort((a, b) => {
+                return b.soldQuantity * b.price - a.soldQuantity * a.price
+            })
+        } else if (sortBy === "order") {
+            products.sort((a, b) => {
+                return b.soldQuantity - a.soldQuantity
+            })
+        } else if (sortBy === "rating") {
+            products.sort((a, b) => {
+                return b.rating - a.rating
+            })
+        }
+        let tmp = JSON.parse(JSON.stringify(products))
+        setCurrentSort(sortBy)
+        return tmp.slice(0, 3)
     }
-    const danhgia = {
-        labels: ["1 star", "2 star", "3 star", "4 star", "5 star"],
-        datasets: [
-            {
-                label: "So luong san pham",
-                data: [12,65,124,345,12],
-                // you can set indiviual colors for each bar
-                borderWidth: 1,
-            }
-        ]
-    }
-    return (
-        <div className="w-full bg-cloudBlue p-12">
-            <div className="flex flex-row gap-4">
-                <img src={shopdiLogo} alt="logo" className="h-16 w-auto rounded-full"/>
-                <div className="content-center text-3xl font-medium"><span >Hello, Username</span></div>
+    useEffect(() => {
+        GET("seller/profile").then(res => {
+            setProfile(res.result)
+            GET("seller/my-products").then(res => {
+                const bestSeller = sortBy("revenue", res.result?.items)
+                setProducts(res.result?.items)
+                GET("seller/orders").then(res => {
+                    const summary = [0, 0, 0, 0, 0, 0, 0]
+                    let sum = 0
+                    let todayOrder = 0
+                    res.result.items.forEach(order => {
+                        if (order.status !== "PENDING" && order.status !== "CANCELLED") {
+                            if (new Date(order.deliveryDate).toDateString() === new Date().toDateString()) {
+                                todayOrder++
+                            }
+                            sum += order.totalPrice
+                            week.forEach((day, index) => {
+                                if (new Date(order.deliveryDate).toDateString() === day) {
+                                    summary[index] += order.totalPrice
+                                }
+
+                            })
+                        }
+                    })
+                    setData({ ...data, summaryInWeek: summary, todayEarning: sum, todayOrder: todayOrder, bestSeller: bestSeller })
+                    setDoanhthu({ ...doanhthu, datasets: [{ ...doanhthu.datasets[0], data: summary }] })
+                    setOrders(res.result?.items)
+                    setLoadding(false)
+                })
+            })
+        })
+
+
+    }, [])
+
+    if (loadding)
+        return (
+            <div className="w-full h-full flex justify-center items-center">
+                <SpinnerLoading />
             </div>
-            <div className="text-xl mt-4">Date: <span>{new Date().toISOString().slice(0, 10)}</span></div>
-            <div className="flex flex-row gap-12 pt-8 pb-4 pl-2 pr-8">
-                <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px] '>
-                    <h1 className="text-2xl text-gray-600 font-medium">Total Earnings</h1>
-                    <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-semibold pb-2">{data.todayEarning.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</span>
-                        <span>
+        )
+    else
+        return (
+            <div className="w-full bg-cloudBlue">
+
+                <div className="flex flex-row gap-12 pt-8 pb-4 pl-2 pr-8">
+                    <div>
+                        <div className="flex flex-row gap-4">
+                            <img src={profile.profileImage || defaultImage} alt="logo" className="h-16 w-auto rounded-full" />
+                            <div className="content-center text-3xl font-medium"><span >Hello, {profile.shopName}</span></div>
+                        </div>
+                        <div className="text-xl mt-4">Today: <span>{new Date().toISOString().slice(0, 10)}</span></div>
+                    </div>
+                    <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px] '>
+                        <h1 className="text-2xl text-gray-600 font-medium">Total Earnings</h1>
+                        <div className="flex flex-row justify-between">
+                            <span className="text-3xl font-semibold pb-2">{data.todayEarning.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</span>
+                            {/* <span>
                             <span className={data.increaseEarning > 0 ? "text-green" : "text-red"}>{data.increaseEarning > 0 ? "+" : ""}{data.increaseEarning}</span>
                             <span className={data.increaseEarning > 0 ? "text-green" : "text-red"}>{data.increaseEarning > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
-                        </span>
+                        </span> */}
 
+                        </div>
                     </div>
-                </div>
-                <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
-                    <h1 className="text-2xl text-gray-600 font-medium">Total Orders</h1>
-                    <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-semibold pb-2">{data.todayOrder.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
-                        <span>
+                    <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
+                        <h1 className="text-2xl text-gray-600 font-medium">Total Orders</h1>
+                        <div className="flex flex-row justify-between">
+                            <span className="text-3xl font-semibold pb-2">{data.todayOrder.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                            {/* <span>
                             <span className={data.increaseOrder > 0 ? "text-green" : "text-red"}>{data.increaseOrder > 0 ? "+" : ""}{data.increaseOrder}</span>
                             <span className={data.increaseOrder > 0 ? "text-green" : "text-red"}>{data.increaseOrder > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
-                        </span>
+                        </span> */}
 
+                        </div>
                     </div>
                 </div>
-                <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
-                    <h1 className="text-2xl text-gray-600 font-medium">New customers</h1>
-                    <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-semibold pb-2">{data.todayCustomer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
-                        <span>
-                            <span className={data.increaseCustomer > 0 ? "text-green" : "text-red"}>{data.increaseCustomer > 0 ? "+" : ""}{data.increaseCustomer}</span>
-                            <span className={data.increaseCustomer > 0 ? "text-green" : "text-red"}>{data.increaseCustomer > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
-                        </span>
+                <div className="flex flex-row gap-12 p-2">
+                    <div className="w-[40%]">
+
+                        <div className="text-3xl font-semibold text-yaleBlue bg-white pt-3 pb-4 px-5 border-b-2 border-t-[1px] border-x-[1px]">Best seller</div>
+                        <div className="grid grid-cols-6 gap-4 bg-white px-4 py-2 shadow-lg border-b-[1px] border-x-[1px]">
+                            {/* <div className="header flex flex-row font-semibold text-xl"> */}
+                            <span className="col-span-3 pl-2 text-2xl font-semibold">Product</span>
+                            <span className={`text-center font-semibold ${currentSort === "revenue" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("revenue", products) }) }}>Revenue<SwapVertIcon /></span>
+                            <span className={`text-center font-semibold ${currentSort === "order" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("order", products) }) }}>Orders<SwapVertIcon /></span>
+                            <span className={`text-center font-semibold ${currentSort === "rating" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("rating", products) }) }}>Rating<SwapVertIcon /></span>
+
+                            {data.bestSeller.map((item, index) => {
+                                return (
+                                    <>
+                                        <div className="flex flex-row col-span-3">
+                                            <div className="min-w-10 text-center"><img src={shopdiLogo} width={40} height={40} /></div>
+                                            <div className="grow my-auto ml-2 truncate">{item.productName}</div>
+                                        </div>
+                                        <div className=" text-center">{(item.soldQuantity * item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
+                                        <div className=" text-center">{item.soldQuantity}</div>
+                                        <div className=" text-center">{item.rating} star</div>
+                                    </>
+                                );
+                            })}
+                        </div>
 
                     </div>
-                </div>
-            </div>
-            <div className="flex flex-row gap-12 py-8 pl-2 pr-8">
-                <div className="w-2/3">
-                    <div>
+                    <div className="grow">
                         <Bar className="w-[100%] p-6 bg-white border-[1px]" height={170} data={doanhthu} />
                     </div>
-                    <div className="text-3xl font-semibold text-yaleBlue mt-12 bg-white pt-3 pb-4 px-5 border-b-2 border-t-[1px] border-x-[1px]">Best seller</div>
-                    <div className="bg-white px-4 py-2 shadow-lg border-b-[1px] border-x-[1px]">
-                        <div className="header flex flex-row font-semibold text-xl">
-                            <span className="grow pl-2 text-2xl">Product</span>
-                            <span className="w-32 text-center">Revenue<SwapVertIcon /></span>
-                            <span className="w-32 text-center">Orders<SwapVertIcon /></span>
-                            <span className="w-32 text-center">Feedback<SwapVertIcon /></span>
-                        </div>
-                        {data.bestSeller.map((item, index) => {
-                            return (
-                                <div key={index} className="flex flex-row pb-2 border-b-2 ml-3 my-2">
-                                    <div className="w-10 text-center"><img src={shopdiLogo} width={40} height={40}/></div>
-                                    <div className="grow my-auto ml-2">{item.name}</div>
-                                    <div className="w-32 text-center">{item.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
-                                    <div className="w-32 text-center">{item.order}</div>
-                                    <div className="w-32 text-center">{item.rating} star</div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-                <div className="w-1/3 ">
+                    {/* <div className="w-1/3 ">
                     <div className="text-3xl font-semibold text-tuftsBlue pt-4 px-6 bg-white border-t-[1px] border-x-[1px]">Customer's feedback</div>
                     <Pie className="w-full bg-white pb-8 px-5 pt-2  border-b-[1px] border-x-[1px]" data={danhgia} />
+                </div> */}
                 </div>
             </div>
-        </div>
-    )
+        )
 }

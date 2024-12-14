@@ -24,7 +24,7 @@ const SellerList = () => {
     };
     return (
         <div>
-            <h1 className="text-xl font-bold font-sans mb-4">Customers</h1>
+            <h1 className="text-xl font-bold font-sans mb-4">Sellers</h1>
             <TabContext value={value}>
                 <Box sx={{borderBottom: 1, borderColor: 'divider', marginLeft: '60px'}}>
                     <TabList onChange={handleChange} aria-label="lab API tabs example">

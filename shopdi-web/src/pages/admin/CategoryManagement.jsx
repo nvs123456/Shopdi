@@ -105,7 +105,7 @@ function Parent({ setIsEditting, Compare, category, index, setCategory, currentP
     return (
         <div className={`relative`}>
             <div className={`flex w-[400px] flex-row gap-2 ${currentParentSelected == category[index].categoryId ? "bg-gray-400" : ""}`}>
-                <div className="relative flex flex-row border-b-2 border-gray-400 h-12" >
+                <div className="relative flex flex-row border-b-2 border-gray-400 h-12 hover:bg-gray-400" >
                     <label className="content-center w-[120px]">id : {category[index].categoryId}, name :</label>
                     <input id={`${index}-parent`} className="category-input" type="text" value={category[index].name}
                         onClick={(e) => {
@@ -139,8 +139,8 @@ function Parent({ setIsEditting, Compare, category, index, setCategory, currentP
             </div>
             {
                 currentParentSelected == category[index].categoryId && (
-                    <div className="absolute z-10 left-[360px] top-0 rounded bg-white border-2 border-gray-400">{category[index].childCategories.map((childCategory, child_index) => (
-                        <div key={`${child_index}-${index}-child`} className="relative flex flex-row h-12 border-b-2 border-gray-400" >
+                    <div className="absolute z-10 left-[380px] top-0 rounded bg-white border-2 border-gray-400">{category[index].childCategories.map((childCategory, child_index) => (
+                        <div key={`${child_index}-${index}-child`} className="relative flex flex-row h-12 border-b-2 border-gray-400 hover:bg-gray-400" >
                             <label className="content-center">id : {childCategory.id}, name :</label>
                             <input id={`${child_index}-${index}-child`} className="category-input" type="text" value={childCategory.name}
                                 onClick={(e) => {

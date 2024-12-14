@@ -1,89 +1,7 @@
 import React, { useEffect, useState } from "react";
-import UETLogo from "/src/assets/images/UETLogo.png";
 import {GET, PUT} from "../../api/GET";
+import defaultImage from "../../assets/images/profileDefault.png";
 
-const users_temp = [
-    {
-        id: 1,
-        name: 'Alice',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 10,
-        revenue: 1000,
-    },
-    {
-        id: 2,
-        name: 'Bob',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 5,
-        revenue: 500,
-    },
-    {
-        id: 3,
-        name: 'Charlie',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 15,
-        revenue: 1500,
-    },
-    {
-        id: 4,
-        name: 'David',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 3,
-        revenue: 300,
-    },
-    {
-        id: 5,
-        name: 'Eve',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 20,
-        revenue: 2000,
-    },
-    {
-        id: 6,
-        name: 'Alice',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 10,
-        revenue: 1000,
-    },
-    {
-        id: 7,
-        name: 'Bob',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 5,
-        revenue: 500,
-    },
-    {
-        id: 8,
-        name: 'Charlie',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 15,
-        revenue: 1500,
-    },
-    {
-        id: 9,
-        name: 'David',
-        avatar: UETLogo,
-        status: 'Blocked',
-        products: 3,
-        revenue: 300,
-    },
-    {
-        id: 10,
-        name: 'Eve',
-        avatar: UETLogo,
-        status: 'Active',
-        products: 20,
-        revenue: 2000,
-    }
-];
 export default function userCard({ status }) {
     const [users, setUsers] = useState([]);
     const [showMenu, setShowMenu] = useState(false);
@@ -159,7 +77,7 @@ export default function userCard({ status }) {
                             </button>
                         </div>
                         <img
-                            src={user.profileImage}
+                            src={user.profileImage || defaultImage }
                             alt={user.name}
                             className="w-16 h-16 rounded-full mx-auto"
                         />
@@ -200,7 +118,7 @@ export default function userCard({ status }) {
                             </div>
                         )}
 
-                        <h2 className="text-lg font-medium text-center">{user.name}</h2>
+                        <h2 className="text-lg font-medium text-center">{user.username}</h2>
                         <div className={'flex justify-center '}>
                             <div
                                 className={`${user.status === 'ACTIVE' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
@@ -211,7 +129,7 @@ export default function userCard({ status }) {
                         </div>
                         <div className={'border-b border-dotted border-gray-300 my-2'}></div>
                         <div className="mt-4 text-center text-gray-600 flex justify-around">
-                            <p>Product<br />{user?.products}</p>
+                            {/* <p>Product<br />{user?.products}</p> */}
                             <p>Balance<br /> ${user?.balance}</p>
                         </div>
                     </div>

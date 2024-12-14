@@ -15,25 +15,20 @@ export default function SideBar() {
             <Link to="categories">
                 <div className="text-gray-400 hover:text-white text-sm ml-1">
                     <DashboardIcon className="mr-1" />
-                    Quản lý phân loại
+                    Category management
                 </div>
             </Link>
-            <Link to="products">
-                <div className="text-gray-400 hover:text-white  text-sm ml-1">
-                    <CategoryIcon className="mr-1" />
-                    Quản lý sản phẩm
-                </div>
-            </Link>
+            
             <Link to="buyers">
                 <div className="text-gray-400 hover:text-white text-sm ml-1">
                     <AccountCircleIcon className="mr-1" />
-                    Quản lý người mua
+                    Buyer management
                 </div>
             </Link>
             <Link to="sellers">
                 <div className="text-gray-400 hover:text-white text-sm ml-1">
                     <AccountCircleIcon className="mr-1" />
-                    Quản lý người bán
+                    Seller management
                 </div>
             </Link>
 

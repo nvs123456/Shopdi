@@ -1,12 +1,10 @@
 import React from 'react'
 import ProductList from '@/components/Seller/product/ProductList'
 import Filter from '@/components/Seller/product/Filter'
-import shopdiLogo from '@/assets/images/shopdi_logo.jpeg'
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { GET } from '@/api/GET'
-import CATEGORIES from '@/data/categories_data';
-import { POST } from '../../../api/GET';
+
 export default function ProductManagement() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -75,15 +73,16 @@ export default function ProductManagement() {
     setSortBy(sortBy)
     filterAndSort(filterByCategory, filterByRating, sortBy)
   }
-
+  
   if (isLoading) return <div className="text-center">Loading...</div>
   else {
     return (
       <div className="flex flex-row gap-x-12 p-12 bg-cloudBlue">
         <div className='rounded min-w-[210px] max-w-[210px] '><Filter allProducts={allProducts} setProducts={setProducts}
         /></div>
+        
         <div className=' bg-white p-6 mr-2 grow border-[1px]'>
-          <ProductList products={products} page={page} />
+          <ProductList products={products} page={page} status allProducts={allProducts} setProducts={setProducts} setAllProducts={setAllProducts}/>
         </div>
 
 

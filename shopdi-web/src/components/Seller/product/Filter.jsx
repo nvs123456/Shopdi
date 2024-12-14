@@ -145,9 +145,10 @@ function StarFilter({ filterByRating, setFilterByRating }) {
     )
 }
 function SortFilter({ sortBy, setSortBy }) {
+    console.log(sortBy)
     const Order = Object.freeze({
-        asc: -1,
-        desc: 1
+        asc: 1,
+        desc: -1
     })
     let [isOpen, setIsOpen] = useState(true);
 
