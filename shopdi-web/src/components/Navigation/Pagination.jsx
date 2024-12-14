@@ -9,7 +9,6 @@ function PaginationButton({pageObject}) {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get('page') || '1', 10);
-    // console.log(pageObject.totalPage)
     return (
         <Pagination
             page={pageObject?.pageNo+1 || 1}

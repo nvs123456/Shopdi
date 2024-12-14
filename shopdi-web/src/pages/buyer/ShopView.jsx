@@ -9,9 +9,11 @@ import { GET } from "../../api/GET";
 export default function ShopView() {
     const location = useLocation();
     const pathname = location.pathname;
+    const query = new URLSearchParams(location.search);
     let sellerId = 0;
     const [products, setProducts] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
+    const [page, setPage] = useState({ pageNo: 0, totalPage: 1 })
     if (pathname.startsWith("/shop/")) {
         sellerId = pathname.split("/")[2];
     }
@@ -21,6 +23,7 @@ export default function ShopView() {
             if (res.code === "OK") {
                 setProducts(res.result?.items)
                 setAllProducts(JSON.parse(JSON.stringify(res.result?.items)))
+                setPage({ pageNo: res.result.pageNo, totalPage: res.result.totalPages })
             }
         })
     }, [location])
@@ -33,7 +36,7 @@ export default function ShopView() {
                     <Filter allProducts={allProducts} setProducts={setProducts} />
 
                 </div>
-                <ProductList products={products} />
+                <ProductList products={products} page={page} />
             </div>
 
         </div>

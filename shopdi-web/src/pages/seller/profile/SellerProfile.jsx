@@ -134,9 +134,9 @@ export default function SellerProfile() {
     }
 
     return (
-        <div className="min-h-screen font-sans text-sm">
+        <div className="min-h-screen font-sans text-sm ">
             <h1 className="text-xl ml-6 font-semibold">Profile</h1>
-            <div className="bg-white w-full min-w-screen rounded-lg mb-10">
+            <div className="bg-white w-full min-w-screen rounded-lg mb-10 relative">
                 {/* EditProfile Picture and Name */}
                 <div className=" relative group bg-gradient-to-b from-blue-300 rounded-t-lg w-full h-40 to-blue-50">
                     <img
@@ -185,23 +185,23 @@ export default function SellerProfile() {
                         </div>
                     </div>}
                 </div>
-                <div className={`absolute top-[23%] left-[15%] group flex mt-2 border-2 rounded-full w-24 h-24`}>
+                <div className={`absolute top-[100px] left-[24px] group flex mt-2 border-2 rounded-full w-24 h-24`}>
                     <img
                         src={previewProfileImage || sellerInfo.profileImage || defaultImage} // replace with actual image path
                         alt="EditProfile"
                         className="w-full h-full object-cover rounded-full"
                     />
-                    <div className={`mt-4 ml-4`}>
+                    <div className={`mt-[24px] ml-4`}>
                         <h2 className="mt-6 text-2xl font-semibold">{sellerInfo.username}</h2>
                         <p className="text-gray-500">Owner & Founder</p>
                     </div>
                     <div
                         className="absolute inset-0 bg-black bg-opacity-50 flex items-center rounded-full justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         {previewProfileImage === null ?
-                            <label htmlFor="upload" className="text-white text-[14px] font-semibold cursor-pointer">
+                            <label htmlFor="upload" className="text-white text-[14px] font-semibold cursor-pointer text-center">
                                 Upload Image
                             </label> :
-                            <label htmlFor="upload" className="text-white text-[14px] font-semibold cursor-pointer">
+                            <label htmlFor="upload" className="text-white text-[14px] font-semibold cursor-pointer text-center">
                                 Change Image
                             </label>
                         }

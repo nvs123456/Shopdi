@@ -7,7 +7,6 @@ const PrivateRoute = () => {
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    console.log(localStorage.getItem("Authorization"))
     POST(`auth/introspect`,{
       token: localStorage.getItem("Authorization")}).then((res) => {
         if(res.code === "OK"){
