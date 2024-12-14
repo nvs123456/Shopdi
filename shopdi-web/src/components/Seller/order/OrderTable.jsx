@@ -119,10 +119,10 @@ function OrderTable({type}) {
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
-                <thead>
-                <tr className="border-b">
+                <thead >
+                <tr className="border-b-[1px]">
                     {tableHeadings.map((heading, index) => (
-                        <th key={index} className="pl-4 py-2 text-left font-semibold cursor-pointer"
+                        <th key={index} className="pl-10 py-4 text-left text-xl font-medium cursor-pointer"
                             onClick={() => handleSort(heading)}>
                             <div className={'flex items-center'}>
                                 {heading.charAt(0).toUpperCase() + heading.slice(1)}
@@ -143,27 +143,26 @@ function OrderTable({type}) {
                 <tbody>
                 {orders
                     .map((order, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-100"
-                            >
-                            <td className="pl-4 py-1">{order.orderId}</td>
-                            <td className="px-2 py-1">{(order.shippingAddress.firstName + ' ' + order.shippingAddress.lastName) || "None"}</td>
-                            <td className="px-2 py-1">${order.totalPrice.toLocaleString()}</td>
-                            <td className="px-2 py-1">{new Date(order.deliveryDate).toLocaleDateString()}</td>
-                            <td className="pl-5 py-1">{order.paymentMethod || "COD"}</td>
-                            <td className="px-2 py-1">
+                        <tr key={index} className="border-b hover:bg-cloudBlue">
+                            <td className="pl-10 py-1">{order.orderId}</td>
+                            <td className="px-12 py-1">{(order.shippingAddress.firstName + ' ' + order.shippingAddress.lastName) || "None"}</td>
+                            <td className="px-12 py-1">{order.totalPrice.toLocaleString()} &#8363;</td>
+                            <td className="px-10 py-1">{new Date(order.deliveryDate).toLocaleDateString()}</td>
+                            <td className="pl-16 py-1">{order.paymentMethod || "COD"}</td>
+                            <td className="px-10 py-1">
                   <span className={`px-2 py-1 m-0 rounded w-full text-[16px] ${getStatusClass(order.orderStatus)}`}>
                     {order.orderStatus}
                   </span>
                             </td>
                             <td className="px-4 py-2">
                                      <button   onClick={() => navigate(`/seller/orders/${order.orderId}`)
-                                     }className="text-white rounded px-2 py-1 font-medium bg-[#3F81E0]">View Details</button>
+                                     }className="text-white rounded px-2 py-1 font-medium bg-[#3F81E0] hover:bg-yaleBlue">View Details</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-8">
                 <Pagination pageObject={page}/>
             </div>
         </div>

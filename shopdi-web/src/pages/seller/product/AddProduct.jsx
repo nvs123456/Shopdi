@@ -57,20 +57,20 @@ export default function AddProduct() {
             <div className={` ${isUploadingProduct ? '' : 'hidden'} justify-center items-center place-content-center text-2xl text-center bg-white z-10 fixed p-8 rounded-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}>
                 Uploading images...<SpinnerLoading size={2} />
             </div>
-            <div className={`${isUploadingProduct ? 'brightness-50' : ''} w-full flex flex-row`}>
+            <div className={`${isUploadingProduct ? 'brightness-50' : ''} w-full flex flex-row bg-cloudBlue `}>
                 <div className={`${openPopup ? 'block' : 'hidden'} fixed inset-0 z-50 flex items-center justify-center`}>
                     <QuantityOfVariants variants={listVariants} setOpenPopup={setOpenPopup}
                         productForm={productForm} setProductForm={setProductForm}
                         selectedImage={selectedImage}
                         isUploadingProduct={isUploadingProduct} setIsUploadingProduct={setIsUploadingProduct} />
                 </div>
-                <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
+                <div className={`add-product w-[15%]  bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}></div>
 
-                <div className={`add-product p-8 w-4/6 flex flex-col gap-4 m-auto bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}>
+                <div className={` add-product my-12  pb-8 w-[70%] flex flex-col gap-8 m-auto bg-cloudBlue  ${openPopup ? 'brightness-50' : ''}`}>
 
-                    <div>
-                        <span className='text-celticBlue text-xl hover:text-black cursor-pointers h-10' onClick={() => window.history.back()}><ArrowBackIcon style={{ fontSize: '40px' }} /></span>
-                        <span className="inline-block font-bold text-xl ml-4 p-2">Add Product</span>
+                    <div className={"bg-white pt-6 pb-2 px-6 border-[1px]"}>
+                        <span className='text-yaleBlue hover:text-black cursor-pointers' onClick={() => window.history.back()}><ArrowBackIcon className={"mb-4"} style={{ fontSize: '45px' }} /></span>
+                        <span className="inline-block font-bold text-3xl ml-2 ">Add Product</span>
                         <span onClick={() => {
                             const allInput = document.querySelectorAll('.required-field');
                             for (let i = 0; i < allInput.length; i++) {
@@ -85,45 +85,47 @@ export default function AddProduct() {
                             }
                             onAddVariant(variants, setListVariants, setOpenPopup, productForm, setProductForm)
                         }}
-                            className="inline-block font-bold text-xl float-right bg-celticBlue text-white p-2 rounded cursor-pointer hover:bg-yaleBlue">Save product</span>
+                            className="inline-block font-bold text-xl float-right hover:bg-celticBlue text-white py-2 px-4 rounded cursor-pointer bg-yaleBlue">Save product</span>
                     </div>
-                    <div className='flex flex-col gap-4'>
-                        <div className='general-infor border-2 border-gray-200 p-4'>
-                            <div>
-                                <span className='font-bold text-xl'>General information</span>
+                    <div className='flex flex-col gap-8 bg-cloudBlue'>
+                        <div className='general-infor border-[1px] py-6 px-8 bg-white'>
+                            <div className={"mb-5 pb-3 border-b-2 border-gray-300"}>
+                                <span className='font-bold text-yaleBlue text-[26px] mb-6'>General information</span>
                             </div>
                             <div>
-                                <label> Product name</label>
+                                <label className={"text-xl font-semibold"}> Product name</label>
                                 <input onChange={(e) => {
                                     setProductForm({ ...productForm, productName: e.target.value })
 
                                 }}
-                                    type="text" required className='required-field outline-none w-full border-2 border-gray-400 h-10 rounded pl-4' placeholder='Enter product name'></input>
+                                    type="text" required className='mb-4 mt-2 required-field outline-none w-full border-2 border-gray-400 h-12 rounded pl-4 bg-[#F2F4F5]' placeholder='Enter product name'></input>
                             </div>
                             <div>
-                                <label> Product description</label>
+                                <label className={"text-xl font-semibold"}> Product description</label>
                                 <textarea onChange={(e) => {
                                     setProductForm({ ...productForm, description: e.target.value })
                                 }}
-                                    className=' required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4' placeholder='Enter product description'></textarea>
+                                    className='my-2 required-field outline-none w-full border-2 border-gray-400 h-40 rounded p-4 bg-[#F2F4F5]' placeholder='Enter product description'></textarea>
 
                             </div>
                         </div>
-                        <div className='media border-2 border-gray-200 p-4'>
-                            <div>
-                                <span className='font-bold text-xl'>Media (from 5 to 10 images)</span>
+                        <div className='media border-[1px] py-6 px-8 bg-white'>
+                            <div >
+                                <div className='font-bold text-yaleBlue text-[26px] mb-3 pb-3 border-b-2 border-gray-300'>Media
+                                    <div className='text-gray-600 font-medium text-xl'>(From 5 to 10 images)</div>
+                                </div>
                                 <UploadAndDisplayImage selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
                             </div>
                         </div>
-                        <div className='category border-2 border-gray-200 p-4'>
+                        <div className='category border-[1px] py-6 px-8 bg-white'>
 
-                            <div>
-                                <span className='font-bold text-xl'>Category</span>
+                            <div className={"mb-5 pb-3 border-b-2 border-gray-300"}>
+                                <span className='font-bold text-yaleBlue text-[26px] mb-6'>Category</span>
                             </div>
-                            <div className="flex flex-row gap-4">
+                            <div className="flex flex-row gap-12">
                                 <div className=' flex flex-col'>
-                                    <label> Category</label>
-                                    <select className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.parent} onChange={(e) => {
+                                    <label className={"text-xl font-semibold"}> Category</label>
+                                    <select className='mt-4 border-2 border-gray-400 w-60 h-12 rounded px-2 bg-[#F2F4F5]' value={currentCategory.parent} onChange={(e) => {
 
                                         const tmp = categories.find((i) => i.name === e.target.value)
                                         setCurrentCategory({ parent: e.target.value, child: tmp.childCategories[0].name })
@@ -138,8 +140,8 @@ export default function AddProduct() {
 
 
                                 <div className=' flex flex-col'>
-                                    <label>Sub Category</label>
-                                    <select name="categoryName" className='border-2 border-gray-400 w-60 h-10 rounded' value={currentCategory.child} onChange={(e) => {
+                                    <label className={"text-xl font-semibold"}>Sub Category</label>
+                                    <select name="categoryName" className='mt-4 border-2 border-gray-400 w-60 h-12 rounded px-2 bg-[#F2F4F5]' value={currentCategory.child} onChange={(e) => {
                                         setProductForm({ ...productForm, categoryName: e.target.value })
                                         setCurrentCategory({ ...currentCategory, child: e.target.value })
                                     }
@@ -151,30 +153,30 @@ export default function AddProduct() {
                                 </div>
                             </div>
                         </div>
-                        <div className="pricing border-2 border-gray-200 p-4 flex flex-col gap-2">
-                            <div>
-                                <span className='font-bold text-xl'>Pricing</span>
+                        <div className="pricing flex flex-col border-[1px] py-6 px-8 bg-white">
+                            <div className={"mb-5 pb-3 border-b-2 border-gray-300"}>
+                                <span className='font-bold text-yaleBlue text-[26px]'>Pricing</span>
                             </div>
                             <div>
-                                <label className='block'>Price</label>
+                                <label className='block text-xl font-semibold'>Price</label>
                                 <input
                                     onWheel={event => event.currentTarget.blur()}
                                     onChange={(e) => {
                                         setProductForm({ ...productForm, price: e.target.value })
                                     }}
-                                    type="number" className=' required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                                    type="number" className='mb-4 mt-2 required-field outline-none w-60 border-2 border-gray-400 h-12 rounded px-2 bg-[#F2F4F5]'></input>
                             </div>
 
                             <div>
-                                <label className='block'>Brand</label>
+                                <label className='block text-xl font-semibold'>Brand</label>
                                 <input onChange={(e) => {
                                     setProductForm({ ...productForm, brand: e.target.value })
                                 }}
-                                    type="text" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4'></input>
+                                    type="text" className='mb-4 mt-2 outline-none w-60 border-2 border-gray-400 h-12 rounded px-2 bg-[#F2F4F5]'></input>
                             </div>
                             <div>
-                                <label className='block'>Status</label>
-                                <select className='border-2 border-gray-400 w-60 h-10 rounded' onChange={(e) => {
+                                <label className='block text-xl font-semibold'>Status</label>
+                                <select className='mb-4 mt-2 border-2 border-gray-400 w-60 h-12 rounded px-2 bg-[#F2F4F5]' onChange={(e) => {
                                     setProductForm({ ...productForm, web: e.target.value })
                                 }}>
                                     <option value={"PUBLISHED"}>PUBLISHED</option>
@@ -184,9 +186,11 @@ export default function AddProduct() {
                                 </select>
                             </div>
                         </div>
-                        <div className="variant">
-                            <div>
-                                <span className='font-bold text-xl'>Variant<span className='text-gray-400'>  (Ex: Type: Color, Values: green, red,..)</span></span>
+                        <div className="variant border-[1px] py-6 px-8 bg-white">
+                            <div className={"mb-5 pb-3 border-b-2 border-gray-300"}>
+                                <span className='font-bold text-yaleBlue text-[26px]'>Variant
+                                    <div className='text-gray-600 font-medium text-xl'>  (Ex: Type (color, size,...), Variation (green, red,..))</div>
+                                </span>
                             </div>
                             <div>
                                 <VariantsForm variants={variants} setVariants={setVariants} />
@@ -194,7 +198,7 @@ export default function AddProduct() {
                         </div>
                     </div>
                 </div>
-                <div className={`add-product p-8 w-1/6  bg-white ${openPopup ? 'brightness-50' : ''}`}></div>
+                <div className={`add-product w-[15%]  bg-cloudBlue ${openPopup ? 'brightness-50' : ''}`}></div>
 
             </div>
         </div>
@@ -208,8 +212,8 @@ const UploadAndDisplayImage = ({ selectedImage, setSelectedImage }) => {
     // Return the JSX for rendering
     return (
         <div className='flex flex-col gap-4'>
-            <div className='flex flex-row gap-4 flex-wrap p-4 w-full min-h-[100px] border-2 border-gray-200 rounded'>
-                <label htmlFor="myImage" className='inline-block mt-[12px] ml-[12px] cursor-pointer bg-white border-dashed border-2 text-white rounded w-24 h-24 text-center content-center hover:bg-gray-200'>
+            <div className='flex flex-row gap-4 flex-wrap w-full min-h-[100px] '>
+                <label htmlFor="myImage" className='bg-[#F2F4F5] inline-block mt-[12px] mx-[12px] cursor-pointer border-dashed border-2 text-white rounded w-24 h-24 text-center content-center hover:bg-gray-200'>
                     <AddIcon className='text-black ' />
                 </label>
                 <input
@@ -232,13 +236,13 @@ const UploadAndDisplayImage = ({ selectedImage, setSelectedImage }) => {
                         if (item.isChoosed === false) return null
                         return (
                             <div key={`image-${index}`} className='relative p-[12px] rounded'>
-                                <div key={index} className='w-24 h-24 flex items-center bg-white rounded'>
+                                <div key={index} className='w-24 h-24 flex items-center bg-white rounded border-[1px]'>
                                     <img
                                         alt="not found"
                                         src={URL.createObjectURL(item.path)}
                                     />
                                 </div>
-                                <label className='absolute top-0 right-0 bg-gray-600 rounded-full' onClick={() => {
+                                <label className='absolute top-0 right-0 bg-gray-200 rounded-full' onClick={() => {
                                     let tmp = [...selectedImage];
                                     tmp[index].isChoosed = false
                                     setSelectedImage(tmp);
@@ -267,13 +271,13 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
     const navigate = useNavigate();
     if (variants.length === 0) {
         return (
-            <div className='bg-white p-4'>
-                <div className='w-[600px] rounded p-4 border-2 border-gray-200 flex flex-col gap-4 items-center'>
-                    <span className='font-bold text-xl'>Enter quantity</span>
-                    <input id="quantity" className='outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' type='number' onChange={(e) => {
+            <div className='bg-white p-4 rounded'>
+                <div className='w-[400px] rounded p-4 flex flex-col gap-6 items-center'>
+                    <div className='font-bold text-yaleBlue text-[26px] '>Enter Quantity</div>
+                    <input id="quantity" className='outline-none w-60 border-2 border-gray-400 h-12 rounded pl-4 bg-[#F2F4F5] ' type='number' onChange={(e) => {
                         setProductForm({ ...productForm, variantDetails: [{ variantDetail: null, quantity: e.target.value }] })
                     }} />
-                    <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2  w-1/2 rounded text-black'>Cancel</button>
+                    <button onClick={() => setOpenPopup(false)} className='p-2  w-1/3 rounded text-white bg-red font-sans hover:bg-orangeRed font-semibold'>Cancel</button>
                     <button onClick={() => {
                         if (document.getElementById("quantity").value === "") {
                             alert("Please enter quantity");
@@ -300,7 +304,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                             }
 
                         })
-                    }} className='save-product bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
+                    }} className='save-product p-2  w-1/3 rounded text-white bg-[#FA8232] font-sans hover:bg-orangeRed font-semibold'>Save</button>
                 </div>
             </div>
         )
@@ -308,18 +312,18 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
 
 
     return (
-        <div className='bg-white p-4 rounded'>
-            <div><span>*Please type quantity of each variant ( 0 if not available)</span></div>
-            <div className='w-[600px] rounded p-4 border-2 border-gray-200'>
+        <div className='bg-white py-6 px-8 rounded'>
+            <div><span className={"text-xl font-medium"}>Please fill the quantity of each variation (fill 0 if unavailable)</span></div>
+            <div className='w-[600px] p-4 border-t-2 border-x-2 border-gray-400 mt-4 text-xl font-semibold'>
                 <span>Variant</span>
-                <span className='float-right'>Quantity</span>
+                <span className='float-right pr-8'>Quantity</span>
             </div>
-            <div className='flex flex-col w-[600px] border-2 border-gray-200 overflow-y-scroll no-scrollbar max-h-[300px]'>
+            <div className='flex flex-col w-[600px] border-2 border-gray-400 overflow-y-scroll no-scrollbar max-h-[300px] mb-6'>
                 {productForm.variantDetails.map((item, index) => {
                     return (
-                        <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-2 border-gray-200 h-auto'>
-                            <span className='border-r-2 border-gray-200 grow place-content-center'>{JSONToData(item.variantDetail)}</span>
-                            <input type="number" placeholder='type number' className='list-quantity outline-none w-1/6 h-10' onInput={(e) => {
+                        <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-[1px] border-gray-400 h-auto'>
+                            <span className='border-r-2 border-gray-400 grow place-content-center pl-4'>{JSONToData(item.variantDetail)}</span>
+                            <input type="number" placeholder='fill a number' className='list-quantity outline-none w-1/4 h-12' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
                                 let tmp = [...productForm.variantDetails];
                                 tmp[index].quantity = e.target.value
@@ -330,8 +334,8 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
                     )
                 })}
             </div>
-            <div className='flex flex-row gap-4'>
-                <button onClick={() => setOpenPopup(false)} className='bg-pumpkin p-2 w-1/2 rounded text-black'>Cancel</button>
+            <div className='flex flex-row gap-4 justify-end'>
+                <button onClick={() => setOpenPopup(false)} className=' py-2 w-1/5 bg-red font-sans text-white rounded cursor-pointer px-4 hover:bg-orangeRed font-semibold'>Cancel</button>
 
                 <button onClick={() => {
                     let tmp = 0
@@ -371,7 +375,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
 
                 }
 
-                } className=' save-product bg-pumpkin p-2  w-1/2 rounded text-black'>Save</button>
+                } className=' py-2 w-1/5 bg-[#FA8232] font-sans text-white rounded cursor-pointer px-4 hover:bg-orangeRed font-semibold'>Save</button>
             </div>
 
         </div>
@@ -460,36 +464,36 @@ function VariantsForm({ variants, setVariants }) {
                 tmp.push({ type: '', values: [], isDeleted: false });
                 setVariants(tmp);
             }}
-                className='inline-block mt-4 cursor-pointer bg-white border-dashed border-2 text-white rounded p-2 w-fit text-center content-center hover:bg-gray-200'>
-                <span className='text-black '>Add variant</span>
+                className='inline-block mt-4 cursor-pointer text-white rounded p-2 w-fit text-center content-center bg-[#FA8232] font-sans hover:bg-orangeRed font-semibold'>
+                <span className=''>Add variant</span>
             </label>
         </div>
     );
 }
 function VariantType({ variants, setVariants, index }) {
     return (
-        <div className='flex flex-row gap-4'>
+        <div className='flex flex-row gap-6'>
             <div className=''>
                 <label onClick={() => {
                     let tmp = [...variants];
                     tmp[index].isDeleted = true;
                     setVariants(tmp);
                 }}
-                    className='inline-block mt-[22px] cursor-pointer bg-white border-dashed border-2 text-white rounded p-2 w-fit text-center content-center hover:bg-gray-200'>
-                    <span className='text-black '>Delete</span>
+                    className='inline-block mt-9 cursor-pointer text-white rounded p-2 w-fit text-center content-center bg-red font-sans hover:bg-orangeRed font-semibold'>
+                    <span className=''>Delete</span>
                 </label>
             </div>
             <div className='flex flex-col'>
-                <label>Type</label>
-                <input className='required-field outline-none w-60 border-2 border-gray-400 h-10 rounded pl-4' defaultValue={variants[index].type} onChange={(e) => {
+                <label className={"text-xl font-semibold"}>Type</label>
+                <input className='mb-4 mt-2 required-field outline-none w-60 border-2 border-gray-400 h-10 rounded px-2 bg-[#F2F4F5]' defaultValue={variants[index].type} onChange={(e) => {
                     let tmp = [...variants];
                     tmp[index].type = e.target.value;
                     setVariants(tmp);
                 }} />
             </div>
             <div className='flex flex-col'>
-                <label>Values</label>
-                <div className='flex flex-row gap-4 items-center flex-wrap'>
+                <label className={"text-xl font-semibold"}>Variation</label>
+                <div className='flex flex-row gap-6 items-center flex-wrap'>
                     {
                         variants[index].values.map((item, sub_index) => {
                             if (!item.isDeleted)
@@ -505,8 +509,8 @@ function VariantType({ variants, setVariants, index }) {
 
                         setVariants(tmp)
                     }}
-                        className='inline-block cursor-pointer bg-white border-dashed border-2 text-white rounded w-10 h-10 text-center content-center hover:bg-gray-200'>
-                        <AddIcon className='text-black ' />
+                        className='mt-2 mb-4 inline-block cursor-pointer text-white rounded w-10 h-10 text-center content-center bg-[#FA8232] font-sans hover:bg-orangeRed font-semibold'>
+                        <AddIcon className='' />
 
                     </label>
                 </div>
@@ -517,13 +521,13 @@ function VariantType({ variants, setVariants, index }) {
 }
 function VariantValue({ variants, setVariants, index, sub_index }) {
     return (
-        <div className='border-2 border-gray-400 rounded h-10'>
-            <input className='required-field outline-none w-20 h-full rounded' defaultValue={variants[index].values[sub_index].value} onChange={(e) => {
+        <div className='mb-4 mt-2 border-2 border-gray-400 rounded h-10 bg-[#F2F4F5]'>
+            <input className='mb-4 required-field outline-none w-20 h-full rounded bg-[#F2F4F5] px-2' defaultValue={variants[index].values[sub_index].value} onChange={(e) => {
                 let tmp = [...variants];
                 tmp[index].values[sub_index].value = e.target.value;
                 setVariants(tmp);
             }} />
-            <CloseIcon onClick={() => {
+            <CloseIcon className={"mb-2 mr-1 hover:bg-red"} onClick={() => {
                 let tmp = [...variants];
                 tmp[index].values[sub_index].isDeleted = true;
                 setVariants(tmp);

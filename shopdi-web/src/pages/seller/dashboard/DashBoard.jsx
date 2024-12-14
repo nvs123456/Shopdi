@@ -60,15 +60,15 @@ export default function DashBoard() {
         // datasets is an array of objects where each object represents a set of data to display corresponding to the labels above. for brevity, we'll keep it at one object
         datasets: [
             {
-                label: "Dooanh so trong tuan(VND)",
+                label: "Revenue Report (VND)",
                 data: data.summaryInWeek,
                 // you can set indiviual colors for each bar
-                borderWidth: 1,
+                borderWidth: 2,
             }
         ]
     }
     const danhgia = {
-        labels: ["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"],
+        labels: ["1 star", "2 star", "3 star", "4 star", "5 star"],
         datasets: [
             {
                 label: "So luong san pham",
@@ -79,17 +79,17 @@ export default function DashBoard() {
         ]
     }
     return (
-        <div className="w-full bg-cloudBlue p-8">
+        <div className="w-full bg-cloudBlue p-12">
             <div className="flex flex-row gap-4">
-                <img src={shopdiLogo} alt="logo" className="h-14 w-auto rounded-full"/>
-                <div className="content-center"><span >Xin chao Nguyen Van A</span></div>
+                <img src={shopdiLogo} alt="logo" className="h-16 w-auto rounded-full"/>
+                <div className="content-center text-3xl font-medium"><span >Hello, Username</span></div>
             </div>
-            <div className="text-2xl">Tong quan hom nay : <span>{new Date().toISOString().slice(0, 10)}</span></div>
-            <div className="flex flex-row gap-8 p-8">
-                <div className='flex flex-col p-4 rounded justify-between bg-white w-1/3 h-32'>
-                    <h1 className="text-2xl text-gray-500">Doanh thu</h1>
+            <div className="text-xl mt-4">Date: <span>{new Date().toISOString().slice(0, 10)}</span></div>
+            <div className="flex flex-row gap-12 pt-8 pb-4 pl-2 pr-8">
+                <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px] '>
+                    <h1 className="text-2xl text-gray-600 font-medium">Total Earnings</h1>
                     <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-bold">{data.todayEarning.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                        <span className="text-3xl font-semibold pb-2">{data.todayEarning.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</span>
                         <span>
                             <span className={data.increaseEarning > 0 ? "text-green" : "text-red"}>{data.increaseEarning > 0 ? "+" : ""}{data.increaseEarning}</span>
                             <span className={data.increaseEarning > 0 ? "text-green" : "text-red"}>{data.increaseEarning > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
@@ -97,10 +97,10 @@ export default function DashBoard() {
 
                     </div>
                 </div>
-                <div className='flex flex-col p-4 rounded justify-between bg-white w-1/3 h-32'>
-                    <h1 className="text-2xl text-gray-500">Don hang</h1>
+                <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
+                    <h1 className="text-2xl text-gray-600 font-medium">Total Orders</h1>
                     <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-bold">{data.todayOrder.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                        <span className="text-3xl font-semibold pb-2">{data.todayOrder.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
                         <span>
                             <span className={data.increaseOrder > 0 ? "text-green" : "text-red"}>{data.increaseOrder > 0 ? "+" : ""}{data.increaseOrder}</span>
                             <span className={data.increaseOrder > 0 ? "text-green" : "text-red"}>{data.increaseOrder > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
@@ -108,10 +108,10 @@ export default function DashBoard() {
 
                     </div>
                 </div>
-                <div className='flex flex-col p-4 rounded justify-between bg-white w-1/3 h-32'>
-                    <h1 className="text-2xl text-gray-500">Khach hang moi</h1>
+                <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
+                    <h1 className="text-2xl text-gray-600 font-medium">New customers</h1>
                     <div className="flex flex-row justify-between">
-                        <span className="text-3xl font-bold">{data.todayCustomer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                        <span className="text-3xl font-semibold pb-2">{data.todayCustomer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
                         <span>
                             <span className={data.increaseCustomer > 0 ? "text-green" : "text-red"}>{data.increaseCustomer > 0 ? "+" : ""}{data.increaseCustomer}</span>
                             <span className={data.increaseCustomer > 0 ? "text-green" : "text-red"}>{data.increaseCustomer > 0 ? <NorthEastIcon /> : <SouthEastIcon />}</span>
@@ -120,35 +120,35 @@ export default function DashBoard() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-row gap-8 p-8">
+            <div className="flex flex-row gap-12 py-8 pl-2 pr-8">
                 <div className="w-2/3">
                     <div>
-                        <Bar className="w-[100%]" height={150} data={doanhthu} />
+                        <Bar className="w-[100%] p-6 bg-white border-[1px]" height={170} data={doanhthu} />
                     </div>
-                    <div className="text-2xl font-bold text-celticBlue">Best seller</div>
-                    <div className="bg-white p-4 shadow-lg mt-8 rounded">
-                        <div className="header flex flex-row font-bold text-xl">
-                            <span className="grow pl-2">Ten san pham</span>
-                            <span className="w-32 text-center">Doanh thu<SwapVertIcon /></span>
-                            <span className="w-32 text-center">Don hang<SwapVertIcon /></span>
-                            <span className="w-32 text-center">Danh gia<SwapVertIcon /></span>
+                    <div className="text-3xl font-semibold text-yaleBlue mt-12 bg-white pt-3 pb-4 px-5 border-b-2 border-t-[1px] border-x-[1px]">Best seller</div>
+                    <div className="bg-white px-4 py-2 shadow-lg border-b-[1px] border-x-[1px]">
+                        <div className="header flex flex-row font-semibold text-xl">
+                            <span className="grow pl-2 text-2xl">Product</span>
+                            <span className="w-32 text-center">Revenue<SwapVertIcon /></span>
+                            <span className="w-32 text-center">Orders<SwapVertIcon /></span>
+                            <span className="w-32 text-center">Feedback<SwapVertIcon /></span>
                         </div>
                         {data.bestSeller.map((item, index) => {
                             return (
-                                <div key={index} className="flex flex-row py-2 border-b-2">
+                                <div key={index} className="flex flex-row pb-2 border-b-2 ml-3 my-2">
                                     <div className="w-10 text-center"><img src={shopdiLogo} width={40} height={40}/></div>
-                                    <div className="grow">{item.name}</div>
-                                    <div className="w-32 text-center">{item.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}&#8363;</div>
+                                    <div className="grow my-auto ml-2">{item.name}</div>
+                                    <div className="w-32 text-center">{item.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
                                     <div className="w-32 text-center">{item.order}</div>
-                                    <div className="w-32 text-center">{item.rating}</div>
+                                    <div className="w-32 text-center">{item.rating} star</div>
                                 </div>
                             );
                         })}
                     </div>
                 </div>
-                <div className="w-1/3">
-                    <div className="text-2xl font-bold text-gray-500">Danh gia cua nguoi dung</div>
-                    <Pie className="w-full" data={danhgia} />
+                <div className="w-1/3 ">
+                    <div className="text-3xl font-semibold text-tuftsBlue pt-4 px-6 bg-white border-t-[1px] border-x-[1px]">Customer's feedback</div>
+                    <Pie className="w-full bg-white pb-8 px-5 pt-2  border-b-[1px] border-x-[1px]" data={danhgia} />
                 </div>
             </div>
         </div>
