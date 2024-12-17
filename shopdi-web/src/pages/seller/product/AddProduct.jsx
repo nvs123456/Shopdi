@@ -11,16 +11,6 @@ import { baseUrl } from '@/api/GET';
 export default function AddProduct() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        GET("categories").then((res) => {
-            if (res.code === "OK") {
-                setCategories(res.result)
-                setCurrentCategory({ parent: res.result[0].name, child: res.result[0].childCategories[0].name })
-                setLoading(false)
-                setProductForm({ ...productForm, categoryName: res.result[0].childCategories[0].name })
-            }
-        })
-    }, [])
     const [productForm, setProductForm] = useState({
         productName: '',
         description: '',
@@ -52,6 +42,18 @@ export default function AddProduct() {
     const [listVariants, setListVariants] = useState([]);
     const [openPopup, setOpenPopup] = useState(false);
     const [isUploadingProduct, setIsUploadingProduct] = useState(false);
+    useEffect(() => {
+        GET("categories").then((res) => {
+            if (res.code === "OK") {
+                setCategories(res.result)
+                if (res.result.length > 0) {
+                    setCurrentCategory({ parent: res.result[0].name, child: res.result[0].childCategories[0].name })
+                    setProductForm({ ...productForm, categoryName: res.result[0].childCategories[0].name })
+                }
+                setLoading(false)
+            }
+        })
+    }, [])
     if (!loading) return (
         <div className='relative'>
             <div className={` ${isUploadingProduct ? '' : 'hidden'} justify-center items-center place-content-center text-2xl text-center bg-white z-10 fixed p-8 rounded-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}>
