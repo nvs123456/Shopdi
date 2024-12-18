@@ -139,24 +139,24 @@ export default function DashBoard() {
                 <div className="flex flex-col gap-12 pl-16 pr-24 mb-12">
                     <div className="w-[100%]">
 
-                        <div className="text-3xl font-semibold text-yaleBlue bg-white pt-3 pb-2 px-5 border-b-2 border-t-[1px] border-x-[1px]">Best seller</div>
-                        <div className="grid grid-cols-6 gap-4 bg-white px-6 py-2 pb-4 border-b-[1px] border-x-[1px]">
+                        <div className="text-3xl font-semibold text-yaleBlue bg-white py-3 px-5 border-b-2 border-t-[1px] border-x-[1px]">Best seller</div>
+                        <div className="grid grid-cols-6 bg-white border-b-[1px] pb-4 border-x-[1px]">
                             {/* <div className="header flex flex-row font-semibold text-xl"> */}
-                            <span className="col-span-3 pl-2 text-2xl font-semibold">Product</span>
-                            <span className={` text-center font-semibold text-2xl ${currentSort === "revenue" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("revenue", products) }) }}>Revenue<SwapVertIcon /></span>
-                            <span className={` text-center font-semibold text-2xl ${currentSort === "order" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("order", products) }) }}>Orders<SwapVertIcon /></span>
-                            <span className={` text-center font-semibold text-2xl ${currentSort === "rating" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("rating", products) }) }}>Rating<SwapVertIcon /></span>
+                            <span className="col-span-3 py-3 text-2xl font-semibold bg-gray-100 pl-8 mb-2 border-b-2">Product</span>
+                            <span className={`py-3 text-center font-semibold text-2xl bg-gray-100 mb-2 border-b-2 ${currentSort === "revenue" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("revenue", products) }) }}>Revenue<SwapVertIcon /></span>
+                            <span className={`py-3 text-center font-semibold text-2xl bg-gray-100 mb-2 border-b-2 ${currentSort === "order" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("order", products) }) }}>Orders<SwapVertIcon /></span>
+                            <span className={`py-3 text-center font-semibold text-2xl bg-gray-100 mb-2 border-b-2 ${currentSort === "rating" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("rating", products) }) }}>Rating<SwapVertIcon /></span>
 
                             {data.bestSeller.map((item, index) => {
                                 return (
                                     <>
                                         <div className="flex flex-row col-span-3 text-[18px]">
-                                            <div className="min-w-10 text-center pl-2 my-1"><img src={item.productImage} width={60} height={60} /></div>
+                                            <div className="min-w-10 text-center pl-8 my-4"><img src={item.productImage} width={60} height={60} /></div>
                                             <div className="grow my-auto ml-3 truncate">{item.productName}</div>
                                         </div>
-                                        <div className=" text-center text-[18px]">{(item.soldQuantity * item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
-                                        <div className=" text-center text-[18px]">{item.soldQuantity}</div>
-                                        <div className=" text-center text-[18px]">{item.rating} star</div>
+                                        <div className="my-4 text-center text-[18px]">{(item.soldQuantity * item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
+                                        <div className="my-4 text-center text-[18px]">{item.soldQuantity}</div>
+                                        <div className="my-4 text-center text-[18px]">{item.rating} star</div>
                                     </>
                                 );
                             })}
