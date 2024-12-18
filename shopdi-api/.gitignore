@@ -22,7 +22,7 @@ secrets.properties
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
-/dist/
+# /dist/
 /nbdist/
 /.nb-gradle/
 build/
@@ -31,5 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-dist/
-*/dist/
+# dist/
+# */dist/
+shopdi-api-0.0.1-SNAPSHOT.jar

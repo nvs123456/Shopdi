@@ -86,6 +86,7 @@ function Address({ address, currentAddress, setCurrentAddress }) {
     )
 }
 export function AddAddress({ newAddress, setNewAddress, oldAddress }) {
+    // console.log(oldAddress);
     const [loading, setLoading] = useState(false)
     const get = async (path) => {
         return fetch(path, {
@@ -93,34 +94,37 @@ export function AddAddress({ newAddress, setNewAddress, oldAddress }) {
         })
             .then(res => res.json())
     }
-    const [provinces, setProvinces] = useState([{ province_id: "", province_name: oldAddress !== null ? oldAddress.country : "Province/City" }])
-    const [districts, setDistricts] = useState([{ district_id: "", district_name: oldAddress !== null ? oldAddress.state : "District" }])
-    const [wards, setWards] = useState([{ ward_id: "", ward_name: oldAddress !== null ? oldAddress.city : "Ward" }])
+    const [provinces, setProvinces] = useState([{ code: "", name: oldAddress !== undefined && oldAddress !== null ? oldAddress.country : "Province/City" }])
+    const [districts, setDistricts] = useState([{ code: "", name: oldAddress !== undefined && oldAddress !== null ? oldAddress.state : "District" }])
+    const [wards, setWards] = useState([{ code: "", name: oldAddress !== undefined && oldAddress !== null ? oldAddress.city : "Ward" }])
     const [currentProvince, setCurrentProvince] = useState("Province/City")
     const [currentDistrict, setCurrentDistrict] = useState("District")
     const [currentWard, setCurrentWard] = useState("")
     useEffect(() => {
         // setLoading(true)
-        get("https://vapi.vnappmob.com/api/province/").then((data) => {
-            if (oldAddress !== null) {
-                data.results.unshift({ province_id: oldAddress.country, province_name: oldAddress.country })
+        get("https://provinces.open-api.vn/api/?depth=1").then((data) => {
+            if (oldAddress !== undefined && oldAddress !== null) {
+                data.unshift({ code: oldAddress.country, name: oldAddress.country })
             } else {
-                data.results.unshift({ province_id: "", province_name: "Province/City" })
+                data.unshift({ code: "", name: "Province/City" })
             }
-            setProvinces(data.results)
+            // console.log(data);
+
+            setProvinces(data)
             // setLoading(false)
         })
     }, [])
     useEffect(() => {
         // setLoading(true)
         if (currentProvince.province_name !== "Province/City")
-            get(`https://vapi.vnappmob.com/api/province/district/${currentProvince.province_id}`).then((data) => {
-                if (oldAddress !== null) {
-                    data.results.unshift({ district_id: oldAddress.state, district_name: oldAddress.state })
+            get(`https://provinces.open-api.vn/api/p/${currentProvince.code}/?depth=2`).then((data) => {
+                if (oldAddress !== undefined && oldAddress !== null) {
+                    data.districts.unshift({ code: oldAddress.state,name: oldAddress.state })
                 } else {
-                    data.results.unshift({ district_id: "", district_name: "District" })
+                    data.districts.unshift({ code: "", name: "District" })
                 }
-                setDistricts(data.results)
+                setDistricts(data.districts)
+
                 setLoading(false)
             })
         // else {
@@ -130,13 +134,13 @@ export function AddAddress({ newAddress, setNewAddress, oldAddress }) {
     useEffect(() => {
         // setLoading(true)
         if (currentDistrict.district_name !== "District")
-            get(`https://vapi.vnappmob.com/api/province/ward/${currentDistrict.district_id}`).then((data) => {
-                if (oldAddress !== null) {
-                    data.results.unshift({ ward_id: oldAddress.city, ward_name: oldAddress.city })
+            get(`https://provinces.open-api.vn/api/d/${currentDistrict.code}/?depth=2`).then((data) => {
+                if (oldAddress !== undefined && oldAddress !== null) {
+                    data.wards.unshift({ code: oldAddress.city, name: oldAddress.city })
                 } else {
-                    data.results.unshift({ ward_id: "", ward_name: "Ward" })
+                    data.wards.unshift({ code: "", name: "Ward" })
                 }
-                setWards(data.results)
+                setWards(data.wards)
                 setLoading(false)
             })
         // else {
@@ -145,6 +149,7 @@ export function AddAddress({ newAddress, setNewAddress, oldAddress }) {
     }, [currentDistrict])
 
     if (!loading) {
+        // console.log(provinces)
         return (
             <div className="w-full px-0 md:px-4 mb-4">
                 <h3 className=" text-xl mb-4 pt-2 font-bold">Add New Address</h3>
@@ -211,11 +216,11 @@ export function AddAddress({ newAddress, setNewAddress, oldAddress }) {
                         </label>
                         <select className="w-full border-[#E4E7E9] border-2 rounded p-2 bg-white" onChange={(e) => {
                             setNewAddress({ ...newAddress, country: e.target.value })
-                            setCurrentProvince(provinces.find(province => province.province_name === e.target.value))
+                            setCurrentProvince(provinces.find(province => province.name === e.target.value))
                         }}>
                             {
                                 provinces.map((province, index) => (
-                                    <option value={province.province_name} key={`province${index}`}>{province.province_name}</option>
+                                    <option value={province.name} key={`province${index}`}>{province.name}</option>
                                 ))
                             }
                         </select>
@@ -226,11 +231,11 @@ export function AddAddress({ newAddress, setNewAddress, oldAddress }) {
                         </label>
                         <select className="w-full border-[#E4E7E9] border-2 rounded p-2 bg-white" onChange={(e) => {
                             setNewAddress({ ...newAddress, state: e.target.value })
-                            setCurrentDistrict(districts.find(district => district.district_name === e.target.value))
+                            setCurrentDistrict(districts.find(district => district.name === e.target.value))
                         }}>
                             {
                                 districts.map((district, index) => (
-                                    <option value={district.district_name} key={`district${index}`}>{district.district_name}</option>
+                                    <option value={district.name} key={`district${index}`}>{district.name}</option>
                                 ))
                             }
                         </select>
@@ -242,11 +247,11 @@ export function AddAddress({ newAddress, setNewAddress, oldAddress }) {
                         </label>
                         <select className="w-full border-[#E4E7E9] border-2 rounded p-2 bg-white" onChange={(e) => {
                             setNewAddress({ ...newAddress, city: e.target.value })
-                            setCurrentWard(wards.find(ward => ward.ward_name === e.target.value))
+                            setCurrentWard(wards.find(ward => ward.name === e.target.value))
                         }}>
                             {
                                 wards.map((ward, index) => (
-                                    <option value={ward.ward_name} key={`ward${index}`}>{ward.ward_name}</option>
+                                    <option value={ward.name} key={`ward${index}`}>{ward.name}</option>
                                 ))
                             }
                         </select>

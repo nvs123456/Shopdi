@@ -10,20 +10,27 @@ export default function CategoryManagement() {
     const [before, setbefore] = useState([])
     const [diff, setDiff] = useState([])
     useEffect(() => {
+        console.log("useEffect")
         GET(`categories`).then((data) => {
-            setCategory([...data.result])
-            setbefore(JSON.parse(JSON.stringify(data.result)))
-            setIsLoading(false)
+            console.log(data)
+            if (data.result.length === 0) {
+                console.log("create")
+                const categoriese = CATEGORIES.CATEGORIES;
+                for (let i = 0; i < categoriese.length; i++) {
+                    POST("categories/create", { name: categoriese[i].name, parentName: null }).then(res => {
+                        for (let j = 0; j < categoriese[i].sub_categories.length; j++) {
+                            POST("categories/create", { name: categoriese[i].sub_categories[j], parentName: categoriese[i].name }).then(res => {
+                            })
+                        }
+                    })
+                }
+            } else {
+                setCategory([...data.result])
+                setbefore(JSON.parse(JSON.stringify(data.result)))
+                setIsLoading(false)
+            }
         })
-        // const categoriese = CATEGORIES.CATEGORIES;
-        // for (let i = 0; i < categoriese.length; i++) {
-        //     POST("categories/create", { name: categoriese[i].name, parentName: null }).then(res => {
-        //         for(let j = 0; j < categoriese[i].sub_categories.length; j++){
-        //             POST("categories/create", { name: categoriese[i].sub_categories[j], parentName: categoriese[i].name }).then(res => {
-        //             })
-        //         }
-        //     })
-        // }
+
     }, [])
     const [currentParentSelected, setCurrentParentSelected] = useState(0)
     const [currentInputSelected, setCurrentInputSelected] = useState(null)
