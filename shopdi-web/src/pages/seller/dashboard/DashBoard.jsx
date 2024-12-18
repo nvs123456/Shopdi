@@ -151,7 +151,7 @@ export default function DashBoard() {
                                 return (
                                     <>
                                         <div className="flex flex-row col-span-3">
-                                            <div className="min-w-10 text-center"><img src={shopdiLogo} width={40} height={40} /></div>
+                                            <div className="min-w-10 text-center"><img src={item.productImage} width={40} height={40} /></div>
                                             <div className="grow my-auto ml-2 truncate">{item.productName}</div>
                                         </div>
                                         <div className=" text-center">{(item.soldQuantity * item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
