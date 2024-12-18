@@ -21,7 +21,7 @@ const ShopBar = ({ sellerId }) => {
                 </div>
                 <div>
                     <div className="text-2xl mb-2 font-semibold">{shop_info.shopName}</div>
-                    <Link to={`/shop/${sellerId}`}><div className='max-w-40 font-sans text-center rounded text-[16px] bg-[#FA8232] text-white cursor-pointer hover:bg-orangeRed font-semibold'>Go to shop</div></Link>
+                    <Link to={`/shop/${sellerId}`}><div className='w-28 font-sans text-center rounded text-[16px] bg-[#FA8232] text-white cursor-pointer hover:bg-orangeRed font-semibold py-1 px-2'>Go to shop</div></Link>
                 </div>
                 <div className={"ml-4 text-xl"}>Contact number:   <span className='text-[#FA8232]'>{shop_info.contactNumber}</span></div>
                 <div className={"ml-4 text-xl"}>Contact email:   <span className='text-[#FA8232]'>{shop_info.email}</span></div>

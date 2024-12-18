@@ -162,13 +162,13 @@ export default function ProductDetail() {
                             </div>
                         </div>
                         <div className="product-description flex flex-col gap-y-4">
-                            <div className="mt-12 text-4xl text-wrap">
+                            <div className="mt-12 text-3xl text-wrap mr-16">
                                 <p>{product.productName}</p>
                             </div>
 
                             <div>
                                 <span
-                                    className='text-3xl text-[#2DA5F3] mt-2'>&#8363; {product.price.toLocaleString()}</span>
+                                    className='text-[26px] text-[#2DA5F3] mt-2'> {product.price.toLocaleString()} &#8363;</span>
                             </div>
                             <Variant variantWithQuantity={product.variants}
                                 onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant}
