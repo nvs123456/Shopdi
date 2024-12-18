@@ -208,7 +208,7 @@ export default function OrderDetails() {
                     {/* Order Status */}
                     {order.orderStatus === 'CANCELLED' ?
                         <div
-                            className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858] ml-6 md:ml-10 lg:ml-20 bg-white">Order
+                            className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858]  bg-white">Order
                             Cancelled!</div> :
 
                         <div className=" relative w-full my-12 font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-8 px-8">
