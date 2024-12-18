@@ -10,8 +10,11 @@ export default function CategoryManagement() {
     const [before, setbefore] = useState([])
     const [diff, setDiff] = useState([])
     useEffect(() => {
+        console.log("useEffect")
         GET(`categories`).then((data) => {
+            console.log(data)
             if (data.result.length === 0) {
+                console.log("create")
                 const categoriese = CATEGORIES.CATEGORIES;
                 for (let i = 0; i < categoriese.length; i++) {
                     POST("categories/create", { name: categoriese[i].name, parentName: null }).then(res => {
