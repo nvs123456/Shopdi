@@ -75,6 +75,7 @@ public class ProductServiceImpl implements ProductService {
                     variant.setProduct(product);
                     variant.setVariantDetail(detail.getVariantDetail());
                     variant.setQuantity(detail.getQuantity());
+                    variant.setPrice(detail.getPrice());
                     return variant;
                 }).collect(Collectors.toSet());
 
@@ -346,6 +347,7 @@ public class ProductServiceImpl implements ProductService {
                         .map(variant -> ProductDetailResponse.VariantResponse.builder()
                                 .variantDetail(variant.getVariantDetail())
                                 .quantity(variant.getQuantity())
+                                .price(variant.getPrice())
                                 .build())
                         .toList()
                         : List.of())
