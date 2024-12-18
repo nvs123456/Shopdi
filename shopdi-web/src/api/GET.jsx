@@ -1,6 +1,6 @@
 
-export const baseUrl = "http://fall2024c8g14.int3306.freeddns.org/api/v1/";
-export const baseUrlForFrontEnd = "http://fall2024c8g14.int3306.freeddns.org/";
+export const baseUrl = "http://fall2024c8g15.int3306.freeddns.org/api/v1/";
+export const baseUrlForFrontEnd = "http://fall2024c8g15.int3306.freeddns.org/";
 export const GET = async (url) => {
     
     const response = await fetch(baseUrl+url, {
