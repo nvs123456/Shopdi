@@ -278,11 +278,11 @@ const EditProfile = () => {
                 <div className="w-fit p-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded z-30">
                     <AddAddress newAddress={addressForm} setNewAddress={setAddressForm} oldAddress={null}/>
                     <button onClick={handleAddAddress}
-                        className="bg-[#FA8232] text-white py-2 px-4 mt-2 rounded hover:bg-orange-600">
-                        Save Changes
+                        className="bg-[#FA8232] text-white py-2 px-4 mt-2 mx-4 rounded hover:bg-orange-600 font-medium w-20">
+                        Save
                     </button>
                     <button onClick={closeAddressPopup}
-                        className="bg-gray-500 mx-2 text-white py-2 px-4 mt-2 rounded hover:bg-gray-600">
+                        className="bg-red mx-2 text-white py-2 px-4 mt-2 rounded hover:bg-orange-600 font-medium w-20">
                         Cancel
                     </button>
                 </div>
@@ -292,14 +292,14 @@ const EditProfile = () => {
                 <div className="w-fit p-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded z-30">
                     <AddAddress newAddress={addressUpdateForm} setNewAddress={setAddressUpdateForm} oldAddress={addressUpdateForm} />
                     <button onClick={() => handleUpdateAddress(addressUpdateForm.addressId)}
-                        className="bg-[#FA8232] text-white py-2 px-4 mt-2 rounded hover:bg-orange-600">
+                        className="bg-[#FA8232] text-white py-2 px-4 mt-2 mx-4 rounded hover:bg-orange-600 font-medium w-20">
                         Save Changes
                     </button>
                     <button onClick={() => {
                         setIsUpdatingAddress(false);
                         setAddressUpdateForm({});
                     }}
-                        className="bg-gray-500 mx-2 text-white py-2 px-4 mt-2 rounded hover:bg-gray-600">
+                        className="bg-red mx-2 text-white py-2 px-4 mt-2 rounded hover:bg-orange-600 font-medium w-20">
                         Cancel
                     </button>
                 </div>
@@ -336,7 +336,7 @@ const EditProfile = () => {
                     {/* Account EditProfile Edit Section */}
 
                     {activeTab === 'profile' && <section
-                        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} md:ml-[60px] xl:w-4xl mx-auto bg-white p-2 md:p-6 rounded-s mb-4 md:mb-8 border-[1px] border-[#E4E7E9]`}>
+                        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} md:ml-[60px] xl:w-4xl mx-auto bg-white p-2 md:py-8 md:px-10 rounded-s mb-4 md:mb-8 border-[1px] border-[#E4E7E9]`}>
                         <h2 className="text-[16px] md:text-2xl mb-6 border-b-2 text-yaleBlue font-semibold pb-6">ACCOUNT PROFILE EDIT</h2>
                         <div className="md:flex md:flex-wrap md:-mx-4">
                             {/* EditProfile Image */}
@@ -446,22 +446,22 @@ const EditProfile = () => {
                     {/* Billing and Shipping Address Section */}
                     {activeTab === 'address' &&
                         <section
-                            className={`md:ml-[60px] max-w-4xl mx-auto bg-white p-2 md:p-6 mb-8 border-[1px] border-[#E4E7E9]`}>
+                            className={`md:ml-[60px] max-w-4xl mx-auto bg-white p-2 md:py-8 md:px-10 mb-8 border-[1px] border-[#E4E7E9]`}>
                             <div className="relative w-full md:w-full lg:mb-4">
-                                <h3 className="text-[16px] md:text-2xl mb-6 border-b-2 text-yaleBlue font-semibold pb-6">MY ADDRESS</h3>
+                                <h3 className="text-[16px] md:text-2xl mb-2 border-b-2 text-yaleBlue font-semibold pb-6">MY ADDRESS</h3>
                                 <button onClick={openAddressPopup}
                                     className={` ${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} 
                                 absolute right-0 top-0 lg:top-0 lg:right-5 xl:absolute xl:top-[0px] xl:right-[0px] bg-[#FA8232] lg:h-[30px] xl:h-[40px] 
-                                rounded px-1 md:px-2 text-white text-[12px] lg:text-[16px] hover:bg-orangeRed`}>
-                                    Add new address
+                                rounded px-1 md:px-2 text-white text-[12px] lg:text-[16px] hover:bg-orangeRed font-medium`}>
+                                    New address
                                 </button>
                                 <div>
-                                    <h4 className=" text-[14px] xl:text-xl mt-1 md:pb-2 font-sans">Address</h4>
+                                    {/*<h4 className=" text-[14px] xl:text-xl mt-1 md:pb-2 font-sans">Address</h4>*/}
                                     <div>
 
                                         {addressList.map((address) =>
                                         (
-                                            <div className={`lg:flex lg:relative border-b-2`}>
+                                            <div className={`lg:flex lg:relative border-b-2 mt-2`}>
                                                 <div className={`flex flex-col`}>
                                                     <div className={`text-[14px] lg:text-[18px] pt-2`}>
                                                         <b>{address.firstName + " " + address.lastName}</b> {"| " + address.phoneNumber}
@@ -473,11 +473,11 @@ const EditProfile = () => {
                                                         className={`text-[18px] pt-1 max-w-fit md:mb-2 text-red`}>Default</span>}
                                                 </div>
                                                 <div
-                                                    className={`xl:ml-[400px] text-[14px] lg:text-[16px] xl:text-[18px]`}>
+                                                    className={`xl:ml-[100px] text-[14px] lg:text-[16px] xl:text-[18px]`}>
                                                     <button
                                                         onClick={() => handleOpenUpdateAddressPopup(address.addressId)}
                                                         className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} 
-                                                    text-yaleBlue hover:underline py-2 px-3 mr-1 xl:mr-16 xl:absolute xl:top-2 xl:right-0`}>
+                                                        font-semibold text-yaleBlue hover:underline py-2 px-3 mr-1 xl:mr-8 xl:absolute xl:top-0 xl:right-0`}>
                                                         Edit
                                                     </button>
                                                     {/*<button onClick={() => handleDeleteAddress(address.addressId)}*/}
@@ -486,7 +486,7 @@ const EditProfile = () => {
                                                     {address.default === false && <button onClick={() =>
                                                         handleSetAddressAsDefault(address.addressId)
                                                     }
-                                                        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} text-white bg-[#FA8232] py-1 px-3 rounded hover:bg-orangeRed xl:absolute mr-1 xl:right-0 xl:top-14`}>Set as default
+                                                        className={`${isAddressPopupOpen || isUpdatingAddress || isPopupOpen ? 'pointer-events-none' : ''} font-medium text-white bg-red py-2 px-3 rounded hover:bg-orangeRed xl:absolute mr-1 xl:right-0 xl:top-12 text-[16px]`}>Set default
                                                     </button>}
 
                                                 </div>
@@ -503,7 +503,7 @@ const EditProfile = () => {
                     {/* Change Password Section */}
                     {activeTab === 'password' &&
                         <section
-                            className="md:ml-[60px] mx-auto bg-white px-2 md:p-6 border-[1px] border-[#E4E7E9] font-sans">
+                            className="md:ml-[60px] mx-auto bg-white px-2 md:py-8 md:px-10 border-[1px] border-[#E4E7E9] font-sans">
                             <h3 className="text-[16px] md:text-2xl mb-6 border-b-2 text-yaleBlue font-semibold pb-6">CHANGE PASSWORD</h3>
                             <div className="grid grid-cols-1 gap-1 md:gap-4">
                                 {[
@@ -520,14 +520,14 @@ const EditProfile = () => {
                                             onChange={(e) => {
                                                 setPasswordForm({ ...passwordForm, [field.labelForm]: e.target.value });
                                             }}
-                                            className="w-full md:h-[50px] border-[#E4E7E9] border-2 rounded p-2"
+                                            className="w-full md:h-[50px] border-[#E4E7E9] border-2 rounded p-2 bg-gray-100"
                                             placeholder="••••••••"
                                         />
                                     </div>
                                 ))}
                             </div>
                             <button onClick={() => handleChangePassword()}
-                                className="bg-[#FA8232] text-white flex h-[30px] xl:h-[40px] xl:my-4 items-center p-2 mb-1 rounded hover:bg-orange-600">
+                                className="bg-[#FA8232] text-white flex h-[30px] xl:h-[40px] xl:mt-6 items-center p-2 mb-1 rounded hover:bg-orange-600">
                                 <span className={`text-[12px] md:text-[16px] `}>Save password</span>
                             </button>
                         </section>
