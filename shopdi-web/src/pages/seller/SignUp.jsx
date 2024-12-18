@@ -9,7 +9,7 @@ const SellerSignUp = () => {
     const [form, setForm] = useState({
 
         "shopName": "string",
-        "address": "string",
+        "address": "",
         "stateOrDistrict": "string",
         "cityOrTown": "string",
         "email": "string",
@@ -102,7 +102,7 @@ const SellerSignUp = () => {
                                         onChange={(e) => {
                                             setForm({
                                                 ...form,
-                                                "additionalContactInfo": e.target.value
+                                                "address": e.target.value
                                             })
                                         }}
                                         id="address"
@@ -139,7 +139,7 @@ const SellerSignUp = () => {
                                 </div>
                             </div>
 
-                            <div>
+                            {/* <div>
                                 <label htmlFor="cityOrTown" className="block text-sm font-medium leading-6 text-gray-900">
                                     City or Town
                                 </label>
@@ -182,7 +182,7 @@ const SellerSignUp = () => {
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div>
                                 <label htmlFor="phoneNumber" className="block text-sm font-medium leading-6 text-gray-900">

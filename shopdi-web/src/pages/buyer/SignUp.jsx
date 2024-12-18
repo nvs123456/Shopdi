@@ -126,7 +126,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 function PopUp({ orderId }) {
     const navigate = useNavigate();
     return (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-white rounded flex gap-4 flex-col items-center justify-center z-50 border-[1px] border-gray-400">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-auto h-auto p-8 bg-white rounded flex gap-4 flex-col items-center justify-center z-50 border-[1px] border-gray-400">
             <div className='text-[24px] font-bold'>
                 You have successfully signed up
             </div>
