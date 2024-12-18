@@ -71,7 +71,7 @@ export default function DashBoard() {
                     let sum = 0
                     let todayOrder = 0
                     res.result.items.forEach(order => {
-                        if (order.status !== "PENDING" && order.status !== "CANCELLED") {
+                        if (order.orderStatus !== "PENDING" && order.orderStatus !== "CANCELLED") {
                             if (new Date(order.deliveryDate).toDateString() === new Date().toDateString()) {
                                 todayOrder++
                             }
