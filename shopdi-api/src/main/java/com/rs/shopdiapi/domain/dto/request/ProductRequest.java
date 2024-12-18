@@ -38,5 +38,6 @@ public class ProductRequest {
     public static class VariantDetail {
         String variantDetail;
         Integer quantity;
+        Integer price;
     }
 }

@@ -18,4 +18,5 @@ public class CartItemRequest {
     Long productId;
     String variant;
     Integer quantity;
+    Integer price;
 }

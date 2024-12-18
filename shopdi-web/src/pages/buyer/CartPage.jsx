@@ -70,7 +70,6 @@ export default function CartPage({ CartId }) {
                         tmp2[i].cartItems[j]["isSelected"] = false
                     }
                 }
-                console.log(tmp2)
                 setSelectedProducts(tmp2)
 
             }
@@ -109,13 +108,12 @@ export default function CartPage({ CartId }) {
                 }
             }
         }
-        console.log(tmp)
         setSelectedProducts(tmp)
     }
     return (
         <>
             <div className="py-12 px-40 bg-cloudBlue">
-                <Cart sellerGroups={productsInCart.sellerGroups} selectedProducts={selectedProducts} onSelect={onSelect} setTotal={setTotal} total={total} onDelete={onDelete} />
+                <Cart sellerGroups={productsInCart.sellerGroups} selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} onSelect={onSelect} setTotal={setTotal} total={total} onDelete={onDelete} />
 
                 <div className="bg-[#F2F4F5] h-20 sticky w-full bottom-0 p-4 flex flex-row justify-end gap-10 ">
                     <div className="text-2xl my-auto font-semibold font-sans">TOTAL: {total.toLocaleString("vi", { style: "currency", currency: "VND" })}</div>
