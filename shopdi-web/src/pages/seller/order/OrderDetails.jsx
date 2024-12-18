@@ -155,16 +155,16 @@ export default function OrderDetails() {
                             <div className="bg-white px-8 pb-14 border-b-[1px] border-x-[1px] text-[16px]">
                                 <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
                                 <p className={"py-2"}>{order.shippingAddress?.phoneNumber}</p>
-                                <p>{order.shippingAddress?.address}</p>
+                                <p>{order.shippingAddress?.address+", "+order.shippingAddress?.city+", "+order.shippingAddress?.state+", "+order.shippingAddress?.country}</p>
                             </div>
                         </div>
                         <div>
                             <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Payment details</h2>
                             <div className="bg-white px-8 pb-6 border-b-[1px] border-x-[1px] text-[16px]">
-                                <p className={"border-t-2 pt-4 border-gray-300"}>Transaction: {order?.payment?.transaction}</p>
+                                <p className={"border-t-2 pt-4 border-gray-300"}>Transaction Id: {order?.transactionId}</p>
                                 <p className={"py-2"}>Payment Method: {order?.paymentMethod}</p>
-                                <p>Card Holder: {order?.payment?.cardHolder}</p>
-                                <p className={"pt-2"}>Total amount: {order?.price}</p>
+                                <p>Payment Status: {order?.paymentStatus}</p>
+                                <p className={"pt-2"}>Total amount: {order?.totalPrice.toLocaleString("vi",{style: "currency", currency: "VND"})}</p>
                             </div>
                         </div>
                     </div>

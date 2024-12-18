@@ -135,7 +135,6 @@ export default function SellerProfile() {
 
     return (
         <div className="min-h-screen font-sans text-sm ">
-            <h1 className="text-xl ml-6 font-semibold">Profile</h1>
             <div className="bg-white w-full min-w-screen rounded-lg mb-10 relative">
                 {/* EditProfile Picture and Name */}
                 <div className=" relative group bg-gradient-to-b from-blue-300 rounded-t-lg w-full h-40 to-blue-50">
