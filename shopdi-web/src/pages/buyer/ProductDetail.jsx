@@ -113,12 +113,12 @@ export default function ProductDetail() {
                 isBuyNow: true,
                 selectedProducts: [
                     {
-                        sellerId: product.sellerId,
-                        sellerName: product.shopName,
+                        sellerId: product.seller.sellerId,
+                        sellerName: product.seller.shopName,
                         cartItems: [
                             {
-                                "sellerId": product.sellerId,
-                                "sellerName": product.shopName,
+                                "sellerId": product.seller.sellerId,
+                                "sellerName": product.seller.shopName,
                                 "cartItemId": 16,
                                 "productId": product.productId,
                                 "productName": product.productName,
