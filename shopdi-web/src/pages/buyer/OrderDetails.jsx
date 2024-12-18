@@ -304,21 +304,21 @@ function OrderDetails() {
                     <div className=" bg-white p-2 md:p-6 mb-0 ml-6">
                         <div className="md:grid md:grid-cols-3 md:gap-8">
                             <div className={`border-r-2`}>
-                                <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Billing Address</div>
+                                {/* <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Billing Address</div>
                                 <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
                                 <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
-                                    {address} <br/>
-                                    Phone Number: {shippingAddress.phone} <br/>
+                                    {address}, {city}, {state}, {country} <br/>
+                                    Phone Number: {shippingAddress.phoneNumber} <br/>
                                     Email: {shippingAddress.email}
-                                </div>
+                                </div> */}
                             </div>
                             <div className={`border-r-2`}>
                                 <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Shipping Address
                                 </div>
                                 <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
                                 <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
-                                    {address} <br/>
-                                    Phone Number: {shippingAddress.phone} <br/>
+                                    {address}, {city}, {state}, {country} <br/>
+                                    Phone Number: {shippingAddress.phoneNumber} <br/>
                                     Email: {shippingAddress.email}
                                 </div>
                             </div>

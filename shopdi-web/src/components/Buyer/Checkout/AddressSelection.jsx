@@ -19,7 +19,7 @@ export default function AddressSelection({ onClose, addresses, setAllAddress, cu
         }
     )
     return (
-        <div className="flex flex-col justify-between w-[800px] h-[500px] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white z-10 m-4 rounded">
+        <div className="flex flex-col justify-between w-[800px] min-h-[400px] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white z-10 m-4 rounded">
 
             {
                 isAdding ?
