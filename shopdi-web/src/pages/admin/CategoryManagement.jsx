@@ -10,6 +10,7 @@ export default function CategoryManagement() {
     const [before, setbefore] = useState([])
     const [diff, setDiff] = useState([])
     useEffect(() => {
+        console.log("useEffect")
         GET(`categories`).then((data) => {
             if (data.result.length === 0) {
                 const categoriese = CATEGORIES.CATEGORIES;

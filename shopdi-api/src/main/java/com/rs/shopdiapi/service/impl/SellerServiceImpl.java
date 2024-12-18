@@ -129,7 +129,8 @@ public class SellerServiceImpl implements SellerService {
         Seller seller = Seller.builder()
                 .shopName(request.getShopName())
                 .email(request.getEmail())
-                .location(request.getAddress() + ", " + request.getCityOrTown() + ", " + request.getStateOrDistrict())
+                // .location(request.getAddress() + ", " + request.getCityOrTown() + ", " + request.getStateOrDistrict())
+                .location(request.getAddress())
                 .contactNumber(request.getContactNumber())
                 .user(user).revenue(BigDecimal.ZERO)
                 .build();
