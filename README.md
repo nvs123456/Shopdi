@@ -27,7 +27,7 @@ Hệ thống được xây dựng bởi nhóm WebWizards với các thành viên
 
 Link slide giới thiệu: https://drive.google.com/file/d/1P5rfgsQ_Gs7UDAL9EP3pG5-0A9tZRmO4/view?usp=drive_link
 
-Link figma: https://www.figma.com/design/76JBbAYX0ZiV9BFPiBkWBM/ONDC---INcart-website-(Seller-and-Buyer)-(Community)?node-id=157-731&t=J1nrKyoMvBZHO67J-1
+Link figma: https://www.figma.com/design/76JBbAYX0ZiV9BFPiBkWBM/Shopdi?node-id=0-1&t=ljfiao8IGx5DOfYQ-1
 
 Tài liệu backend: http://localhost:8080/swagger-ui/index.html#/
 ## Công nghệ sử dụng
