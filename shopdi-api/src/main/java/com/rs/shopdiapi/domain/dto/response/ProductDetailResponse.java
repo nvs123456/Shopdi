@@ -38,6 +38,7 @@ public class ProductDetailResponse {
     public static class VariantResponse {
         String variantDetail;
         Integer quantity;
+        Integer price;
     }
 
     @Data
