@@ -35,12 +35,27 @@ public class PaymentServiceImpl implements PaymentService {
     OrderRepository orderRepository;
     PaymentRepository paymentRepository;
 
+    private String generateTxnRef(Long orderId) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        return "ORD" + orderId + "-" + timestamp;
+    }
+
+    private Long extractOrderIdFromTxnRef(String txnRef) {
+        try {
+            String[] parts = txnRef.split("-");
+            String orderIdPart = parts[0].substring(3);
+            return Long.parseLong(orderIdPart);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid TxnRef format: " + txnRef);
+        }
+    }
+
     @Transactional
     @Override
     public String createVnPayPayment(HttpServletRequest request, BigDecimal amount, Long orderId) throws UnsupportedEncodingException {
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount.multiply(BigDecimal.valueOf(100))));
-        vnpParamsMap.put("vnp_TxnRef", String.valueOf(orderId));
+        vnpParamsMap.put("vnp_TxnRef", generateTxnRef(orderId));
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toán đơn hàng #" + orderId);
 
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
@@ -72,10 +87,10 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         String transactionId = params.get("vnp_TransactionNo");
-        String orderReference = params.get("vnp_TxnRef");
+        String orderId = String.valueOf(extractOrderIdFromTxnRef(params.get("vnp_TxnRef")));
         BigDecimal amount = new BigDecimal(params.get("vnp_Amount")).divide(BigDecimal.valueOf(100));
 
-        Order order = orderRepository.findById(Long.valueOf(orderReference))
+        Order order = orderRepository.findById(Long.valueOf(orderId))
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         var payment = paymentRepository.findByOrderId(order.getId())

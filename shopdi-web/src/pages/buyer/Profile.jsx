@@ -70,7 +70,7 @@ export default function Profile() {
                     <br />
                     <span className="text-blue-500 cursor-pointer">Recent Orders</span>, manage your{" "}
                     <span className="text-blue-500 cursor-pointer">
-            Shipping and Billing Addresses
+            Shipping Addresses
           </span>
                     , and edit your{" "}
                     <span className="text-blue-500 cursor-pointer">Password</span> and{" "}
@@ -79,33 +79,39 @@ export default function Profile() {
             </div>
 
             {/* Dashboard Cards */}
-            <div className="max-w-6xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                <AccountInfo info={info} />
-                <BillingAddress info={info} address={defaultAddress} />
-                <OrderSummary orders={orders} />
+            <div className="max-w-6xl mx-auto mt-6 flex flex-row gap-x-10">
+                <div className="w-[36%]">
+                    <AccountInfo info={info} />
+                </div>
+                <div className="w-[36%]">
+                    <BillingAddress info={info} address={defaultAddress}/>
+                </div>
+                <div className="w-[28%]">
+                    <OrderSummary orders={orders}/>
+                </div>
             </div>
 
             {/* Recent Orders */}
-            <RecentOrders orders={orders} />
+            <RecentOrders orders={orders}/>
         </div>
     );
 }
 
-function AccountInfo({ info }) {
+function AccountInfo({info}) {
     return (
         <div className="relative bg-white border-[#E4E7E9] border-[1px] rounded p-5 h-80">
             <h2 className="text-[18px] font-medium text-gray-600 border-b-2 pb-3 mx-3">ACCOUNT INFO</h2>
-            <div className="flex flex-row lg:py-4 pl-3">
+            <div className="flex lg:py-4 pl-3 flex-row">
                 <img
                     src={info.profileImage || profileDefault}
                     alt="profile"
                     className="lg:w-16 lg:h-16 p-1 mr-2 border-[1px] rounded-full"
                 />
-                <p className="text-gray-800 font-semibold mt-5 mb-4 ml-2 text-xl">{info.username}</p>
+                <p className="text-gray-800 font-semibold mt-5 mb-4 ml-2 text-xl ">{info.username}</p>
             </div>
             <p className="text-gray-500 mb-2 ml-4">{`${info.firstName} ${info.lastName}`}</p>
-            <p className="text-gray-500 mb-2 ml-4">Email: {info.email}</p>
             <p className="text-gray-500 mb-2 ml-4">Phone: {info.mobileNo}</p>
+            <p className="text-gray-500 mb-2 ml-4">Email: {info.email}</p>
             <button
                 onClick={() => (window.location.href = "/editprofile")}
                 className="xl:absolute xl:bottom-5 px-1 py-0.5 text-[14px] lg:mt-4 lg:px-4 lg:py-2 lg:text-sm ml-4 bg-[#FA8232] rounded text-white font-semibold font-sans hover:bg-orangeRed"
@@ -129,7 +135,7 @@ function BillingAddress({ address }) {
                 </div>
             ) : (
                 <div>
-                    <p className="text-gray-500 text-sm">No Address. Please add some.</p>
+                    <p className="text-gray-800 mt-5 mb-4 ml-4">No Address. Please add some.</p>
                 </div>
             )}
             <button
@@ -188,7 +194,7 @@ function DashboardCard({ title, count, bgColor, iconColor}) {
 
 function RecentOrders({orders}) {
     return (
-        <div className="max-w-6xl mx-auto mt-6 py-6 px-8 bg-white border-2 border-[#E4E7E9]">
+        <div className="max-w-6xl mx-auto mt-8 py-6 px-8 bg-white border-2 border-[#E4E7E9]">
             <div className="relative mb-5">
                 <h2 className="text-gray-800 font-semibold text-2xl">Recent Orders</h2>
                 <button
