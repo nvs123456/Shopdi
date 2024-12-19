@@ -23,17 +23,17 @@ export default function SellerCard({ status }) {
     }, [])
     return (
         <div>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 px-8 py-4 font-sans">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-12 px-4 py-4 font-sans">
                 {(status === 'All' ? sellers : sellers.filter(seller => seller.status === status)).map((seller) => (
                     <div onClick={()=>{
                         console.log(seller)
                     }}
                         key={seller.id}
-                        className="relative bg-white shadow-md rounded-lg p-2 border hover:border-blue-500 transition"
+                        className="relative bg-white shadow-md rounded-lg p-2 border hover:border-blue-500 transition hover:scale-105"
                     >
                         <div className={'relative'}>
                             <input type={'checkbox'}
-                                className='absolute top-0 left-0 w-4 h-4 focus:ring mr-36 md:mr-28 lg:mr-44 rounded-xl text-darkGray' />
+                                className='absolute top-1 left-1.5 w-4 h-4 focus:ring mr-36 md:mr-28 lg:mr-44 rounded-xl text-darkGray' />
                             <button
                                 onClick={() => handleShowMenu(seller.id)}
                                 className="w-6 h-6 top-0 right-0 absolute flex items-center justify-center rounded-full hover:bg-gray-200"
@@ -57,12 +57,12 @@ export default function SellerCard({ status }) {
                         <img
                             src={seller.profileImage || defaultImage}
                             alt={seller.name}
-                            className="w-16 h-16 rounded-full mx-auto"
+                            className="w-20 h-20 rounded-full mx-auto mt-4 mb-2 border-[1px]"
                         />
                         {/* Popup menu */}
                         {showMenu && idCard === seller.id && (
                             <div
-                                className=" absolute right-0 top-10 mt-2 w-32 bg-white border rounded-md shadow-lg"
+                                className=" absolute right-6 top-8 mt-2 w-32 bg-white border rounded-md shadow-lg"
                                 onClick={() => setShowMenu(false)}
                             >
                                 <ul>
@@ -96,19 +96,19 @@ export default function SellerCard({ status }) {
                             </div>
                         )}
 
-                        <h2 className="text-lg font-medium text-center">{seller.shopName}</h2>
+                        <h2 className="text-[18px] font-medium text-center mb-2">{seller.shopName}</h2>
                         <div className={'flex justify-center '}>
                             <div
-                                className={`${seller.status === 'ACTIVE' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/2 rounded-[5px]`}>
-                                <p className={`text-center text-sm ${seller.status === 'ACTIVE' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
+                                className={`${seller.status === 'ACTIVE' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/3 rounded-[5px]`}>
+                                <p className={`py-1 text-center text-sm ${seller.status === 'ACTIVE' ? 'text-[#3A5BFF]' : 'text-[#CC5F5F]'}`}>
                                     {seller.status}
                                 </p>
                             </div>
                         </div>
-                        <div className={'border-b border-dotted border-gray-300 my-2'}></div>
-                        <div className="mt-4 text-center text-gray-600 flex justify-around">
+                        <div className={'border-b border-dotted border-gray-300 mt-3 mx-2'}></div>
+                        <div className="mt-2 text-center text-gray-600 text-[16px] flex justify-around">
                             <p>Product<br />{seller.totalProducts}</p>
-                            <p>Revenue<br /> {seller.totalRevenue.toLocaleString()}đ</p>
+                            <p>Revenue<br /> {seller.totalRevenue.toLocaleString()} &#8363;</p>
                         </div>
                     </div>
                 ))}

@@ -77,7 +77,7 @@ const SignUpForm = () => {
                                 Password
                             </label>
                         </div>
-                        <div className="mt-2 mb-8">
+                        <div className="mt-2 mb-4">
                             <input
                                 onChange={(e) => setInput({ ...input, password: e.target.value })}
                                 id="password"
@@ -90,7 +90,7 @@ const SignUpForm = () => {
                                 placeholder={"Password"}
                             />
                         </div>
-                        <div className='text-left text-sm text-red'>
+                        <div className='text-left text-sm text-red mb-4'>
                             *Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                         </div>
                     </div>

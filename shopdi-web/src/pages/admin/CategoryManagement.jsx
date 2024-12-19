@@ -66,18 +66,18 @@ export default function CategoryManagement() {
     if (isLoading) return <div className="text-center">Loading...</div>
     else
         return (
-            <div className="relative p-8">
-                <h1>Category Management</h1>
+            <div className="relative pl-12 py-12 bg-cloudBlue pr-44">
+                <h1 className={"text-4xl font-bold text-yaleBlue mb-4"}>Category Management</h1>
                 <button
-                    className={` border-2 rounded ${currentInputSelected == null ? "hidden" : "bg-pumpkin hover:bg-orangeRed cursor-pointer"}  border-gray-400 text-black w-60 mt-2 mb-2 mr-2`}>Editting...</button>
+                    className={` rounded ${currentInputSelected == null ? "hidden" : "bg-pumpkin hover:bg-orangeRed cursor-pointer"}  border-[1px] text-white py-2 font-semibold text-xl w-60 mt-2 mb-8 mr-2`}>Editting...</button>
                 <button
                     onClick={() => {
                         if (diff.length > 0) {
                             updateCategory()
                         }
                     }}
-                    className={` border-2 rounded ${isEditting ? "hidden" : ""} ${document.querySelectorAll(".diff").length > 0 ? "bg-pumpkin hover:bg-orangeRed cursor-pointer" : "bg-gray-400 disabled"}  border-gray-400 text-black w-60 mt-2 mb-2 mr-2`}>
-                    Save
+                    className={` rounded ${isEditting ? "hidden" : ""} ${document.querySelectorAll(".diff").length > 0 ? "bg-pumpkin hover:bg-orangeRed cursor-pointer" : "bg-gray-300 disabled text-black"}  border-[1px] text-white py-2 font-semibold text-xl w-60 mt-2 mb-8 mr-2`}>
+                    Save changes
                 </button>
                 <div className="">
                     {category.map((parentCategory, index) => (
@@ -92,13 +92,13 @@ export default function CategoryManagement() {
 }
 function Compare({ diff }) {
     return (
-        <div className="flex flex-col gap-2">
-            {diff.length > 0 && <h1 className="font-bold text-pumpkin">Incoming changes</h1>}
+        <div className="flex flex-col mt-48 ml-28">
+            {diff.length > 0 && <h1 className="font-bold bg-white border-[1px] text-yaleBlue text-2xl px-4 py-3">Incoming changes</h1>}
             {diff.map((d, i) => (
-                <div key={i} className="diff flex flex-row gap-2">
-                    <div>{d.from.id} : {d.from.name}</div>
+                <div key={i} className="diff flex flex-row gap-4 bg-white px-4 py-4 border-b-[1px] border-x-[1px] text-[16px]">
+                    <div>{d.from.id}: {d.from.name}</div>
                     <span> → </span>
-                    <div>{d.to.id} : {d.to.name}</div>
+                    <div>{d.to.id}: {d.to.name}</div>
                 </div>
             ))}
         </div>
@@ -107,11 +107,11 @@ function Compare({ diff }) {
 
 function Parent({ setIsEditting, Compare, category, index, setCategory, currentParentSelected, setCurrentParentSelected, setCurrentInputSelected, currentInputSelected }) {
     return (
-        <div className={`relative`}>
-            <div className={`flex w-[400px] flex-row gap-2 ${currentParentSelected == category[index].categoryId ? "bg-gray-400" : ""}`}>
-                <div className="relative flex flex-row border-b-2 border-gray-400 h-12 hover:bg-gray-400" >
-                    <label className="content-center w-[120px]">id : {category[index].categoryId}, name :</label>
-                    <input id={`${index}-parent`} className="category-input" type="text" value={category[index].name}
+        <div className={`relative bg-white px-2 py-1.5 mr-96 border-x-[1px] border-t-[1px]`}>
+            <div className={`flex w-[400px] flex-row gap-2 ${currentParentSelected == category[index].categoryId ? "bg-gray-300" : ""}`}>
+                <div className="relative flex flex-row border-gray-400 h-12 hover:bg-gray-200" >
+                    <label className="content-center w-[120px] px-2">Id: {category[index].categoryId}, Name:</label>
+                    <input id={`${index}-parent`} className="category-input pr-3" type="text" value={category[index].name}
                         onClick={(e) => {
                             setCurrentInputSelected(e.target.id);
                             setIsEditting(true);
@@ -143,10 +143,10 @@ function Parent({ setIsEditting, Compare, category, index, setCategory, currentP
             </div>
             {
                 currentParentSelected == category[index].categoryId && (
-                    <div className="absolute z-10 left-[380px] top-0 rounded bg-white border-2 border-gray-400">{category[index].childCategories.map((childCategory, child_index) => (
-                        <div key={`${child_index}-${index}-child`} className="relative flex flex-row h-12 border-b-2 border-gray-400 hover:bg-gray-400" >
-                            <label className="content-center">id : {childCategory.id}, name :</label>
-                            <input id={`${child_index}-${index}-child`} className="category-input" type="text" value={childCategory.name}
+                    <div className="absolute z-10 left-[360px] top-0 bg-white border-[1px] border-gray-300">{category[index].childCategories.map((childCategory, child_index) => (
+                        <div key={`${child_index}-${index}-child`} className="relative flex flex-row h-[61px] border-b-[1px] hover:bg-gray-200" >
+                            <label className="content-center pr-1 pl-2">Id: {childCategory.id}, Name: </label>
+                            <input id={`${child_index}-${index}-child`} className="category-input pr-1" type="text" value={childCategory.name}
                                 onClick={(e) => {
                                     setCurrentInputSelected(e.target.id);
                                     setIsEditting(true);
