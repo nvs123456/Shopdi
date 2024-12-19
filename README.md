@@ -65,21 +65,34 @@ Tài liệu backend: [Tại đây](http://localhost:8080/swagger-ui/index.html#/
 - 🔒 Xác thực: JSON Web Token (JWT).
 - 💳  Tích hợp thanh toán: VNPay API.
 
-## Hướng dẫn cài đặt
+## Hướng dẫn cài đặt 
 Clone repository
 ```sh
 git clone https://github.com/BuiDoKhoiNguyen/Shopdi.git
 cd shopdi
 ```
+## Cài đặt cho local
+- yêu cầu : đổi password và username database trong Shopdi/shopdi-api/src/main/resources/application.properties
 Cài đặt và chạy Frontend
 ```sh
 cd shopdi-web
 npm install
-npm run dev
+npm run build
+mv dist/ ../shopdi-api/src/main/resources/
 ```
 Cài đặt và chạy Backend
-- Mở project backend bằng IntelliJ IDEA hoặc một IDE Java bất kỳ.
-- Chạy file chứa hàm main.
+```sh
+cd shopdi-api
+mvn clean install
+mvn springboot:run
+```
+## cài đặt deploy
+- yêu cầu : đổi password và username database trong Shopdi/shopdi-api/src/main/resources/application.properties
+```sh
+cd shopdi-api
+mvn clean install
+java -jar target/shopdi-api-0.0.1-SNAPSHOT.jar
+```
 
 
 
