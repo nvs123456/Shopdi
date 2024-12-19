@@ -135,11 +135,11 @@ export default function SellerProfile() {
 
     return (
         <div className="min-h-screen font-sans text-sm ">
-            <div className="bg-white w-full min-w-screen rounded-lg mb-10 relative">
+            <div className="bg-cloudBlue w-full min-w-screen rounded-lg pb-12 relative">
                 {/* EditProfile Picture and Name */}
-                <div className=" relative group bg-gradient-to-b from-blue-300 rounded-t-lg w-full h-40 to-blue-50">
+                <div className=" relative group bg-gradient-to-b from-blue-300 rounded-t-lg w-full h-60 to-blue-50 border-b-2">
                     <img
-                        src={previewProfileCoverImage || sellerInfo.coverImage || `https://i.pinimg.com/originals/be/82/b2/be82b2d8ab44a82f51295751e5ddc395.jpg`} // replace with actual image path
+                        src={previewProfileCoverImage || sellerInfo.coverImage || `https://img.freepik.com/free-vector/12-12-shopping-day-sales-social-media-cover-template_23-2149864479.jpg?t=st=1734580825~exp=1734584425~hmac=032d5bcc507b33a3a72ad4266b0912d6e754742bf889c03b06e4e9fa285494ba&w=1380`} // replace with actual image path
                         alt="CoverProfile"
                         className="w-full h-full object-cover"
                     />
@@ -184,15 +184,15 @@ export default function SellerProfile() {
                         </div>
                     </div>}
                 </div>
-                <div className={`absolute top-[100px] left-[24px] group flex mt-2 border-2 rounded-full w-24 h-24`}>
+                <div className={`absolute top-[160px] left-[40px] group flex mt-2 border-2 rounded-full w-40 h-40`}>
                     <img
                         src={previewProfileImage || sellerInfo.profileImage || defaultImage} // replace with actual image path
                         alt="EditProfile"
                         className="w-full h-full object-cover rounded-full"
                     />
-                    <div className={`mt-[24px] ml-4`}>
-                        <h2 className="mt-6 text-2xl font-semibold">{sellerInfo.username}</h2>
-                        <p className="text-gray-500">Owner & Founder</p>
+                    <div className={`mt-[60px] ml-4`}>
+                        <h2 className="mt-6 text-3xl font-medium">{sellerInfo.username}</h2>
+                        <p className="text-gray-500 text-[16px] mt-1">Owner & Founder</p>
                     </div>
                     <div
                         className="absolute inset-0 bg-black bg-opacity-50 flex items-center rounded-full justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -235,14 +235,14 @@ export default function SellerProfile() {
 
 
                 {/* Business Info Section */}
-                <div className="mt-8 p-8">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Business info</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mt-32 px-20">
+                    <h3 className="text-3xl font-semibold text-yaleBlue mb-8">Business info</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
                         <div className="flex flex-col">
-                            <label className="text-sm font-medium text-gray-700">Business/shop name</label>
+                            <label className="text-[22px] mb-2 font-medium text-gray-700">Business / shop name</label>
                             <input
                                 type="text"
-                                className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
+                                className="border border-gray-300 rounded-md px-4 py-4 mt-1 text-[16px] focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.shopName}
                                 onChange={(e) => {
                                     setIsEditing(true);
@@ -254,10 +254,10 @@ export default function SellerProfile() {
                             {error.shopName && <p className="text-red text-sm">*{error.shopName}</p>}
                         </div>
                         <div className="flex flex-col">
-                            <label className="text-sm font-medium text-gray-700">Email</label>
+                            <label className="text-[22px] mb-2 font-medium text-gray-700">Email</label>
                             <input
                                 type="email"
-                                className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
+                                className="border border-gray-300 rounded-md px-4 py-4 mt-1 text-[16px] mt-1 focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.email}
                                 onChange={(e) => {
                                     setIsEditing(true);
@@ -266,10 +266,10 @@ export default function SellerProfile() {
                             {error.email && <p className="text-red text-sm">*{error.email}</p>}
                         </div>
                         <div className="flex flex-col">
-                            <label className="text-sm font-medium text-gray-700">Contact no.</label>
+                            <label className="text-[22px] mb-2 font-medium text-gray-700">Contact no.</label>
                             <input
                                 type="text"
-                                className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
+                                className="border border-gray-300 rounded-md px-4 py-4 text-[16px] mt-1 focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.contactNumber}
                                 onChange={(e) => {
                                     setIsEditing(true);
@@ -281,10 +281,10 @@ export default function SellerProfile() {
                             {error.contactNumber && <p className="text-red text-sm">*{error.contactNumber}</p>}
                         </div>
                         <div className="flex flex-col">
-                            <label className="text-sm font-medium text-gray-700">Location</label>
+                            <label className="text-[22px] mb-2 font-medium text-gray-700">Location</label>
                             <input
                                 type="text"
-                                className="border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
+                                className="border border-gray-300 rounded-md px-4 py-4 mt-1 text-[16px] focus:outline-none focus:border-blue-500"
                                 defaultValue={sellerInfo.location}
                                 onChange={(e) => {
                                     setIsEditing(true);
@@ -295,9 +295,9 @@ export default function SellerProfile() {
                             {error.location && <p className="text-red text-sm">*{error.location}</p>}
                         </div>
                         <div className="flex flex-col col-span-2">
-                            <label className="text-sm font-medium text-gray-700">About</label>
+                            <label className="text-[22px] mb-2 font-medium text-gray-700">About</label>
                             <textarea
-                                className="h-[300px] border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
+                                className="h-[300px] border border-gray-300 rounded-md px-4 py-4 mt-1 text-[16px] focus:outline-none focus:border-blue-500"
                                 rows="3"
                                 defaultValue={sellerInfo.about || ""}
                                 onChange={(e) =>
@@ -323,7 +323,7 @@ export default function SellerProfile() {
                             if(Object.keys(newError).length === 0 ) setIsSaveChangePopupOpen(true);
                         }}
                                 disabled={isAPICalling}
-                                className={`flex items-center ${isAPICalling ? 'bg-gray-300' :' '} bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600`}>
+                                className={`flex items-center ${isAPICalling ? 'bg-gray-300' :' '} font-medium text-xl bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600`}>
                             {isAPICalling && <SpinnerLoading size={1}/>}
                              <span className={`pl-2`}>SAVE CHANGES</span>
                         </button>

@@ -158,7 +158,7 @@ function OrderDetails() {
                         <div className="flex items-center rounded hover:bg-gray-100 lg:h-[80%] hover:shadow-sm" >
                             <ArrowBackIcon className="text-black" fontSize={'inherit'} />
                             <button className={`text-black text-[14px] md:text-[18px] pl-2 text-yaleBlue font-bold`} disabled={isModalOpen} onClick={() => window.location.href = '/orderhistory'}>
-                                ORDER DETAILS</button>
+                                ORDER HISTORY</button>
                         </div>
                     </div>
                     {/* Order Details Section */}
