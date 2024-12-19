@@ -23,20 +23,20 @@ const SellerList = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-xl font-bold font-sans mb-4">Buyers</h1>
+        <div className={"bg-cloudBlue pl-12 py-12 pr-20"}>
+            <h1 className="text-4xl font-bold text-yaleBlue mb-4">Buyer Management</h1>
             <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider', marginLeft: '60px' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', marginLeft: '0px',}}>
                     <TabList onChange={handleChange} aria-label="lab API tabs example">
                         {tabHeadings.map((tabHeading, index) => (<Tab
                             key={index}
                             label={tabHeading}
                             value={(index + 1).toString()}
                             sx={{
-                                color: 'gray', fontSize: '16px', fontWeight: 'normal', '&.Mui-selected': {
+                                color: 'gray', fontSize: '18px', fontWeight: 'normal', '&.Mui-selected': {
                                     color: tabHeading === 'All' ? 'darkblue' : tabHeading === 'Active' ? '#74DD7B' : '#F57E77',
                                     fontWeight: 'bold',
-                                    fontSize: '16px',
+                                    fontSize: '22px',
                                     position: 'relative',
                                 },
                             }}
