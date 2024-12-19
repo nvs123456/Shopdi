@@ -12,7 +12,7 @@ export default function Product({ product }) {
             {/* <div><Link to={`product-detail/${product.productId}`}><img className="w-20 h-20 min-w-20 ml-8" src={product.productImage} alt={"image"} /></Link></div> */}
             <div className='col-span-3 flex flex-row'>
                 <div><img className="w-20 h-20 min-w-20 mr-4" src={product.productImage} alt={"image"} /></div>
-                <div className="overflow-hidden my-auto text-[17px]"><p className='break-words overflow-hidden max-h-20'>{product.productName}</p></div>
+                <div className="overflow-hidden my-auto text-[17px] py-2 pr-4"><p className='break-words overflow-hidden max-h-20'>{product.productName}</p></div>
             </div>
             <span className="min-w-24 text-left">{product.price.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</span>
             <span className="min-w-24 text-left">{product.stock}</span>

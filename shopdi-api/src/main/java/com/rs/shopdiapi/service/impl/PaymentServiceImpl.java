@@ -1,6 +1,5 @@
 package com.rs.shopdiapi.service.impl;
 
-
 import com.rs.shopdiapi.config.VNPayConfig;
 import com.rs.shopdiapi.domain.dto.response.PaymentResponse;
 import com.rs.shopdiapi.domain.entity.Order;
@@ -34,10 +33,12 @@ public class PaymentServiceImpl implements PaymentService {
     VNPayConfig vnPayConfig;
     OrderRepository orderRepository;
     PaymentRepository paymentRepository;
+
     private String generateTxnRef(Long orderId) {
         String timestamp = String.valueOf(System.currentTimeMillis());
         return "ORD" + orderId + "-" + timestamp;
     }
+
     private Long extractOrderIdFromTxnRef(String txnRef) {
         try {
             String[] parts = txnRef.split("-");
@@ -50,14 +51,15 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Transactional
     @Override
-    public String createVnPayPayment(HttpServletRequest request, BigDecimal amount, Long orderId) throws UnsupportedEncodingException {
+    public String createVnPayPayment(HttpServletRequest request, BigDecimal amount, Long orderId)
+            throws UnsupportedEncodingException {
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount.multiply(BigDecimal.valueOf(100))));
         vnpParamsMap.put("vnp_TxnRef", generateTxnRef(orderId));
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toán đơn hàng #" + orderId);
 
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
-        //build query url
+        // build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
         String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
         String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
@@ -85,8 +87,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         String transactionId = params.get("vnp_TransactionNo");
-        String orderReference = params.get("vnp_TxnRef");
-        String orderId = orderReference.split("-")[0].substring(3);
+        String orderId = String.valueOf(extractOrderIdFromTxnRef(params.get("vnp_TxnRef")));
         BigDecimal amount = new BigDecimal(params.get("vnp_Amount")).divide(BigDecimal.valueOf(100));
 
         Order order = orderRepository.findById(Long.valueOf(orderId))

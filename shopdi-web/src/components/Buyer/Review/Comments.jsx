@@ -41,7 +41,7 @@ export default function Comments({ productId }) {
                                 <p className="font-semibold text-[18px]">{comment.username}
                                     <span className={"ml-2"}>{stars(comment.ratingScore)}</span>
                                 </p>
-                                <p className="mt-4 text-gray-600">&emsp;&emsp;{comment.review}</p>
+                                <p className="mt-4 text-gray-600 ml-2">{comment.review}</p>
                             </div>
                         </div>
                     </div>
