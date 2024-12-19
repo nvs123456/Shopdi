@@ -140,6 +140,7 @@ public class OrderServiceImpl implements OrderService {
                 variantRepository.save(selectedVariant);
             });
             Payment payment = Payment.builder()
+                    .transactionId(UUID.randomUUID().toString())
                     .order(order)
                     .amount(totalPrice)
                     .method(request.getPaymentMethod())
@@ -183,11 +184,11 @@ public class OrderServiceImpl implements OrderService {
                 .product(product)
                 .variant(request.getVariant())
                 .quantity(request.getQuantity())
-                .price(product.getPrice())
+                .price(request.getPrice())
                 .seller(product.getSeller())
                 .build();
 
-        BigDecimal totalPrice = product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
+        BigDecimal totalPrice = request.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
 
         Address address = addressRepository.findById(request.getAddressId())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));

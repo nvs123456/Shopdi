@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {GET, PUT} from "../../api/GET";
 import defaultImage from "../../assets/images/profileDefault.png";
+import { getUsername } from "../../utils/todo";
 
 export default function userCard({ status }) {
     const [users, setUsers] = useState([]);
@@ -57,7 +58,7 @@ export default function userCard({ status }) {
                             <input type={'checkbox'}
                                 className='absolute top-1 left-1.5 w-4 h-4 focus:ring mr-36 md:mr-28 lg:mr-44 rounded-xl text-darkGray' />
                             <button
-                                onClick={() => handleShowMenu(user.username)}
+                                onClick={() => handleShowMenu(getUsername(user.username))}
                                 className="w-6 h-6 top-0 right-0 absolute flex items-center justify-center rounded-full hover:bg-gray-200"
                             >
                                 <svg
@@ -118,7 +119,7 @@ export default function userCard({ status }) {
                             </div>
                         )}
 
-                        <h2 className="text-[16px] font-medium text-center mb-2">{user.username}</h2>
+                        <h2 className="text-[18px] font-medium text-center mb-2">{user.username}</h2>
                         <div className={'flex justify-center '}>
                             <div
                                 className={`${user.status === 'ACTIVE' ? 'bg-[#3A5BFF] bg-opacity-[12%]' : 'bg-[#F57E77] bg-opacity-[12%]'} w-1/3 rounded-[5px]`}>

@@ -116,7 +116,7 @@ function OrderHistory() {
                 </div>
 
                 {/* Pagination */}
-                <div className="flex justify-center bottom-0 left-[45%] mb-3">
+                <div className="absolute flex justify-center bottom-0 left-[45%] mb-3">
                     <Pagination pageObject={pages} />
                 </div>
             </div>

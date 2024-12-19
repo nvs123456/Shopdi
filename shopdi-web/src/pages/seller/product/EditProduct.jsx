@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { JSONToData } from '@/utils/todo';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { PUT, GET, POST,baseUrl } from '@/api/GET';
+import { PUT, GET, POST, baseUrl } from '@/api/GET';
 import SpinnerLoading from '@/components/SpinnerLoading/SpinnerLoading';
 
 export default function EditProduct() {
@@ -78,7 +78,7 @@ export default function EditProduct() {
                 <div className={`add-product my-12  pb-8 w-[70%] flex flex-col gap-8 m-auto bg-cloudBlue  ${openPopup ? 'brightness-50' : ''}`}>
 
                     <div className={"bg-white pt-6 pb-2 px-6 border-[1px]"}>
-                        <span className='text-yaleBlue hover:text-black cursor-pointers' onClick={() => window.history.back()}><ArrowBackIcon  className={"mb-4"} style={{ fontSize: '45px' }} /></span>
+                        <span className='text-yaleBlue hover:text-black cursor-pointers' onClick={() => window.history.back()}><ArrowBackIcon className={"mb-4"} style={{ fontSize: '45px' }} /></span>
                         <span className="inline-block font-bold text-3xl ml-2">Edit Product</span>
                         <span onClick={() => {
                             let tmp = 0
@@ -339,6 +339,7 @@ function QuantityOfVariants({ productForm, setProductForm }) {
                     <input defaultValue={productForm.variantDetails[0].quantity} id="quantity" className='outline-none w-60 border-2 border-gray-400 h-12 rounded pl-4 bg-[#F2F4F5]' type='number' onChange={(e) => {
                         setProductForm({ ...productForm, variantDetails: [{ variantDetail: null, quantity: e.target.value }] })
                     }} />
+
                 </div>
             </div>
         )
@@ -346,25 +347,63 @@ function QuantityOfVariants({ productForm, setProductForm }) {
 
 
     return (
-        <div className='bg-white'>
+        // <div className='bg-white'>
+        //     <div><span className={"text-xl font-medium"}>Please fill the quantity of each variation (fill 0 if unavailable)</span></div>
+        //     <div className='w-[600px] grid grid-cols-4 p-4 border-t-2 border-x-2 border-gray-400 mt-4 text-xl font-semibold'>
+        //         <span className='col-span-2'>Variant</span>
+        //         <span className='text-center'>Quantity</span>
+        //         <span className='text-center'>Price</span>
+        //     </div>
+        //     <div className='col-span-4 flex flex-col w-[600px] border-2 border-gray-400 overflow-y-scroll no-scrollbar max-h-[300px] mb-6'>
+        //         {productForm.variantDetails.map((item, index) => {
+        //             return (
+        //                 <div key={`${index}-${item}`} className='grid-cols-4 flex flex-row gap-4 w-full border-b-[1px] border-gray-400 h-auto'>
+        //                     <span className='col-span-2 border-r-2 border-gray-400 grow place-content-center pl-4'>{JSONToData(item.variantDetail)}</span>
+        //                     <input type="number" defaultValue={productForm.variantDetails[index].quantity} placeholder='fill a number' className=' list-quantity outline-none w-1/4 h-12 border-r-2 border-gray-400' onInput={(e) => {
+        //                         e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
+        //                         let tmp = [...productForm.variantDetails];
+        //                         tmp[index].quantity = e.target.value
+        //                         setProductForm({ ...productForm, variantDetails: tmp })
+        //                     }}></input>
+        //                     <input type="number" defaultValue={productForm.variantDetails[index].price} placeholder='fill a number' className='list-price outline-none w-1/4 h-12' onInput={(e) => {
+        //                         e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
+        //                         let tmp = [...productForm.variantDetails];
+        //                         tmp[index].price = e.target.value
+        //                         console.log(tmp)
+        //                         setProductForm({ ...productForm, variantDetails: tmp })
+        //                     }}></input>
+        //                 </div>
+
+        //             )
+        //         })}
+        //     </div>
+        // </div>
+        <div>
             <div><span className={"text-xl font-medium"}>Please fill the quantity of each variation (fill 0 if unavailable)</span></div>
-            <div className='w-[600px] p-4 border-t-2 border-x-2 border-gray-400 mt-4 text-xl font-semibold'>
-                <span>Variant</span>
-                <span className='float-right pr-8'>Quantity</span>
+            <div className='w-[600px] grid grid-cols-4 p-4 border-t-2 border-x-2 border-gray-400 mt-4 text-xl font-semibold'>
+                <span className='col-span-2'>Variant</span>
+                <span className='text-center'>Quantity</span>
+                <span className="text-center">Price (VND)</span>
             </div>
-            <div className='flex flex-col w-[600px] border-2 border-gray-400 overflow-y-scroll no-scrollbar max-h-[300px] mb-6'>
+            <div className='col-span-4 flex flex-col w-[600px] border-2 border-gray-400 overflow-y-scroll no-scrollbar max-h-[300px] mb-6'>
                 {productForm.variantDetails.map((item, index) => {
                     return (
-                        <div key={`${index}-${item}`} className='flex flex-row gap-4 w-full border-b-[1px] border-gray-400 h-auto'>
-                            <span className='border-r-2 border-gray-400 grow place-content-center pl-4'>{JSONToData(item.variantDetail)}</span>
-                            <input type="number" defaultValue={productForm.variantDetails[index].quantity} placeholder='fill a number' className='list-quantity outline-none w-1/4 h-12' onInput={(e) => {
+                        <div key={`${index}-${item}`} className='grid grid-cols-4 gap-4 w-full border-b-[1px] border-gray-400 h-auto'>
+                            <span className='col-span-2 border-r-2 border-gray-400 grow place-content-center pl-4'>{JSONToData(item.variantDetail)}</span>
+                            <input type="number" defaultValue={productForm.variantDetails[index].quantity} className='list-quantity outline-none h-12 border-r-[1px] border-gray-400' onInput={(e) => {
                                 e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
                                 let tmp = [...productForm.variantDetails];
                                 tmp[index].quantity = e.target.value
                                 setProductForm({ ...productForm, variantDetails: tmp })
                             }}></input>
-                        </div>
+                            <input type="number" defaultValue={productForm.variantDetails[index].price} className='list-quantity outline-none h-12' onInput={(e) => {
+                                e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 9)
+                                let tmp = [...productForm.variantDetails];
+                                tmp[index].price = e.target.value
+                                setProductForm({ ...productForm, variantDetails: tmp })
+                            }}></input>
 
+                        </div>
                     )
                 })}
             </div>

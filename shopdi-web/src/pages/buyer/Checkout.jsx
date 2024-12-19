@@ -126,6 +126,7 @@ export default function Checkout({ ProductList }) {
 
                                                 "variant": tmp[i].cartItems[0].variant,
                                                 "quantity": tmp[i].cartItems[0].quantity,
+                                                "price": tmp[i].cartItems[0].price,
                                                 "addressId": currentAddress.addressId,
                                                 "orderNotes": document.getElementById("note").value,
                                                 'paymentMethod': payment

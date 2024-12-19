@@ -3,6 +3,7 @@ import profileDefault from "../../assets/images/profileDefault.png";
 import axios from "axios";
 import { baseUrl } from "../../api/GET";
 import { AddAddress } from "../../components/Buyer/Checkout/AddressSelection";
+import { getUsername } from "../../utils/todo";
 const EditProfile = () => {
     const [addressList, setAddressList] = useState({});
     const [info, setInfo] = useState([]);
@@ -369,7 +370,7 @@ const EditProfile = () => {
                                 <div className="grid grid-cols-1 gap-2">
                                     <div>
                                         <label className="block text-[15px] md:text-[20px] mb-2 col-span-2 font-semibold">
-                                            Username: {info.username}
+                                            Username: {getUsername(info.username)}
                                         </label>
                                     </div>
                                     <div>
