@@ -51,7 +51,7 @@ function App() {
                                 <Route path="admin/*" element={
                                     <div className="flex flex-row min-h-screen">
                                         <AdminSideBar />
-                                        <div className="w-[85%] flex flex-col w-full">
+                                        <div className="w-[85%] flex flex-col">
                                             <AdminHome />
                                         </div>
                                     </div>
