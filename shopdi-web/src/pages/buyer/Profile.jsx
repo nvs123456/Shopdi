@@ -6,6 +6,7 @@ import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import TaskIcon from '@mui/icons-material/Task';
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { baseUrl } from "../../api/GET";
+import { getUsername } from "../../utils/todo";
 export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const [orders, setOrders] = useState([]);
@@ -32,6 +33,7 @@ export default function Profile() {
                 }
 
                 if (infoResponse.data.code === "OK") {
+                    // infoResponse.data.result.username = getUsername(infoResponse.data.result.username)
                     setInfo(infoResponse.data.result);
                 }
             } catch (err) {
@@ -63,7 +65,7 @@ export default function Profile() {
             {/* Header */}
             <div className="max-w-6xl mx-auto px-6 pb-6">
                 <h1 className="text-2xl font-semibold text-gray-800">
-                    Hello, {info.username || "User"}
+                    Hello, {getUsername(info.username) || "User"}
                 </h1>
                 <p className="text-[16px] text-gray-500">
                     From your account dashboard, you can easily check & view your{" "}
@@ -80,13 +82,13 @@ export default function Profile() {
 
             {/* Dashboard Cards */}
             <div className="max-w-6xl mx-auto mt-6 flex flex-row gap-x-10">
-                <div className="w-[36%]">
+                <div className="w-1/3">
                     <AccountInfo info={info} />
                 </div>
-                <div className="w-[36%]">
+                <div className="w-1/3">
                     <BillingAddress info={info} address={defaultAddress} />
                 </div>
-                <div className="w-[28%]">
+                <div className="w-1/3">
                     <OrderSummary orders={orders} />
                 </div>
             </div>
@@ -107,10 +109,10 @@ function AccountInfo({ info }) {
                     alt="profile"
                     className="lg:w-16 lg:h-16 p-1 mr-2 border-[1px] rounded-full"
                 />
-                <p className="text-gray-800 font-semibold mt-5 mb-4 ml-2 text-xl ">{info.username}</p>
+                <p className="text-gray-800 font-semibold mt-5 mb-4 ml-2 text-xl ">{getUsername(info.username)}</p>
             </div>
-            <p className="text-gray-500 mb-2 ml-4">{`${info.firstName} ${info.lastName}`}</p>
-            <p className="text-gray-500 mb-2 ml-4">Phone: {info.mobileNo}</p>
+            <p className="text-gray-500 mb-2 ml-4">{`${info.firstName===null?"No name":info.firstName} ${info.lastName===null?"No name":info.lastName}`}</p>
+            <p className="text-gray-500 mb-2 ml-4">Phone: {info.mobileNo===null?"No number":info.mobileNo}</p>
             <p className="text-gray-500 mb-2 ml-4">Email: {info.email}</p>
             <button
                 onClick={() => (window.location.href = "/editprofile")}

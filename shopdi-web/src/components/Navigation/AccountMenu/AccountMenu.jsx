@@ -15,7 +15,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import { useAuth } from '@/routes/AuthProvider';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { GET } from '../../../api/GET';
-
+import { getUsername } from '../../../utils/todo';
 export default function AccountMenu() {
     const useauth = useAuth();
     // console.log("useauth :",useauth);
@@ -38,14 +38,14 @@ export default function AccountMenu() {
     React.useEffect(() => {
         GET(`users/my-info`).then((data) => {
             setAvatar(data.result.profileImage)
-            setUsername(data.result.username)
+            setUsername(getUsername(data.result.username))
         })
     })
 
     return (
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                <Tooltip title={useauth.user}>
+                <Tooltip title={getUsername(useauth.user)}>
                     <IconButton
                         onClick={handleClick}
                         size="small"

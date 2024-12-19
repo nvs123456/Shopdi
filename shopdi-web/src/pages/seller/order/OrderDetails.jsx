@@ -142,25 +142,25 @@ export default function OrderDetails() {
                         at {(new Date(order.deliveryDate)).toLocaleDateString()}</h2>
                     {/* Customer, Shipping and Payment Details */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 my-12">
-                        <div>
+                        <div className="h-full flex flex-col">
                             <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Customer details</h2>
-                            <div className="bg-white px-8 pb-20 border-b-[1px] border-x-[1px] text-[16px]">
+                            <div className="bg-white px-8 pb-20 border-b-[1px] border-x-[1px] text-[16px] grow">
                                 <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
                                 <p className={"py-2"}>{order.shippingAddress?.phoneNumber}</p>
                                 <p>{order.shippingAddress?.email}</p>
                             </div>
                         </div>
-                        <div>
+                        <div className="h-full flex flex-col">
                             <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Shipping address</h2>
-                            <div className="bg-white px-8 pb-20 border-b-[1px] border-x-[1px] text-[16px]">
+                            <div className="bg-white px-8 pb-20 border-b-[1px] border-x-[1px] text-[16px] grow">
                                 <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
                                 <p className={"py-2"}>{order.shippingAddress?.phoneNumber}</p>
                                 <p>{order.shippingAddress?.address + ", " + order.shippingAddress?.city + ", " + order.shippingAddress?.state + ", " + order.shippingAddress?.country}</p>
                             </div>
                         </div>
-                        <div>
+                        <div className="h-full flex flex-col">
                             <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Payment details</h2>
-                            <div className="bg-white px-8 pb-6 border-b-[1px] border-x-[1px] text-[16px]">
+                            <div className="bg-white px-8 pb-6 border-b-[1px] border-x-[1px] text-[16px] grow">
                                 <p className={"border-t-2 pt-4 border-gray-300"}>Transaction Id: {order?.transactionId}</p>
                                 <p className={"py-2"}>Payment Method: {order?.paymentMethod}</p>
                                 <p>Payment Status: {order?.paymentStatus}</p>

@@ -15,3 +15,15 @@ export const JSONToData = (json) => {
     }
 
 }
+export const getUsername = (name) => {
+    if(name === null || name === undefined){
+        return ""
+    }
+    let index = name.length
+    for (let i = 0; i < name.length; i++) {
+        if (name[i] === "_") {
+            index = i
+        }
+    }
+    return name.substring(0, index)
+}

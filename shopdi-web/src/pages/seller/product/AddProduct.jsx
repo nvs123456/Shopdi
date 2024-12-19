@@ -319,7 +319,7 @@ function QuantityOfVariants({ variants, setOpenPopup, productForm, setProductFor
             <div className='w-[600px] grid grid-cols-4 p-4 border-t-2 border-x-2 border-gray-400 mt-4 text-xl font-semibold'>
                 <span className='col-span-2'>Variant</span>
                 <span className='text-center'>Quantity</span>
-                <span className="text-center">Price(VND)</span>
+                <span className="text-center">Price (VND)</span>
             </div>
             <div className='col-span-4 flex flex-col w-[600px] border-2 border-gray-400 overflow-y-scroll no-scrollbar max-h-[300px] mb-6'>
                 {productForm.variantDetails.map((item, index) => {

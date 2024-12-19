@@ -1,5 +1,7 @@
 package com.rs.shopdiapi.domain.dto.request;
 
+import java.math.BigDecimal;
+
 import com.rs.shopdiapi.domain.enums.PaymentMethodEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -20,6 +22,9 @@ public class BuyNowRequest {
 
     @NotNull(message = "Quantity is required")
     Integer quantity;
+    
+    @NotNull(message = "Price is required")
+    BigDecimal price;
 
     @NotNull(message = "Address ID is required")
     Long addressId;
