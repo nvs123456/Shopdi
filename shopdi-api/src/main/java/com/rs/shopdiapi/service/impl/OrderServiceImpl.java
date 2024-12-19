@@ -188,7 +188,7 @@ public class OrderServiceImpl implements OrderService {
                 .seller(product.getSeller())
                 .build();
 
-        BigDecimal totalPrice = product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
+        BigDecimal totalPrice = request.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
 
         Address address = addressRepository.findById(request.getAddressId())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
