@@ -55,7 +55,7 @@ export default function userCard({ status }) {
                     >
                         <div className={'relative'}>
                             <input type={'checkbox'}
-                                className='absolute top-0 left-0 w-4 h-4 focus:ring mr-36 md:mr-28 lg:mr-44 rounded-xl text-darkGray' />
+                                className='absolute top-1 left-1.5 w-4 h-4 focus:ring mr-36 md:mr-28 lg:mr-44 rounded-xl text-darkGray' />
                             <button
                                 onClick={() => handleShowMenu(user.username)}
                                 className="w-6 h-6 top-0 right-0 absolute flex items-center justify-center rounded-full hover:bg-gray-200"
