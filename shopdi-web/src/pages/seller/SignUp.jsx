@@ -38,7 +38,7 @@ const SellerSignUp = () => {
             <div className={`${wait ? "brightness-50" : ""} bg-white py-24`}>
                 <div className={`flex min-h-full flex-1 flex-col justify-center px-0 py-5 lg:px-14 border-[1px] rounded mx-auto max-w-[600px] bg-cloudBlue`}>
                     <div className=" sm:w-full ">
-                        <h2 className="mt-10 text-left text-[40px] font-semibold leading-9 tracking-tight text-yaleBlue font-size ">
+                        <h2 className="mt-10 text-left text-[40px] font-bold leading-9 tracking-tight text-yaleBlue font-size ">
                             Get your bussiness started
                         </h2>
                         <p className="mt-4 text-left text-xl text-gray-500">
@@ -218,7 +218,7 @@ const SellerSignUp = () => {
                                 </button>
                             </div>
                         </form>
-                        <p className="mt-4 mb-2 text-left text-[16px] text-red">
+                        <p className="text-left text-[16px] text-red">
                             {message}
                         </p>
                         <p className=" mb-8 text-left text-[16px] text-gray-500">
