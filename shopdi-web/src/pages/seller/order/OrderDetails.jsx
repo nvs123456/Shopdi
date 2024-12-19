@@ -144,18 +144,18 @@ export default function OrderDetails() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 my-12">
                         <div>
                             <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Customer details</h2>
-                            <div className="bg-white px-8 pb-14 border-b-[1px] border-x-[1px] text-[16px]">
+                            <div className="bg-white px-8 pb-20 border-b-[1px] border-x-[1px] text-[16px]">
                                 <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
-                                <p className={"py-2"}>{order.shippingAddress?.email}</p>
-                                <p>{order.shippingAddress?.phoneNumber}</p>
+                                <p className={"py-2"}>{order.shippingAddress?.phoneNumber}</p>
+                                <p>{order.shippingAddress?.email}</p>
                             </div>
                         </div>
                         <div>
                             <h2 className="font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-2 px-8">Shipping address</h2>
-                            <div className="bg-white px-8 pb-14 border-b-[1px] border-x-[1px] text-[16px]">
+                            <div className="bg-white px-8 pb-20 border-b-[1px] border-x-[1px] text-[16px]">
                                 <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
                                 <p className={"py-2"}>{order.shippingAddress?.phoneNumber}</p>
-                                <p>{order.shippingAddress?.address+", "+order.shippingAddress?.city+", "+order.shippingAddress?.state+", "+order.shippingAddress?.country}</p>
+                                <p>{order.shippingAddress?.address + ", " + order.shippingAddress?.city + ", " + order.shippingAddress?.state + ", " + order.shippingAddress?.country}</p>
                             </div>
                         </div>
                         <div>
@@ -164,7 +164,7 @@ export default function OrderDetails() {
                                 <p className={"border-t-2 pt-4 border-gray-300"}>Transaction Id: {order?.transactionId}</p>
                                 <p className={"py-2"}>Payment Method: {order?.paymentMethod}</p>
                                 <p>Payment Status: {order?.paymentStatus}</p>
-                                <p className={"pt-2"}>Total amount: {order?.totalPrice.toLocaleString("vi",{style: "currency", currency: "VND"})}</p>
+                                <p className={"pt-2"}>Total amount: {order?.totalPrice.toLocaleString("vi", { style: "currency", currency: "VND" })}</p>
                             </div>
                         </div>
                     </div>
@@ -210,6 +210,7 @@ export default function OrderDetails() {
                         <div
                             className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858]  bg-white">Order
                             Cancelled!</div> :
+
 
                         <div className=" relative w-full my-12 font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-8 px-8">
                             <div>

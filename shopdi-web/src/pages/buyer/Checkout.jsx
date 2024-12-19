@@ -78,17 +78,17 @@ export default function Checkout({ ProductList }) {
                         }
                         )}
                     </div>
-                    <div className="flex flex-row border-[1px] border-[#E4E7E9] pt-8" >
-                        <div className="w-4/6">
+                    <div className="flex flex-row border-[1px] border-[#E4E7E9] pt-10 justify-between" >
+                        <div className="w-7/12">
                             <Payment payment={payment} setPayment={setPayment} />
                             <div className={"mx-10"}>
-                                <div>Message for Sellers:</div>
+                                <div className={"text-xl font-semibold mt-2 mb-1"}>Message for Sellers:</div>
                                 <textarea id="note" className="w-full h-20 border-2 border-[#E4E7E9] rounded mt-2 mb-6 p-2" placeholder="(Optional)"></textarea>
                             </div>
                         </div>
-                        <div className="text-left text-xl w-80">
+                        <div className="text-left text-[18px] w-96 mr-20">
                             <div className="flex flex-row justify-between mb-2">
-                                <p className='inline-block'>Merchandise Subtotal</p>
+                                <p className='inline-block font-medium text-xl'>Merchandise Subtotal</p>
                                 <p className='inline-block'>{
                                     tmp.reduce((total, current) => {
                                         for (let i = 0; i < current.cartItems.length; i++) {
@@ -100,11 +100,11 @@ export default function Checkout({ ProductList }) {
                                     }, 0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className="flex flex-row justify-between mb-4 border-b-2 border-[#E4E7E9] pb-4">
-                                <p className='inline-block'>Shipping Subtotal</p>
+                                <p className='inline-block font-medium text-xl'>Shipping Subtotal</p>
                                 <p className='inline-block'>{Number(0).toLocaleString('vi', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className="flex flex-row justify-between mb-4">
-                                <p className='inline-block'>Total Payment:</p>
+                                <p className='inline-block font-semibold text-xl'>Total Payment:</p>
                                 <p className='inline-block'>{
                                     tmp.reduce((total, current) => {
                                         for (let i = 0; i < current.cartItems.length; i++) {
