@@ -1,10 +1,13 @@
 # SHOPDI
+![Screenshot (3245)](https://github.com/user-attachments/assets/87499a53-2240-4d60-8d99-50b9dc193592)
+![Screenshot 2024-12-19 172301](https://github.com/user-attachments/assets/18f27d76-6fcb-4c3e-bfd0-1ac0340a3625)
 ## Giới thiệu chung
 Bài tập lớn - INT3306 8: Phát triển ứng dụng Web 
 
 Dự án Shopdi là hệ thống giao dịch thương mại điện tử đơn giản. Hệ thống là bên trung gian cho phép mọi người có thể đăng bán các sản phẩm và mua các sản phẩm hợp với nhu cầu. Hệ thông cũng cung cấp cho quản trị viên các chức năng giám sát hệ thống.
 
 Hệ thống được xây dựng bởi nhóm WebWizards với các thành viên:
+
 + Trần Vũ Đức Huy - 22021111
 + Bùi Đỗ Khôi Nguyên - 22021183
 + Nguyễn Văn Sớm - 22021194
