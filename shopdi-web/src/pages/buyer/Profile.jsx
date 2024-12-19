@@ -70,8 +70,8 @@ export default function Profile() {
                     <br />
                     <span className="text-blue-500 cursor-pointer">Recent Orders</span>, manage your{" "}
                     <span className="text-blue-500 cursor-pointer">
-            Shipping Addresses
-          </span>
+                        Shipping Addresses
+                    </span>
                     , and edit your{" "}
                     <span className="text-blue-500 cursor-pointer">Password</span> and{" "}
                     <span className="text-blue-500 cursor-pointer">Account Details</span>.
@@ -84,20 +84,20 @@ export default function Profile() {
                     <AccountInfo info={info} />
                 </div>
                 <div className="w-[36%]">
-                    <BillingAddress info={info} address={defaultAddress}/>
+                    <BillingAddress info={info} address={defaultAddress} />
                 </div>
                 <div className="w-[28%]">
-                    <OrderSummary orders={orders}/>
+                    <OrderSummary orders={orders} />
                 </div>
             </div>
 
             {/* Recent Orders */}
-            <RecentOrders orders={orders}/>
+            <RecentOrders orders={orders} />
         </div>
     );
 }
 
-function AccountInfo({info}) {
+function AccountInfo({ info }) {
     return (
         <div className="relative bg-white border-[#E4E7E9] border-[1px] rounded p-5 h-80">
             <h2 className="text-[18px] font-medium text-gray-600 border-b-2 pb-3 mx-3">ACCOUNT INFO</h2>
@@ -177,12 +177,12 @@ function OrderSummary({ orders }) {
     );
 }
 
-function DashboardCard({ title, count, bgColor, iconColor}) {
+function DashboardCard({ title, count, bgColor, iconColor }) {
     return (
         <div className={`flex mb-3 h-full border-[1px] rounded ${title === 'Total Orders' ? 'bg-[#EAF6FE]' : title === "Pending Orders" ? 'bg-[#FFF3EB]' : 'bg-[#EAF7E9]'}`}>
             <div className={`bg-white p-3 m-4 w-16`}>
                 {/* Add SVG or Icon here */}
-                {title === "Total Orders" ? <RocketIcon sx={{ color: iconColor, fontSize: '40px' }} /> : title === "Pending Orders" ? <PendingActionsIcon sx={{ color: iconColor, fontSize: '40px' }}/> : <TaskIcon sx={{ color: iconColor, fontSize: '40px' }}/>}
+                {title === "Total Orders" ? <RocketIcon sx={{ color: iconColor, fontSize: '40px' }} /> : title === "Pending Orders" ? <PendingActionsIcon sx={{ color: iconColor, fontSize: '40px' }} /> : <TaskIcon sx={{ color: iconColor, fontSize: '40px' }} />}
             </div>
             <div>
                 <p className="text-gray-800 text-2xl font-semibold mt-4">{count}</p>
@@ -192,7 +192,7 @@ function DashboardCard({ title, count, bgColor, iconColor}) {
     );
 }
 
-function RecentOrders({orders}) {
+function RecentOrders({ orders }) {
     return (
         <div className="max-w-6xl mx-auto mt-8 py-6 px-8 bg-white border-2 border-[#E4E7E9]">
             <div className="relative mb-5">
@@ -206,38 +206,41 @@ function RecentOrders({orders}) {
             </div>
             {orders.length > 0 ? <table className="table-fixed mt-4 w-full text-center text-[10px] lg:text-[16px] text-black ">
                 <thead>
-                <tr className={`bg-[#F2F4F5] border-2 border-[#E4E7E9]`}>
-                    <th className="xl:w-[10%] py-3 border-b font-semibold">ORDER ID</th>
-                    <th className="xl:w-[20%] py-2 border-b font-semibold">STATUS</th>
-                    <th className="xl:w-[20%] py-2 border-b font-semibold">DATE</th>
-                    <th className="xl:w-[30%] py-2 border-b font-semibold">TOTAL</th>
-                    <th className="xl:w-[20%] py-2 border-b font-semibold">ACTION</th>
-                </tr>
+                    <tr className={`bg-[#F2F4F5] border-2 border-[#E4E7E9]`}>
+                        <th className="xl:w-[10%] py-3 border-b font-semibold">ORDER ID</th>
+                        <th className="xl:w-[20%] py-2 border-b font-semibold">STATUS</th>
+                        <th className="xl:w-[20%] py-2 border-b font-semibold">DATE</th>
+                        <th className="xl:w-[30%] py-2 border-b font-semibold">TOTAL</th>
+                        <th className="xl:w-[20%] py-2 border-b font-semibold">ACTION</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {
-                    orders.map((orderItem) => (
-                        <tr key={orderItem.orderId}>
-                            <td className="py-4 xl:pl-4">{orderItem.orderId}</td>
-                            {orderItem.orderStatus === 'DELIVERED' ? <td className='text-[#2DB224]'>COMPLETED</td> :
-                                orderItem.orderStatus === 'PENDING' ?
-                                    <td className='text-[#FA8232]'>IN PROGRESS</td> :
-                                    <td className='text-[#EE5858]'>CANCELLED</td>
-                            }
-                            <td className="py-2">{orderItem.deliveryDate.split(" ")[0]}</td>
-                            <td className="py-2">${orderItem.totalPrice}({orderItem.totalItems} Products)</td>
-                            <td onClick={() => {window.location.href = `/orders/${orderItem.orderId}`}}
-                                className="py-2 text-blue-500 cursor-pointer">View Details<ArrowForwardIcon
-                                className={`ml-1`} fontSize={'inherit'}/></td>
-                        </tr>
-                    ))
-                }
+                    {
+                        orders.map((orderItem) => (
+                            <tr key={orderItem.orderId}>
+                                <td className="py-4 xl:pl-4">{orderItem.orderId}</td>
+                                <td className={`text-left pl-16 font-semibold ${orderItem.orderStatus === 'PENDING' ? 'text-[#FF731D]'
+                                    : orderItem.orderStatus === 'CONFIRMED' ? 'text-[#4BB543]' :
+                                        orderItem.orderStatus === 'PROCESSING' ? 'text-[#4BB543]' :
+                                            orderItem.orderStatus === 'DELIVERING' ? 'text-[#3A5BFF]]' :
+                                                orderItem.orderStatus === 'DELIVERED' ? 'text-[#3A5BFF]' : 'text-[#EE5858]'}`}>
+                                    {orderItem.orderStatus}
+                                </td>
+
+                                <td className="py-2">{orderItem.deliveryDate.split(" ")[0]}</td>
+                                <td className="py-2">${orderItem.totalPrice}({orderItem.totalItems} Products)</td>
+                                <td onClick={() => { window.location.href = `/orders/${orderItem.orderId}` }}
+                                    className="py-2 text-blue-500 cursor-pointer">View Details<ArrowForwardIcon
+                                        className={`ml-1`} fontSize={'inherit'} /></td>
+                            </tr>
+                        ))
+                    }
 
                 </tbody>
             </table>
                 : (
-                <p className="text-gray-500">No orders available</p>
-            )}
+                    <p className="text-gray-500">No orders available</p>
+                )}
         </div>
     );
 }

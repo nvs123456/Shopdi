@@ -333,7 +333,7 @@ const UploadAndDisplayImage = ({ selectedImage, setSelectedImage }) => {
 function QuantityOfVariants({ productForm, setProductForm }) {
     if ((productForm.variantDetails.length === 1 && productForm.variantDetails[0].variantDetail === null) || (productForm.variantDetails.length === 0)) {
         return (
-            <div className='bg-white p-4 rounded'>
+            <div className='bg-white p-4 rounded flex flex-col items-center'>
                 <div className='w-[400px] rounded p-4 flex flex-col gap-6 items-center'>
                     <span className='font-bold text-yaleBlue text-[26px] '>Enter quantity</span>
                     <input defaultValue={productForm.variantDetails[0].quantity} id="quantity" className='outline-none w-60 border-2 border-gray-400 h-12 rounded pl-4 bg-[#F2F4F5]' type='number' onChange={(e) => {

@@ -105,15 +105,15 @@ export default function DashBoard() {
         return (
             <div className="w-full bg-cloudBlue">
 
-                <div className="flex flex-row gap-12 pt-8 pb-4 pl-2 pr-8">
-                    <div>
+                <div className="flex flex-row gap-12 pt-10 pb-12 pl-16 pr-24">
+                    <div className={"w-1/2"}>
                         <div className="flex flex-row gap-4">
-                            <img src={profile.profileImage || defaultImage} alt="logo" className="h-16 w-auto rounded-full" />
-                            <div className="content-center text-3xl font-medium"><span >Hello, {profile.shopName}</span></div>
+                            <img src={profile.profileImage || defaultImage} alt="logo" className="h-20 w-auto rounded-full" />
+                            <div className="ml-2 content-center text-3xl font-medium"><span >Hello, {profile.shopName}!</span></div>
                         </div>
-                        <div className="text-xl mt-4">Today: <span>{new Date().toISOString().slice(0, 10)}</span></div>
+                        {/*<div className="text-xl mt-4">Today is <span>{new Date().toISOString().slice(0, 10)}</span></div>*/}
                     </div>
-                    <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px] '>
+                    <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/4 h-32 border-[1px] '>
                         <h1 className="text-2xl text-gray-600 font-medium">Total Earnings</h1>
                         <div className="flex flex-row justify-between">
                             <span className="text-3xl font-semibold pb-2">{data.todayEarning.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</span>
@@ -124,7 +124,7 @@ export default function DashBoard() {
 
                         </div>
                     </div>
-                    <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/3 h-32 border-[1px]'>
+                    <div className='flex flex-col py-4 px-6 rounded justify-between bg-white w-1/4 h-32 border-[1px]'>
                         <h1 className="text-2xl text-gray-600 font-medium">Total Orders</h1>
                         <div className="flex flex-row justify-between">
                             <span className="text-3xl font-semibold pb-2">{data.todayOrder.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
@@ -136,34 +136,34 @@ export default function DashBoard() {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row gap-12 p-2">
-                    <div className="w-[40%]">
+                <div className="flex flex-col gap-12 pl-16 pr-24 mb-12">
+                    <div className="w-[100%]">
 
-                        <div className="text-3xl font-semibold text-yaleBlue bg-white pt-3 pb-4 px-5 border-b-2 border-t-[1px] border-x-[1px]">Best seller</div>
-                        <div className="grid grid-cols-6 gap-4 bg-white px-4 py-2 shadow-lg border-b-[1px] border-x-[1px]">
+                        <div className="text-3xl font-semibold text-yaleBlue bg-white py-3 px-5 border-b-2 border-t-[1px] border-x-[1px]">Best seller</div>
+                        <div className="grid grid-cols-6 bg-white border-b-[1px] pb-4 border-x-[1px]">
                             {/* <div className="header flex flex-row font-semibold text-xl"> */}
-                            <span className="col-span-3 pl-2 text-2xl font-semibold">Product</span>
-                            <span className={`text-center font-semibold ${currentSort === "revenue" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("revenue", products) }) }}>Revenue<SwapVertIcon /></span>
-                            <span className={`text-center font-semibold ${currentSort === "order" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("order", products) }) }}>Orders<SwapVertIcon /></span>
-                            <span className={`text-center font-semibold ${currentSort === "rating" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("rating", products) }) }}>Rating<SwapVertIcon /></span>
+                            <span className="col-span-3 py-3 text-2xl font-semibold bg-gray-100 pl-8 mb-2 border-b-2">Product</span>
+                            <span className={`py-3 text-center font-semibold text-2xl bg-gray-100 mb-2 border-b-2 ${currentSort === "revenue" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("revenue", products) }) }}>Revenue<SwapVertIcon /></span>
+                            <span className={`py-3 text-center font-semibold text-2xl bg-gray-100 mb-2 border-b-2 ${currentSort === "order" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("order", products) }) }}>Orders<SwapVertIcon /></span>
+                            <span className={`py-3 text-center font-semibold text-2xl bg-gray-100 mb-2 border-b-2 ${currentSort === "rating" ? "text-yaleBlue border-b-2 border-yaleBlue" : ""}`} onClick={() => { setData({ ...data, bestSeller: sortBy("rating", products) }) }}>Rating<SwapVertIcon /></span>
 
                             {data.bestSeller.map((item, index) => {
                                 return (
                                     <>
-                                        <div className="flex flex-row col-span-3">
-                                            <div className="min-w-10 text-center"><img src={item.productImage} width={40} height={40} /></div>
-                                            <div className="grow my-auto ml-2 truncate">{item.productName}</div>
+                                        <div className="flex flex-row col-span-3 text-[18px]">
+                                            <div className="min-w-10 text-center pl-8 my-4"><img src={item.productImage} width={60} height={60} /></div>
+                                            <div className="grow my-auto ml-3 truncate">{item.productName}</div>
                                         </div>
-                                        <div className=" text-center">{(item.soldQuantity * item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
-                                        <div className=" text-center">{item.soldQuantity}</div>
-                                        <div className=" text-center">{item.rating} star</div>
+                                        <div className="my-4 text-center text-[18px]">{(item.soldQuantity * item.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} &#8363;</div>
+                                        <div className="my-4 text-center text-[18px]">{item.soldQuantity}</div>
+                                        <div className="my-4 text-center text-[18px]">{item.rating} star</div>
                                     </>
                                 );
                             })}
                         </div>
 
                     </div>
-                    <div className="grow">
+                    <div className="w-[80%] grow">
                         <Bar className="w-[100%] p-6 bg-white border-[1px]" height={170} data={doanhthu} />
                     </div>
                     {/* <div className="w-1/3 ">

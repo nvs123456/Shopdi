@@ -1,6 +1,5 @@
 package com.rs.shopdiapi.service.impl;
 
-
 import com.rs.shopdiapi.config.VNPayConfig;
 import com.rs.shopdiapi.domain.dto.response.PaymentResponse;
 import com.rs.shopdiapi.domain.entity.Order;
@@ -52,14 +51,15 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Transactional
     @Override
-    public String createVnPayPayment(HttpServletRequest request, BigDecimal amount, Long orderId) throws UnsupportedEncodingException {
+    public String createVnPayPayment(HttpServletRequest request, BigDecimal amount, Long orderId)
+            throws UnsupportedEncodingException {
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount.multiply(BigDecimal.valueOf(100))));
         vnpParamsMap.put("vnp_TxnRef", generateTxnRef(orderId));
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toán đơn hàng #" + orderId);
 
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
-        //build query url
+        // build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
         String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
         String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);

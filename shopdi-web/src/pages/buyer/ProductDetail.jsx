@@ -165,13 +165,13 @@ export default function ProductDetail() {
                             </div>
                         </div>
                         <div className="product-description flex flex-col gap-y-4">
-                            <div className="mt-12 text-4xl text-wrap">
+                            <div className="mt-12 text-3xl text-wrap mr-16">
                                 <p>{product.productName}</p>
                             </div>
 
                             <div>
                                 <span
-                                    className='text-3xl text-[#2DA5F3] mt-2'>&#8363; {priceOfVariant.toLocaleString()}</span>
+                                    className='text-[26px] text-[#2DA5F3] mt-2'> {priceOfVariant.toLocaleString()} &#8363;</span>
                             </div>
                             <Variant variantWithQuantity={product.variants}
                                 onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant}
@@ -197,17 +197,17 @@ export default function ProductDetail() {
                         </div>
                     </div>
                     <ShopBar sellerId={product.seller.sellerId} />
-                    <div className="description  bg-white flex flex-col gap-x-8 border-[1px] p-6">
-                        <div className="text-2xl mb-2 font-semibold font-sans">
+                    <div className="description  bg-white flex flex-col gap-x-8 border-[1px] py-6 px-8">
+                        <div className="text-[28px] mb-4 font-semibold font-sans text-yaleBlue border-b-2 pb-4">
                             <h2>Description</h2>
                         </div>
                         <div>
                             <p className="font-publicSans white-space-pre" dangerouslySetInnerHTML={{ __html: product.description.replace(/\n/g, "<br>") }}></p>
                         </div>
                     </div>
-                    <div className="description bg-white flex flex-row gap-x-8 border-[1px] p-6 mb-12">
+                    <div className="description bg-white flex flex-row gap-x-8 border-[1px] py-6 px-8 mb-12">
                         <div className="w-full">
-                            <div className="text-2xl mb-2 font-semibold font-sans">
+                            <div className="text-[28px] mb-4 font-semibold font-sans text-yaleBlue border-b-2 pb-4">
                                 <h2>Comment</h2>
                             </div>
                             <div className="font-sans white-space-pre">

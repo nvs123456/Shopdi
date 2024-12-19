@@ -47,7 +47,7 @@ export default function ProductList({ products, setProducts, page, allProducts})
                                 sx={{
                                     marginRight: '36px',
                                     color: 'black', fontSize: '22px', fontWeight: 'semibold', '&.Mui-selected': {
-                                        color: '#F57E77',
+                                        color: 'yaleBlue',
                                         fontWeight: 'bold',
                                         fontSize: '25px',
                                         position: 'relative',
