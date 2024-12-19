@@ -130,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
                     Variant variant = new Variant();
                     variant.setVariantDetail(variantDetail.getVariantDetail());
                     variant.setQuantity(variantDetail.getQuantity());
+                    variant.setPrice(variantDetail.getPrice());
                     variant.setProduct(product);
                     return variant;
                 }).collect(Collectors.toSet());
