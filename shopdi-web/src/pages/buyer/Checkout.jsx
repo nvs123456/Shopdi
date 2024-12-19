@@ -20,8 +20,8 @@ export default function Checkout({ ProductList }) {
                 if (data.result.length === 0) {
                     setCurrentAddress(null)
                 } else {
-                    for(let i = 0; i < data.result.length; i++){
-                        if(data.result[i].default === true){
+                    for (let i = 0; i < data.result.length; i++) {
+                        if (data.result[i].default === true) {
                             setCurrentAddress(data.result[i])
                         }
                     }
@@ -65,13 +65,18 @@ export default function Checkout({ ProductList }) {
                         <span className="w-40 text-center text-xl pr-16 font-semibold">Subtotal</span>
                     </div>
                     <div className={"border-b-[20px] border-b-cloudBlue border-t-[1px] border-l-[1px] border-r-[1px] border-t-[#E4E7E9] border-l-[#E4E7E9] border-r-[#E4E7E9] pb-4"}>
-                        {tmp.map((item) =>
-                            <div key={item.sellerId}>
-                                <div className="text-[20x] font-semibold mx-8 py-4 border-b-2 border-[#E4E7E9] ">SHOP - {item.sellerName}</div>
-                                {item.cartItems.map((item) => {
-                                    if (item.isSelected) return <OrderItem key={item.cartItemId} item={item} />
-                                })}
-                            </div>)}
+                        {tmp.map((item) => {
+                            if (item.cartItems.find((i) => i.isSelected) !== undefined) {
+                                return (
+                                    <div key={item.sellerId}>
+                                        <div className="text-[20x] font-semibold mx-8 py-4 border-b-2 border-[#E4E7E9] ">SHOP - {item.sellerName}</div>
+                                        {item.cartItems.map((item) => {
+                                            if (item.isSelected) return <OrderItem key={item.cartItemId} item={item} />
+                                        })}
+                                    </div>)
+                            }
+                        }
+                        )}
                     </div>
                     <div className="flex flex-row border-[1px] border-[#E4E7E9] pt-8" >
                         <div className="w-4/6">

@@ -26,6 +26,7 @@ export default function ProductDetail() {
             setProduct(data.result)
             setProductImages(data.result.imageUrls)
             setQuantityInStock(tmp_quantityInStock)
+            setPriceOfVariant(data.result.price)
             if (data.result.variants.length > 0 && data.result.variants[0].variantDetail !== null) {
                 let v = []
                 for (let i = 0; i < data.result.variants[0].variantDetail.length; i++) {
@@ -47,6 +48,7 @@ export default function ProductDetail() {
     const [currentSelectedVariant, setCurrentSelectedVariant] = useState([]);
     const [isBuyNowWithoutAttribute, setIsBuyNowWithoutAttribute] = useState(true);
     const [quantityInStock, setQuantityInStock] = useState(0)
+    const [priceOfVariant, setPriceOfVariant] = useState(0)
     const [productImages, setProductImages] = useState([])
     const [subImages, setSubImages] = useState([0, 1, 2, 3, 4])
     const [curImage, setCurImage] = useState(0)
@@ -63,6 +65,7 @@ export default function ProductDetail() {
                 for (let j = 0; j < product.variants.length; j++) {
                     if (JSON.stringify(product.variants[j].variantDetail) === JSON.stringify(tmp)) {
                         setQuantityInStock(product.variants[j].quantity)
+                        setPriceOfVariant(product.variants[j].price)
                     }
                 }
             }
@@ -85,7 +88,7 @@ export default function ProductDetail() {
             productId: product.productId,
             "variant": JSON.stringify(currentSelectedVariant),
             "quantity": quantity,
-            "price": product.price,
+            "price": priceOfVariant,
             "discountPercent": 0,
             "discountedPrice": 0
         }).then((data) => {
@@ -110,19 +113,19 @@ export default function ProductDetail() {
                 isBuyNow: true,
                 selectedProducts: [
                     {
-                        sellerId: product.sellerId,
-                        sellerName: product.shopName,
+                        sellerId: product.seller.sellerId,
+                        sellerName: product.seller.shopName,
                         cartItems: [
                             {
-                                "sellerId": product.sellerId,
-                                "sellerName": product.shopName,
+                                "sellerId": product.seller.sellerId,
+                                "sellerName": product.seller.shopName,
                                 "cartItemId": 16,
                                 "productId": product.productId,
                                 "productName": product.productName,
                                 "productImage": productImages[0],
                                 "variant": JSON.stringify(currentSelectedVariant),
                                 "quantity": quantity,
-                                "price": product.price,
+                                "price": priceOfVariant,
                                 isSelected : true
                             }
                         ]
@@ -168,7 +171,7 @@ export default function ProductDetail() {
 
                             <div>
                                 <span
-                                    className='text-3xl text-[#2DA5F3] mt-2'>&#8363; {product.price.toLocaleString()}</span>
+                                    className='text-3xl text-[#2DA5F3] mt-2'>&#8363; {priceOfVariant.toLocaleString()}</span>
                             </div>
                             <Variant variantWithQuantity={product.variants}
                                 onChangeCurrentSelectedVariant={onChangeCurrentSelectedVariant}

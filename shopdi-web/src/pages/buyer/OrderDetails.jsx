@@ -1,28 +1,29 @@
-import React, {useEffect, useState} from 'react';
-import {styled} from "@mui/material/styles";
+import React, { useEffect, useState } from 'react';
+import { styled } from "@mui/material/styles";
 import axios from 'axios';
+import { GET } from '../../api/GET.jsx';
 
-import {Button, Step, StepLabel, Stepper, Typography} from '@mui/material';
+import { Button, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
-import StepConnector, {stepConnectorClasses,} from "@mui/material/StepConnector";
-import {useParams} from 'react-router-dom';
+import StepConnector, { stepConnectorClasses, } from "@mui/material/StepConnector";
+import { useParams } from 'react-router-dom';
 import Review from "./Review.jsx";
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SpinnerLoading from "../../components/SpinnerLoading/SpinnerLoading.jsx";
 import { baseUrl } from '../../api/GET.jsx';
 
-const steps = ['Order Placed','Confirmed', 'Packaging', 'On The Road', 'Delivered'];
-const icons = [<InventoryOutlinedIcon/>, <VerifiedUserIcon/>, <EmailOutlinedIcon/>, <LocalShippingOutlinedIcon/>, <HandshakeOutlinedIcon/>];
+const steps = ['Order Placed', 'Confirmed', 'Packaging', 'On The Road', 'Delivered'];
+const icons = [<InventoryOutlinedIcon />, <VerifiedUserIcon />, <EmailOutlinedIcon />, <LocalShippingOutlinedIcon />, <HandshakeOutlinedIcon />];
 const data = [
     ['PRODUCTS', 'PRICE', 'QUANTITY', 'TOTAL'],
 ];
 
-const CustomisedConnector = styled(StepConnector)(({theme}) => ({
+const CustomisedConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.active}`]: {
         [`& .${stepConnectorClasses.line}`]: {
             backgroundColor: "#FA8232",
@@ -48,7 +49,7 @@ function OrderDetails() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productIdToReview, setProductIdToReview] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const {id} = useParams();
+    const { id } = useParams();
     const [orderDetail, setOrderDetail] = useState({});
     const config = {
         headers: {
@@ -61,7 +62,13 @@ function OrderDetails() {
         setIsModalOpen(true);
         setProductIdToReview(productId);
     };
-
+    const handleCheckout = () => {
+        GET(`payment/vn-pay?amount=${orderDetail.totalPrice}&orderId=${orderDetail.orderId}`).then((res) => {
+            if (res.code === "OK") {
+                window.location.href = res.result
+            }
+        })
+    }
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
@@ -89,7 +96,7 @@ function OrderDetails() {
                 null,
                 config
             );
-            if(response.data.code === 'OK') {
+            if (response.data.code === 'OK') {
                 console.log('Data updated:', response.data);
                 fetchOrderDetail();
             }
@@ -131,25 +138,26 @@ function OrderDetails() {
     const date = new Date(deliveryDate);
     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
     const shippingAddress = orderDetail?.shippingAddress || {};
-    const {firstName = '', lastName = '', address = '', city = '', state = ''} = shippingAddress;
+    const { firstName = '', lastName = '', address = '', city = '', state = '', country = '' } = shippingAddress;
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <SpinnerLoading size={3}/>
+                <SpinnerLoading size={3} />
             </div>
         );
     }
 
     return (
         <div>
-            {isModalOpen && <Review isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} productId={productIdToReview}/>}
+            {isModalOpen && <Review isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} productId={productIdToReview} />}
             <div className={`${isModalOpen ? "brightness-50" : ''}  bg-[#F7FBFF] flex justify-center font-sans`}>
                 <div className="container md:mt-12 md:mb-12 my-5 h-5/6 border-[1px] bg-white w-full md:w-4/5 border-collapse">
                     {/* heading section */}
                     <div className="flex justify-between items-center border-b-2 h-8 md:h-14 mb-6 px-0 md:px-4">
                         <div className="flex items-center rounded hover:bg-gray-100 lg:h-[80%] hover:shadow-sm" >
-                            <ArrowBackIcon className="text-black" fontSize={'inherit'}/>
-                            <button className={`text-black text-[14px] md:text-[18px] pl-2 text-yaleBlue font-bold`} disabled={isModalOpen} onClick={() => window.location.href ='/orderhistory'}>
+                            <ArrowBackIcon className="text-black" fontSize={'inherit'} />
+                            <button className={`text-black text-[14px] md:text-[18px] pl-2 text-yaleBlue font-bold`} disabled={isModalOpen} onClick={() => window.location.href = '/orderhistory'}>
                                 ORDER DETAILS</button>
                         </div>
                     </div>
@@ -190,21 +198,19 @@ function OrderDetails() {
                                         <div key={label} className="flex items-center w-full">
                                             {/* Step Circle */}
                                             <div
-                                                className={`flex items-center justify-center w-4 h-4 md:w-10 md:h-10 rounded-full border-4 ${
-                                                    index < activeStep
-                                                        ? ' bg-[#2DB224] border-[#2DB224]' // Completed step
-                                                        : index === activeStep
-                                                            ? ' bg-white border-[#FF731D]' // Active step
-                                                            : ' bg-gray-200 border-gray-300' // Upcoming step
-                                                }`}
+                                                className={`flex items-center justify-center w-4 h-4 md:w-10 md:h-10 rounded-full border-4 ${index < activeStep
+                                                    ? ' bg-[#2DB224] border-[#2DB224]' // Completed step
+                                                    : index === activeStep
+                                                        ? ' bg-white border-[#FF731D]' // Active step
+                                                        : ' bg-gray-200 border-gray-300' // Upcoming step
+                                                    }`}
                                             >
-          <span
-              className={`text-[12px] md:text-lg font-bold ${
-                  index < activeStep ? 'text-white pb-1' : 'text-[#FF731D]'
-              }`}
-          >
-            {index < activeStep ? <CheckIcon/> : index + 1}
-          </span>
+                                                <span
+                                                    className={`text-[12px] md:text-lg font-bold ${index < activeStep ? 'text-white pb-1' : 'text-[#FF731D]'
+                                                        }`}
+                                                >
+                                                    {index < activeStep ? <CheckIcon /> : index + 1}
+                                                </span>
 
                                             </div>
 
@@ -212,11 +218,10 @@ function OrderDetails() {
                                             {/* Connector Line */}
                                             {index < steps.length - 1 && (
                                                 <div
-                                                    className={`flex-1 h-1 md:h-2 ${
-                                                        index < activeStep
-                                                            ? ' bg-[#2DB224]' // Completed line
-                                                            : ' bg-gray-300' // Incomplete line
-                                                    }`}
+                                                    className={`flex-1 h-1 md:h-2 ${index < activeStep
+                                                        ? ' bg-[#2DB224]' // Completed line
+                                                        : ' bg-gray-300' // Incomplete line
+                                                        }`}
                                                 ></div>
                                             )}
 
@@ -231,7 +236,7 @@ function OrderDetails() {
                             <div className={`flex px-2 lg:px-5 ml-4 md:ml-12 xl:ml-[115px] mb-3`}>
                                 {steps.map((label, index) => (
                                     <div key={label}
-                                         className="text-[12px] md:text-[18px] mt-0 flex items-center w-full"> {/* Step Label */}
+                                        className="text-[12px] md:text-[18px] mt-0 flex items-center w-full"> {/* Step Label */}
                                         {label}
                                     </div>
                                 ))}
@@ -242,17 +247,16 @@ function OrderDetails() {
                                 className={`flex justify-around pr-5 md:pr-14 xl:pl-3 xl:mx-12 pl-3 md:pl-5 pb-2 mb-10`}>
                                 {steps.map((label, index) => (
                                     <span className="flex justify-center mt-2">
-                              {React.cloneElement(icons[index], {
-                                  className: `text-[24px] ml-6 
-                  ${
-                                      index === activeStep
-                                          ? 'text-[#FF731D]' // Active step color
-                                          : index < activeStep
-                                              ? 'text-[#2DB224]' // Completed step color
-                                              : 'text-[#FF8800]' // Upcoming step color
-                                  }`,
-                              })}
-                            </span>
+                                        {React.cloneElement(icons[index], {
+                                            className: `text-[24px] ml-6 
+                  ${index === activeStep
+                                                    ? 'text-[#FF731D]' // Active step color
+                                                    : index < activeStep
+                                                        ? 'text-[#2DB224]' // Completed step color
+                                                        : 'text-[#FF8800]' // Upcoming step color
+                                                }`,
+                                        })}
+                                    </span>
                                 ))}
                             </div>
 
@@ -267,78 +271,85 @@ function OrderDetails() {
                         </div>
                         <table className="xl:table-fixed min-w-full border border-gray-200 mb-6">
                             <thead>
-                            <tr className={"h-12"}>
-                                <th className="xl:w-[40%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] pl-4 text-left text-[12px] md:text-[18px] font-medium">PRODUCTS</th>
-                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">PRICE</th>
-                                <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">QUANTITY </th>
-                                <th className="xl:w-[30%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">TOTAL</th>
+                                <tr className={"h-12"}>
+                                    <th className="xl:w-[40%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9] pl-4 text-left text-[12px] md:text-[18px] font-medium">PRODUCTS</th>
+                                    <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">PRICE</th>
+                                    <th className="xl:w-[15%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">QUANTITY </th>
+                                    <th className="xl:w-[30%] bg-[#F2F4F5] border-t border-b border-[#E4E7E9]  text-left text-[12px] md:text-[18px] font-medium">TOTAL</th>
 
-                            </tr>
+                                </tr>
 
                             </thead>
                             <tbody>
-                            {orderDetail.orderItems.map((row, rowIndex) => (
-                                <tr key={rowIndex} className={"border-b-2 h-20"}>
-                                    <td className='flex md:w-[90%] items-center text-[12px] md:text-[16px]'>
-                                        <img className="md:w-20 md:h-20 w-8 h-8 pl-4 py-2.5 mr-4" src={row.productImage} alt="temp"/>
-                                        {row.productName}
-                                    </td>
-                                    <td className=' text-[12px] md:text-[16px]'>{row.price.toLocaleString()} đ</td>
-                                    <td className='pl-2 text-[12px] md:text-[16px]'>x {row.quantity}</td>
-                                    <td className=' relative text-[12px] md:text-[16px]'>
-                                        <span className={`font-semibold`}>{row.price.toLocaleString()} đ</span>
+                                {orderDetail.orderItems.map((row, rowIndex) => (
+                                    <tr key={rowIndex} className={"border-b-2 h-20"}>
+                                        <td className='flex md:w-[90%] items-center text-[12px] md:text-[16px]'>
+                                            <img className="md:w-20 md:h-20 w-8 h-8 pl-4 py-2.5 mr-4" src={row.productImage} alt="temp" />
+                                            {row.productName}
+                                        </td>
+                                        <td className=' text-[12px] md:text-[16px]'>{row.price.toLocaleString()} đ</td>
+                                        <td className='pl-2 text-[12px] md:text-[16px]'>x {row.quantity}</td>
+                                        <td className=' relative text-[12px] md:text-[16px] align-middle'>
+                                            <span className={`font-semibold`}>{row.price.toLocaleString()} đ</span>
 
-                                        {activeStep > 3 && <button className={`pl-0`} disabled={isModalOpen} onClick={(productId) => {
-                                            handleOpenModal(row.productId)
-                                        }}><span
-                                            className=' absolute lg:top-7 lg:right-16 text-[#FA8232] hover:text-orangeRed text-[14px] md:text-[16px]'>Leave a Rating</span>
-                                        </button>}
-                                    </td>
-                                </tr>
-                            ))}
+                                            {activeStep > 3 && <button className={`pl-0`} disabled={isModalOpen} onClick={(productId) => {
+                                                handleOpenModal(row.productId)
+                                            }}><span
+                                                className=' absolute lg:top-7 lg:right-16 text-[#FA8232] hover:text-orangeRed text-[14px] md:text-[16px]'>Leave a Rating</span>
+                                            </button>}
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
+                        {
+                            activeStep <= 3
+                            && orderDetail.orderStatus !== "CANCELLED"
+                            && orderDetail.paymentMethod === "VNPAY"
+                            && orderDetail.paymentStatus === "PENDING"
+                            && (<div className='text-right'>
+                                <button onClick={handleCheckout}
+                                    className='mr-4 h-10 px-4 py-1  text-[14px] md:text-[16px] bg-[#FA8232] rounded text-white font-semibold font-sans hover:bg-orangeRed'>
+                                    Checkout now
+                                </button></div>)
+
+                        }
                     </div>
 
                     {/* Billing and Shipping Section */}
                     <div className=" bg-white p-2 md:p-6 mb-0 ml-6">
-                        <div className="md:grid md:grid-cols-3 md:gap-8">
-                            <div className={`border-r-2`}>
-                                {/* <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Billing Address</div>
-                                <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
-                                <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
-                                    {address}, {city}, {state}, {country} <br/>
-                                    Phone Number: {shippingAddress.phoneNumber} <br/>
-                                    Email: {shippingAddress.email}
-                                </div> */}
-                            </div>
-                            <div className={`border-r-2`}>
+                        <div className="md:grid md:grid-cols-5 md:gap-8">
+
+                            <div className={`border-r-2 col-span-2`}>
                                 <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Shipping Address
                                 </div>
                                 <div className='text-[14px] md:text-[18px] pb-1'>{firstName + " " + lastName} </div>
                                 <div className=' text-[14px] md:text-[16px] text-[#5F6C72]'>
-                                    {address}, {city}, {state}, {country} <br/>
-                                    Phone Number: {shippingAddress.phoneNumber} <br/>
+                                    {address}, {city}, {state}, {country} <br />
+                                    Phone Number: {shippingAddress.phoneNumber} <br />
                                     Email: {shippingAddress.email}
                                 </div>
                             </div>
-                            <div>
+                            <div className='border-r-2 col-span-2'>
                                 <div className='text-[16px] md:text-[20px] font-semibold mt-2 md:pb-2'>Order Notes</div>
                                 <div className=' text-[14px] md:text-[18px] text-[#5F6C72]'>
                                     {orderDetail.orderNotes !== null ? orderDetail.orderNotes : "None"}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className={`relative lg:h-20`}>
-                        {activeStep < 1 && <button disabled={status === 'CANCELLED'}
-                                                     onClick={() => {
-                                                         handleCancelOrder(orderDetail.orderId)
-                                                     }}
-                                                     className={`absolute rounded hover:bg-orangeRed right-0 md:right-2 lg:right-4 
+                            <div className={` items-center text-center`}>
+                                <div className={`relative lg:h-20`}>
+                                    {activeStep < 1 && <button disabled={status === 'CANCELLED'}
+                                        onClick={() => {
+                                            handleCancelOrder(orderDetail.orderId)
+                                        }}
+                                        className={`rounded hover:bg-orangeRed right-0 md:right-2 lg:right-4 
                         top-0 md:top-2  lg:top-5 ${status === 'CANCELLED' ? ' bg-gray-300' : ' bg-red'} text-white text-[12px] md:text-[18px] w-1/4 md:w-[160px] 
                         h-5 md:h-8 lg:h-10 lg:mb-3 mb-4 md:mb-6`}>{status === 'CANCELLED' ? 'Cancelled' : 'Cancel'}</button>}
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
 
                 </div>
             </div>
