@@ -155,7 +155,7 @@ export default function OrderDetails() {
                             <div className="bg-white px-8 pb-20 border-b-[1px] border-x-[1px] text-[16px]">
                                 <p className={"border-t-2 pt-4 border-gray-300"}>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
                                 <p className={"py-2"}>{order.shippingAddress?.phoneNumber}</p>
-                                <p>{order.shippingAddress?.address+", "+order.shippingAddress?.city+", "+order.shippingAddress?.state+", "+order.shippingAddress?.country}</p>
+                                <p>{order.shippingAddress?.address + ", " + order.shippingAddress?.city + ", " + order.shippingAddress?.state + ", " + order.shippingAddress?.country}</p>
                             </div>
                         </div>
                         <div>
@@ -164,7 +164,7 @@ export default function OrderDetails() {
                                 <p className={"border-t-2 pt-4 border-gray-300"}>Transaction Id: {order?.transactionId}</p>
                                 <p className={"py-2"}>Payment Method: {order?.paymentMethod}</p>
                                 <p>Payment Status: {order?.paymentStatus}</p>
-                                <p className={"pt-2"}>Total amount: {order?.totalPrice.toLocaleString("vi",{style: "currency", currency: "VND"})}</p>
+                                <p className={"pt-2"}>Total amount: {order?.totalPrice.toLocaleString("vi", { style: "currency", currency: "VND" })}</p>
                             </div>
                         </div>
                     </div>
@@ -208,13 +208,9 @@ export default function OrderDetails() {
                     {/* Order Status */}
                     {order.orderStatus === 'CANCELLED' ?
                         <div
-<<<<<<< HEAD
                             className="text-[14px] md:text-[18px] xl:text-[22px] font-bold text-[#EE5858]  bg-white">Order
                             Cancelled!</div> :
-=======
-                            className="text-[14px] md:text-[18px] xl:text-[26px] font-bold text-[#EE5858] pl-6 md:pl-10 lg:pl-14 bg-white py-4 border-[1px]">Order Cancelled!
-                        </div> :
->>>>>>> 0816f841be995b381f38ef808584aa4a1c47ef1f
+
 
                         <div className=" relative w-full my-12 font-semibold text-[22px] border-t-[1px] border-x-[1px] text-yaleBlue bg-white pt-4 pb-8 px-8">
                             <div>
