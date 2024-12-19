@@ -109,7 +109,7 @@ export default function Navigation(props) {
                                         </button>) : (
                                             <button
                                                 onClick={() => window.open(baseUrlForFrontEnd + 'admin', '_blank')}
-                                                className="flex items-center text-[16px] text-sm font-medium text-gray-700 hover:text-gray-800"
+                                                className="flex items-center text-[16px] font-medium text-gray-700 hover:text-gray-800"
                                             >
                                                 Admin page
                                             </button>)}
