@@ -37,7 +37,7 @@ jobs:
         working-directory: shopdi-web
         run: npm run build
       - name: Move dist to backend
-        run: cp shopdi-web/dist shopdi-api/src/main/resources/
+        run: cp -r shopdi-web/dist shopdi-api/src/main/resources/
 
       # ----------------- BACKEND -----------------
       - name: Setup Java
