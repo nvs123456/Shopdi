@@ -63,7 +63,7 @@ jobs:
         working-directory: shopdi-api
         run: ./mvnw clean package -DskipTests
       - name: upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: project package (.jar)
           path: shopdi-api/target/shopdi-api-0.0.1-SNAPSHOT.jar
