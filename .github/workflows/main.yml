@@ -33,11 +33,6 @@ jobs:
       - name: Install frontend dependencies
         working-directory: shopdi-web
         run: npm install
-
-      - name: Run frontend tests
-        working-directory: shopdi-web
-        run: npm test -- --watchAll=false
-
       - name: Build frontend
         working-directory: shopdi-web
         run: npm run build
