@@ -1,0 +1,69 @@
+name: Fullstack CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    # services:
+    #   postgres:
+    #     image: postgres:13
+    #     env:
+    #       POSTGRES_USER: user
+    #       POSTGRES_PASSWORD: password
+    #       POSTGRES_DB: testdb
+    #     ports: ['5432:5432']
+
+    # env:
+    #   DATABASE_URL: postgres://user:password@localhost:5432/testdb
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ----------------- FRONTEND -----------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        working-directory: shopdi-web
+        run: npm install
+
+      - name: Run frontend tests
+        working-directory: shopdi-web
+        run: npm test -- --watchAll=false
+
+      - name: Build frontend
+        working-directory: shopdi-web
+        run: npm run build
+      - name: Move dist to backend
+        run: cp shopdi-web/dist shopdi-api/src/main/resources/
+
+      # ----------------- BACKEND -----------------
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # - name: Cache Maven packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.m2
+      #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-
+
+      - name: Build backend
+        working-directory: shopdi-api
+        run: ./mvnw clean package -DskipTests
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: project package (.jar)
+          path: shopdi-api/target/shopdi-api-0.0.1-SNAPSHOT.jar
