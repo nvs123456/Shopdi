@@ -1,0 +1,32 @@
+# version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: a4k23cvp
+      MYSQL_DATABASE: shopdi
+    expose:
+      - "3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - shopdi-network
+  shopdi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopdi_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - shopdi-network
+networks:
+  shopdi-network:
+    driver: bridge
+volumes:
+  mysql-data:
+    
